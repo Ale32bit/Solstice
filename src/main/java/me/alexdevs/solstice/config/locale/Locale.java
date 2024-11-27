@@ -4,14 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Locale {
-    public record NameFormat(String group, String format) {
-    }
-
-    public ArrayList<NameFormat> nameFormats = new ArrayList<>(List.of(
-            new NameFormat("admin", "<red>%player:name%</red>"),
-            new NameFormat("default", "<green>%player:name%</green>")
-    ));
-
     public String chatFormat = "%player:displayname%<gray>:</gray> ${message}";
     public String emoteFormat = "<gray>\uD83D\uDC64 %player:displayname% <i>${message}</i></gray>";
     public String joinFormat = "<green>+</green> %player:displayname% <yellow>joined!</yellow>";

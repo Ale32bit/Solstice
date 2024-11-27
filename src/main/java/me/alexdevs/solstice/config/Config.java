@@ -10,16 +10,25 @@ import java.util.Map;
 
 @ConfigSerializable
 public class Config {
+    public ArrayList<Config.NameFormat> nameFormats = new ArrayList<>(List.of(
+            new Config.NameFormat("admin", "<red>%player:name%</red>"),
+            new Config.NameFormat("default", "<green>%player:name%</green>")
+    ));
+
+    public CustomTabList customTabList = new CustomTabList();
+    public AutoAnnouncements autoAnnouncements = new AutoAnnouncements();
+    public AutoRestart autoRestart = new AutoRestart();
+    public Motd motd = new Motd();
+    public Chat chat = new Chat();
+    public CommandSpy commandSpy = new CommandSpy();
     public Afk afk = new Config.Afk();
     public TeleportRequests teleportRequests = new TeleportRequests();
     public Homes homes = new Homes();
-    public CustomTabList customTabList = new CustomTabList();
     public NearCommand nearCommand = new NearCommand();
-    public AutoRestart autoRestart = new AutoRestart();
-    public CommandSpy commandSpy = new CommandSpy();
-    public AutoAnnouncements autoAnnouncements = new AutoAnnouncements();
-    public Motd motd = new Motd();
-    public Chat chat = new Chat();
+
+    @ConfigSerializable
+    public record NameFormat(String group, String format) {
+    }
 
     @ConfigSerializable
     public static class Afk {
