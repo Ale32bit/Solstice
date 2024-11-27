@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.alexdevs.solstice.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+  ],
+  "client": [],
+  "server": [
+    "MessageCommandMixin",
+    "PlayerEntityMixin",
+    "RegistryLoaderMixin",
+    "SentMessageMixin",
+    "ServerPlayerEntityMixin",
+    "ServerPlayNetworkHandlerMixin",
+    "PlayerManagerMixin",
+    "CommandDispatcherMixin",
+    "MinecraftServerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
