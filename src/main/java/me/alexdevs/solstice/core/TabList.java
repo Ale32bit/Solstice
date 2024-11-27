@@ -49,8 +49,8 @@ public class TabList {
 
         server.getPlayerManager().getPlayerList().forEach(player -> {
             var playerContext = PlaceholderContext.of(player);
-            var header = Text.literal(String.join("\n", Solstice.config().customTabList.tabHeader));
-            var footer = Text.literal(String.join("\n", Solstice.config().customTabList.tabFooter));
+            var header = String.join("\n", Solstice.config().customTabList.tabHeader);
+            var footer = String.join("\n", Solstice.config().customTabList.tabFooter);
             player.networkHandler.sendPacket(new PlayerListHeaderS2CPacket(
                     Format.parse(header, playerContext, placeholders),
                     Format.parse(footer, playerContext, placeholders)
