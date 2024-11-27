@@ -5,12 +5,18 @@
 	"name": "Solstice Essentials",
 	"description": "Server commands, custom chat formats and more",
 	"authors": [
-		"AlexDevs"
+		{
+			"name": "AlexDevs",
+			"contact": {
+				"email": "solstice@alexdevs.me"
+			}
+		}
 	],
 	"contact": {
-		"sources": "https://github.com/Ale32bit/Solstice"
+		"sources": "https://github.com/Ale32bit/Solstice.git",
+		"issues": "https://github.com/Ale32bit/Solstice/issues"
 	},
-	"license": "MIT License",
+	"license": "MIT",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
