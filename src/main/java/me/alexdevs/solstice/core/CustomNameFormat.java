@@ -10,7 +10,7 @@ import net.minecraft.text.MutableText;
 
 public class CustomNameFormat {
     public static MutableText getNameForPlayer(ServerPlayerEntity player) {
-        var formats = Solstice.config().nameFormats;
+        var formats = Solstice.config().formats.nameFormats;
         var lp = Solstice.getInstance().luckPerms();
         var playerContext = PlaceholderContext.of(player);
 

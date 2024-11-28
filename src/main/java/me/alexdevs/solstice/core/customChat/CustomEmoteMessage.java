@@ -21,7 +21,7 @@ public class CustomEmoteMessage {
         Text messageText = Components.chat(message, player);
 
         var text = Format.parse(
-                Solstice.locale().emoteFormat,
+                Solstice.config().formats.emoteFormat,
                 playerContext,
                 Map.of(
                         "message", messageText

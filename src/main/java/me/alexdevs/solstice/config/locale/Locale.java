@@ -4,17 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Locale {
-    public String chatFormat = "%player:displayname%<gray>:</gray> ${message}";
-    public String emoteFormat = "<gray>\uD83D\uDC64 %player:displayname% <i>${message}</i></gray>";
-    public String joinFormat = "<green>+</green> %player:displayname% <yellow>joined!</yellow>";
-    public String joinRenamedFormat = "<green>+</green> %player:displayname% <yellow>joined! <i>(Previously known as ${previousName})</i></yellow>";
-    public String leaveFormat = "<red>-</red> %player:displayname% <yellow>left!</yellow>";
-    public String deathFormat = "<gray>\u2620 ${message}</gray>";
-    public String dateFormat = "dd/MM/yyyy";
-    public String timeFormat = "HH:mm";
-    public String dateTimeFormat = "dd/MM/yyyy HH:mm";
-    public String link = "<c:#8888ff><u>${label}</u></c>";
-    public String linkHover = "${url}";
 
     public String youAreMuted = "<gold>You are muted!</gold>";
 

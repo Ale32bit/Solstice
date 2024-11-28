@@ -51,12 +51,12 @@ public class LinkParser implements NodeParser {
                 );
 
                 var display = Format.parse(
-                        Solstice.locale().link,
+                        Solstice.config().formats.link,
                         placeholders
                 );
 
                 var hover = Format.parse(
-                        Solstice.locale().linkHover,
+                        Solstice.config().formats.linkHover,
                         placeholders
                 );
 

@@ -74,7 +74,7 @@ public class MailCommand {
             );
 
             var senderName = serverState.usernameCache.getOrDefault(mail.sender, mail.sender.toString());
-            var dateFormatter = new SimpleDateFormat(Solstice.locale().dateTimeFormat);
+            var dateFormatter = new SimpleDateFormat(Solstice.config().formats.dateTimeFormat);
             var placeholders = Map.of(
                     "index", Text.of(String.valueOf(index)),
                     "sender", Text.of(senderName),
@@ -119,7 +119,7 @@ public class MailCommand {
         );
 
         var senderName = serverState.usernameCache.getOrDefault(mail.sender, mail.sender.toString());
-        var dateFormatter = new SimpleDateFormat(Solstice.locale().dateTimeFormat);
+        var dateFormatter = new SimpleDateFormat(Solstice.config().formats.dateTimeFormat);
         var message = MarkdownParser.defaultParser.parseNode(mail.message);
         var placeholders = Map.of(
                 "sender", Text.of(senderName),

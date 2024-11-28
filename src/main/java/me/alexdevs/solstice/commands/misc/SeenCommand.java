@@ -37,7 +37,7 @@ public class SeenCommand {
                                     extended = true;
                                 }
 
-                                var dateFormatter = new SimpleDateFormat(Solstice.locale().dateTimeFormat);
+                                var dateFormatter = new SimpleDateFormat(Solstice.config().formats.dateTimeFormat);
                                 var player = source.getServer().getPlayerManager().getPlayer(profile.get().getId());
                                 var playerState = Solstice.state.getPlayerState(profile.get().getId());
 

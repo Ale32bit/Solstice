@@ -37,8 +37,8 @@ public class MarkdownComponentParser {
                 "label", TextNode.wrap(textNodes).toText(),
                 "url", url.toText()
         );
-        var text = Format.parse(Solstice.locale().link, placeholders);
-        var hover = Format.parse(Solstice.locale().linkHover, placeholders);
+        var text = Format.parse(Solstice.config().formats.link, placeholders);
+        var hover = Format.parse(Solstice.config().formats.linkHover, placeholders);
 
         return new HoverNode<>(TextNode.array(
                 new ClickActionNode(

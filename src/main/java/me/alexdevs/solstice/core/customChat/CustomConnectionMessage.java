@@ -12,7 +12,7 @@ public class CustomConnectionMessage {
     public static Text onJoin(ServerPlayerEntity player) {
         var playerContext = PlaceholderContext.of(player);
         return Format.parse(
-                Solstice.locale().joinFormat,
+                Solstice.config().formats.joinFormat,
                 playerContext
         );
     }
@@ -20,7 +20,7 @@ public class CustomConnectionMessage {
     public static Text onJoinRenamed(ServerPlayerEntity player, String previousName) {
         var playerContext = PlaceholderContext.of(player);
         return Format.parse(
-                Solstice.locale().joinRenamedFormat,
+                Solstice.config().formats.joinRenamedFormat,
                 playerContext,
                 Map.of("previousName", Text.of(previousName))
         );
@@ -29,7 +29,7 @@ public class CustomConnectionMessage {
     public static Text onLeave(ServerPlayerEntity player) {
         var playerContext = PlaceholderContext.of(player);
         return Format.parse(
-                Solstice.locale().leaveFormat,
+                Solstice.config().formats.leaveFormat,
                 playerContext
         );
     }

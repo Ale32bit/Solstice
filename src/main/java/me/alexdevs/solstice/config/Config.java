@@ -11,11 +11,8 @@ import java.util.Map;
 
 @ConfigSerializable
 public class Config {
-    @Comment("Customize player display names based on their LuckPerms group.")
-    public ArrayList<Config.NameFormat> nameFormats = new ArrayList<>(List.of(
-            new Config.NameFormat("admin", "<red>%player:name%</red>"),
-            new Config.NameFormat("default", "<green>%player:name%</green>")
-    ));
+    @Comment("Customize various texts formatting.")
+    public Formats formats = new Formats();
 
     @Comment("Customize the header and footer of the player tab list.")
     public CustomTabList customTabList = new CustomTabList();
@@ -48,7 +45,49 @@ public class Config {
     public NearCommand nearCommand = new NearCommand();
 
     @ConfigSerializable
-    public record NameFormat(String group, String format) {
+    public static class Formats {
+        @ConfigSerializable
+        public record NameFormat(String group, String format) {
+        }
+
+        @Comment("Customize player display names based on their LuckPerms group.")
+        public ArrayList<NameFormat> nameFormats = new ArrayList<>(List.of(
+                new NameFormat("admin", "<red>%player:name%</red>"),
+                new NameFormat("default", "<green>%player:name%</green>")
+        ));
+
+        @Comment("Player chat message format.")
+        public String chatFormat = "%player:displayname%<gray>:</gray> ${message}";
+
+        @Comment("Player '/me' message format.")
+        public String emoteFormat = "<gray>\uD83D\uDC64 %player:displayname% <i>${message}</i></gray>";
+
+        @Comment("Player join message format.")
+        public String joinFormat = "<green>+</green> %player:displayname% <yellow>joined!</yellow>";
+
+        @Comment("Player join with a different username message format.")
+        public String joinRenamedFormat = "<green>+</green> %player:displayname% <yellow>joined! <i>(Previously known as ${previousName})</i></yellow>";
+
+        @Comment("Player left message format.")
+        public String leaveFormat = "<red>-</red> %player:displayname% <yellow>left!</yellow>";
+
+        @Comment("Player death message format.")
+        public String deathFormat = "<gray>\u2620 ${message}</gray>";
+
+        @Comment("Generic date format to use.\nMetric format: dd/MM/yyyy\nUSA format: MM/dd/yyyy")
+        public String dateFormat = "dd/MM/yyyy";
+
+        @Comment("Generic time format to use.\n24h format: HH:mm\n12h format: hh:mm a")
+        public String timeFormat = "HH:mm";
+
+        @Comment("Generic date + time format to use. Combination of above.")
+        public String dateTimeFormat = "dd/MM/yyyy HH:mm";
+
+        @Comment("Format to use when displaying links in chat.")
+        public String link = "<c:#8888ff><u>${label}</u></c>";
+
+        @Comment("Format to use when hovering over the link in chat.")
+        public String linkHover = "${url}";
     }
 
     @ConfigSerializable

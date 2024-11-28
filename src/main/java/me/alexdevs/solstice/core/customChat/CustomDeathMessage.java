@@ -15,7 +15,7 @@ public class CustomDeathMessage {
         var playerContext = PlaceholderContext.of(player);
 
         return Format.parse(
-                Solstice.locale().deathFormat,
+                Solstice.config().formats.deathFormat,
                 playerContext,
                 Map.of("message", deathMessage)
         );

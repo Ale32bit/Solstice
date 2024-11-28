@@ -30,7 +30,7 @@ public class CustomChatMessage {
 
         var playerContext = PlaceholderContext.of(player);
         var text = Format.parse(
-                Solstice.locale().chatFormat,
+                Solstice.config().formats.chatFormat,
                 playerContext,
                 Map.of(
                         "message", messageText
