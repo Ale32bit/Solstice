@@ -34,6 +34,7 @@ public class CommandInitializer {
             TeleportDenyCommand.register(dispatcher);
             BackCommand.register(dispatcher);
             TeleportOfflineCommand.register(dispatcher);
+            TeleportHereCommand.register(dispatcher);
 
             FlyCommand.register(dispatcher);
             GodCommand.register(dispatcher);
