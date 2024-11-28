@@ -1,14 +1,16 @@
 package me.alexdevs.solstice.core.customChat;
 
+import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.util.Format;
 import net.minecraft.advancement.AdvancementFrame;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import java.util.Map;
 
 public class CustomAdvancementMessage {
-    public static Text getText(Text playerDisplayName, String advancementKey, String frameId) {
+    public static Text getText(ServerPlayerEntity player, String advancementKey, String frameId) {
         var frame = AdvancementFrame.forName(frameId);
         var title = advancementKey + ".title";
         var description = advancementKey + ".description";
@@ -21,13 +23,14 @@ public class CustomAdvancementMessage {
             default -> formats.task;
         };
 
+        var playerContext = PlaceholderContext.of(player);
+
         var placeholders = Map.of(
-                "player", playerDisplayName,
                 "frame", Text.of(frameId),
                 "title", Text.translatable(title),
                 "description", Text.translatable(description)
         );
 
-        return Format.parse(advancementFormat, placeholders);
+        return Format.parse(advancementFormat, playerContext, placeholders);
     }
 }

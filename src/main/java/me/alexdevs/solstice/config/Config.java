@@ -52,9 +52,9 @@ public class Config {
 
         @ConfigSerializable
         public static class AdvancementFormats {
-            public String task = "<green>✔</green> ${player} <gray>completed the task</gray> <hover:'${description}'><green>${title}</green></hover>";
-            public String challenge = "<light_purple>\uD83C\uDF86</light_purple> ${player} <gray>completed the challenge</gray> <hover:'${description}'><light_purple>${title}</light_purple></hover>";
-            public String goal = "<aqua>\uD83C\uDF96</aqua> ${player} <gray>completed the goal</gray> <hover:'${description}'><aqua>${title}</aqua></hover>";
+            public String task = "<green>✔</green> %player:displayname% <gray>completed the task</gray> <hover:'${description}'><green>${title}</green></hover>";
+            public String challenge = "<light_purple>\uD83C\uDF86</light_purple> %player:displayname% <gray>completed the challenge</gray> <hover:'${description}'><light_purple>${title}</light_purple></hover>";
+            public String goal = "<aqua>\uD83C\uDF96</aqua> %player:displayname% <gray>completed the goal</gray> <hover:'${description}'><aqua>${title}</aqua></hover>";
         }
 
         @Comment("Customize player display names based on their LuckPerms group.")
@@ -90,7 +90,7 @@ public class Config {
         @Comment("Generic time format to use.\n24h format: HH:mm\n12h format: hh:mm a")
         public String timeFormat = "HH:mm";
 
-        @Comment("Generic date + time format to use. Combination of above.")
+        @Comment("Generic date + time format to use.")
         public String dateTimeFormat = "dd/MM/yyyy HH:mm";
 
         @Comment("Format to use when displaying links in chat.")
