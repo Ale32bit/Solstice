@@ -43,7 +43,10 @@ public class WarpCommand {
         if (!warps.containsKey(name)) {
             context.getSource().sendFeedback(() -> Format.parse(
                     Solstice.locale().commands.warp.warpNotFound,
-                    playerContext
+                    playerContext,
+                    Map.of(
+                            "warp", Text.of(name)
+                    )
             ), false);
             return 1;
         }
