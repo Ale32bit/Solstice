@@ -7,7 +7,6 @@
   ],
   "client": [],
   "server": [
-    "MessageCommandMixin",
     "PlayerEntityMixin",
     "RegistryLoaderMixin",
     "SentMessageMixin",

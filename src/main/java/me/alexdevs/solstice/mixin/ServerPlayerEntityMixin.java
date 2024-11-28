@@ -2,7 +2,7 @@ package me.alexdevs.solstice.mixin;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.core.BackTracker;
-import me.alexdevs.solstice.core.customChat.CustomDeathMessage;
+import me.alexdevs.solstice.core.customFormats.CustomDeathMessage;
 import me.alexdevs.solstice.api.ServerPosition;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;

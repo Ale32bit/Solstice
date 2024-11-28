@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.mixin;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.core.customChat.CustomSentMessage;
+import me.alexdevs.solstice.core.customFormats.CustomSentMessage;
 import net.minecraft.network.message.SentMessage;
 import net.minecraft.network.message.SignedMessage;
 import org.spongepowered.asm.mixin.Mixin;

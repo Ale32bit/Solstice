@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.core.customChat;
+package me.alexdevs.solstice.core.customFormats;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;

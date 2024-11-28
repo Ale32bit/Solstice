@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.commands.admin;
+package me.alexdevs.solstice.commands.moderation;
 
 import me.alexdevs.solstice.Solstice;
 import com.mojang.authlib.GameProfile;

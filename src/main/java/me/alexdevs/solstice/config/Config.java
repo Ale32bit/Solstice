@@ -99,7 +99,11 @@ public class Config {
         @Comment("Format to use when hovering over the link in chat.")
         public String linkHover = "${url}";
 
+        @Comment("Format the ban message when a banned player attempts to join.")
+        public String banMessageFormat = "<red>You are banned from this server:</red>\n\n${reason}";
 
+        @Comment("Like the banMessageFormat, but when temporary.")
+        public String tempBanMessageFormat = "<red>You are temporary banned from this server:</red>\n\n${reason}\n\n<gray>Expires: ${expiry_date}</gray>";
 
     }
 

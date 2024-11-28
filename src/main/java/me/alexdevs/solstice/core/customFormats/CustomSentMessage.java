@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.core.customChat;
+package me.alexdevs.solstice.core.customFormats;
 
 import me.alexdevs.solstice.Solstice;
 import net.minecraft.network.message.MessageType;

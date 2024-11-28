@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.commands.tell;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.commands.CommandInitializer;
 import me.alexdevs.solstice.util.Format;
 import me.alexdevs.solstice.util.Components;
 import com.mojang.brigadier.CommandDispatcher;
@@ -9,6 +10,7 @@ import com.mojang.brigadier.context.CommandContext;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandSource;
+import net.minecraft.server.command.MessageCommand;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -24,6 +26,8 @@ public class TellCommand {
     public static final HashMap<String, String> lastSender = new HashMap<>();
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+        CommandInitializer.removeCommands("msg", "tell", "w");
+
         var messageNode = dispatcher.register(literal("msg")
                 .requires(Permissions.require("solstice.command.tell", true))
                 .then(argument("player", StringArgumentType.word())

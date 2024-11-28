@@ -8,7 +8,7 @@ import me.alexdevs.solstice.config.ConfigManager;
 import me.alexdevs.solstice.config.locale.Locale;
 import me.alexdevs.solstice.config.locale.LocaleManager;
 import me.alexdevs.solstice.core.*;
-import me.alexdevs.solstice.core.customChat.CustomChatMessage;
+import me.alexdevs.solstice.core.customFormats.CustomChatMessage;
 import me.alexdevs.solstice.data.StateManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -36,7 +36,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class Solstice implements ModInitializer {
     public static final String MOD_ID = "solstice";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    public static final Logger LOGGER = LoggerFactory.getLogger(Solstice.class);
 
     private static final Path configDirectory = FabricLoader.getInstance().getConfigDir().resolve(MOD_ID);
     public static final ConfigManager configManager = new ConfigManager(configDirectory.resolve("solstice.conf"));

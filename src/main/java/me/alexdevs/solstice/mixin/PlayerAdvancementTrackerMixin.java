@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.mixin;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.core.customChat.CustomAdvancementMessage;
+import me.alexdevs.solstice.core.customFormats.CustomAdvancementMessage;
 import net.minecraft.advancement.PlayerAdvancementTracker;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;

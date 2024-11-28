@@ -1,7 +1,9 @@
 package me.alexdevs.solstice.commands;
 
+import com.mojang.brigadier.CommandDispatcher;
 import me.alexdevs.solstice.commands.admin.*;
 import me.alexdevs.solstice.commands.misc.*;
+import me.alexdevs.solstice.commands.moderation.*;
 import me.alexdevs.solstice.commands.teleport.*;
 import me.alexdevs.solstice.commands.home.DeleteHomeCommand;
 import me.alexdevs.solstice.commands.home.HomeCommand;
@@ -17,10 +19,13 @@ import me.alexdevs.solstice.commands.warp.SetWarpCommand;
 import me.alexdevs.solstice.commands.warp.WarpCommand;
 import me.alexdevs.solstice.commands.warp.WarpsCommand;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.server.command.ServerCommandSource;
 
 public class CommandInitializer {
+    private static CommandDispatcher<ServerCommandSource> dispatcher;
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            CommandInitializer.dispatcher = dispatcher;
             SolsticeCommand.register(dispatcher);
 
             AfkCommand.register(dispatcher);
@@ -57,7 +62,12 @@ public class CommandInitializer {
 
             TimeBarCommand.register(dispatcher);
             RestartCommand.register(dispatcher);
+
             MuteCommand.register(dispatcher);
+            BanCommand.register(dispatcher);
+            TempBanCommand.register(dispatcher);
+            UnbanCommand.register(dispatcher);
+            KickCommand.register(dispatcher);
 
             NearCommand.register(dispatcher);
             MailCommand.register(dispatcher);
@@ -66,5 +76,14 @@ public class CommandInitializer {
             SuicideCommand.register(dispatcher);
             SmiteCommand.register(dispatcher);
         });
+    }
+
+    public static void removeCommands(String... commandNames) {
+        for (String commandName : commandNames) {
+            var command = dispatcher.getRoot().getChild(commandName);
+            if (command != null) {
+                dispatcher.getRoot().getChildren().remove(command);
+            }
+        }
     }
 }
