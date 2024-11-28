@@ -83,7 +83,7 @@ modrinth {
 	token = System.getenv("MODRINTH_TOKEN")
 	projectId = 'uIvrDZas'
 	uploadFile = remapJar
-	gameVersions = ['1.20.1']
+	gameVersions = [project.minecraft_version]
 	loaders = ['fabric']
 	dependencies = [
 			new ModDependency('P7dR8mSH', 'required'), // Fabric API
