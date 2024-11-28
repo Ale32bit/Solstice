@@ -7,7 +7,6 @@ import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
-import java.util.Locale;
 import java.util.Set;
 
 import static net.minecraft.server.command.CommandManager.argument;

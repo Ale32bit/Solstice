@@ -46,10 +46,8 @@ public class BanCommand {
         var banList = server.getPlayerManager().getUserBanList();
 
         var banCounter = 0;
-        var iterator = targets.iterator();
-        while (iterator.hasNext()) {
-            var target = iterator.next();
-            if(banList.contains(target)) {
+        for (GameProfile target : targets) {
+            if (banList.contains(target)) {
                 continue;
             }
 
