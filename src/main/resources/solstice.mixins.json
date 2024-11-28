@@ -15,7 +15,8 @@
     "ServerPlayNetworkHandlerMixin",
     "PlayerManagerMixin",
     "CommandDispatcherMixin",
-    "MinecraftServerMixin"
+    "MinecraftServerMixin",
+    "PlayerAdvancementTrackerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

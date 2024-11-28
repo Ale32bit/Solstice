@@ -50,6 +50,13 @@ public class Config {
         public record NameFormat(String group, String format) {
         }
 
+        @ConfigSerializable
+        public static class AdvancementFormats {
+            public String task = "<green>✔</green> ${player} <gray>completed the task</gray> <hover:'${description}'><green>${title}</green></hover>";
+            public String challenge = "<light_purple>\uD83C\uDF86</light_purple> ${player} <gray>completed the challenge</gray> <hover:'${description}'><light_purple>${title}</light_purple></hover>";
+            public String goal = "<aqua>\uD83C\uDF96</aqua> ${player} <gray>completed the goal</gray> <hover:'${description}'><aqua>${title}</aqua></hover>";
+        }
+
         @Comment("Customize player display names based on their LuckPerms group.")
         public ArrayList<NameFormat> nameFormats = new ArrayList<>(List.of(
                 new NameFormat("admin", "<red>%player:name%</red>"),
@@ -74,6 +81,9 @@ public class Config {
         @Comment("Player death message format.")
         public String deathFormat = "<gray>\u2620 ${message}</gray>";
 
+        @Comment("Player made an announced advancement.")
+        public AdvancementFormats advancementFormats = new AdvancementFormats();
+
         @Comment("Generic date format to use.\nMetric format: dd/MM/yyyy\nUSA format: MM/dd/yyyy")
         public String dateFormat = "dd/MM/yyyy";
 
@@ -88,6 +98,9 @@ public class Config {
 
         @Comment("Format to use when hovering over the link in chat.")
         public String linkHover = "${url}";
+
+
+
     }
 
     @ConfigSerializable
