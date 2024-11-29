@@ -1,0 +1,2 @@
+- Fixed bugs with command aliases permissions.
+- Added permissions to more commands.
