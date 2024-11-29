@@ -38,4 +38,6 @@ public class PlayerState {
     public boolean muted = false;
     @Expose
     public ArrayList<UUID> ignoredPlayers = new ArrayList<>();
+    @Expose
+    public ArrayList<String> warns = new ArrayList<>();
 }

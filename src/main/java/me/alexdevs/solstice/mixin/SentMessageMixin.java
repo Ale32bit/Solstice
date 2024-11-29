@@ -13,12 +13,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public interface SentMessageMixin {
     @Inject(method = "of", at = @At("HEAD"), cancellable = true)
     private static void solstice$of(SignedMessage message, CallbackInfoReturnable<SentMessage> cir) {
-
         if (message.isSenderMissing()) {
-            Solstice.warnUnsignedMessages();
-            cir.setReturnValue(new SentMessage.Profileless(message.getContent()));
+            cir.setReturnValue(new CustomSentMessage.Profileless(message.getContent()));
         } else {
-            cir.setReturnValue(new CustomSentMessage(message));
+            var sender = Solstice.server.getPlayerManager().getPlayer(message.getSender());
+            cir.setReturnValue(new CustomSentMessage.Chat(message, sender));
         }
     }
 }

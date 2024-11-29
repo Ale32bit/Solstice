@@ -5,25 +5,32 @@ import com.mojang.authlib.GameProfile;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.core.customFormats.CustomBanMessage;
 import me.alexdevs.solstice.core.customFormats.CustomConnectionMessage;
+import me.alexdevs.solstice.core.customFormats.CustomSentMessage;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.message.MessageType;
+import net.minecraft.network.message.SentMessage;
+import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.BannedPlayerEntry;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.net.SocketAddress;
+import java.util.function.Predicate;
 
 @Mixin(PlayerManager.class)
-public class PlayerManagerMixin {
+public abstract class PlayerManagerMixin {
     @Unique
     private ServerPlayerEntity solstice$player = null;
 
@@ -60,5 +67,15 @@ public class PlayerManagerMixin {
             // Ensure the original text message is returned to avoid exploits and bypass the ban
             cir.setReturnValue(mutableText);
         }
+    }
+
+    @Redirect(
+            method = "broadcast(Lnet/minecraft/network/message/SignedMessage;Ljava/util/function/Predicate;Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/network/message/MessageType$Parameters;)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/network/message/SentMessage;of(Lnet/minecraft/network/message/SignedMessage;)Lnet/minecraft/network/message/SentMessage;")
+    )
+    private SentMessage solstice$broadcast(SignedMessage sentMessagePar, SignedMessage message, Predicate<ServerPlayerEntity> shouldSendFiltered, @Nullable ServerPlayerEntity sender, MessageType.Parameters params) {
+        return CustomSentMessage.of(message, sender);
     }
 }

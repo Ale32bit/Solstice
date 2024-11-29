@@ -59,7 +59,6 @@ public class Solstice implements ModInitializer {
     public static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public static final RegistryKey<MessageType> CHAT_TYPE = RegistryKey.of(RegistryKeys.MESSAGE_TYPE, new Identifier(MOD_ID, "chat"));
-    private static boolean warnedAboutUnsignedMessages = false;
 
     public Solstice() {
         INSTANCE = this;
@@ -116,38 +115,4 @@ public class Solstice implements ModInitializer {
     public void broadcast(Text text) {
         server.getPlayerManager().broadcast(text, false);
     }
-
-    public void sendChatAsPlayer(ServerPlayerEntity player, String message) {
-        var msgType = server.getRegistryManager().get(RegistryKeys.MESSAGE_TYPE).getOrThrow(MessageType.CHAT);
-        var signedMessage = SignedMessage.ofUnsigned(player.getUuid(), message);
-        var pars = new MessageType.Parameters(msgType, Text.of(message), Text.of(message));
-
-        var allowed = ServerMessageEvents.ALLOW_CHAT_MESSAGE.invoker().allowChatMessage(signedMessage, player, pars);
-        if (!allowed)
-            return;
-
-        ServerMessageEvents.CHAT_MESSAGE.invoker().onChatMessage(signedMessage, player, pars);
-
-        var formatted = CustomChatMessage.getFormattedMessage(signedMessage, player);
-        for (var pl : server.getPlayerManager().getPlayerList()) {
-            pl.sendMessage(formatted);
-        }
-    }
-
-    public static void warnUnsignedMessages() {
-        if (warnedAboutUnsignedMessages)
-            return;
-        warnedAboutUnsignedMessages = true;
-
-        LOGGER.warn(
-                """
-                        !!! --- WARNING --- !!!
-                        Cannot retrieve message sender UUID!
-                        
-                        If you are using FabricProxy-Lite, consider disabling
-                        the `hackMessageChain` configuration!
-                        """
-        );
-    }
-
 }

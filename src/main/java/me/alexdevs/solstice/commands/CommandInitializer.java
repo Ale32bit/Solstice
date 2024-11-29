@@ -75,6 +75,8 @@ public class CommandInitializer {
             UnbanCommand.register(dispatcher);
             KickCommand.register(dispatcher);
 
+            IgnoreCommand.register(dispatcher);
+
             NearCommand.register(dispatcher);
             MailCommand.register(dispatcher);
             SeenCommand.register(dispatcher);

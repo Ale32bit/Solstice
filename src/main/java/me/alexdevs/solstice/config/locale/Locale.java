@@ -21,6 +21,7 @@ public class Locale {
         public Afk afk = new Afk();
         public Mail mail = new Mail();
         public Seen seen = new Seen();
+        public Ignore ignore = new Ignore();
 
         public static class Common {
             // `{{command}}` is replaced as a string before parsing
@@ -131,6 +132,13 @@ public class Locale {
                     " <gold>IP Address:</gold> <yellow>${ipAddress}</yellow>",
                     " <gold>Location:</gold> <yellow>${location}</yellow>"
             ));
+        }
+
+        public static class Ignore {
+            public String playerNotFound = "<red>Could not find this player</red>";
+            public String targetIsSelf = "<red>You cannot ignore yourself.</red>";
+            public String blockedPlayer = "<yellow>${targetName}</yellow> <gold>is now ignored.</gold>";
+            public String unblockedPlayer = "<yellow>${targetName}</yellow> <green>is no longer ignored.</green>";
         }
     }
 }

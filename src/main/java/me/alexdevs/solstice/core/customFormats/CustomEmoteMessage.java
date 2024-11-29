@@ -9,16 +9,15 @@ import net.minecraft.network.message.SignedMessage;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
 public class CustomEmoteMessage {
-    public static void sendEmoteMessage(ServerPlayerEntity receiver, SignedMessage message, MessageType.Parameters params) {
-        var playerUuid = message.link().sender();
-        var player = Solstice.server.getPlayerManager().getPlayer(playerUuid);
-        var playerContext = PlaceholderContext.of(player);
+    public static void sendEmoteMessage(ServerPlayerEntity receiver, SignedMessage message, MessageType.Parameters params, ServerPlayerEntity sender) {
+        var playerContext = PlaceholderContext.of(sender);
 
-        Text messageText = Components.chat(message, player);
+        Text messageText = Components.chat(message, sender);
 
         var text = Format.parse(
                 Solstice.config().formats.emoteFormat,
@@ -31,6 +30,6 @@ public class CustomEmoteMessage {
         var msgType = Solstice.server.getRegistryManager().get(RegistryKeys.MESSAGE_TYPE).getOrThrow(Solstice.CHAT_TYPE);
         var newParams = new MessageType.Parameters(msgType, text, null);
 
-        receiver.networkHandler.sendChatMessage(message, newParams);
+        receiver.networkHandler.sendProfilelessChatMessage(message.getContent(), newParams);
     }
 }

@@ -60,6 +60,8 @@ public class TeleportAskCommand {
             return;
         }
 
+        // TODO: make tpa and tpahere respect ignore list of target
+
         var request = new TeleportTracker.TeleportRequest(player.getUuid(), target.getUuid());
         var targetRequests = TeleportTracker.teleportRequests.get(target.getUuid());
         targetRequests.addLast(request);

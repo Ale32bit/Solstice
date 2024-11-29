@@ -1,5 +1,6 @@
 package me.alexdevs.solstice.data;
 
+import com.mojang.authlib.GameProfile;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.ServerPosition;
@@ -7,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -185,6 +187,14 @@ public class StateManager {
 
         playerState.dirty = true;
         return playerState;
+    }
+
+    public PlayerState getPlayerState(ServerPlayerEntity player) {
+        return getPlayerState(player.getUuid());
+    }
+
+    public PlayerState getPlayerState(GameProfile profile) {
+        return getPlayerState(profile.getId());
     }
 
     public ServerState getServerState() {

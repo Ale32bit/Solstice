@@ -9,20 +9,18 @@ import net.minecraft.network.message.SignedMessage;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
 public class CustomChatMessage {
-    public static void sendChatMessage(ServerPlayerEntity receiver, SignedMessage message, MessageType.Parameters params) {
-        var playerUuid = message.link().sender();
-        var player = Solstice.server.getPlayerManager().getPlayer(playerUuid);
-
-        var text = getFormattedMessage(message, player);
+    public static void sendChatMessage(ServerPlayerEntity receiver, SignedMessage message, MessageType.Parameters params, ServerPlayerEntity sender) {
+        var text = getFormattedMessage(message, sender);
 
         var msgType = Solstice.server.getRegistryManager().get(RegistryKeys.MESSAGE_TYPE).getOrThrow(Solstice.CHAT_TYPE);
         var newParams = new MessageType.Parameters(msgType, text, null);
 
-        receiver.networkHandler.sendChatMessage(message, newParams);
+        receiver.networkHandler.sendProfilelessChatMessage(message.getContent(), newParams);
     }
 
     public static Text getFormattedMessage(SignedMessage message, ServerPlayerEntity player) {
