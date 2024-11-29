@@ -19,8 +19,9 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class SeenCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+        var requirement = Permissions.require("solstice.command.seen", true);
         var rootCommand = dispatcher.register(literal("seen")
-                .requires(Permissions.require("solstice.command.seen", true))
+                .requires(requirement)
                 .then(argument("player", StringArgumentType.word())
                         .executes(context -> {
                             var targetName = StringArgumentType.getString(context, "player");
@@ -74,7 +75,7 @@ public class SeenCommand {
                             return 1;
                         })));
 
-        dispatcher.register(literal("playerinfo").redirect(rootCommand));
+        dispatcher.register(literal("playerinfo").requires(requirement).redirect(rootCommand));
     }
 
     public static String getPositionAsString(@Nullable ServerPosition pos) {

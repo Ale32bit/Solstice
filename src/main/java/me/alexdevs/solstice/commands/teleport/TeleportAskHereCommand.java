@@ -9,6 +9,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -20,8 +21,10 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class TeleportAskHereCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+        var requirement = Permissions.require("solstice.command.tpahere", true);
         var node = dispatcher.register(literal("tpahere")
                 .then(argument("player", StringArgumentType.word())
+                        .requires(requirement)
                         .suggests((context, builder) -> {
                             var playerManager = context.getSource().getServer().getPlayerManager();
                             return CommandSource.suggestMatching(
@@ -33,7 +36,7 @@ public class TeleportAskHereCommand {
                             return 1;
                         })));
 
-        dispatcher.register(literal("tpaskhere").redirect(node));
+        dispatcher.register(literal("tpaskhere").requires(requirement).redirect(node));
     }
 
     private static void execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {

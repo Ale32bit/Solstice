@@ -17,9 +17,10 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class SolsticeCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         var rootCommand = literal("solstice")
+                .requires(Permissions.require("solstice.command.solstice", true))
                 .executes(context -> {
-                    var modContainer = FabricLoader.getInstance().getModContainer(me.alexdevs.solstice.Solstice.MOD_ID).orElse(null);
-                    if(modContainer == null) {
+                    var modContainer = FabricLoader.getInstance().getModContainer(Solstice.MOD_ID).orElse(null);
+                    if (modContainer == null) {
                         context.getSource().sendFeedback(() -> Text.of("Could not find self in mod list???"), false);
                         return 1;
                     }
@@ -58,7 +59,6 @@ public class SolsticeCommand {
                             return 1;
                         }));
 
-        var node = dispatcher.register(rootCommand);
-        dispatcher.register(literal("sol").redirect(node));
+        dispatcher.register(rootCommand);
     }
 }

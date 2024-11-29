@@ -7,6 +7,7 @@ import me.alexdevs.solstice.api.ServerPosition;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import eu.pb4.placeholders.api.PlaceholderContext;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.argument.UuidArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -18,7 +19,9 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class TeleportAcceptCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+        var requirement = Permissions.require("solstice.command.tpaccept", true);
         var node = dispatcher.register(literal("tpaccept")
+                .requires(requirement)
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrThrow();
                     var playerUuid = player.getUuid();
@@ -66,7 +69,7 @@ public class TeleportAcceptCommand {
                             return 1;
                         })));
 
-        dispatcher.register(literal("tpyes").redirect(node));
+        dispatcher.register(literal("tpyes").requires(requirement).redirect(node));
     }
 
     private static void execute(CommandContext<ServerCommandSource> context, TeleportTracker.TeleportRequest request) {

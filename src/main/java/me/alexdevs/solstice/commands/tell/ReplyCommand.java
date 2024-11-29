@@ -15,12 +15,13 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class ReplyCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+        var requirement = Permissions.require("solstice.command.tell", true);
         var messageNode = dispatcher.register(literal("reply")
-                .requires(Permissions.require("solstice.command.tell", true))
+                .requires(requirement)
                 .then(argument("message", StringArgumentType.greedyString())
                         .executes(ReplyCommand::execute)));
 
-        dispatcher.register(literal("r").redirect(messageNode));
+        dispatcher.register(literal("r").requires(requirement).redirect(messageNode));
     }
 
     private static int execute(CommandContext<ServerCommandSource> context) {

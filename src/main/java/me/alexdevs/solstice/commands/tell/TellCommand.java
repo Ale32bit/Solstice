@@ -27,8 +27,10 @@ public class TellCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         CommandInitializer.removeCommands("msg", "tell", "w");
 
+        var requirement = Permissions.require("solstice.command.tell", true);
+
         var messageNode = dispatcher.register(literal("msg")
-                .requires(Permissions.require("solstice.command.tell", true))
+                .requires(requirement)
                 .then(argument("player", StringArgumentType.word())
                         .suggests((context, builder) -> {
                             var playerManager = context.getSource().getServer().getPlayerManager();
@@ -39,9 +41,9 @@ public class TellCommand {
                         .then(argument("message", StringArgumentType.greedyString())
                                 .executes(TellCommand::execute))));
 
-        dispatcher.register(literal("tell").redirect(messageNode));
-        dispatcher.register(literal("w").redirect(messageNode));
-        dispatcher.register(literal("dm").redirect(messageNode));
+        dispatcher.register(literal("tell").requires(requirement).redirect(messageNode));
+        dispatcher.register(literal("w").requires(requirement).redirect(messageNode));
+        dispatcher.register(literal("dm").requires(requirement).redirect(messageNode));
     }
 
     private static int execute(CommandContext<ServerCommandSource> context) {

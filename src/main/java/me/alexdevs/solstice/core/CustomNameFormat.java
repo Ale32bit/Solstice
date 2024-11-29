@@ -20,6 +20,7 @@ public class CustomNameFormat {
 
     public static void register() {
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> refreshNames());
+        ServerPlayConnectionEvents.JOIN.register((handler, packetSender, server) -> refreshNames());
     }
 
     public static void refreshNames() {

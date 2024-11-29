@@ -6,6 +6,7 @@ import me.alexdevs.solstice.core.TeleportTracker;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import eu.pb4.placeholders.api.PlaceholderContext;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.argument.UuidArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -18,7 +19,9 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class TeleportDenyCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+        var requirement = Permissions.require("solstice.command.tpdeny", true);
         var node = dispatcher.register(literal("tpdeny")
+                .requires(requirement)
                 .executes(context -> {
                     if (!context.getSource().isExecutedByPlayer()) {
                         context.getSource().sendFeedback(() -> Text.of("This command can only be executed by players!"), false);
@@ -66,8 +69,8 @@ public class TeleportDenyCommand {
                             return 1;
                         })));
 
-        dispatcher.register(literal("tpno").redirect(node));
-        dispatcher.register(literal("tprefuse").redirect(node));
+        dispatcher.register(literal("tpno").requires(requirement).redirect(node));
+        dispatcher.register(literal("tprefuse").requires(requirement).redirect(node));
     }
 
     private static void execute(CommandContext<ServerCommandSource> context, TeleportTracker.TeleportRequest request) {
