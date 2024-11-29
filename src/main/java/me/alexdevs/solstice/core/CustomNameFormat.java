@@ -17,9 +17,7 @@ public class CustomNameFormat {
     private static final ConcurrentHashMap<UUID, String> namesCache = new ConcurrentHashMap<>();
 
     public static void register() {
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            refreshNames();
-        });
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> refreshNames());
     }
 
     public static void refreshNames() {

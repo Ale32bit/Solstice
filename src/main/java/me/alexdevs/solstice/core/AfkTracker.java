@@ -7,7 +7,6 @@ import me.alexdevs.solstice.api.events.SolsticeEvents;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
-import eu.pb4.placeholders.api.TextParserUtils;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.*;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
@@ -23,7 +22,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AfkTracker {
-    private static final int cycleDelay = 1;
     private static final int absentTimeTrigger = Solstice.config().afk.afkTimeTrigger * 20; // seconds * 20 ticks
 
     private final ConcurrentHashMap<UUID, PlayerActivityState> playerActivityStates = new ConcurrentHashMap<>();
@@ -177,9 +175,7 @@ public class AfkTracker {
 
     private void updatePlayers(MinecraftServer server) {
         var players = server.getPlayerManager().getPlayerList();
-        players.forEach(player -> {
-            updatePlayer(player, server);
-        });
+        players.forEach(player -> updatePlayer(player, server));
     }
 
     private void resetAfkState(ServerPlayerEntity player, MinecraftServer server) {
@@ -246,15 +242,13 @@ public class AfkTracker {
             return;
         }
 
-        var server = player.getWorld().getServer();
-
         if (afk) {
             playerActivityStates.get(player.getUuid()).lastUpdate = -absentTimeTrigger - 20; // just to be sure
         } else {
-            resetAfkState(player, server);
+            resetAfkState(player, Solstice.server);
         }
 
-        updatePlayer(player, server);
+        updatePlayer(player, Solstice.server);
     }
 
     public int getActiveTime(ServerPlayerEntity player) {
