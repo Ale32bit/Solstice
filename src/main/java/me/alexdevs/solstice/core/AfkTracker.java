@@ -50,8 +50,13 @@ public class AfkTracker {
             }
         });
 
+        if(!Solstice.config().afk.enableAfk)
+            return;
+
         PlayerActivityEvents.AFK.register((player, server) -> {
             Solstice.LOGGER.info("{} is AFK. Active time: {} seconds.", player.getGameProfile().getName(), getInstance().getActiveTime(player));
+            if(!Solstice.config().afk.announceAfk)
+                return;
 
             var playerContext = PlaceholderContext.of(player);
 
@@ -63,6 +68,8 @@ public class AfkTracker {
 
         PlayerActivityEvents.AFK_RETURN.register((player, server) -> {
             Solstice.LOGGER.info("{} is no longer AFK. Active time: {} seconds.", player.getGameProfile().getName(), getInstance().getActiveTime(player));
+            if(!Solstice.config().afk.announceAfk)
+                return;
 
             var playerContext = PlaceholderContext.of(player);
 

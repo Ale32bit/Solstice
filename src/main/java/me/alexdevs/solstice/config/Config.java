@@ -33,7 +33,7 @@ public class Config {
     public CommandSpy commandSpy = new CommandSpy();
 
     @Comment("Configure the AFK (away from keyboard) system.")
-    public Afk afk = new Config.Afk();
+    public Afk afk = new Afk();
 
     @Comment("Configure teleport requests.")
     public TeleportRequests teleportRequests = new TeleportRequests();
@@ -109,6 +109,12 @@ public class Config {
 
     @ConfigSerializable
     public static class Afk {
+        @Comment("Enable the AFK functionality.")
+        public boolean enableAfk = true;
+
+        @Comment("Announce in chat when a player goes or return from AFK.")
+        public boolean announceAfk = true;
+
         @Comment("AFK triggers after the player has been inactive for the following seconds. Defaults to 300 seconds.")
         public int afkTimeTrigger = 300;
     }
