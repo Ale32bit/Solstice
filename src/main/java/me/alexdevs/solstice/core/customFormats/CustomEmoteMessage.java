@@ -9,7 +9,6 @@ import net.minecraft.network.message.SignedMessage;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
