@@ -145,15 +145,12 @@ public class TellCommand {
             source.getServer().sendMessage(targetText);
         }
 
-        var lp = Solstice.getInstance().luckPerms();
-        var playerAdapter = lp.getPlayerAdapter(ServerPlayerEntity.class);
         source.getServer().getPlayerManager().getPlayerList().forEach(player -> {
             var playerName = player.getGameProfile().getName();
             if (playerName.equals(targetName) || playerName.equals(source.getName())) {
                 return;
             }
-            var playerPerms = playerAdapter.getPermissionData(player);
-            if (playerPerms.checkPermission("solstice.tell.spy").asBoolean()) {
+            if (Permissions.check(player, "solstice.tell.spy")) {
                 player.sendMessage(spyText);
             }
         });

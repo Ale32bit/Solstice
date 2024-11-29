@@ -45,7 +45,6 @@ dependencies {
 	include implementation("org.spongepowered:configurate-core:${project.configurate_version}")
 	include implementation("org.spongepowered:configurate-hocon:${project.configurate_version}")
 
-	compileOnly "net.luckperms:api:${project.luckpermsapi_version}"
 	include modImplementation("me.lucko:fabric-permissions-api:${project.permissions_api_version}")
 
 	include modImplementation("eu.pb4:placeholder-api:${project.placeholderapi_version}")
@@ -86,8 +85,7 @@ modrinth {
 	gameVersions = [project.minecraft_version]
 	loaders = ['fabric']
 	dependencies = [
-			new ModDependency('P7dR8mSH', 'required'), // Fabric API
-			new ModDependency('Vebnzrzj', 'required') // LuckPerms
+			new ModDependency('P7dR8mSH', 'required') // Fabric API
 	]
 }
 

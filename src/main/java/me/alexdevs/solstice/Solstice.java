@@ -14,8 +14,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.LuckPermsProvider;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.registry.RegistryKey;
@@ -56,12 +54,6 @@ public class Solstice implements ModInitializer {
         return INSTANCE;
     }
 
-    private LuckPerms luckPerms;
-
-    public LuckPerms luckPerms() {
-        return luckPerms;
-    }
-
     public static MinecraftServer server;
 
     public static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -99,7 +91,6 @@ public class Solstice implements ModInitializer {
             state.register(server.getSavePath(WorldSavePath.ROOT).resolve("data").resolve(MOD_ID));
         });
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            luckPerms = LuckPermsProvider.get();
             SolsticeEvents.READY.invoker().onReady(INSTANCE, server);
         });
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> scheduler.shutdown());

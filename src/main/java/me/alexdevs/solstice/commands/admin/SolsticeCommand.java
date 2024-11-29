@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.commands.admin;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.CustomNameFormat;
 import me.alexdevs.solstice.util.Format;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import com.mojang.brigadier.CommandDispatcher;
@@ -40,11 +41,11 @@ public class SolsticeCommand {
                 .then(literal("reload")
                         .requires(Permissions.require("solstice.command.solstice.reload", 3))
                         .executes(context -> {
-                            context.getSource().sendFeedback(() -> Text.of("Reloading Solstice config..."), true);
-
                             try {
                                 Solstice.configManager.load();
                                 Solstice.localeManager.load();
+
+                                CustomNameFormat.refreshNames();
                             } catch (Exception e) {
                                 Solstice.LOGGER.error("Failed to reload Solstice", e);
                                 context.getSource().sendFeedback(() -> Text.of("Failed to load Solstice config. Check console for more info."), true);
@@ -58,6 +59,7 @@ public class SolsticeCommand {
                             return 1;
                         }));
 
-        dispatcher.register(rootCommand);
+        var node = dispatcher.register(rootCommand);
+        dispatcher.register(literal("sol").redirect(node));
     }
 }

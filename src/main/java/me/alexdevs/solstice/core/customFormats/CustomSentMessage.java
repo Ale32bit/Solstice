@@ -1,6 +1,5 @@
 package me.alexdevs.solstice.core.customFormats;
 
-import me.alexdevs.solstice.Solstice;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SentMessage;
 import net.minecraft.network.message.SignedMessage;
@@ -17,7 +16,7 @@ public record CustomSentMessage(SignedMessage message) implements SentMessage {
     @Override
     public void send(ServerPlayerEntity receiver, boolean filterMaskEnabled, MessageType.Parameters params) {
         SignedMessage signedMessage = this.message.withFilterMaskEnabled(filterMaskEnabled);
-        Solstice.LOGGER.info("Message params type: {}", params.type().chat().translationKey());
+        //Solstice.LOGGER.info("Message params type: {}", params.type().chat().translationKey());
         if (!signedMessage.isFullyFiltered()) {
             switch (params.type().chat().translationKey()) {
                 case "chat.type.text":

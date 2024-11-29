@@ -7,6 +7,7 @@ import eu.pb4.placeholders.api.parsers.NodeParser;
 import eu.pb4.placeholders.api.parsers.PatternPlaceholderParser;
 import eu.pb4.placeholders.api.parsers.TextParserV1;
 import me.alexdevs.solstice.util.parser.MarkdownParser;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -51,19 +52,13 @@ public class Components {
     }
 
     public static Text chat(SignedMessage message, ServerPlayerEntity player) {
-        var luckperms = Solstice.getInstance().luckPerms();
-
-        var permissions = luckperms.getPlayerAdapter(ServerPlayerEntity.class).getPermissionData(player);
-        var allowAdvancedChatFormat = permissions.checkPermission("solstice.chat.advanced").asBoolean();
+        var allowAdvancedChatFormat = Permissions.check(player, "solstice.chat.advanced");
 
         return chat(message.getSignedContent(), allowAdvancedChatFormat);
     }
 
     public static Text chat(String message, ServerPlayerEntity player) {
-        var luckperms = Solstice.getInstance().luckPerms();
-
-        var permissions = luckperms.getPlayerAdapter(ServerPlayerEntity.class).getPermissionData(player);
-        var allowAdvancedChatFormat = permissions.checkPermission("solstice.chat.advanced").asBoolean();
+        var allowAdvancedChatFormat = Permissions.check(player, "solstice.chat.advanced");
 
         return chat(message, allowAdvancedChatFormat);
     }

@@ -4,9 +4,9 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.util.Format;
 import eu.pb4.placeholders.api.PlaceholderContext;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.Random;
 import java.util.concurrent.ScheduledFuture;
@@ -36,7 +36,6 @@ public class AutoAnnouncements {
         if (lines.isEmpty())
             return;
 
-        var luckperms = Solstice.getInstance().luckPerms();
         if (Solstice.config().autoAnnouncements.pickRandomly) {
             currentLine = new Random().nextInt(lines.size());
         }
@@ -47,8 +46,10 @@ public class AutoAnnouncements {
 
         server.getPlayerManager().getPlayerList().forEach(player -> {
             if(line.permission() != null) {
-                var permissionData = luckperms.getPlayerAdapter(ServerPlayerEntity.class).getPermissionData(player);
-                if(permissionData.checkPermission(line.permission()).asBoolean() != line.result()) {
+                var result = line.result();
+                if(result == null)
+                    result = true;
+                if(Permissions.check(player, line.permission()) != result) {
                     return;
                 }
             }
