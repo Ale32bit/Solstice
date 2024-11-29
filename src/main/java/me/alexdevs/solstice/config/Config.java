@@ -59,8 +59,8 @@ public class Config {
 
         @Comment("Customize player display names based on their LuckPerms group.")
         public ArrayList<NameFormat> nameFormats = new ArrayList<>(List.of(
-                new NameFormat("admin", "<red>%player:name%</red>"),
-                new NameFormat("default", "<green>%player:name%</green>")
+                new NameFormat("admin", "<red>${name}</red>"),
+                new NameFormat("default", "<green>${name}</green>")
         ));
 
         @Comment("Player chat message format.")

@@ -2,13 +2,15 @@ package me.alexdevs.solstice.core;
 
 import me.alexdevs.solstice.Solstice;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import eu.pb4.placeholders.api.Placeholders;
 import eu.pb4.placeholders.api.TextParserUtils;
+import me.alexdevs.solstice.util.Format;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,8 +26,12 @@ public class CustomNameFormat {
         namesCache.clear();
 
         for (var player : Solstice.server.getPlayerManager().getPlayerList()) {
-            namesCache.put(player.getUuid(), fetchUsernameFormat(player));
+            refreshName(player);
         }
+    }
+
+    public static void refreshName(ServerPlayerEntity player) {
+        namesCache.put(player.getUuid(), fetchUsernameFormat(player));
     }
 
     public static String fetchUsernameFormat(ServerPlayerEntity player) {
@@ -42,7 +48,7 @@ public class CustomNameFormat {
         var isOperator = player.getServer().getPlayerManager().isOperator(player.getGameProfile());
 
         if (format == null) {
-            format = "%player:name%";
+            format = "${username}";
 
             for (var f : formats) {
                 if (isOperator && f.group().equals("operator")) {
@@ -69,8 +75,15 @@ public class CustomNameFormat {
             namesCache.put(player.getUuid(), format);
         }
 
+        var playerState = Solstice.state.getPlayerState(player.getUuid());
+
+        var name = playerState.nickname == null ? Text.of(player.getGameProfile().getName()) : TextParserUtils.formatText(playerState.nickname);
+
+        var placeholders = Map.of(
+                "name", name
+        );
+
         var playerContext = PlaceholderContext.of(player);
-        var output = TextParserUtils.formatText(format);
-        return Placeholders.parseText(output, playerContext).copy();
+        return Format.parse(format, playerContext, placeholders).copy();
     }
 }

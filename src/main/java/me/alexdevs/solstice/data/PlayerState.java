@@ -19,6 +19,8 @@ public class PlayerState {
     @Expose
     public String username;
     @Expose
+    public @Nullable String nickname;
+    @Expose
     public @Nullable Date firstJoinedDate;
     @Expose
     public @Nullable Date lastSeenDate;

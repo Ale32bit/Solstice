@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.commands.misc;
+package me.alexdevs.solstice.commands.fun;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;

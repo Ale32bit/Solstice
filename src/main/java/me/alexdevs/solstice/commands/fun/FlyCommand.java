@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.commands.admin;
+package me.alexdevs.solstice.commands.fun;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -13,13 +13,13 @@ import net.minecraft.util.Formatting;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class GodCommand {
+public class FlyCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        var rootCommand = literal("god")
-                .requires(Permissions.require("solstice.command.god", 3))
+        var rootCommand = literal("fly")
+                .requires(Permissions.require("solstice.command.fly", 3))
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrThrow();
-                    context.getSource().sendFeedback(() -> toggleGod(player), true);
+                    context.getSource().sendFeedback(() -> toggleFlight(player), true);
 
                     return 1;
                 })
@@ -38,7 +38,7 @@ public class GodCommand {
                                 return 1;
                             }
 
-                            context.getSource().sendFeedback(() -> toggleGod(player), true);
+                            context.getSource().sendFeedback(() -> toggleFlight(player), true);
 
                             return 1;
                         }));
@@ -46,21 +46,21 @@ public class GodCommand {
         dispatcher.register(rootCommand);
     }
 
-    private static Text toggleGod(ServerPlayerEntity player) {
+    private static Text toggleFlight(ServerPlayerEntity player) {
         var abilities = player.getAbilities();
 
-        abilities.invulnerable = !abilities.invulnerable;
+        abilities.allowFlying = !abilities.allowFlying;
         player.sendAbilitiesUpdate();
 
         return Text.literal(
-                        abilities.invulnerable ?
-                                "God mode enabled" :
-                                "God mode disabled"
+                        abilities.allowFlying ?
+                                "Flight enabled" :
+                                "Flight disabled"
                 )
                 .append(" for ")
                 .append(player.getDisplayName())
                 .setStyle(Style.EMPTY.withColor(
-                        abilities.invulnerable ?
+                        abilities.allowFlying ?
                                 Formatting.GREEN :
                                 Formatting.RED
                 ));
