@@ -1,6 +1,5 @@
 package me.alexdevs.solstice.mixin;
 
-import eu.pb4.placeholders.api.parsers.LegacyFormattingParser;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.core.FormattableSigns;
 import net.minecraft.block.entity.SignBlockEntity;
