@@ -15,7 +15,8 @@
     "PlayerManagerMixin",
     "CommandDispatcherMixin",
     "MinecraftServerMixin",
-    "PlayerAdvancementTrackerMixin"
+    "PlayerAdvancementTrackerMixin",
+    "SignBlockEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

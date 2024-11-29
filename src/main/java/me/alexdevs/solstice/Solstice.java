@@ -14,6 +14,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.registry.RegistryKey;
