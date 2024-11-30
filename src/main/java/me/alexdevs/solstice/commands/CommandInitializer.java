@@ -2,10 +2,7 @@ package me.alexdevs.solstice.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import me.alexdevs.solstice.commands.admin.*;
-import me.alexdevs.solstice.commands.fun.FlyCommand;
-import me.alexdevs.solstice.commands.fun.GodCommand;
-import me.alexdevs.solstice.commands.fun.NicknameCommand;
-import me.alexdevs.solstice.commands.fun.SmiteCommand;
+import me.alexdevs.solstice.commands.fun.*;
 import me.alexdevs.solstice.commands.misc.*;
 import me.alexdevs.solstice.commands.moderation.*;
 import me.alexdevs.solstice.commands.teleport.*;
@@ -54,6 +51,8 @@ public class CommandInitializer {
             GodCommand.register(dispatcher);
             SmiteCommand.register(dispatcher);
             NicknameCommand.register(dispatcher);
+            HealCommand.register(dispatcher);
+            FeedCommand.register(dispatcher);
 
             SetSpawnCommand.register(dispatcher);
             DelSpawnCommand.register(dispatcher);
