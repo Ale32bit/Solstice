@@ -17,15 +17,15 @@ public class WarpsCommand {
         var rootCommand = literal("warps")
                 .requires(Permissions.require("solstice.command.warps", true))
                 .executes(context -> {
-                    var player = context.getSource().getPlayerOrThrow();
+                    var source = context.getSource();
                     var serverState = Solstice.state.getServerState();
                     var warpList = serverState.warps.keySet().stream().toList();
-                    var playerContext = PlaceholderContext.of(player);
+                    var sourceContext = PlaceholderContext.of(source);
 
                     if(warpList.isEmpty()) {
                         context.getSource().sendFeedback(() -> Format.parse(
                                 Solstice.locale().commands.warp.noWarps,
-                                playerContext
+                                sourceContext
                         ), false);
                         return 1;
                     }
@@ -42,7 +42,7 @@ public class WarpsCommand {
 
                         listText = listText.append(Format.parse(
                                 Solstice.locale().commands.warp.warpsFormat,
-                                playerContext,
+                                sourceContext,
                                 placeholders
                         ));
                     }
@@ -52,7 +52,7 @@ public class WarpsCommand {
                     );
                     context.getSource().sendFeedback(() -> Format.parse(
                             Solstice.locale().commands.warp.warpList,
-                            playerContext,
+                            sourceContext,
                             placeholders
                     ), false);
 
