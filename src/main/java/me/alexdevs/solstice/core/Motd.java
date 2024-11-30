@@ -1,7 +1,6 @@
 package me.alexdevs.solstice.core;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.util.Format;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.text.Text;
