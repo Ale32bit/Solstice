@@ -1,2 +1,10 @@
-- Fixed bugs with command aliases permissions.
-- Added permissions to more commands.
+- Added ability to ignore players.
+- Added ability to format text in signs.
+- Added `/info` pages.
+  - `/motd` migrated from config file to its own info page `motd.txt`.
+  - Added `/rules` page (`rules.txt`).
+  - An example of formatting and placeholders in available in the `formatting` page.
+- Fixed missing text for empty mailbox.
+- `/warps` works when ran by server.
+- Added `/heal` and `/feed` commands. No more world hunger.
+- Added option to teleport other players to spawn.
