@@ -56,6 +56,11 @@ public class MailCommand {
         var mails = MailManager.getMailList(player.getUuid());
         var serverState = Solstice.state.getServerState();
 
+        if(mails.isEmpty()) {
+            context.getSource().sendFeedback(() -> Format.parse(Solstice.locale().commands.mail.emptyMailbox, playerContext), false);
+            return 1;
+        }
+
         var output = Text.empty()
                 .append(Format.parse(Solstice.locale().commands.mail.mailListHeader, playerContext))
                 .append(Text.of("\n"));

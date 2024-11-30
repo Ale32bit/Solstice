@@ -119,6 +119,7 @@ public class Locale {
             public String mailListEntry = "<yellow>${index}.</yellow> <gold>From</gold> <yellow>${sender}</yellow> <gold>on</gold> <yellow>${date}</yellow> ${readButton}";
             public String notFound = "<red>Mail not found</red>";
             public String mailDeleted = "<gold>Mail deleted!</gold>";
+            public String emptyMailbox = "<gold>Your mailbox is empty.</gold>";
         }
 
         public static class Seen {
