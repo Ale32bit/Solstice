@@ -76,7 +76,7 @@ public class CustomNameFormat {
             namesCache.put(player.getUuid(), format);
         }
 
-        var playerState = Solstice.state.getPlayerState(player.getUuid());
+        var playerState = Solstice.state.getPlayerState(player);
 
         var name = playerState.nickname == null ? Text.of(player.getGameProfile().getName()) : TextParserUtils.formatText(playerState.nickname);
 

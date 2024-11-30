@@ -138,7 +138,7 @@ public class TellCommand {
             source.sendMessage(sourceText);
         }
         if (targetPlayer != null) {
-            var receiverState = Solstice.state.getPlayerState(targetPlayer.getUuid());
+            var receiverState = Solstice.state.getPlayerState(targetPlayer);
             if (!source.isExecutedByPlayer() || !receiverState.ignoredPlayers.contains(source.getPlayer().getUuid()) || Permissions.check(source, "solstice.ignore.bypass", 2)) {
                 targetPlayer.sendMessage(targetText);
             }

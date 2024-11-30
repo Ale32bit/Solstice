@@ -8,7 +8,7 @@ import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 public class MuteManager {
     public static void register() {
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((signedMessage, player, parameters) -> {
-            var playerState = Solstice.state.getPlayerState(player.getUuid());
+            var playerState = Solstice.state.getPlayerState(player);
             if (playerState.muted) {
                 player.sendMessage(Format.parse(Solstice.locale().youAreMuted));
                 return false;

@@ -40,7 +40,7 @@ public class MailManager {
     public static void register() {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             var player = handler.getPlayer();
-            var playerState = Solstice.state.getPlayerState(player.getUuid());
+            var playerState = Solstice.state.getPlayerState(player);
             var playerContext = PlaceholderContext.of(player);
 
             if(!playerState.mails.isEmpty()) {

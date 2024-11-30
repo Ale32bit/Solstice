@@ -11,21 +11,21 @@ import org.jetbrains.annotations.Nullable;
 
 public interface CustomSentMessage extends SentMessage {
 
-    public static SentMessage of(SignedMessage message, @Nullable ServerPlayerEntity sender) {
+    static SentMessage of(SignedMessage message, @Nullable ServerPlayerEntity sender) {
         if (message.isSenderMissing() && sender == null) {
             return new Profileless(message.getContent());
         }
         return new Chat(message, sender);
     }
 
-    public record Profileless(Text getContent) implements SentMessage {
+    record Profileless(Text getContent) implements SentMessage {
         @Override
         public void send(ServerPlayerEntity sender, boolean filterMaskEnabled, MessageType.Parameters params) {
             sender.networkHandler.sendProfilelessChatMessage(this.getContent, params);
         }
     }
 
-    public record Chat(SignedMessage message, ServerPlayerEntity sender) implements SentMessage {
+    record Chat(SignedMessage message, ServerPlayerEntity sender) implements SentMessage {
         @Override
         public Text getContent() {
             return this.message.getContent();
@@ -33,7 +33,7 @@ public interface CustomSentMessage extends SentMessage {
 
         @Override
         public void send(ServerPlayerEntity receiver, boolean filterMaskEnabled, MessageType.Parameters params) {
-            var receiverState = Solstice.state.getPlayerState(receiver.getUuid());
+            var receiverState = Solstice.state.getPlayerState(receiver);
             if(receiverState.ignoredPlayers.contains(sender.getUuid()) && !Permissions.check(sender, "solstice.ignore.bypass", 2)) {
                 return;
             }

@@ -167,7 +167,7 @@ public class AfkTracker {
     private void updatePlayerActiveTime(ServerPlayerEntity player, int currentTick) {
         var playerActivityState = playerActivityStates.get(player.getUuid());
         if (!playerActivityState.isAfk) {
-            var playerState = Solstice.state.getPlayerState(player.getUuid());
+            var playerState = Solstice.state.getPlayerState(player);
             var interval = currentTick - playerActivityState.activeStart;
             playerState.activeTime += interval / 20;
         }
@@ -252,7 +252,7 @@ public class AfkTracker {
     }
 
     public int getActiveTime(ServerPlayerEntity player) {
-        var playerState = Solstice.state.getPlayerState(player.getUuid());
+        var playerState = Solstice.state.getPlayerState(player);
         return playerState.activeTime;
     }
 }

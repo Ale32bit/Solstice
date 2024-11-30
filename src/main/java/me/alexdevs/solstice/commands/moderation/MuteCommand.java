@@ -22,7 +22,7 @@ public class MuteCommand {
                             var names = targets.stream().map(GameProfile::getName).toArray(String[]::new);
 
                             targets.forEach(profile -> {
-                                var playerState = Solstice.state.getPlayerState(profile.getId());
+                                var playerState = Solstice.state.getPlayerState(profile);
                                 playerState.muted = true;
                             });
 
@@ -42,7 +42,7 @@ public class MuteCommand {
                             var names = targets.stream().map(GameProfile::getName).toArray(String[]::new);
 
                             targets.forEach(profile -> {
-                                var playerState = Solstice.state.getPlayerState(profile.getId());
+                                var playerState = Solstice.state.getPlayerState(profile);
                                 playerState.muted = false;
                             });
 

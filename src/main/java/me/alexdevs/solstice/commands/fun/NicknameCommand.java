@@ -43,7 +43,7 @@ public class NicknameCommand {
             player = context.getSource().getPlayerOrThrow();
         }
 
-        var playerState = Solstice.state.getPlayerState(player.getUuid());
+        var playerState = Solstice.state.getPlayerState(player);
         playerState.nickname = nickname;
         CustomNameFormat.refreshName(player);
 
@@ -58,7 +58,7 @@ public class NicknameCommand {
             player = context.getSource().getPlayerOrThrow();
         }
 
-        var playerState = Solstice.state.getPlayerState(player.getUuid());
+        var playerState = Solstice.state.getPlayerState(player);
         playerState.nickname = null;
         CustomNameFormat.refreshName(player);
 

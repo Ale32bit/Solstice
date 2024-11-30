@@ -29,8 +29,7 @@ public class TeleportOfflineCommand {
                                     return;
                                 }
 
-                                var targetUuid = gameProfile.get().getId();
-                                var targetState = Solstice.state.getPlayerState(targetUuid);
+                                var targetState = Solstice.state.getPlayerState(gameProfile.get());
                                 if(targetState == null || targetState.logoffPosition == null) {
                                     source.sendFeedback(() -> Text.literal("Could not find location of offline player").formatted(Formatting.RED), false);
                                     return;

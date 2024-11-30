@@ -40,7 +40,7 @@ public class SetHomeCommand {
 
     private static int execute(CommandContext<ServerCommandSource> context, String name, boolean forced) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrThrow();
-        var playerState = Solstice.state.getPlayerState(player.getUuid());
+        var playerState = Solstice.state.getPlayerState(player);
         var homes = playerState.homes;
         var playerContext = PlaceholderContext.of(player);
 

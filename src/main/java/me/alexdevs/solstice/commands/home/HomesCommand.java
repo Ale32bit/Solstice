@@ -18,7 +18,7 @@ public class HomesCommand {
                 .requires(Permissions.require("solstice.command.homes", true))
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrThrow();
-                    var playerState = Solstice.state.getPlayerState(player.getUuid());
+                    var playerState = Solstice.state.getPlayerState(player);
                     var homeList = playerState.homes.keySet().stream().toList();
                     var playerContext = PlaceholderContext.of(player);
 

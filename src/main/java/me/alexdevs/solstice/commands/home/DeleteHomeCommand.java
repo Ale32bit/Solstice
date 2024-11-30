@@ -27,7 +27,7 @@ public class DeleteHomeCommand {
                             if (!context.getSource().isExecutedByPlayer())
                                 return CommandSource.suggestMatching(new String[]{}, builder);
 
-                            var playerState = Solstice.state.getPlayerState(context.getSource().getPlayer().getUuid());
+                            var playerState = Solstice.state.getPlayerState(context.getSource().getPlayer());
                             return CommandSource.suggestMatching(playerState.homes.keySet().stream(), builder);
                         })
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name"))));
@@ -37,7 +37,7 @@ public class DeleteHomeCommand {
 
     private static int execute(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrThrow();
-        var playerState = Solstice.state.getPlayerState(player.getUuid());
+        var playerState = Solstice.state.getPlayerState(player);
         var homes = playerState.homes;
         var playerContext = PlaceholderContext.of(context.getSource().getPlayer());
 

@@ -40,7 +40,7 @@ public class SeenCommand {
 
                                 var dateFormatter = new SimpleDateFormat(Solstice.config().formats.dateTimeFormat);
                                 var player = source.getServer().getPlayerManager().getPlayer(profile.get().getId());
-                                var playerState = Solstice.state.getPlayerState(profile.get().getId());
+                                var playerState = Solstice.state.getPlayerState(profile.get());
 
                                 ServerPosition location;
                                 if(player == null) {
