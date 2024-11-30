@@ -12,6 +12,9 @@ import java.util.UUID;
 public class MailManager {
     public static void sendMail(UUID playerUuid, PlayerMail mail) {
         var playerState = Solstice.state.getPlayerState(playerUuid);
+        if(playerState.ignoredPlayers.contains(playerUuid)) {
+            return;
+        }
         playerState.mails.add(mail);
         Solstice.state.savePlayerState(playerUuid, playerState);
     }
