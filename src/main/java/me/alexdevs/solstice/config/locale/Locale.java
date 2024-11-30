@@ -141,6 +141,11 @@ public class Locale {
             public String targetIsSelf = "<red>You cannot ignore yourself.</red>";
             public String blockedPlayer = "<yellow>${targetName}</yellow> <gold>is now ignored.</gold>";
             public String unblockedPlayer = "<yellow>${targetName}</yellow> <green>is no longer ignored.</green>";
+
+            public String ignoreList = "<gold>Ignored players: ${playerList}</gold>";
+            public String ignoreListFormat = "<run_cmd:'/ignore ${player}'><hover:'Click to unblock'><yellow>${player}</yellow></hover></run_cmd>";
+            public String ignoreListComma = "<gold>, </gold>";
+            public String ignoreListEmpty  = "<gold>You are not ignoring anyone at the moment.</gold>";
         }
 
         public static class Info {

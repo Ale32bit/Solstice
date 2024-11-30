@@ -76,6 +76,7 @@ public class CommandInitializer {
             KickCommand.register(dispatcher);
 
             IgnoreCommand.register(dispatcher);
+            IgnoreListCommand.register(dispatcher);
 
             NearCommand.register(dispatcher);
             MailCommand.register(dispatcher);
