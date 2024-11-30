@@ -1,1 +1,24 @@
-<red>test</red>
+<gold>This page is an example of the formatting and placeholders used in pages and command texts.</gold>
+
+<u>Formatting:</u>
+
+Colors:
+<yellow>yellow</yellow>, <dark_blue>dark_blue</dark_blue>, <dark_purple>dark_purple</dark_purple>, <gold>gold</gold>, <red>red</red>, <aqua>aqua</aqua>, <gray>gray</gray>, <light_purple>light_purple</light_purple>, <white>white</white>, <dark_gray>dark_gray</dark_gray>, <green>green</green>, <dark_green>dark_green</dark_green>, <blue>blue</blue>, <dark_aqua>dark_aqua</dark_aqua>, <dark_green>dark_green</dark_green>, <black>black</black>.
+
+Decorations:
+<strikethrough>strikethrough, st</strikethrough>, <underline>underline, underlined, u</underline>, <italic>italic, i</italic>, <obfuscated>obfuscated, obf</obfuscated>(obfuscated, obf), <bold>bold, b</bold>
+
+Fonts:
+<font:default>default</font>, <font:uniform>uniform</font>(uniform), <font:alt>alt</font>(alt)
+
+Gradients:
+<gradient:#ffffff:#000000>smooth white to black</gradient>, <hard_gradient:#ffffff:#000000>hard white to black</hard_gradient>, <rainbow>rainbow</rainbow>
+
+<gold>For the complete documentation on text formatting check out <url:'https://placeholders.pb4.eu/user/text-format/'><hover:'Click to open link'><blue>this link</blue></hover></url>.</gold>
+
+<u>Placeholders:</u>
+
+Player name: %player:name%
+Player display name: %player:displayname%
+
+<gold>For the complete documentation on placeholders check out <url:'https://placeholders.pb4.eu/user/default-placeholders/'><hover:'Click to open link'><blue>this link</blue></hover></url>.</gold>
