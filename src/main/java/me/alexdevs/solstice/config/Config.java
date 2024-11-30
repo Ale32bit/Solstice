@@ -259,10 +259,5 @@ public class Config {
     public static class Motd {
         @Comment("Enable the MOTD functionality.")
         public boolean enableMotd = true;
-
-        @Comment("The message. Every line is a line...")
-        public ArrayList<String> motdLines = new ArrayList<>(List.of(
-                "<yellow>Welcome to the server!</yellow>"
-        ));
     }
 }

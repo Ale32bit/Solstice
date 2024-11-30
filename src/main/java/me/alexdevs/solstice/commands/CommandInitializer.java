@@ -81,6 +81,8 @@ public class CommandInitializer {
             MailCommand.register(dispatcher);
             SeenCommand.register(dispatcher);
             MotdCommand.register(dispatcher);
+            InfoCommand.register(dispatcher);
+            RulesCommand.register(dispatcher);
             SuicideCommand.register(dispatcher);
         });
     }

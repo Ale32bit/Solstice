@@ -1,0 +1,3 @@
+<gold>1.</gold> <yellow>Respect players.</yellow>
+<gold>2.</gold> <yellow>Respect staff members.</yellow>
+<gold>3.</gold> <yellow>Enjoy your stay!</yellow>

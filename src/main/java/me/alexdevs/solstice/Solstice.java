@@ -32,7 +32,7 @@ public class Solstice implements ModInitializer {
     public static final String MOD_ID = "solstice";
     public static final Logger LOGGER = LoggerFactory.getLogger(Solstice.class);
 
-    private static final Path configDirectory = FabricLoader.getInstance().getConfigDir().resolve(MOD_ID);
+    public static final Path configDirectory = FabricLoader.getInstance().getConfigDir().resolve(MOD_ID);
     public static final ConfigManager configManager = new ConfigManager(configDirectory.resolve("solstice.conf"));
     public static final LocaleManager localeManager = new LocaleManager(configDirectory.resolve("locale.json"));
     public static Config config() {
@@ -83,6 +83,7 @@ public class Solstice implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             Solstice.server = server;
+            InfoPages.register();
             state.register(server.getSavePath(WorldSavePath.ROOT).resolve("data").resolve(MOD_ID));
         });
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {

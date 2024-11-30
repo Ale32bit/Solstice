@@ -10,6 +10,10 @@ public class Motd {
     public static void register() {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             if(Solstice.config().motd.enableMotd) {
+                if(!InfoPages.exists("motd")) {
+                    Solstice.LOGGER.warn("Could not send MOTD because info/motd.txt does not exist!");
+                    return;
+                }
                 var motd = buildMotd(PlaceholderContext.of(handler.getPlayer()));
                 handler.getPlayer().sendMessage(motd);
             }
@@ -17,8 +21,6 @@ public class Motd {
     }
 
     public static Text buildMotd(PlaceholderContext context) {
-        var motd = String.join("\n", Solstice.config().motd.motdLines);
-
-        return Format.parse(motd, context);
+        return InfoPages.getPage("motd", context);
     }
 }

@@ -22,6 +22,7 @@ public class Locale {
         public Mail mail = new Mail();
         public Seen seen = new Seen();
         public Ignore ignore = new Ignore();
+        public Info info = new Info();
 
         public static class Common {
             // `{{command}}` is replaced as a string before parsing
@@ -139,6 +140,15 @@ public class Locale {
             public String targetIsSelf = "<red>You cannot ignore yourself.</red>";
             public String blockedPlayer = "<yellow>${targetName}</yellow> <gold>is now ignored.</gold>";
             public String unblockedPlayer = "<yellow>${targetName}</yellow> <green>is no longer ignored.</green>";
+        }
+
+        public static class Info {
+            public String pageNotFound = "<red>This page does not exist!</red>";
+            public String pageError = "<red>There was an error opening the info page.</red>";
+            public String pageList = "<gold>Available pages: ${pageList}</gold>";
+            public String pagesFormat = "<run_cmd:'/info ${page}'><hover:'Click to read'><yellow>${page}</yellow></hover></run_cmd>";
+            public String pagesComma = "<gold>, </gold>";
+            public String noPages  = "<gold>There are no pages so far.</gold>";
         }
     }
 }
