@@ -48,6 +48,9 @@ public class ServerPosition {
 
         var serverWorld = player.getServer().getWorld(RegistryKey.of(RegistryKeys.WORLD, new Identifier(this.world)));
 
+        player.setVelocity(player.getVelocity().multiply(1f, 0f, 1f));
+        player.setOnGround(true);
+
         player.teleport(
                 serverWorld,
                 this.x,
