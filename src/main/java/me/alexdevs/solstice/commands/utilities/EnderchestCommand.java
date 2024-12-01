@@ -2,10 +2,7 @@ package me.alexdevs.solstice.commands.utilities;
 
 import com.mojang.brigadier.CommandDispatcher;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.block.EnderChestBlock;
-import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.stat.Stats;

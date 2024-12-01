@@ -2,7 +2,6 @@ package me.alexdevs.solstice.commands.utilities;
 
 import com.mojang.brigadier.CommandDispatcher;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.block.GrindstoneBlock;
 import net.minecraft.screen.GrindstoneScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;

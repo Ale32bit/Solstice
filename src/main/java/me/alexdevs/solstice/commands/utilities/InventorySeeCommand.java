@@ -3,12 +3,7 @@ package me.alexdevs.solstice.commands.utilities;
 import com.mojang.brigadier.CommandDispatcher;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
-import net.minecraft.server.command.GiveCommand;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;

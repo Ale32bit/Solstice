@@ -2,8 +2,6 @@ package me.alexdevs.solstice.commands.utilities;
 
 import com.mojang.brigadier.CommandDispatcher;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.block.LoomBlock;
-import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.screen.LoomScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
