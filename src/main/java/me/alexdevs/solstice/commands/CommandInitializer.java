@@ -15,6 +15,7 @@ import me.alexdevs.solstice.commands.spawn.SetSpawnCommand;
 import me.alexdevs.solstice.commands.spawn.SpawnCommand;
 import me.alexdevs.solstice.commands.tell.ReplyCommand;
 import me.alexdevs.solstice.commands.tell.TellCommand;
+import me.alexdevs.solstice.commands.utilities.*;
 import me.alexdevs.solstice.commands.warp.DeleteWarpCommand;
 import me.alexdevs.solstice.commands.warp.SetWarpCommand;
 import me.alexdevs.solstice.commands.warp.WarpCommand;
@@ -84,6 +85,18 @@ public class CommandInitializer {
             InfoCommand.register(dispatcher);
             RulesCommand.register(dispatcher);
             SuicideCommand.register(dispatcher);
+
+            AnvilCommand.register(dispatcher);
+            CartographyCommand.register(dispatcher);
+            EnderchestCommand.register(dispatcher);
+            GrindstoneCommand.register(dispatcher);
+            //InventorySeeCommand.register(dispatcher); // TODO: Use a GUI lib?
+            LoomCommand.register(dispatcher);
+            SmithingCommand.register(dispatcher);
+            StonecutterCommand.register(dispatcher);
+            TrashCommand.register(dispatcher);
+            WorkbenchCommand.register(dispatcher);
+
         });
     }
 
