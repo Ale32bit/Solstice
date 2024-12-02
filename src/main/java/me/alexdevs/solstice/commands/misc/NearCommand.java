@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.commands.misc;
 
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -22,8 +22,8 @@ public class NearCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         var rootCommand = literal("near")
                 .requires(Permissions.require("solstice.command.near", 2))
-                .executes(context -> execute(context, Solstice.config().nearCommand.nearCommandDefaultRange, context.getSource().getPlayerOrThrow()))
-                .then(argument("radius", IntegerArgumentType.integer(0, Solstice.config().nearCommand.nearCommandMaxRange))
+                .executes(context -> execute(context, ServiceProvider.config().nearCommand.nearCommandDefaultRange, context.getSource().getPlayerOrThrow()))
+                .then(argument("radius", IntegerArgumentType.integer(0, ServiceProvider.config().nearCommand.nearCommandMaxRange))
                         .executes(context -> execute(context, IntegerArgumentType.getInteger(context, "radius"), context.getSource().getPlayerOrThrow())));
 
         dispatcher.register(rootCommand);
@@ -44,7 +44,7 @@ public class NearCommand {
 
         if (list.isEmpty()) {
             context.getSource().sendFeedback(() -> Format.parse(
-                    Solstice.locale().commands.near.noOne,
+                    ServiceProvider.locale().commands.near.noOne,
                     playerContext
             ), false);
             return 1;
@@ -53,7 +53,7 @@ public class NearCommand {
         list.sort(Comparator.comparingDouble(ClosePlayers::distance));
 
         var listText = Text.empty();
-        var comma = Format.parse(Solstice.locale().commands.near.comma);
+        var comma = Format.parse(ServiceProvider.locale().commands.near.comma);
         for (int i = 0; i < list.size(); i++) {
             var player = list.get(i);
             if (i > 0) {
@@ -67,7 +67,7 @@ public class NearCommand {
             var targetContext = PlaceholderContext.of(sourcePlayer);
 
             listText = listText.append(Format.parse(
-                    Solstice.locale().commands.near.format,
+                    ServiceProvider.locale().commands.near.format,
                     targetContext,
                     placeholders
             ));
@@ -77,7 +77,7 @@ public class NearCommand {
                 "playerList", (Text) listText
         );
         context.getSource().sendFeedback(() -> Format.parse(
-                Solstice.locale().commands.near.nearestPlayers,
+                ServiceProvider.locale().commands.near.nearestPlayers,
                 playerContext,
                 placeholders
         ), false);

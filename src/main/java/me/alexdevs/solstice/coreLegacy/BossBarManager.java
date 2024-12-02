@@ -1,7 +1,8 @@
-package me.alexdevs.solstice.core;
+package me.alexdevs.solstice.coreLegacy;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.BossBarEvents;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -33,7 +34,7 @@ public class BossBarManager {
 
         ServerLifecycleEvents.SERVER_STARTING.register(s -> server = s);
 
-        Solstice.scheduler.scheduleAtFixedRate(BossBarManager::updateBars, 0, 1, TimeUnit.SECONDS);
+        ServiceProvider.scheduler.scheduleAtFixedRate(BossBarManager::updateBars, 0, 1, TimeUnit.SECONDS);
     }
 
     public static void updateBars() {

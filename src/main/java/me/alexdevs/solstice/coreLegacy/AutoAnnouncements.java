@@ -1,7 +1,7 @@
-package me.alexdevs.solstice.core;
+package me.alexdevs.solstice.coreLegacy;
 
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -32,11 +32,11 @@ public class AutoAnnouncements {
     }
 
     public static void announce() {
-        var lines = Solstice.config().autoAnnouncements.announcements;
+        var lines = ServiceProvider.config().autoAnnouncements.announcements;
         if (lines.isEmpty())
             return;
 
-        if (Solstice.config().autoAnnouncements.pickRandomly) {
+        if (ServiceProvider.config().autoAnnouncements.pickRandomly) {
             currentLine = new Random().nextInt(lines.size());
         }
 
@@ -61,9 +61,9 @@ public class AutoAnnouncements {
 
     private static void setup() {
         currentLine = 0;
-        if (Solstice.config().autoAnnouncements.enableAnnouncements) {
-            var delay = Solstice.config().autoAnnouncements.delay;
-            scheduledFuture = Solstice.scheduler.scheduleAtFixedRate(AutoAnnouncements::announce, delay, delay, TimeUnit.SECONDS);
+        if (ServiceProvider.config().autoAnnouncements.enableAnnouncements) {
+            var delay = ServiceProvider.config().autoAnnouncements.delay;
+            scheduledFuture = ServiceProvider.scheduler.scheduleAtFixedRate(AutoAnnouncements::announce, delay, delay, TimeUnit.SECONDS);
         }
     }
 }

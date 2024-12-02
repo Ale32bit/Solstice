@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.commands.misc;
 
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.core.MailManager;
+import me.alexdevs.solstice.core.ServiceProvider;
+import me.alexdevs.solstice.coreLegacy.MailManager;
 import me.alexdevs.solstice.api.PlayerMail;
 import me.alexdevs.solstice.util.Components;
 import me.alexdevs.solstice.util.Format;
@@ -54,15 +54,15 @@ public class MailCommand {
         var player = context.getSource().getPlayerOrThrow();
         var playerContext = PlaceholderContext.of(player);
         var mails = MailManager.getMailList(player.getUuid());
-        var serverState = Solstice.state.getServerState();
+        var serverState = ServiceProvider.state.getServerState();
 
         if(mails.isEmpty()) {
-            context.getSource().sendFeedback(() -> Format.parse(Solstice.locale().commands.mail.emptyMailbox, playerContext), false);
+            context.getSource().sendFeedback(() -> Format.parse(ServiceProvider.locale().commands.mail.emptyMailbox, playerContext), false);
             return 1;
         }
 
         var output = Text.empty()
-                .append(Format.parse(Solstice.locale().commands.mail.mailListHeader, playerContext))
+                .append(Format.parse(ServiceProvider.locale().commands.mail.mailListHeader, playerContext))
                 .append(Text.of("\n"));
 
         for (var i = 0; i < mails.size(); i++) {
@@ -73,20 +73,20 @@ public class MailCommand {
             var index = i + 1;
 
             var readButton = Components.button(
-                    Solstice.locale().commands.mail.readButton,
-                    Solstice.locale().commands.mail.hoverRead,
+                    ServiceProvider.locale().commands.mail.readButton,
+                    ServiceProvider.locale().commands.mail.hoverRead,
                     "/mail read " + index
             );
 
             var senderName = serverState.usernameCache.getOrDefault(mail.sender, mail.sender.toString());
-            var dateFormatter = new SimpleDateFormat(Solstice.config().formats.dateTimeFormat);
+            var dateFormatter = new SimpleDateFormat(ServiceProvider.config().formats.dateTimeFormat);
             var placeholders = Map.of(
                     "index", Text.of(String.valueOf(index)),
                     "sender", Text.of(senderName),
                     "date", Text.of(dateFormatter.format(mail.date)),
                     "readButton", readButton
             );
-            output = output.append(Format.parse(Solstice.locale().commands.mail.mailListEntry, playerContext, placeholders));
+            output = output.append(Format.parse(ServiceProvider.locale().commands.mail.mailListEntry, playerContext, placeholders));
         }
 
         final var finalOutput = output;
@@ -100,11 +100,11 @@ public class MailCommand {
         var player = context.getSource().getPlayerOrThrow();
         var playerContext = PlaceholderContext.of(player);
         var mails = MailManager.getMailList(player.getUuid());
-        var serverState = Solstice.state.getServerState();
+        var serverState = ServiceProvider.state.getServerState();
         var index = IntegerArgumentType.getInteger(context, "index") - 1;
 
         if (index < 0 || index >= mails.size()) {
-            context.getSource().sendFeedback(() -> Format.parse(Solstice.locale().commands.mail.notFound), false);
+            context.getSource().sendFeedback(() -> Format.parse(ServiceProvider.locale().commands.mail.notFound), false);
             return 1;
         }
 
@@ -113,18 +113,18 @@ public class MailCommand {
         var username = serverState.usernameCache.getOrDefault(mail.sender, mail.sender.toString());
 
         var replyButton = Components.buttonSuggest(
-                Solstice.locale().commands.mail.replyButton,
-                Solstice.locale().commands.mail.hoverReply,
+                ServiceProvider.locale().commands.mail.replyButton,
+                ServiceProvider.locale().commands.mail.hoverReply,
                 "/mail send " + username + " "
         );
         var deleteButton = Components.button(
-                Solstice.locale().commands.mail.deleteButton,
-                Solstice.locale().commands.mail.hoverDelete,
+                ServiceProvider.locale().commands.mail.deleteButton,
+                ServiceProvider.locale().commands.mail.hoverDelete,
                 "/mail delete " + index + 1
         );
 
         var senderName = serverState.usernameCache.getOrDefault(mail.sender, mail.sender.toString());
-        var dateFormatter = new SimpleDateFormat(Solstice.config().formats.dateTimeFormat);
+        var dateFormatter = new SimpleDateFormat(ServiceProvider.config().formats.dateTimeFormat);
         var message = MarkdownParser.defaultParser.parseNode(mail.message);
         var placeholders = Map.of(
                 "sender", Text.of(senderName),
@@ -134,7 +134,7 @@ public class MailCommand {
                 "deleteButton", deleteButton
         );
 
-        context.getSource().sendFeedback(() -> Format.parse(Solstice.locale().commands.mail.mailDetails, playerContext, placeholders), false);
+        context.getSource().sendFeedback(() -> Format.parse(ServiceProvider.locale().commands.mail.mailDetails, playerContext, placeholders), false);
 
         return 1;
     }
@@ -145,9 +145,9 @@ public class MailCommand {
         var index = IntegerArgumentType.getInteger(context, "index") - 1;
 
         if (MailManager.deleteMail(player.getUuid(), index)) {
-            context.getSource().sendFeedback(() -> Format.parse(Solstice.locale().commands.mail.mailDeleted, playerContext), false);
+            context.getSource().sendFeedback(() -> Format.parse(ServiceProvider.locale().commands.mail.mailDeleted, playerContext), false);
         } else {
-            context.getSource().sendFeedback(() -> Format.parse(Solstice.locale().commands.mail.notFound), false);
+            context.getSource().sendFeedback(() -> Format.parse(ServiceProvider.locale().commands.mail.notFound), false);
         }
 
         return 1;
@@ -164,7 +164,7 @@ public class MailCommand {
                         "recipient", Text.of(username)
                 );
 
-                context.getSource().sendFeedback(() -> Format.parse(Solstice.locale().commands.mail.playerNotFound, playerContext, placeholders), false);
+                context.getSource().sendFeedback(() -> Format.parse(ServiceProvider.locale().commands.mail.playerNotFound, playerContext, placeholders), false);
                 return;
             }
 
@@ -177,7 +177,7 @@ public class MailCommand {
 
             var senderContext = PlaceholderContext.of(sender);
 
-            context.getSource().sendFeedback(() -> Format.parse(Solstice.locale().commands.mail.mailSent, senderContext), false);
+            context.getSource().sendFeedback(() -> Format.parse(ServiceProvider.locale().commands.mail.mailSent, senderContext), false);
 
             var recPlayer = server.getPlayerManager().getPlayer(recipient.getId());
             if (recPlayer == null) {
@@ -185,7 +185,7 @@ public class MailCommand {
             }
 
             var recContext = PlaceholderContext.of(recPlayer);
-            recPlayer.sendMessage(Format.parse(Solstice.locale().commands.mail.mailReceived, recContext));
+            recPlayer.sendMessage(Format.parse(ServiceProvider.locale().commands.mail.mailReceived, recContext));
         });
 
         return 1;

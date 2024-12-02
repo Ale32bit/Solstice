@@ -1,8 +1,8 @@
 package me.alexdevs.solstice.commands.teleport;
 
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
-import me.alexdevs.solstice.core.TeleportTracker;
+import me.alexdevs.solstice.coreLegacy.TeleportTracker;
 import me.alexdevs.solstice.api.ServerPosition;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -32,7 +32,7 @@ public class TeleportAcceptCommand {
 
                     if (request == null) {
                         context.getSource().sendFeedback(() -> Format.parse(
-                                Solstice.locale().commands.teleportRequest.noPending,
+                                ServiceProvider.locale().commands.teleportRequest.noPending,
                                 playerContext
                         ), false);
                         return 1;
@@ -58,7 +58,7 @@ public class TeleportAcceptCommand {
                             var request = playerRequests.stream().filter(req -> req.requestId.equals(uuid)).findFirst().orElse(null);
                             if (request == null) {
                                 context.getSource().sendFeedback(() -> Format.parse(
-                                        Solstice.locale().commands.teleportRequest.unavailable,
+                                        ServiceProvider.locale().commands.teleportRequest.unavailable,
                                         playerContext
                                 ), false);
                                 return 1;
@@ -87,7 +87,7 @@ public class TeleportAcceptCommand {
 
         if (sourcePlayer == null || targetPlayer == null) {
             context.getSource().sendFeedback(() -> Format.parse(
-                    Solstice.locale().commands.teleportRequest.playerUnavailable,
+                    ServiceProvider.locale().commands.teleportRequest.playerUnavailable,
                     playerContext
             ), false);
             return;
@@ -97,23 +97,23 @@ public class TeleportAcceptCommand {
             var sourceContext = PlaceholderContext.of(sourcePlayer);
             // accepted a tpa from other to self
             context.getSource().sendFeedback(() -> Format.parse(
-                    Solstice.locale().commands.teleportRequest.requestAcceptedResult,
+                    ServiceProvider.locale().commands.teleportRequest.requestAcceptedResult,
                     playerContext
             ), false);
             sourcePlayer.sendMessage(Format.parse(
-                    Solstice.locale().commands.teleportRequest.teleporting,
+                    ServiceProvider.locale().commands.teleportRequest.teleporting,
                     sourceContext
             ), false);
         } else {
             var targetContext = PlaceholderContext.of(targetPlayer);
             // accepted a tpa from self to other
             context.getSource().sendFeedback(() -> Format.parse(
-                    Solstice.locale().commands.teleportRequest.teleporting,
+                    ServiceProvider.locale().commands.teleportRequest.teleporting,
                     playerContext
             ), false);
 
             targetPlayer.sendMessage(Format.parse(
-                    Solstice.locale().commands.teleportRequest.requestAccepted,
+                    ServiceProvider.locale().commands.teleportRequest.requestAccepted,
                     targetContext,
                     Map.of("player", sourcePlayer.getDisplayName())
             ), false);

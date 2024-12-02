@@ -1,6 +1,6 @@
-package me.alexdevs.solstice.core.customFormats;
+package me.alexdevs.solstice.coreLegacy.customFormats;
 
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SentMessage;
@@ -33,7 +33,7 @@ public interface CustomSentMessage extends SentMessage {
 
         @Override
         public void send(ServerPlayerEntity receiver, boolean filterMaskEnabled, MessageType.Parameters params) {
-            var receiverState = Solstice.state.getPlayerState(receiver);
+            var receiverState = ServiceProvider.state.getPlayerState(receiver);
             if(receiverState.ignoredPlayers.contains(sender.getUuid()) && !Permissions.check(sender, "solstice.ignore.bypass", 2)) {
                 return;
             }

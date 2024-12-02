@@ -1,8 +1,8 @@
 package me.alexdevs.solstice.commands.teleport;
 
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
-import me.alexdevs.solstice.core.TeleportTracker;
+import me.alexdevs.solstice.coreLegacy.TeleportTracker;
 import me.alexdevs.solstice.util.Components;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -53,7 +53,7 @@ public class TeleportAskCommand {
                     "targetPlayer", Text.of(targetName)
             );
             source.sendFeedback(() -> Format.parse(
-                    Solstice.locale().commands.teleportRequest.playerNotFound,
+                    ServiceProvider.locale().commands.teleportRequest.playerNotFound,
                     playerContext,
                     placeholders
             ), false);
@@ -69,23 +69,23 @@ public class TeleportAskCommand {
         var placeholders = Map.of(
                 "requesterPlayer", player.getDisplayName(),
                 "acceptButton", Components.button(
-                        Solstice.locale().commands.common.accept,
-                        Solstice.locale().commands.teleportRequest.hoverAccept,
+                        ServiceProvider.locale().commands.common.accept,
+                        ServiceProvider.locale().commands.teleportRequest.hoverAccept,
                         "/tpaccept " + request.requestId),
                 "refuseButton", Components.button(
-                        Solstice.locale().commands.common.refuse,
-                        Solstice.locale().commands.teleportRequest.hoverRefuse,
+                        ServiceProvider.locale().commands.common.refuse,
+                        ServiceProvider.locale().commands.teleportRequest.hoverRefuse,
                         "/tpdeny " + request.requestId)
         );
 
         target.sendMessage(Format.parse(
-                Solstice.locale().commands.teleportRequest.pendingTeleport,
+                ServiceProvider.locale().commands.teleportRequest.pendingTeleport,
                 targetContext,
                 placeholders
         ));
 
         source.sendFeedback(() -> Format.parse(
-                Solstice.locale().commands.teleportRequest.requestSent,
+                ServiceProvider.locale().commands.teleportRequest.requestSent,
                 playerContext
         ), false);
     }

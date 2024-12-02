@@ -1,8 +1,8 @@
 package me.alexdevs.solstice.commands.teleport;
 
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
-import me.alexdevs.solstice.core.TeleportTracker;
+import me.alexdevs.solstice.coreLegacy.TeleportTracker;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import eu.pb4.placeholders.api.PlaceholderContext;
@@ -37,7 +37,7 @@ public class TeleportDenyCommand {
 
                     if (request == null) {
                         context.getSource().sendFeedback(() -> Format.parse(
-                                Solstice.locale().commands.teleportRequest.noPending,
+                                ServiceProvider.locale().commands.teleportRequest.noPending,
                                 playerContext
                         ), false);
                         return 1;
@@ -58,7 +58,7 @@ public class TeleportDenyCommand {
                             var request = playerRequests.stream().filter(req -> req.requestId.equals(uuid)).findFirst().orElse(null);
                             if (request == null) {
                                 context.getSource().sendFeedback(() -> Format.parse(
-                                        Solstice.locale().commands.teleportRequest.unavailable,
+                                        ServiceProvider.locale().commands.teleportRequest.unavailable,
                                         playerContext
                                 ), false);
                                 return 1;
@@ -91,14 +91,14 @@ public class TeleportDenyCommand {
         if (otherPlayer != null) {
             var otherContext = PlaceholderContext.of(otherPlayer);
             otherPlayer.sendMessage(Format.parse(
-                    Solstice.locale().commands.teleportRequest.requestRefused,
+                    ServiceProvider.locale().commands.teleportRequest.requestRefused,
                     otherContext,
                     Map.of("player", player.getDisplayName())
             ), false);
         }
 
         context.getSource().sendFeedback(() -> Format.parse(
-                Solstice.locale().commands.teleportRequest.requestRefusedResult,
+                ServiceProvider.locale().commands.teleportRequest.requestRefusedResult,
                 playerContext
         ), false);
     }

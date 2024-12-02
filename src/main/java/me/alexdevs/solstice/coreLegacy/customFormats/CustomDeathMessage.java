@@ -1,6 +1,6 @@
-package me.alexdevs.solstice.core.customFormats;
+package me.alexdevs.solstice.coreLegacy.customFormats;
 
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import net.minecraft.entity.damage.DamageTracker;
@@ -15,7 +15,7 @@ public class CustomDeathMessage {
         var playerContext = PlaceholderContext.of(player);
 
         return Format.parse(
-                Solstice.config().formats.deathFormat,
+                ServiceProvider.config().formats.deathFormat,
                 playerContext,
                 Map.of("message", deathMessage)
         );

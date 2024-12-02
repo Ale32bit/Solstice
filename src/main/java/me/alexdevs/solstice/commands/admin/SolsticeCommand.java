@@ -1,7 +1,8 @@
 package me.alexdevs.solstice.commands.admin;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.core.CustomNameFormat;
+import me.alexdevs.solstice.core.ServiceProvider;
+import me.alexdevs.solstice.coreLegacy.CustomNameFormat;
 import me.alexdevs.solstice.util.Format;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import com.mojang.brigadier.CommandDispatcher;
@@ -42,8 +43,8 @@ public class SolsticeCommand {
                         .requires(Permissions.require("solstice.command.solstice.reload", 3))
                         .executes(context -> {
                             try {
-                                Solstice.configManager.load();
-                                Solstice.localeManager.load();
+                                ServiceProvider.configManager.load();
+                                ServiceProvider.localeManager.load();
 
                                 CustomNameFormat.refreshNames();
                             } catch (Exception e) {

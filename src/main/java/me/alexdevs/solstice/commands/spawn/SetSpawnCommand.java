@@ -1,8 +1,8 @@
 package me.alexdevs.solstice.commands.spawn;
 
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
 import com.mojang.brigadier.CommandDispatcher;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -19,9 +19,9 @@ public class SetSpawnCommand {
                     var player = context.getSource().getPlayerOrThrow();
                     var spawnPosition = new ServerPosition(player);
 
-                    var serverState = Solstice.state.getServerState();
+                    var serverState = ServiceProvider.state.getServerState();
                     serverState.spawn = spawnPosition;
-                    Solstice.state.saveServerState();
+                    ServiceProvider.state.saveServerState();
 
                     player.getServerWorld().setSpawnPos(
                             new BlockPos(

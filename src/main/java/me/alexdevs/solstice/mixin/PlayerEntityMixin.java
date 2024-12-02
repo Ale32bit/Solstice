@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.mixin;
 
-import me.alexdevs.solstice.core.CustomNameFormat;
+import me.alexdevs.solstice.coreLegacy.CustomNameFormat;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;

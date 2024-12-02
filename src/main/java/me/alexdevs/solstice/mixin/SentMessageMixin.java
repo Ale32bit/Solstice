@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.mixin;
 
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.core.customFormats.CustomSentMessage;
+import me.alexdevs.solstice.core.ServiceProvider;
+import me.alexdevs.solstice.coreLegacy.customFormats.CustomSentMessage;
 import net.minecraft.network.message.SentMessage;
 import net.minecraft.network.message.SignedMessage;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,7 +16,7 @@ public interface SentMessageMixin {
         if (message.isSenderMissing()) {
             cir.setReturnValue(new CustomSentMessage.Profileless(message.getContent()));
         } else {
-            var sender = Solstice.server.getPlayerManager().getPlayer(message.getSender());
+            var sender = ServiceProvider.server.getPlayerManager().getPlayer(message.getSender());
             cir.setReturnValue(new CustomSentMessage.Chat(message, sender));
         }
     }

@@ -1,11 +1,11 @@
 package me.alexdevs.solstice.util;
 
-import me.alexdevs.solstice.Solstice;
 import eu.pb4.placeholders.api.Placeholders;
 import eu.pb4.placeholders.api.TextParserUtils;
 import eu.pb4.placeholders.api.parsers.NodeParser;
 import eu.pb4.placeholders.api.parsers.PatternPlaceholderParser;
 import eu.pb4.placeholders.api.parsers.TextParserV1;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.parser.MarkdownParser;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.network.message.SignedMessage;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class Components {
     public static Text button(Text label, Text hoverText, String command, boolean suggest) {
-        var format = suggest ? Solstice.locale().commands.common.buttonSuggest : Solstice.locale().commands.common.button;
+        var format = suggest ? ServiceProvider.locale().commands.common.buttonSuggest : ServiceProvider.locale().commands.common.button;
         var placeholders = Map.of(
                 "label", label,
                 "hoverText", hoverText,
@@ -64,9 +64,9 @@ public class Components {
     }
 
     public static Text chat(String message, boolean allowAdvancedChatFormat) {
-        var enableMarkdown = Solstice.config().chat.enableChatMarkdown;
+        var enableMarkdown = ServiceProvider.config().chat.enableChatMarkdown;
 
-        for (var repl : Solstice.config().chat.replacements.entrySet()) {
+        for (var repl : ServiceProvider.config().chat.replacements.entrySet()) {
             message = message.replace(repl.getKey(), repl.getValue());
         }
 

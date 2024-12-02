@@ -1,10 +1,17 @@
 package me.alexdevs.solstice.api.events;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.module.IModule;
+import me.alexdevs.solstice.api.module.ModuleContainer;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 
 public final class SolsticeEvents {
     public static final Event<Ready> READY = EventFactory.createArrayBacked(Ready.class, callbacks ->

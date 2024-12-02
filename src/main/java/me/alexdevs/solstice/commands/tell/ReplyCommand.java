@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.commands.tell;
 
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -32,7 +32,7 @@ public class ReplyCommand {
         if (!TellCommand.lastSender.containsKey(senderName)) {
             var playerContext = PlaceholderContext.of(context.getSource());
             source.sendFeedback(() -> Format.parse(
-                    Solstice.locale().commands.tell.noLastSenderReply,
+                    ServiceProvider.locale().commands.tell.noLastSenderReply,
                     playerContext
             ), false);
             return 1;

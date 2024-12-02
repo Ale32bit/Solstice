@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.commands.misc;
 
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -28,7 +28,7 @@ public class SeenCommand {
                             var source = context.getSource();
                             source.getServer().getUserCache().findByNameAsync(targetName, (profile) -> {
                                 if(profile.isEmpty()) {
-                                    source.sendFeedback(() -> Format.parse(Solstice.locale().commands.seen.playerNotFound), false);
+                                    source.sendFeedback(() -> Format.parse(ServiceProvider.locale().commands.seen.playerNotFound), false);
                                     return;
                                 }
                                 boolean extended;
@@ -38,9 +38,9 @@ public class SeenCommand {
                                     extended = true;
                                 }
 
-                                var dateFormatter = new SimpleDateFormat(Solstice.config().formats.dateTimeFormat);
+                                var dateFormatter = new SimpleDateFormat(ServiceProvider.config().formats.dateTimeFormat);
                                 var player = source.getServer().getPlayerManager().getPlayer(profile.get().getId());
-                                var playerState = Solstice.state.getPlayerState(profile.get());
+                                var playerState = ServiceProvider.state.getPlayerState(profile.get());
 
                                 ServerPosition location;
                                 if(player == null) {
@@ -58,10 +58,10 @@ public class SeenCommand {
                                         "location", Text.of(getPositionAsString(location))
                                 );
 
-                                var outputString = String.join("\n", Solstice.locale().commands.seen.base);
+                                var outputString = String.join("\n", ServiceProvider.locale().commands.seen.base);
                                 if(extended) {
                                     outputString += "\n";
-                                    outputString += String.join("\n", Solstice.locale().commands.seen.extended);
+                                    outputString += String.join("\n", ServiceProvider.locale().commands.seen.extended);
                                 }
 
                                 final var finalOutput = outputString;

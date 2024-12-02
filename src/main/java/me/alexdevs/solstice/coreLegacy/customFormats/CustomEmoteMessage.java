@@ -1,5 +1,6 @@
-package me.alexdevs.solstice.core.customFormats;
+package me.alexdevs.solstice.coreLegacy.customFormats;
 
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.util.Components;
@@ -19,14 +20,14 @@ public class CustomEmoteMessage {
         Text messageText = Components.chat(message, sender);
 
         var text = Format.parse(
-                Solstice.config().formats.emoteFormat,
+                ServiceProvider.config().formats.emoteFormat,
                 playerContext,
                 Map.of(
                         "message", messageText
                 )
         );
 
-        var msgType = Solstice.server.getRegistryManager().get(RegistryKeys.MESSAGE_TYPE).getOrThrow(Solstice.CHAT_TYPE);
+        var msgType = ServiceProvider.server.getRegistryManager().get(RegistryKeys.MESSAGE_TYPE).getOrThrow(Solstice.CHAT_TYPE);
         var newParams = new MessageType.Parameters(msgType, text, null);
 
         receiver.networkHandler.sendProfilelessChatMessage(message.getContent(), newParams);

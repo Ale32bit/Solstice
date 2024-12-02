@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.api;
 
-import me.alexdevs.solstice.core.BackTracker;
+import me.alexdevs.solstice.coreLegacy.BackTracker;
 import com.google.gson.annotations.Expose;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;

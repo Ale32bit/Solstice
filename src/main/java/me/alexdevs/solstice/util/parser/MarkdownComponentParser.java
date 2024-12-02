@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.util.parser;
 
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.node.parent.ClickActionNode;
@@ -37,8 +37,8 @@ public class MarkdownComponentParser {
                 "label", TextNode.wrap(textNodes).toText(),
                 "url", url.toText()
         );
-        var text = Format.parse(Solstice.config().formats.link, placeholders);
-        var hover = Format.parse(Solstice.config().formats.linkHover, placeholders);
+        var text = Format.parse(ServiceProvider.config().formats.link, placeholders);
+        var hover = Format.parse(ServiceProvider.config().formats.linkHover, placeholders);
 
         return new HoverNode<>(TextNode.array(
                 new ClickActionNode(

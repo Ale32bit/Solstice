@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.util.parser;
 
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import eu.pb4.placeholders.api.node.DirectTextNode;
 import eu.pb4.placeholders.api.node.LiteralNode;
@@ -51,12 +51,12 @@ public class LinkParser implements NodeParser {
                 );
 
                 var display = Format.parse(
-                        Solstice.config().formats.link,
+                        ServiceProvider.config().formats.link,
                         placeholders
                 );
 
                 var hover = Format.parse(
-                        Solstice.config().formats.linkHover,
+                        ServiceProvider.config().formats.linkHover,
                         placeholders
                 );
 

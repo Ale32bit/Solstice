@@ -1,8 +1,8 @@
 package me.alexdevs.solstice.commands.teleport;
 
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
-import me.alexdevs.solstice.core.BackTracker;
+import me.alexdevs.solstice.coreLegacy.BackTracker;
 import com.mojang.brigadier.CommandDispatcher;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -21,14 +21,14 @@ public class BackCommand {
                     var lastPosition = BackTracker.lastPlayerPositions.get(player.getUuid());
                     if (lastPosition == null) {
                         context.getSource().sendFeedback(() -> Format.parse(
-                                Solstice.locale().commands.back.noPosition,
+                                ServiceProvider.locale().commands.back.noPosition,
                                 playerContext
                         ), false);
                         return 1;
                     }
 
                     context.getSource().sendFeedback(() -> Format.parse(
-                            Solstice.locale().commands.back.teleporting,
+                            ServiceProvider.locale().commands.back.teleporting,
                             playerContext
                     ), false);
                     lastPosition.teleport(player);

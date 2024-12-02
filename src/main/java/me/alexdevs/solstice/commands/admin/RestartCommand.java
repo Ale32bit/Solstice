@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.commands.admin;
 
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.core.AutoRestart;
+import me.alexdevs.solstice.core.ServiceProvider;
+import me.alexdevs.solstice.coreLegacy.AutoRestart;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -35,7 +35,7 @@ public class RestartCommand {
 
     private static int schedule(CommandContext<ServerCommandSource> context, int seconds, @Nullable String message) {
         if (message == null) {
-            message = Solstice.config().autoRestart.restartBarLabel;
+            message = ServiceProvider.config().autoRestart.restartBarLabel;
         }
         AutoRestart.schedule(seconds, message);
 

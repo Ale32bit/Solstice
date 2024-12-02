@@ -4,8 +4,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.core.CustomNameFormat;
+import me.alexdevs.solstice.core.ServiceProvider;
+import me.alexdevs.solstice.coreLegacy.CustomNameFormat;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
@@ -43,7 +43,7 @@ public class NicknameCommand {
             player = context.getSource().getPlayerOrThrow();
         }
 
-        var playerState = Solstice.state.getPlayerState(player);
+        var playerState = ServiceProvider.state.getPlayerState(player);
         playerState.nickname = nickname;
         CustomNameFormat.refreshName(player);
 
@@ -58,7 +58,7 @@ public class NicknameCommand {
             player = context.getSource().getPlayerOrThrow();
         }
 
-        var playerState = Solstice.state.getPlayerState(player);
+        var playerState = ServiceProvider.state.getPlayerState(player);
         playerState.nickname = null;
         CustomNameFormat.refreshName(player);
 

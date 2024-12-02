@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.mixin;
 
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.core.customFormats.CustomConnectionMessage;
+import me.alexdevs.solstice.core.ServiceProvider;
+import me.alexdevs.solstice.coreLegacy.customFormats.CustomConnectionMessage;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -28,7 +28,7 @@ public abstract class ServerPlayNetworkHandlerMixin {
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void solstice$updatePlayerList(CallbackInfo ci) {
-        if(Solstice.config().customTabList.enableTabList) {
+        if(ServiceProvider.config().customTabList.enableTabList) {
             var packet = new PlayerListS2CPacket(EnumSet.of(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, PlayerListS2CPacket.Action.UPDATE_LISTED), List.of(this.player));
             this.server.getPlayerManager().sendToAll(packet);
         }

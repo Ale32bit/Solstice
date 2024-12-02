@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.commands.home;
 
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
-import me.alexdevs.solstice.Solstice;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -27,7 +27,7 @@ public class HomeCommand {
                             if (!context.getSource().isExecutedByPlayer())
                                 return CommandSource.suggestMatching(new String[]{}, builder);
 
-                            var playerState = Solstice.state.getPlayerState(context.getSource().getPlayer());
+                            var playerState = ServiceProvider.state.getPlayerState(context.getSource().getPlayer());
                             return CommandSource.suggestMatching(playerState.homes.keySet().stream(), builder);
                         })
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name"))));
@@ -37,7 +37,7 @@ public class HomeCommand {
 
     private static int execute(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrThrow();
-        var playerState = Solstice.state.getPlayerState(player);
+        var playerState = ServiceProvider.state.getPlayerState(player);
         var homes = playerState.homes;
         var playerContext = PlaceholderContext.of(context.getSource().getPlayer());
 
@@ -48,7 +48,7 @@ public class HomeCommand {
         if (!homes.containsKey(name)) {
             context.getSource().sendFeedback(() ->
                     Format.parse(
-                            Solstice.locale().commands.home.homeNotFound,
+                            ServiceProvider.locale().commands.home.homeNotFound,
                             playerContext,
                             placeholders
                     ), false);
@@ -58,7 +58,7 @@ public class HomeCommand {
 
         context.getSource().sendFeedback(() ->
                 Format.parse(
-                        Solstice.locale().commands.home.teleporting,
+                        ServiceProvider.locale().commands.home.teleporting,
                         playerContext,
                         placeholders
                 ), false);

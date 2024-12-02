@@ -3,7 +3,7 @@ package me.alexdevs.solstice.commands.moderation;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandSource;
@@ -30,7 +30,7 @@ public class IgnoreCommand {
                         })
                         .executes(context -> {
                             var player = context.getSource().getPlayerOrThrow();
-                            var playerState = Solstice.state.getPlayerState(player);
+                            var playerState = ServiceProvider.state.getPlayerState(player);
 
                             var targetName = StringArgumentType.getString(context, "target");
 
@@ -38,14 +38,14 @@ public class IgnoreCommand {
                                 var playerContext = PlaceholderContext.of(player);
 
                                 if (profileOpt.isEmpty()) {
-                                    context.getSource().sendFeedback(() -> Format.parse(Solstice.locale().commands.ignore.playerNotFound, playerContext), false);
+                                    context.getSource().sendFeedback(() -> Format.parse(ServiceProvider.locale().commands.ignore.playerNotFound, playerContext), false);
                                     return;
                                 }
 
                                 var profile = profileOpt.get();
 
                                 if (profile.getId().equals(player.getGameProfile().getId())) {
-                                    context.getSource().sendFeedback(() -> Format.parse(Solstice.locale().commands.ignore.targetIsSelf, playerContext), false);
+                                    context.getSource().sendFeedback(() -> Format.parse(ServiceProvider.locale().commands.ignore.targetIsSelf, playerContext), false);
                                     return;
                                 }
 
@@ -55,11 +55,11 @@ public class IgnoreCommand {
 
                                 if (playerState.ignoredPlayers.contains(profile.getId())) {
                                     playerState.ignoredPlayers.remove(profile.getId());
-                                    context.getSource().sendFeedback(() -> Format.parse(Solstice.locale().commands.ignore.unblockedPlayer, playerContext, map), false);
+                                    context.getSource().sendFeedback(() -> Format.parse(ServiceProvider.locale().commands.ignore.unblockedPlayer, playerContext, map), false);
 
                                 } else {
                                     playerState.ignoredPlayers.add(profile.getId());
-                                    context.getSource().sendFeedback(() -> Format.parse(Solstice.locale().commands.ignore.blockedPlayer, playerContext, map), false);
+                                    context.getSource().sendFeedback(() -> Format.parse(ServiceProvider.locale().commands.ignore.blockedPlayer, playerContext, map), false);
                                 }
                             });
 

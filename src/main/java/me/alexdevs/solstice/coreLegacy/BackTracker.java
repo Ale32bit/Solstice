@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.core;
+package me.alexdevs.solstice.coreLegacy;
 
 import me.alexdevs.solstice.api.events.PlayerTeleport;
 import me.alexdevs.solstice.api.ServerPosition;

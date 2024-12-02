@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.commands.misc;
 
-import me.alexdevs.solstice.core.AfkTracker;
+import me.alexdevs.solstice.coreLegacy.AfkTracker;
 import com.mojang.brigadier.CommandDispatcher;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.ServerCommandSource;

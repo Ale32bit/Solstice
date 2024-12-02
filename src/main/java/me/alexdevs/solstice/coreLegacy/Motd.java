@@ -1,14 +1,15 @@
-package me.alexdevs.solstice.core;
+package me.alexdevs.solstice.coreLegacy;
 
 import me.alexdevs.solstice.Solstice;
 import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.core.ServiceProvider;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.text.Text;
 
 public class Motd {
     public static void register() {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            if(Solstice.config().motd.enableMotd) {
+            if(ServiceProvider.config().motd.enableMotd) {
                 if(!InfoPages.exists("motd")) {
                     Solstice.LOGGER.warn("Could not send MOTD because info/motd.txt does not exist!");
                     return;

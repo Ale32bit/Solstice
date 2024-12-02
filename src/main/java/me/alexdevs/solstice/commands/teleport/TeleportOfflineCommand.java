@@ -1,8 +1,8 @@
 package me.alexdevs.solstice.commands.teleport;
 
-import me.alexdevs.solstice.Solstice;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -29,7 +29,7 @@ public class TeleportOfflineCommand {
                                     return;
                                 }
 
-                                var targetState = Solstice.state.getPlayerState(gameProfile.get());
+                                var targetState = ServiceProvider.state.getPlayerState(gameProfile.get());
                                 if(targetState == null || targetState.logoffPosition == null) {
                                     source.sendFeedback(() -> Text.literal("Could not find location of offline player").formatted(Formatting.RED), false);
                                     return;

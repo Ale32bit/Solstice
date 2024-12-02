@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.api.events;
 
-import me.alexdevs.solstice.core.BossBarManager;
+import me.alexdevs.solstice.coreLegacy.BossBarManager;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.server.MinecraftServer;

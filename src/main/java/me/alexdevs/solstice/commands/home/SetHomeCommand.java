@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.commands.home;
 
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.util.Components;
@@ -40,15 +40,15 @@ public class SetHomeCommand {
 
     private static int execute(CommandContext<ServerCommandSource> context, String name, boolean forced) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrThrow();
-        var playerState = Solstice.state.getPlayerState(player);
+        var playerState = ServiceProvider.state.getPlayerState(player);
         var homes = playerState.homes;
         var playerContext = PlaceholderContext.of(player);
 
         var placeholders = Map.of(
                 "home", Text.of(name),
                 "forceSetButton", Components.button(
-                        Solstice.locale().commands.home.forceSetLabel,
-                        Solstice.locale().commands.home.forceSetHover,
+                        ServiceProvider.locale().commands.home.forceSetLabel,
+                        ServiceProvider.locale().commands.home.forceSetHover,
                         "/sethome " + name + " true"
                 )
         );
@@ -56,7 +56,7 @@ public class SetHomeCommand {
         var exists = homes.containsKey(name);
         if (exists && !forced) {
             var text = Format.parse(
-                    Solstice.locale().commands.home.homeExists,
+                    ServiceProvider.locale().commands.home.homeExists,
                     playerContext,
                     placeholders
             );
@@ -66,10 +66,10 @@ public class SetHomeCommand {
             return 1;
         }
 
-        var maxHomes = Solstice.config().homes.maxHomes;
+        var maxHomes = ServiceProvider.config().homes.maxHomes;
         if(maxHomes >= 0 && homes.size() >= maxHomes && !exists) {
             context.getSource().sendFeedback(() -> Format.parse(
-                    Solstice.locale().commands.home.maxHomesReached,
+                    ServiceProvider.locale().commands.home.maxHomesReached,
                     playerContext,
                     placeholders
             ), false);
@@ -79,10 +79,10 @@ public class SetHomeCommand {
         var homePosition = new ServerPosition(player);
         homes.put(name, homePosition);
 
-        Solstice.state.savePlayerState(player.getUuid(), playerState);
+        ServiceProvider.state.savePlayerState(player.getUuid(), playerState);
 
         context.getSource().sendFeedback(() -> Format.parse(
-                Solstice.locale().commands.home.homeSetSuccess,
+                ServiceProvider.locale().commands.home.homeSetSuccess,
                 playerContext,
                 placeholders
         ), false);

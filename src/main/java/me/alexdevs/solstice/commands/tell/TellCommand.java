@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.commands.tell;
 
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.commands.CommandInitializer;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import me.alexdevs.solstice.util.Components;
 import com.mojang.brigadier.CommandDispatcher;
@@ -69,7 +69,7 @@ public class TellCommand {
                 var sourceContext = PlaceholderContext.of(source);
 
                 source.sendFeedback(() -> Format.parse(
-                        Solstice.locale().commands.tell.playerNotFound,
+                        ServiceProvider.locale().commands.tell.playerNotFound,
                         sourceContext,
                         placeholders
                 ), false);
@@ -90,7 +90,7 @@ public class TellCommand {
         }
 
 
-        var you = Format.parse(Solstice.locale().commands.tell.you);
+        var you = Format.parse(ServiceProvider.locale().commands.tell.you);
 
         var placeholdersToSource = Map.of(
                 "sourcePlayer", you,
@@ -111,22 +111,22 @@ public class TellCommand {
         );
 
         var sourceText = Format.parse(
-                Solstice.locale().commands.tell.message,
+                ServiceProvider.locale().commands.tell.message,
                 sourceContext,
                 placeholdersToSource
         );
         var targetText = Format.parse(
-                Solstice.locale().commands.tell.message,
+                ServiceProvider.locale().commands.tell.message,
                 targetContext,
                 placeholdersToTarget
         );
         var genericText = Format.parse(
-                Solstice.locale().commands.tell.message,
+                ServiceProvider.locale().commands.tell.message,
                 serverContext,
                 placeholders
         );
         var spyText = Format.parse(
-                Solstice.locale().commands.tell.messageSpy,
+                ServiceProvider.locale().commands.tell.messageSpy,
                 serverContext,
                 placeholders
         );
@@ -138,7 +138,7 @@ public class TellCommand {
             source.sendMessage(sourceText);
         }
         if (targetPlayer != null) {
-            var receiverState = Solstice.state.getPlayerState(targetPlayer);
+            var receiverState = ServiceProvider.state.getPlayerState(targetPlayer);
             if (!source.isExecutedByPlayer() || !receiverState.ignoredPlayers.contains(source.getPlayer().getUuid()) || Permissions.check(source, "solstice.ignore.bypass", 2)) {
                 targetPlayer.sendMessage(targetText);
             }

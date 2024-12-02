@@ -2,8 +2,8 @@ package me.alexdevs.solstice.commands.spawn;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
 import com.mojang.brigadier.CommandDispatcher;
 import eu.pb4.placeholders.api.PlaceholderContext;
@@ -46,7 +46,7 @@ public class SpawnCommand {
     }
 
     private static void sendToSpawn(CommandContext<ServerCommandSource> context, ServerPlayerEntity player) {
-        var serverState = Solstice.state.getServerState();
+        var serverState = ServiceProvider.state.getServerState();
         var playerContext = PlaceholderContext.of(player);
         var spawnPosition = serverState.spawn;
         if (spawnPosition == null) {
@@ -56,7 +56,7 @@ public class SpawnCommand {
         }
 
         context.getSource().sendFeedback(() -> Format.parse(
-                Solstice.locale().commands.spawn.teleporting,
+                ServiceProvider.locale().commands.spawn.teleporting,
                 playerContext
         ), false);
         spawnPosition.teleport(player);

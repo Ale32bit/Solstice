@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.commands.misc;
 
-import me.alexdevs.solstice.core.Motd;
+import me.alexdevs.solstice.coreLegacy.Motd;
 import com.mojang.brigadier.CommandDispatcher;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.lucko.fabric.api.permissions.v0.Permissions;

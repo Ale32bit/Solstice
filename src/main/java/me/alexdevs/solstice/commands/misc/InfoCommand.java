@@ -4,9 +4,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.commands.CommandInitializer;
-import me.alexdevs.solstice.core.InfoPages;
+import me.alexdevs.solstice.core.ServiceProvider;
+import me.alexdevs.solstice.coreLegacy.InfoPages;
 import me.alexdevs.solstice.util.Format;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandSource;
@@ -41,14 +41,14 @@ public class InfoCommand {
 
                     if(pageList.isEmpty()) {
                         context.getSource().sendFeedback(() -> Format.parse(
-                                Solstice.locale().commands.info.noPages,
+                                ServiceProvider.locale().commands.info.noPages,
                                 sourceContext
                         ), false);
                         return 1;
                     }
 
                     var listText = Text.empty();
-                    var comma = Format.parse(Solstice.locale().commands.info.pagesComma);
+                    var comma = Format.parse(ServiceProvider.locale().commands.info.pagesComma);
                     var list = pageList.stream().toList();
                     for(var i = 0; i < list.size(); i++) {
                         if (i > 0) {
@@ -59,7 +59,7 @@ public class InfoCommand {
                         );
 
                         listText = listText.append(Format.parse(
-                                Solstice.locale().commands.info.pagesFormat,
+                                ServiceProvider.locale().commands.info.pagesFormat,
                                 sourceContext,
                                 placeholders
                         ));
@@ -69,7 +69,7 @@ public class InfoCommand {
                             "pageList", (Text) listText
                     );
                     context.getSource().sendFeedback(() -> Format.parse(
-                            Solstice.locale().commands.info.pageList,
+                            ServiceProvider.locale().commands.info.pageList,
                             sourceContext,
                             placeholders
                     ), false);

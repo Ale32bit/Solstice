@@ -1,7 +1,8 @@
-package me.alexdevs.solstice.core;
+package me.alexdevs.solstice.coreLegacy;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +25,7 @@ public class InfoPages {
     private static Path infoDir;
 
     public static void register() {
-        infoDir = Solstice.configDirectory.resolve("info");
+        infoDir = ServiceProvider.configDirectory.resolve("info");
         if (!infoDir.toFile().isDirectory()) {
             if (!infoDir.toFile().mkdirs()) {
                 Solstice.LOGGER.error("Couldn't create info directory");
@@ -67,7 +68,7 @@ public class InfoPages {
     public static Text getPage(String name, @Nullable PlaceholderContext context) {
         name = sanitize(name);
         if (!exists(name)) {
-            return Format.parse(Solstice.locale().commands.info.pageNotFound);
+            return Format.parse(ServiceProvider.locale().commands.info.pageNotFound);
         }
 
         var infoFile = infoDir.resolve(name + ".txt");
@@ -86,7 +87,7 @@ public class InfoPages {
                 return Text.of(output);
         } catch (IOException e) {
             Solstice.LOGGER.error("Could not read info file", e);
-            return Format.parse(Solstice.locale().commands.info.pageError);
+            return Format.parse(ServiceProvider.locale().commands.info.pageError);
         }
     }
 }

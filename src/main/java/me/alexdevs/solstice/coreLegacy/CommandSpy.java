@@ -1,7 +1,7 @@
-package me.alexdevs.solstice.core;
+package me.alexdevs.solstice.coreLegacy;
 
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.text.Text;
@@ -14,7 +14,7 @@ public class CommandSpy {
             var parts = command.split("\\s");
             if(parts.length >= 1) {
                 var cmd = parts[0];
-                if(Solstice.config().commandSpy.ignoredCommands.contains(cmd)) {
+                if(ServiceProvider.config().commandSpy.ignoredCommands.contains(cmd)) {
                     return;
                 }
             }
@@ -24,7 +24,7 @@ public class CommandSpy {
                     "player", Text.of(source.getGameProfile().getName()),
                     "command", Text.of(command)
             );
-            var message = Format.parse(Solstice.config().commandSpy.commandSpyFormat, placeholders);
+            var message = Format.parse(ServiceProvider.config().commandSpy.commandSpyFormat, placeholders);
             for(var player : players) {
                 var commandSpyEnabled = Permissions.check(player, "solstice.commandspy");
 

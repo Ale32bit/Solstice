@@ -1,8 +1,8 @@
-package me.alexdevs.solstice.core;
+package me.alexdevs.solstice.coreLegacy;
 
-import me.alexdevs.solstice.Solstice;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.TextParserUtils;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -26,7 +26,7 @@ public class CustomNameFormat {
     public static void refreshNames() {
         namesCache.clear();
 
-        for (var player : Solstice.server.getPlayerManager().getPlayerList()) {
+        for (var player : ServiceProvider.server.getPlayerManager().getPlayerList()) {
             refreshName(player);
         }
     }
@@ -36,7 +36,7 @@ public class CustomNameFormat {
     }
 
     public static String fetchUsernameFormat(ServerPlayerEntity player) {
-        var formats = Solstice.config().formats.nameFormats;
+        var formats = ServiceProvider.config().formats.nameFormats;
 
         String format = null;
         for (var f : formats) {
@@ -76,7 +76,7 @@ public class CustomNameFormat {
             namesCache.put(player.getUuid(), format);
         }
 
-        var playerState = Solstice.state.getPlayerState(player);
+        var playerState = ServiceProvider.state.getPlayerState(player);
 
         var name = playerState.nickname == null ? Text.of(player.getGameProfile().getName()) : TextParserUtils.formatText(playerState.nickname);
 

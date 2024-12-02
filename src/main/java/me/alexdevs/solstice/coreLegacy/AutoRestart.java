@@ -1,9 +1,10 @@
-package me.alexdevs.solstice.core;
+package me.alexdevs.solstice.coreLegacy;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.BossBarEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.RestartEvents;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.server.MinecraftServer;
@@ -27,7 +28,7 @@ public class AutoRestart {
 
     public static void register() {
         SolsticeEvents.READY.register((instance, server) -> {
-            if (Solstice.config().autoRestart.enableAutoRestart) {
+            if (ServiceProvider.config().autoRestart.enableAutoRestart) {
                 scheduleNextRestart();
             }
         });
@@ -36,7 +37,7 @@ public class AutoRestart {
             if (restartBar == null || !timeBar.getUuid().equals(restartBar.getUuid()))
                 return;
 
-            var notificationTimes = Solstice.config().autoRestart.restartNotifications;
+            var notificationTimes = ServiceProvider.config().autoRestart.restartNotifications;
 
             var remainingSeconds = restartBar.getRemainingSeconds();
             if (notificationTimes.contains(remainingSeconds)) {
@@ -51,7 +52,7 @@ public class AutoRestart {
                 return;
 
             server.getPlayerManager().getPlayerList().forEach(player -> {
-                player.networkHandler.disconnect(Format.parse(Solstice.config().autoRestart.restartKickMessage));
+                player.networkHandler.disconnect(Format.parse(ServiceProvider.config().autoRestart.restartKickMessage));
             });
             server.stop(false);
         });
@@ -64,7 +65,7 @@ public class AutoRestart {
     }
 
     private static void setup() {
-        var soundName = Solstice.config().autoRestart.restartSound;
+        var soundName = ServiceProvider.config().autoRestart.restartSound;
         var id = Identifier.tryParse(soundName);
         if (id == null) {
             Solstice.LOGGER.error("Invalid restart notification sound name {}", soundName);
@@ -104,10 +105,10 @@ public class AutoRestart {
 
     private static void notifyRestart(MinecraftServer server, BossBarManager.TimeBar bar) {
         var solstice = Solstice.getInstance();
-        var text = bar.parseLabel(Solstice.config().autoRestart.restartChatMessage);
+        var text = bar.parseLabel(ServiceProvider.config().autoRestart.restartChatMessage);
         solstice.broadcast(text);
 
-        var pitch = Solstice.config().autoRestart.restartSoundPitch;
+        var pitch = ServiceProvider.config().autoRestart.restartSoundPitch;
         server.getPlayerManager().getPlayerList().forEach(player -> {
             player.playSound(sound, SoundCategory.MASTER, 1f, pitch);
         });
@@ -123,8 +124,8 @@ public class AutoRestart {
         // start bar 10 mins earlier
         var barStartTime = delay - barTime;
 
-        currentSchedule = Solstice.scheduler.schedule(() -> {
-            schedule(barTime, Solstice.config().autoRestart.restartBarLabel);
+        currentSchedule = ServiceProvider.scheduler.schedule(() -> {
+            schedule(barTime, ServiceProvider.config().autoRestart.restartBarLabel);
         }, barStartTime, TimeUnit.SECONDS);
 
         Solstice.LOGGER.info("Restart scheduled for in {} seconds", delay);
@@ -133,7 +134,7 @@ public class AutoRestart {
 
     @Nullable
     private static Long getNextDelay() {
-        var restartTimeStrings = Solstice.config().autoRestart.restartAt;
+        var restartTimeStrings = ServiceProvider.config().autoRestart.restartAt;
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime nextRunTime = null;
         long shortestDelay = Long.MAX_VALUE;

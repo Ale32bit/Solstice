@@ -8,7 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.commands.CommandInitializer;
-import me.alexdevs.solstice.core.customFormats.CustomBanMessage;
+import me.alexdevs.solstice.coreLegacy.customFormats.CustomBanMessage;
 import me.alexdevs.solstice.util.Format;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.argument.GameProfileArgumentType;

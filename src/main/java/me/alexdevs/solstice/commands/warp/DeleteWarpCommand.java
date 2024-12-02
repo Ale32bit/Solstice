@@ -1,9 +1,9 @@
 package me.alexdevs.solstice.commands.warp;
 
-import me.alexdevs.solstice.Solstice;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
@@ -22,7 +22,7 @@ public class DeleteWarpCommand {
                             if (!context.getSource().isExecutedByPlayer())
                                 return CommandSource.suggestMatching(new String[]{}, builder);
 
-                            var serverState = Solstice.state.getServerState();
+                            var serverState = ServiceProvider.state.getServerState();
                             return CommandSource.suggestMatching(serverState.warps.keySet().stream(), builder);
                         })
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name"))));
@@ -31,7 +31,7 @@ public class DeleteWarpCommand {
     }
 
     private static int execute(CommandContext<ServerCommandSource> context, String name) {
-        var serverState = Solstice.state.getServerState();
+        var serverState = ServiceProvider.state.getServerState();
         var warps = serverState.warps;
 
         if (!warps.containsKey(name)) {
@@ -43,7 +43,7 @@ public class DeleteWarpCommand {
         }
 
         warps.remove(name);
-        Solstice.state.saveServerState();
+        ServiceProvider.state.saveServerState();
 
         context.getSource().sendFeedback(() -> Text
                 .literal("Warp ")

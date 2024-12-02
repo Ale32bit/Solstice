@@ -2,7 +2,7 @@ package me.alexdevs.solstice.commands.moderation;
 
 import com.mojang.brigadier.CommandDispatcher;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.ServerCommandSource;
@@ -18,20 +18,20 @@ public class IgnoreListCommand {
                 .requires(Permissions.require("solstice.command.ignorelist", true))
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrThrow();
-                    var playerState = Solstice.state.getPlayerState(player);
+                    var playerState = ServiceProvider.state.getPlayerState(player);
                     var ignoreList = playerState.ignoredPlayers;
                     var playerContext = PlaceholderContext.of(player);
 
                     if(ignoreList.isEmpty()) {
                         context.getSource().sendFeedback(() -> Format.parse(
-                                Solstice.locale().commands.ignore.ignoreListEmpty,
+                                ServiceProvider.locale().commands.ignore.ignoreListEmpty,
                                 playerContext
                         ), false);
                         return 1;
                     }
 
                     var listText = Text.empty();
-                    var comma = Format.parse(Solstice.locale().commands.ignore.ignoreListComma);
+                    var comma = Format.parse(ServiceProvider.locale().commands.ignore.ignoreListComma);
                     for(var i = 0; i < ignoreList.size(); i++) {
                         if (i > 0) {
                             listText = listText.append(comma);
@@ -50,7 +50,7 @@ public class IgnoreListCommand {
                         );
 
                         listText = listText.append(Format.parse(
-                                Solstice.locale().commands.ignore.ignoreListFormat,
+                                ServiceProvider.locale().commands.ignore.ignoreListFormat,
                                 playerContext,
                                 placeholders
                         ));
@@ -60,7 +60,7 @@ public class IgnoreListCommand {
                             "playerList", (Text) listText
                     );
                     context.getSource().sendFeedback(() -> Format.parse(
-                            Solstice.locale().commands.ignore.ignoreList,
+                            ServiceProvider.locale().commands.ignore.ignoreList,
                             playerContext,
                             placeholders
                     ), false);

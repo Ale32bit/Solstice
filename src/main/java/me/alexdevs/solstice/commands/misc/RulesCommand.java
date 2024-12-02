@@ -2,7 +2,7 @@ package me.alexdevs.solstice.commands.misc;
 
 import com.mojang.brigadier.CommandDispatcher;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.alexdevs.solstice.core.InfoPages;
+import me.alexdevs.solstice.coreLegacy.InfoPages;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.ServerCommandSource;
 

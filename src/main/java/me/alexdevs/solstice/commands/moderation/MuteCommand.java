@@ -1,8 +1,8 @@
 package me.alexdevs.solstice.commands.moderation;
 
-import me.alexdevs.solstice.Solstice;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
@@ -22,11 +22,11 @@ public class MuteCommand {
                             var names = targets.stream().map(GameProfile::getName).toArray(String[]::new);
 
                             targets.forEach(profile -> {
-                                var playerState = Solstice.state.getPlayerState(profile);
+                                var playerState = ServiceProvider.state.getPlayerState(profile);
                                 playerState.muted = true;
                             });
 
-                            Solstice.state.save();
+                            ServiceProvider.state.save();
 
                             context.getSource().sendFeedback(() -> Text.literal("Muted " + String.join(", ", names)), true);
 
@@ -42,11 +42,11 @@ public class MuteCommand {
                             var names = targets.stream().map(GameProfile::getName).toArray(String[]::new);
 
                             targets.forEach(profile -> {
-                                var playerState = Solstice.state.getPlayerState(profile);
+                                var playerState = ServiceProvider.state.getPlayerState(profile);
                                 playerState.muted = false;
                             });
 
-                            Solstice.state.save();
+                            ServiceProvider.state.save();
 
                             context.getSource().sendFeedback(() -> Text.literal("Unmuted " + String.join(", ", names)), true);
 

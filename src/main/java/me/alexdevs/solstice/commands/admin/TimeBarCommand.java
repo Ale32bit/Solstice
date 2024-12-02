@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.commands.admin;
 
 import me.alexdevs.solstice.api.events.BossBarEvents;
-import me.alexdevs.solstice.core.BossBarManager;
+import me.alexdevs.solstice.coreLegacy.BossBarManager;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;

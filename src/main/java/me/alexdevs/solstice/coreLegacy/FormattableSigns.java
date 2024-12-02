@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.core;
+package me.alexdevs.solstice.coreLegacy;
 
 import eu.pb4.placeholders.api.parsers.LegacyFormattingParser;
 import me.lucko.fabric.api.permissions.v0.Permissions;

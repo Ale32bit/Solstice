@@ -1,7 +1,7 @@
-package me.alexdevs.solstice.core.customFormats;
+package me.alexdevs.solstice.coreLegacy.customFormats;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,7 +15,7 @@ public class CustomAdvancementMessage {
         var title = advancementKey + ".title";
         var description = advancementKey + ".description";
 
-        var formats = Solstice.config().formats.advancementFormats;
+        var formats = ServiceProvider.config().formats.advancementFormats;
 
         String advancementFormat = switch (frame) {
             case GOAL -> formats.goal;

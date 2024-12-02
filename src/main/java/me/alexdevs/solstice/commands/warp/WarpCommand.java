@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.commands.warp;
 
+import me.alexdevs.solstice.core.ServiceProvider;
 import me.alexdevs.solstice.util.Format;
-import me.alexdevs.solstice.Solstice;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -26,7 +26,7 @@ public class WarpCommand {
                             if (!context.getSource().isExecutedByPlayer())
                                 return CommandSource.suggestMatching(new String[]{}, builder);
 
-                            var serverState = Solstice.state.getServerState();
+                            var serverState = ServiceProvider.state.getServerState();
                             return CommandSource.suggestMatching(serverState.warps.keySet().stream(), builder);
                         })
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name"))));
@@ -36,13 +36,13 @@ public class WarpCommand {
 
     private static int execute(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrThrow();
-        var serverState = Solstice.state.getServerState();
+        var serverState = ServiceProvider.state.getServerState();
         var warps = serverState.warps;
         var playerContext = PlaceholderContext.of(player);
 
         if (!warps.containsKey(name)) {
             context.getSource().sendFeedback(() -> Format.parse(
-                    Solstice.locale().commands.warp.warpNotFound,
+                    ServiceProvider.locale().commands.warp.warpNotFound,
                     playerContext,
                     Map.of(
                             "warp", Text.of(name)
@@ -52,7 +52,7 @@ public class WarpCommand {
         }
 
         context.getSource().sendFeedback(() -> Format.parse(
-                Solstice.locale().commands.warp.teleporting,
+                ServiceProvider.locale().commands.warp.teleporting,
                 playerContext,
                 Map.of(
                         "warp", Text.of(name)

@@ -1,6 +1,6 @@
-package me.alexdevs.solstice.core;
+package me.alexdevs.solstice.coreLegacy;
 
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ServiceProvider;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
@@ -37,7 +37,7 @@ public class TeleportTracker {
             this.player = player;
             this.target = target;
             // Seconds in config per 20 ticks
-            this.remainingTicks = Solstice.config().teleportRequests.teleportRequestTimeout * 20;
+            this.remainingTicks = ServiceProvider.config().teleportRequests.teleportRequestTimeout * 20;
         }
 
         public void expire() {

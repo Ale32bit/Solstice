@@ -1,8 +1,8 @@
 package me.alexdevs.solstice.mixin;
 
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.core.BackTracker;
-import me.alexdevs.solstice.core.customFormats.CustomDeathMessage;
+import me.alexdevs.solstice.core.ServiceProvider;
+import me.alexdevs.solstice.coreLegacy.BackTracker;
+import me.alexdevs.solstice.coreLegacy.customFormats.CustomDeathMessage;
 import me.alexdevs.solstice.api.ServerPosition;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
@@ -29,10 +29,10 @@ public class ServerPlayerEntityMixin {
 
     @Inject(method = "getPlayerListName", at = @At("HEAD"), cancellable = true)
     private void solstice$customizePlayerListName(CallbackInfoReturnable<Text> callback) {
-        if (Solstice.config().customTabList.enableTabList) {
+        if (ServiceProvider.config().customTabList.enableTabList) {
             var player = (ServerPlayerEntity) (Object) this;
             var playerContext = PlaceholderContext.of(player);
-            var text = Placeholders.parseText(parser.parseNode(Solstice.config().customTabList.playerTabName), playerContext);
+            var text = Placeholders.parseText(parser.parseNode(ServiceProvider.config().customTabList.playerTabName), playerContext);
             callback.setReturnValue(text);
         }
     }
