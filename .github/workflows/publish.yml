@@ -9,6 +9,8 @@ env:
   RELEASE_NAME: Solstice 0.3.0-alpha for Minecraft 1.20.1
   MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
   CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+  MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+  MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
 
 permissions:
   contents: write
@@ -37,6 +39,9 @@ jobs:
 
       - name: Build
         run: ./gradlew clean build
+
+      - name: Publish to Maven
+        run: ./gradlew publish
 
       - name: Publish
         uses: Kir-Antipov/mc-publish@v3.3
