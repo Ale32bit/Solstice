@@ -1,10 +1,11 @@
-- Added ability to ignore players.
-- Added ability to format text in signs.
-- Added `/info` pages.
-  - `/motd` migrated from config file to its own info page `motd.txt`.
-  - Added `/rules` page (`rules.txt`).
-  - An example of formatting and placeholders in available in the `formatting` page.
-- Fixed missing text for empty mailbox.
-- `/warps` works when ran by server.
-- Added `/heal` and `/feed` commands. No more world hunger.
-- Added option to teleport other players to spawn.
+- Added many utility commands to open various blocks GUIs:
+  - Anvil - `/anvil`
+  - Cartography table - `/cartography`
+  - Grindstone - `/grindstone`
+  - Loom - `/loom`
+  - Smithing table - `/smithing`
+  - Stonecutter - `/stonecutter`
+  - Crafting table - `/workbench`
+- Added `/trash` command, this opens an empty virtual chest that voids all content when closed.
+- Added `/enderchest [player]` command, this opens the own enderchest, or a player's.
+- Added `/invsee <player>` command, this opens the inventory of another player that you can manipulate.
