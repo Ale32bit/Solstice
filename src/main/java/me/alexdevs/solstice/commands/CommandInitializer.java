@@ -85,6 +85,8 @@ public class CommandInitializer {
             InfoCommand.register(dispatcher);
             RulesCommand.register(dispatcher);
             SuicideCommand.register(dispatcher);
+            ExtinguishCommand.register(dispatcher);
+            IgniteCommand.register(dispatcher);
 
             AnvilCommand.register(dispatcher);
             CartographyCommand.register(dispatcher);
