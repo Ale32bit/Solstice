@@ -23,7 +23,7 @@ public class InventorySeeCommand {
                             var player = source.getPlayerOrThrow();
                             var target = EntityArgumentType.getPlayer(context, "player");
 
-                            if (Permissions.check(target, "solstice.command.exempt", 3)) {
+                            if (Permissions.check(target, "solstice.command.invsee.exempt", 3)) {
                                 source.sendError(Text.of("You cannot open this inventory because the player is exempt."));
                                 return 0;
                             }
