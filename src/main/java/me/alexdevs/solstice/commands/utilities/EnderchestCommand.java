@@ -34,7 +34,7 @@ public class EnderchestCommand {
 
         if (target != null) {
             if (Permissions.check(target, "solstice.command.enderchest.exempt")) {
-                source.sendFeedback(() -> Text.literal("You cannot open this enderchest because the player is exempt."), false);
+                source.sendError(Text.of("You cannot open this enderchest because the player is exempt."));
                 return 0;
             }
         } else {

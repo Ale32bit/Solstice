@@ -90,7 +90,7 @@ public class CommandInitializer {
             CartographyCommand.register(dispatcher);
             EnderchestCommand.register(dispatcher);
             GrindstoneCommand.register(dispatcher);
-            //InventorySeeCommand.register(dispatcher); // TODO: Use a GUI lib?
+            InventorySeeCommand.register(dispatcher);
             LoomCommand.register(dispatcher);
             SmithingCommand.register(dispatcher);
             StonecutterCommand.register(dispatcher);
