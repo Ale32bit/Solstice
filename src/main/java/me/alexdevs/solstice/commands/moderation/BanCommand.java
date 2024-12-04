@@ -15,7 +15,6 @@ import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.BannedPlayerEntry;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import net.minecraft.text.Texts;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -57,7 +56,7 @@ public class BanCommand {
 
             var playerContext = PlaceholderContext.of(target, server);
 
-            source.sendFeedback(() -> Text.translatable("commands.ban.success", Texts.toText(target), Format.parse(banEntry.getReason(), playerContext)), true);
+            source.sendFeedback(() -> Text.translatable("commands.ban.success", Text.literal(target.getName()), Format.parse(banEntry.getReason(), playerContext)), true);
 
             var serverPlayerEntity = source.getServer().getPlayerManager().getPlayer(target.getId());
             if (serverPlayerEntity != null) {

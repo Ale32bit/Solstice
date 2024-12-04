@@ -12,6 +12,7 @@ import net.minecraft.network.message.SentMessage;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.BannedPlayerEntry;
 import net.minecraft.server.PlayerManager;
+import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -35,12 +36,12 @@ public abstract class PlayerManagerMixin {
     private ServerPlayerEntity solstice$player = null;
 
     @Inject(method = "onPlayerConnect", at = @At("HEAD"))
-    private void solstice$onJoin(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
+    private void solstice$onJoin(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
         solstice$player = player;
     }
 
     @Inject(method = "onPlayerConnect", at = @At("RETURN"))
-    private void solstice$onJoinReturn(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
+    private void solstice$onJoinReturn(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci) {
         solstice$player = null;
     }
 

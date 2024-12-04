@@ -112,7 +112,7 @@ public class SudoCommand {
                 player.getRotationClient(),
                 player.getServerWorld(),
                 opLevel,
-                player.getEntityName(),
+                player.getGameProfile().getName(),
                 player.getDisplayName(),
                 server,
                 player

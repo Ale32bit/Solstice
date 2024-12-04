@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import eu.pb4.sgui.api.gui.SimpleGui;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandlerType;
@@ -37,7 +38,7 @@ public class InventorySeeCommand {
                             }
 
                             var barrier = new ItemStack(Items.BARRIER);
-                            barrier.setCustomName(Text.literal(""));
+                            barrier.set(DataComponentTypes.CUSTOM_NAME, Text.literal(""));
                             for (var i = targetInventory.size(); i < container.getSize(); i++) {
                                 container.setSlot(i, barrier);
                             }

@@ -39,12 +39,20 @@ public class SmiteCommand {
             targets.forEach(target ->
                     entityType.create(
                             target.getServerWorld(),
-                            null,
                             (entity) -> target.getWorld().spawnEntity(entity),
                             target.getBlockPos(),
                             SpawnReason.COMMAND,
                             false,
-                            false)
+                            false
+                    )
+//                    entityType.create(
+//                            target.getServerWorld(),
+//                            null,
+//                            (entity) -> target.getWorld().spawnEntity(entity),
+//                            target.getBlockPos(),
+//                            SpawnReason.COMMAND,
+//                            false,
+//                            false)
             );
         }
 

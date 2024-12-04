@@ -37,7 +37,7 @@ public class AfkTracker {
     public static void register() {
         loadAfkTag();
 
-        Placeholders.register(new Identifier(Solstice.MOD_ID, "afk"), (context, argument) -> {
+        Placeholders.register(Identifier.of(Solstice.MOD_ID, "afk"), (context, argument) -> {
             if(!context.hasPlayer())
                 return PlaceholderResult.invalid("No player!");
             var player = context.player();

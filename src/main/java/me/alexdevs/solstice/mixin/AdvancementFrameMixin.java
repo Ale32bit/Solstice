@@ -1,23 +1,27 @@
 package me.alexdevs.solstice.mixin;
 
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.core.customFormats.CustomAdvancementMessage;
-import net.minecraft.advancement.PlayerAdvancementTracker;
+import net.minecraft.advancement.AdvancementEntry;
+import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(PlayerAdvancementTracker.class)
-public abstract class PlayerAdvancementTrackerMixin {
-    @Shadow
+@Mixin(AdvancementFrame.class)
+public abstract class AdvancementFrameMixin {
+    // MutableText
+    @Inject(method = "getChatAnnouncementText", at = @At("HEAD"), cancellable = true)
+    public void solstice$getCustomAnnouncement(AdvancementEntry entry, ServerPlayerEntity player, CallbackInfoReturnable<MutableText> cir) {
+        cir.setReturnValue(CustomAdvancementMessage.getText(player, entry, (AdvancementFrame) (Object) this).copy());
+    }
+
+    /*@Shadow
     private ServerPlayerEntity owner;
 
-    @ModifyArg(method = "grantCriterion", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Z)V"))
+    @ModifyArg(method = "grantCriterion", at = @At(value = "INVOKE", target = ""))
     public Text solstice$customAdvancement(Text message) {
         try {
             var translatable = (TranslatableTextContent) message.getContent();
@@ -31,5 +35,5 @@ public abstract class PlayerAdvancementTrackerMixin {
 
             return message;
         }
-    }
+    }*/
 }

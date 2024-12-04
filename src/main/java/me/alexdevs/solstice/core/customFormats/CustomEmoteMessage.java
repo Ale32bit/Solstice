@@ -26,9 +26,11 @@ public class CustomEmoteMessage {
                 )
         );
 
-        var msgType = Solstice.server.getRegistryManager().get(RegistryKeys.MESSAGE_TYPE).getOrThrow(Solstice.CHAT_TYPE);
-        var newParams = new MessageType.Parameters(msgType, text, null);
+        receiver.sendMessage(text);
 
-        receiver.networkHandler.sendProfilelessChatMessage(message.getContent(), newParams);
+        //var msgType = Solstice.server.getRegistryManager().get(RegistryKeys.MESSAGE_TYPE).getOrThrow(Solstice.CHAT_TYPE);
+        //var newParams = new MessageType.Parameters(msgType, text, null);
+
+        //receiver.networkHandler.sendProfilelessChatMessage(message.getContent(), params);
     }
 }

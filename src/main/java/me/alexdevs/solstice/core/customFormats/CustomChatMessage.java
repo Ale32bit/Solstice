@@ -7,6 +7,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -16,11 +17,14 @@ import java.util.Map;
 public class CustomChatMessage {
     public static void sendChatMessage(ServerPlayerEntity receiver, SignedMessage message, MessageType.Parameters params, ServerPlayerEntity sender) {
         var text = getFormattedMessage(message, sender);
+        //receiver.networkHandler.sendProfilelessChatMessage(text, params);
 
-        var msgType = Solstice.server.getRegistryManager().get(RegistryKeys.MESSAGE_TYPE).getOrThrow(Solstice.CHAT_TYPE);
-        var newParams = new MessageType.Parameters(msgType, text, null);
+        receiver.sendMessage(text);
 
-        receiver.networkHandler.sendProfilelessChatMessage(message.getContent(), newParams);
+        /*var msgType = Solstice.server.getRegistryManager().get(RegistryKeys.MESSAGE_TYPE).getOrThrow(Solstice.CHAT_TYPE);
+        var newParams = new MessageType.Parameters(RegistryEntry.of(msgType), text, null);
+
+        receiver.networkHandler.sendProfilelessChatMessage(message.getContent(), newParams);*/
     }
 
     public static Text getFormattedMessage(SignedMessage message, ServerPlayerEntity player) {

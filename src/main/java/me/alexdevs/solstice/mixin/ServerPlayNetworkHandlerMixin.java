@@ -21,20 +21,18 @@ import java.util.List;
 @Mixin(ServerPlayNetworkHandler.class)
 public abstract class ServerPlayNetworkHandlerMixin {
     @Shadow
-    @Final
-    private MinecraftServer server;
-    @Shadow
     public ServerPlayerEntity player;
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void solstice$updatePlayerList(CallbackInfo ci) {
-        if(Solstice.config().customTabList.enableTabList) {
+        if (Solstice.config().customTabList.enableTabList) {
             var packet = new PlayerListS2CPacket(EnumSet.of(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, PlayerListS2CPacket.Action.UPDATE_LISTED), List.of(this.player));
-            this.server.getPlayerManager().sendToAll(packet);
+
+            player.getServer().getPlayerManager().sendToAll(packet);
         }
     }
 
-    @ModifyArg(method = "onDisconnected", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Z)V"))
+    @ModifyArg(method = "cleanUp", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Z)V"))
     private Text solstice$getPlayerLeaveMessage(Text message) {
         return CustomConnectionMessage.onLeave(this.player);
     }

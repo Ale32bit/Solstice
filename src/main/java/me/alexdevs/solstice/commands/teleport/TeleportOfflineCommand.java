@@ -23,7 +23,7 @@ public class TeleportOfflineCommand {
 
                             var targetName = StringArgumentType.getString(context, "player");
 
-                            server.getUserCache().findByNameAsync(targetName, gameProfile -> {
+                            server.getUserCache().findByNameAsync(targetName).thenAcceptAsync(gameProfile -> {
                                 if (gameProfile.isEmpty()) {
                                     source.sendFeedback(() -> Text.literal("Could not find player").formatted(Formatting.RED), false);
                                     return;

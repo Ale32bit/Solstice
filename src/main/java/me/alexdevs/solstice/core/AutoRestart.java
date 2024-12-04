@@ -109,7 +109,7 @@ public class AutoRestart {
 
         var pitch = Solstice.config().autoRestart.restartSoundPitch;
         server.getPlayerManager().getPlayerList().forEach(player -> {
-            player.playSound(sound, SoundCategory.MASTER, 1f, pitch);
+            player.playSoundToPlayer(sound, SoundCategory.MASTER, 1f, pitch);
         });
     }
 

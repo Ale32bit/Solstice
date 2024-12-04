@@ -26,7 +26,7 @@ public class SeenCommand {
                         .executes(context -> {
                             var targetName = StringArgumentType.getString(context, "player");
                             var source = context.getSource();
-                            source.getServer().getUserCache().findByNameAsync(targetName, (profile) -> {
+                            source.getServer().getUserCache().findByNameAsync(targetName).thenAcceptAsync(profile -> {
                                 if(profile.isEmpty()) {
                                     source.sendFeedback(() -> Format.parse(Solstice.locale().commands.seen.playerNotFound), false);
                                     return;

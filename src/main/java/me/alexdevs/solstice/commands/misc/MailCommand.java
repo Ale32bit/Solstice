@@ -56,7 +56,7 @@ public class MailCommand {
         var mails = MailManager.getMailList(player.getUuid());
         var serverState = Solstice.state.getServerState();
 
-        if(mails.isEmpty()) {
+        if (mails.isEmpty()) {
             context.getSource().sendFeedback(() -> Format.parse(Solstice.locale().commands.mail.emptyMailbox, playerContext), false);
             return 1;
         }
@@ -156,7 +156,7 @@ public class MailCommand {
     private static int sendMail(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         var sender = context.getSource().getPlayerOrThrow();
         var username = StringArgumentType.getString(context, "recipient");
-        context.getSource().getServer().getUserCache().findByNameAsync(username, gameProfile -> {
+        context.getSource().getServer().getUserCache().findByNameAsync(username).thenAcceptAsync(gameProfile -> {
             if (gameProfile.isEmpty()) {
                 var playerContext = PlaceholderContext.of(sender);
 

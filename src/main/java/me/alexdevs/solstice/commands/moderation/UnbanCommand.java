@@ -43,7 +43,7 @@ public class UnbanCommand {
             if(banList.contains(profile)) {
                 banList.remove(profile);
                 pardonCount++;
-                source.sendFeedback(() -> Text.translatable("commands.pardon.success", Texts.toText(profile)), true);
+                source.sendFeedback(() -> Text.translatable("commands.pardon.success", Text.literal(profile.getName())), true);
             }
         }
 
