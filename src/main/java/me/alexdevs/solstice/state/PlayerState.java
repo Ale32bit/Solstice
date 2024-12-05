@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.data;
+package me.alexdevs.solstice.state;
 
 import me.alexdevs.solstice.api.PlayerMail;
 import me.alexdevs.solstice.api.ServerPosition;
@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Deprecated(forRemoval = true)
 public class PlayerState {
     boolean dirty = false;
     boolean saving = false;

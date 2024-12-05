@@ -8,7 +8,8 @@ import me.alexdevs.solstice.config.ConfigManager;
 import me.alexdevs.solstice.config.locale.Locale;
 import me.alexdevs.solstice.config.locale.LocaleManager;
 import me.alexdevs.solstice.core.*;
-import me.alexdevs.solstice.data.StateManager;
+import me.alexdevs.solstice.data.ServerDataManager;
+import me.alexdevs.solstice.state.StateManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -35,9 +36,11 @@ public class Solstice implements ModInitializer {
     public static final Path configDirectory = FabricLoader.getInstance().getConfigDir().resolve(MOD_ID);
     public static final ConfigManager configManager = new ConfigManager(configDirectory.resolve("solstice.conf"));
     public static final LocaleManager localeManager = new LocaleManager(configDirectory.resolve("locale.json"));
+
     public static Config config() {
         return configManager.config();
     }
+
     public static Locale locale() {
         return localeManager.locale();
     }
@@ -55,6 +58,12 @@ public class Solstice implements ModInitializer {
     public static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public static final RegistryKey<MessageType> CHAT_TYPE = RegistryKey.of(RegistryKeys.MESSAGE_TYPE, new Identifier(MOD_ID, "chat"));
+
+    private ServerDataManager serverDataManager;
+
+    public ServerDataManager getServerDataManager() {
+        return serverDataManager;
+    }
 
     public Solstice() {
         INSTANCE = this;
@@ -83,8 +92,17 @@ public class Solstice implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             Solstice.server = server;
+            var dataPath = server.getSavePath(WorldSavePath.ROOT).resolve("data").resolve(MOD_ID);
+            serverDataManager = new ServerDataManager(dataPath);
             InfoPages.register();
-            state.register(server.getSavePath(WorldSavePath.ROOT).resolve("data").resolve(MOD_ID));
+            state.register(dataPath.resolve("legacy"));
+
+
+            try {
+                serverDataManager.prepareData();
+            } catch (ConfigurateException e) {
+                LOGGER.error("Fuck!", e);
+            }
         });
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             SolsticeEvents.READY.invoker().onReady(INSTANCE, server);
