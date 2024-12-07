@@ -30,6 +30,7 @@ public class Locale {
             public String buttonSuggest = "<click:suggest_command:'{{command}}'><hover:show_text:'${hoverText}'><aqua>[</aqua>${label}<aqua>]</aqua></hover></click>";
             public String accept = "<green>Accept</green>";
             public String refuse = "<red>Refuse</red>";
+            public String tooManyTargets = "<red>The provided selector contains too many targets.</red>";
         }
 
         public static class Back {

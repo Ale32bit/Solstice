@@ -25,13 +25,6 @@ public class HomeOther {
                 .then(argument("player", GameProfileArgumentType.gameProfile())
                         .executes(context -> execute(context, "home"))
                         .then(argument("name", StringArgumentType.word())
-                                .suggests((context, builder) -> {
-                                    if (!context.getSource().isExecutedByPlayer())
-                                        return CommandSource.suggestMatching(new String[]{}, builder);
-
-                                    var playerState = Solstice.state.getPlayerState(context.getSource().getPlayer());
-                                    return CommandSource.suggestMatching(playerState.homes.keySet().stream(), builder);
-                                })
                                 .executes(context -> execute(context, StringArgumentType.getString(context, "name")))));
 
         dispatcher.register(rootCommand);
@@ -40,8 +33,13 @@ public class HomeOther {
     private static int execute(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
         var sourcePlayer = context.getSource().getPlayerOrThrow();
         var profiles = GameProfileArgumentType.getProfileArgument(context, "player");
-        if(profiles.size() > 1) {
+        var playerContext = PlaceholderContext.of(context.getSource().getPlayer());
 
+        if(profiles.size() > 1) {
+            context.getSource().sendFeedback(() -> Format.parse(
+                    Solstice.locale().commands.common.tooManyTargets,
+                    playerContext
+            ), false);
             return 0;
         }
 
@@ -49,7 +47,6 @@ public class HomeOther {
 
         var playerState = Solstice.state.getPlayerState(profile);
         var homes = playerState.homes;
-        var playerContext = PlaceholderContext.of(context.getSource().getPlayer());
 
         var placeholders = Map.of(
                 "home", Text.of(name),

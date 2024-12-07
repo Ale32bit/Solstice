@@ -70,14 +70,18 @@ public class HomesCommand {
                 placeholders
         ), false);
 
-        return 1;
+        return homeList.size();
     }
 
     private static int executeOthers(CommandContext<ServerCommandSource> context, Collection<GameProfile> profiles) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrThrow();
+        var playerContext = PlaceholderContext.of(player);
 
         if(profiles.size() > 1) {
-
+            context.getSource().sendFeedback(() -> Format.parse(
+                    Solstice.locale().commands.common.tooManyTargets,
+                    playerContext
+            ), false);
             return 0;
         }
 
@@ -85,7 +89,6 @@ public class HomesCommand {
 
         var playerState = Solstice.state.getPlayerState(profile);
         var homeList = playerState.homes.keySet().stream().toList();
-        var playerContext = PlaceholderContext.of(player);
 
         if(homeList.isEmpty()) {
             var placeholders = Map.of(
@@ -127,6 +130,6 @@ public class HomesCommand {
                 placeholders
         ), false);
 
-        return 1;
+        return homeList.size();
     }
 }
