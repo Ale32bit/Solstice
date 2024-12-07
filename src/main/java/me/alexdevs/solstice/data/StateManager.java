@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.state;
+package me.alexdevs.solstice.data;
 
 import com.mojang.authlib.GameProfile;
 import me.alexdevs.solstice.Solstice;
@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Deprecated(forRemoval = true)
 public class StateManager {
     private static final Charset charset = StandardCharsets.UTF_8;
     private ServerState serverState;

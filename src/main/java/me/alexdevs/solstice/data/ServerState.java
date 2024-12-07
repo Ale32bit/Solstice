@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.state;
+package me.alexdevs.solstice.data;
 
 import me.alexdevs.solstice.api.ServerPosition;
 import com.google.gson.annotations.Expose;
@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Deprecated(forRemoval = true)
 public class ServerState {
     boolean dirty = false;
     boolean saving = false;
