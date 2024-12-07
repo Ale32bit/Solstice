@@ -1,6 +1,5 @@
 package me.alexdevs.solstice;
 
-import me.alexdevs.solstice.api.events.ModuleEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSave;
 import me.alexdevs.solstice.commands.CommandInitializer;
@@ -60,6 +59,12 @@ public class Solstice implements ModInitializer {
 
     public static final RegistryKey<MessageType> CHAT_TYPE = RegistryKey.of(RegistryKeys.MESSAGE_TYPE, new Identifier(MOD_ID, "chat"));
 
+    private ServerDataManager serverDataManager;
+
+    public ServerDataManager getServerDataManager() {
+        return serverDataManager;
+    }
+
     public Solstice() {
         INSTANCE = this;
     }
@@ -88,8 +93,16 @@ public class Solstice implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             Solstice.server = server;
             var dataPath = server.getSavePath(WorldSavePath.ROOT).resolve("data").resolve(MOD_ID);
+            serverDataManager = new ServerDataManager(dataPath);
             InfoPages.register();
             state.register(dataPath.resolve("legacy"));
+
+
+            try {
+                serverDataManager.prepareData();
+            } catch (ConfigurateException e) {
+                LOGGER.error("Fuck!", e);
+            }
         });
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             SolsticeEvents.READY.invoker().onReady(INSTANCE, server);
@@ -116,10 +129,5 @@ public class Solstice implements ModInitializer {
 
     public void broadcast(Text text) {
         server.getPlayerManager().broadcast(text, false);
-    }
-
-    private void loadModules() {
-        var moduleClasses = ModuleEvents.REGISTRATION.invoker().register();
-
     }
 }
