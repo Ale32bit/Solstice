@@ -30,6 +30,7 @@ public class Locale {
             public String buttonSuggest = "<click:suggest_command:'{{command}}'><hover:show_text:'${hoverText}'><aqua>[</aqua>${label}<aqua>]</aqua></hover></click>";
             public String accept = "<green>Accept</green>";
             public String refuse = "<red>Refuse</red>";
+            public String tooManyTargets = "<red>The provided selector contains too many targets.</red>";
         }
 
         public static class Back {
@@ -46,6 +47,7 @@ public class Locale {
 
         public static class Home {
             public String teleporting = "<gold>Teleporting to <yellow>${home}</yellow></gold>";
+            public String teleportingOther = "<gold>Teleporting to <yellow>${owner}'s ${home}</yellow></gold>";
             public String homeExists = "<gold>You already have set this home.</gold>\n ${forceSetButton}";
             public String homeNotFound = "<red>The home <yellow>${home}</yellow> does not exist!</red>";
             public String maxHomesReached = "<red>You have reached the maximum amount of homes!</red>";
@@ -54,9 +56,12 @@ public class Locale {
             public String forceSetHover = "Click to force setting new home";
             public String homeDeleted = "<gold>Home <yellow>${home}</yellow> deleted!</gold>";
             public String homeList = "<gold>Your homes: ${homeList}</gold>";
+            public String homeListOther = "<gold><yellow>${owner}</yellow>'s homes: ${homeList}</gold>";
             public String homesFormat = "<run_cmd:'/home ${home}'><hover:'Click to teleport'><yellow>${home}</yellow></hover></run_cmd>";
+            public String homesFormatOther = "<run_cmd:'/homeother ${owner} ${home}'><hover:'Click to teleport'><yellow>${home}</yellow></hover></run_cmd>";
             public String homesComma = "<gold>, </gold>";
             public String noHomes = "<gold>You did not set any home so far.</gold>";
+            public String noHomesOther = "<gold><yellow>${owner}</yellow> did not set any home so far.</gold>";
         }
 
         public static class Spawn {
