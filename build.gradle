@@ -44,6 +44,7 @@ dependencies {
 
 	include implementation("org.spongepowered:configurate-core:${project.configurate_version}")
 	include implementation("org.spongepowered:configurate-hocon:${project.configurate_version}")
+	include implementation("org.spongepowered:configurate-gson:${project.configurate_version}")
 
 	include modImplementation("me.lucko:fabric-permissions-api:${project.permissions_api_version}")
 

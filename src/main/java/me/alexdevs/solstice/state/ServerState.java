@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.data;
+package me.alexdevs.solstice.state;
 
 import me.alexdevs.solstice.api.ServerPosition;
 import com.google.gson.annotations.Expose;

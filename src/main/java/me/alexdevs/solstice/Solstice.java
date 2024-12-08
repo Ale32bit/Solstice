@@ -8,7 +8,9 @@ import me.alexdevs.solstice.config.ConfigManager;
 import me.alexdevs.solstice.config.locale.Locale;
 import me.alexdevs.solstice.config.locale.LocaleManager;
 import me.alexdevs.solstice.core.*;
-import me.alexdevs.solstice.data.StateManager;
+import me.alexdevs.solstice.modules.Modules;
+import me.alexdevs.solstice.state.StateManager;
+import me.alexdevs.solstice.util.data.GsonDataManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -19,10 +21,13 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.ConfigurateException;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -33,14 +38,16 @@ public class Solstice implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(Solstice.class);
 
     public static final Path configDirectory = FabricLoader.getInstance().getConfigDir().resolve(MOD_ID);
-    public static final ConfigManager configManager = new ConfigManager(configDirectory.resolve("solstice.conf"));
-    public static final LocaleManager localeManager = new LocaleManager(configDirectory.resolve("locale.json"));
+    public static final ConfigManager configManager = new ConfigManager(configDirectory.resolve("legacy_solstice.conf"));
+    public static final LocaleManager localeManager = new LocaleManager(configDirectory.resolve("legacy_locale.json"));
     public static Config config() {
         return configManager.config();
     }
     public static Locale locale() {
         return localeManager.locale();
     }
+
+    public static final me.alexdevs.solstice.locale.LocaleManager newLocaleManager = new me.alexdevs.solstice.locale.LocaleManager(configDirectory.resolve("locale.json"));
 
     public static final StateManager state = new StateManager();
 
@@ -55,6 +62,10 @@ public class Solstice implements ModInitializer {
     public static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public static final RegistryKey<MessageType> CHAT_TYPE = RegistryKey.of(RegistryKeys.MESSAGE_TYPE, new Identifier(MOD_ID, "chat"));
+
+    public static GsonDataManager serverDataManager = new GsonDataManager(Path.of(""));
+
+    public static final Modules modules = new Modules();
 
     public Solstice() {
         INSTANCE = this;
@@ -76,6 +87,9 @@ public class Solstice implements ModInitializer {
         try {
             localeManager.load();
             localeManager.save();
+
+            newLocaleManager.load();
+            newLocaleManager.save();
         } catch (Exception e) {
             LOGGER.error("Error while loading Solstice locale! Refusing to continue!", e);
             return;

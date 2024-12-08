@@ -2,6 +2,7 @@ package me.alexdevs.solstice.commands.utilities;
 
 import com.mojang.brigadier.CommandDispatcher;
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.block.AnvilBlock;
 import net.minecraft.screen.AnvilScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
@@ -20,7 +21,7 @@ public class AnvilCommand {
                     var screen = new SimpleNamedScreenHandlerFactory(
                             (syncId, inventory, p) ->
                                     new AnvilScreenHandler(syncId, inventory, ScreenHandlerContext.EMPTY),
-                            Text.translatable("container.anvil"));
+                            Text.translatable("container.repair"));
                     player.openHandledScreen(screen);
                     player.incrementStat(Stats.INTERACT_WITH_ANVIL);
 

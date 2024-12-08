@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.data;
+package me.alexdevs.solstice.state;
 
 import com.mojang.authlib.GameProfile;
 import me.alexdevs.solstice.Solstice;

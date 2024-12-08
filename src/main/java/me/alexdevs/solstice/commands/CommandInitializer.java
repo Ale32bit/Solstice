@@ -6,6 +6,7 @@ import me.alexdevs.solstice.commands.fun.*;
 import me.alexdevs.solstice.commands.home.*;
 import me.alexdevs.solstice.commands.misc.*;
 import me.alexdevs.solstice.commands.moderation.*;
+import me.alexdevs.solstice.commands.rtp.RandomTeleportCommand;
 import me.alexdevs.solstice.commands.teleport.*;
 import me.alexdevs.solstice.commands.spawn.DelSpawnCommand;
 import me.alexdevs.solstice.commands.spawn.SetSpawnCommand;
@@ -44,6 +45,8 @@ public class CommandInitializer {
             BackCommand.register(dispatcher);
             TeleportOfflineCommand.register(dispatcher);
             TeleportHereCommand.register(dispatcher);
+
+            RandomTeleportCommand.register(dispatcher);
 
             FlyCommand.register(dispatcher);
             GodCommand.register(dispatcher);
