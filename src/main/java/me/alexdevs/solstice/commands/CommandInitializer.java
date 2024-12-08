@@ -3,13 +3,10 @@ package me.alexdevs.solstice.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import me.alexdevs.solstice.commands.admin.*;
 import me.alexdevs.solstice.commands.fun.*;
+import me.alexdevs.solstice.commands.home.*;
 import me.alexdevs.solstice.commands.misc.*;
 import me.alexdevs.solstice.commands.moderation.*;
 import me.alexdevs.solstice.commands.teleport.*;
-import me.alexdevs.solstice.commands.home.DeleteHomeCommand;
-import me.alexdevs.solstice.commands.home.HomeCommand;
-import me.alexdevs.solstice.commands.home.HomesCommand;
-import me.alexdevs.solstice.commands.home.SetHomeCommand;
 import me.alexdevs.solstice.commands.spawn.DelSpawnCommand;
 import me.alexdevs.solstice.commands.spawn.SetSpawnCommand;
 import me.alexdevs.solstice.commands.spawn.SpawnCommand;
@@ -63,6 +60,7 @@ public class CommandInitializer {
             SetHomeCommand.register(dispatcher);
             DeleteHomeCommand.register(dispatcher);
             HomesCommand.register(dispatcher);
+            HomeOther.register(dispatcher);
 
             WarpCommand.register(dispatcher);
             SetWarpCommand.register(dispatcher);
