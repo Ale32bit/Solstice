@@ -60,6 +60,9 @@ public class SolsticeCommand extends ModCommand {
                                 Solstice.configManager.load();
                                 Solstice.localeManager.load();
 
+                                Solstice.newConfigManager.loadData(true);
+                                Solstice.newLocaleManager.load();
+
                                 CustomNameFormat.refreshNames();
                             } catch (Exception e) {
                                 Solstice.LOGGER.error("Failed to reload Solstice", e);

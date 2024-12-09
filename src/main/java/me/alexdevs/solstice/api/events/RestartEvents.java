@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.api.events;
 
-import me.alexdevs.solstice.core.BossBarManager;
+import me.alexdevs.solstice.modules.timebar.TimeBar;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -21,11 +21,11 @@ public class RestartEvents {
 
     @FunctionalInterface
     public interface Schedule {
-        void onSchedule(BossBarManager.TimeBar timeBar);
+        void onSchedule(TimeBar timeBar);
     }
 
     @FunctionalInterface
     public interface Cancel {
-        void onCancel(BossBarManager.TimeBar timeBar);
+        void onCancel(TimeBar timeBar);
     }
 }

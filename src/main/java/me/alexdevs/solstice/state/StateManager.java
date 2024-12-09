@@ -41,8 +41,8 @@ public class StateManager {
 
     public void register(Path path) {
         basePath = path;
-        playersPath = basePath.resolve("players");
-        serverDataPath = basePath.resolve("data.json");
+        playersPath = basePath.resolve("players_legacy");
+        serverDataPath = basePath.resolve("data_legacy.json");
 
         if (!basePath.toFile().exists()) {
             if (!basePath.toFile().mkdirs()) {
@@ -83,7 +83,7 @@ public class StateManager {
             if (playerState.firstJoinedDate == null) {
                 Solstice.LOGGER.info("Player {} joined for the first time!", player.getGameProfile().getName());
                 playerState.firstJoinedDate = new Date();
-                SolsticeEvents.WELCOME.invoker().onWelcome(player, server);
+                //SolsticeEvents.WELCOME.invoker().onWelcome(player, server);
                 var spawnPosition = serverState.spawn;
 
                 if (spawnPosition != null) {
@@ -93,7 +93,7 @@ public class StateManager {
 
             if (playerState.username != null && !playerState.username.equals(player.getGameProfile().getName())) {
                 Solstice.LOGGER.info("Player {} has changed their username from {}", player.getGameProfile().getName(), playerState.username);
-                SolsticeEvents.USERNAME_CHANGE.invoker().onUsernameChange(player, playerState.username);
+                //SolsticeEvents.USERNAME_CHANGE.invoker().onUsernameChange(player, playerState.username);
             }
 
             savePlayerState(player.getUuid(), playerState);

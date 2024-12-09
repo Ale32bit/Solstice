@@ -7,7 +7,9 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+@ConfigSerializable
 public class ServerPosition {
     @Expose
     public double x;
@@ -21,6 +23,10 @@ public class ServerPosition {
     public float pitch;
     @Expose
     public String world;
+
+    public ServerPosition() {
+
+    }
 
     public ServerPosition(double x, double y, double z, float yaw, float pitch, ServerWorld world) {
         this.x = x;

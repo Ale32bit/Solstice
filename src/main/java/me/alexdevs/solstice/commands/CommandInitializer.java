@@ -1,9 +1,8 @@
 package me.alexdevs.solstice.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import me.alexdevs.solstice.commands.admin.*;
 import me.alexdevs.solstice.commands.fun.*;
-import me.alexdevs.solstice.commands.home.*;
+import me.alexdevs.solstice.modules.home.commands.*;
 import me.alexdevs.solstice.commands.misc.*;
 import me.alexdevs.solstice.commands.moderation.*;
 import me.alexdevs.solstice.commands.rtp.RandomTeleportCommand;
@@ -27,12 +26,6 @@ public class CommandInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             CommandInitializer.dispatcher = dispatcher;
 
-            SolsticeCommand.register(dispatcher);
-            SudoCommand.register(dispatcher);
-            BroadcastCommand.register(dispatcher);
-            TimeBarCommand.register(dispatcher);
-            RestartCommand.register(dispatcher);
-
             AfkCommand.register(dispatcher);
 
             TellCommand.register(dispatcher);
@@ -48,22 +41,11 @@ public class CommandInitializer {
 
             RandomTeleportCommand.register(dispatcher);
 
-            FlyCommand.register(dispatcher);
-            GodCommand.register(dispatcher);
-            SmiteCommand.register(dispatcher);
             NicknameCommand.register(dispatcher);
-            HealCommand.register(dispatcher);
-            FeedCommand.register(dispatcher);
 
             SetSpawnCommand.register(dispatcher);
             DelSpawnCommand.register(dispatcher);
             SpawnCommand.register(dispatcher);
-
-            HomeCommand.register(dispatcher);
-            SetHomeCommand.register(dispatcher);
-            DeleteHomeCommand.register(dispatcher);
-            HomesCommand.register(dispatcher);
-            HomeOther.register(dispatcher);
 
             WarpCommand.register(dispatcher);
             SetWarpCommand.register(dispatcher);
@@ -86,8 +68,6 @@ public class CommandInitializer {
             InfoCommand.register(dispatcher);
             RulesCommand.register(dispatcher);
             SuicideCommand.register(dispatcher);
-            ExtinguishCommand.register(dispatcher);
-            IgniteCommand.register(dispatcher);
 
             AnvilCommand.register(dispatcher);
             CartographyCommand.register(dispatcher);

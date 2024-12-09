@@ -2,9 +2,11 @@ package me.alexdevs.solstice.util.data;
 
 import io.leangen.geantyref.TypeToken;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.util.data.serializers.DateSerializer;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -12,31 +14,36 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class HoconDataManager {
-    private final Path filePath;
+    protected Path filePath;
 
-    private final HoconConfigurationLoader loader;
-    private CommentedConfigurationNode dataNode;
+    protected HoconConfigurationLoader loader;
+    protected CommentedConfigurationNode dataNode;
 
 
-    private final Map<String, Class<?>> classMap = new HashMap<>();
-    private final Map<Class<?>, Object> data = new HashMap<>();
-    private final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
+    protected final Map<String, Class<?>> classMap = new HashMap<>();
+    protected final Map<Class<?>, Object> data = new HashMap<>();
+    protected final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
 
-    private static HoconConfigurationLoader getLoader(Path path) {
+    protected static HoconConfigurationLoader getLoader(Path path) {
         return HoconConfigurationLoader
                 .builder()
                 .path(path)
-                .defaultOptions(opts -> opts.shouldCopyDefaults(true))
+                .defaultOptions(opts -> opts
+                        .shouldCopyDefaults(true)
+                        .serializers(TypeSerializerCollection.defaults()
+                                .childBuilder()
+                                .registerExact(DateSerializer.TYPE)
+                                .build()))
                 .build();
-    }
-
-    public HoconDataManager(Path filePath) {
-        this.filePath = filePath;
-        loader = getLoader(getDataPath());
     }
 
     public Path getDataPath() {
         return filePath;
+    }
+
+    public void setDataPath(Path filePath) {
+        this.filePath = filePath;
+        loader = getLoader(getDataPath());
     }
 
     @SuppressWarnings("unchecked")
@@ -90,12 +97,12 @@ public class HoconDataManager {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T get(final CommentedConfigurationNode node, final Class<T> clazz) throws ConfigurateException {
+    protected <T> T get(final CommentedConfigurationNode node, final Class<T> clazz) throws ConfigurateException {
         return node.get(TypeToken.get(clazz), (Supplier<T>) () -> (T) this.providers.get(clazz).get());
     }
 
     @SuppressWarnings("unchecked")
-    private <T> void set(final CommentedConfigurationNode node, final Class<T> clazz) throws ConfigurateException {
+    protected <T> void set(final CommentedConfigurationNode node, final Class<T> clazz) throws ConfigurateException {
         node.set(TypeToken.get(clazz), (T) this.providers.get(clazz).get());
     }
 

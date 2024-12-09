@@ -2,12 +2,11 @@ package me.alexdevs.solstice.util.data;
 
 import io.leangen.geantyref.TypeToken;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.util.data.serializers.DateSerializer;
 import org.spongepowered.configurate.BasicConfigurationNode;
-import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
-import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -15,31 +14,36 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class GsonDataManager {
-    private final Path filePath;
+    protected Path filePath;
 
-    private final GsonConfigurationLoader loader;
-    private BasicConfigurationNode dataNode;
+    protected GsonConfigurationLoader loader;
+    protected BasicConfigurationNode dataNode;
 
 
-    private final Map<String, Class<?>> classMap = new HashMap<>();
-    private final Map<Class<?>, Object> data = new HashMap<>();
-    private final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
+    protected final Map<String, Class<?>> classMap = new HashMap<>();
+    protected final Map<Class<?>, Object> data = new HashMap<>();
+    protected final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
 
-    private static GsonConfigurationLoader getLoader(Path path) {
+    protected static GsonConfigurationLoader getLoader(Path path) {
         return GsonConfigurationLoader
                 .builder()
                 .path(path)
-                .defaultOptions(opts -> opts.shouldCopyDefaults(true))
+                .defaultOptions(opts -> opts
+                        .shouldCopyDefaults(true)
+                        .serializers(TypeSerializerCollection.defaults()
+                                .childBuilder()
+                                .registerExact(DateSerializer.TYPE)
+                                .build()))
                 .build();
-    }
-
-    public GsonDataManager(Path filePath) {
-        this.filePath = filePath;
-        loader = getLoader(getDataPath());
     }
 
     public Path getDataPath() {
         return filePath;
+    }
+
+    public void setDataPath(Path filePath) {
+        this.filePath = filePath;
+        loader = getLoader(getDataPath());
     }
 
     @SuppressWarnings("unchecked")
@@ -93,12 +97,12 @@ public class GsonDataManager {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T get(final BasicConfigurationNode node, final Class<T> clazz) throws ConfigurateException {
+    public <T> T get(final BasicConfigurationNode node, final Class<T> clazz) throws ConfigurateException {
         return node.get(TypeToken.get(clazz), (Supplier<T>) () -> (T) this.providers.get(clazz).get());
     }
 
     @SuppressWarnings("unchecked")
-    private <T> void set(final BasicConfigurationNode node, final Class<T> clazz) throws ConfigurateException {
+    public <T> void set(final BasicConfigurationNode node, final Class<T> clazz) throws ConfigurateException {
         node.set(TypeToken.get(clazz), (T) this.providers.get(clazz).get());
     }
 
