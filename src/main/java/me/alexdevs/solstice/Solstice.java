@@ -12,7 +12,6 @@ import me.alexdevs.solstice.data.PlayerDataManager;
 import me.alexdevs.solstice.data.ServerData;
 import me.alexdevs.solstice.modules.Modules;
 import me.alexdevs.solstice.state.StateManager;
-import me.alexdevs.solstice.util.data.GsonDataManager;
 import me.alexdevs.solstice.util.data.HoconDataManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -132,7 +131,6 @@ public class Solstice implements ModInitializer {
         });
 
         CommandInitializer.register();
-        AfkTracker.register();
         TeleportTracker.register();
         BackTracker.register();
         TabList.register();

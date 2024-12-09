@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.modules;
 
 import me.alexdevs.solstice.modules.admin.AdminModule;
+import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.core.CoreModule;
 import me.alexdevs.solstice.modules.autorestart.AutoRestartModule;
 import me.alexdevs.solstice.modules.home.HomeModule;
@@ -12,6 +13,7 @@ public class Modules {
     public final TimeBarModule timeBar;
     public final AdminModule admin;
     public final HomeModule home;
+    public final AfkModule afk;
 
     public Modules() {
         core = new CoreModule();
@@ -19,5 +21,6 @@ public class Modules {
         timeBar = new TimeBarModule();
         admin = new AdminModule();
         home = new HomeModule();
+        afk = new AfkModule();
     }
 }
