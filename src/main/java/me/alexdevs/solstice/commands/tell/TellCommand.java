@@ -1,7 +1,6 @@
 package me.alexdevs.solstice.commands.tell;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.commands.CommandInitializer;
 import me.alexdevs.solstice.util.Format;
 import me.alexdevs.solstice.util.Components;
 import com.mojang.brigadier.CommandDispatcher;
@@ -25,7 +24,7 @@ public class TellCommand {
     public static final HashMap<String, String> lastSender = new HashMap<>();
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        CommandInitializer.removeCommands("msg", "tell", "w");
+        //CommandInitializer.removeCommands("msg", "tell", "w");
 
         var requirement = Permissions.require("solstice.command.tell", true);
 

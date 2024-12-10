@@ -5,9 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.core.CustomNameFormat;
 import me.alexdevs.solstice.util.Format;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
@@ -57,13 +55,10 @@ public class SolsticeCommand extends ModCommand {
                         .requires(require("reload", 3))
                         .executes(context -> {
                             try {
-                                Solstice.configManager.load();
-                                Solstice.localeManager.load();
-
                                 Solstice.newConfigManager.loadData(true);
                                 Solstice.newLocaleManager.load();
 
-                                CustomNameFormat.refreshNames();
+                                Solstice.modules.customName.refreshNames();
                             } catch (Exception e) {
                                 Solstice.LOGGER.error("Failed to reload Solstice", e);
                                 context.getSource().sendFeedback(() -> Text.of("Failed to load Solstice config. Check console for more info."), true);

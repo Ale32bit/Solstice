@@ -7,6 +7,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.modules.autorestart.AutoRestartModule;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -47,7 +48,7 @@ public class RestartCommand extends ModCommand {
 
     private int schedule(CommandContext<ServerCommandSource> context, int seconds, @Nullable String message) {
         if (message == null) {
-            message = Solstice.config().autoRestart.restartBarLabel;
+            message = Solstice.newLocaleManager.getLocale(AutoRestartModule.ID).raw("barLabel");
         }
         Solstice.modules.autoRestart.schedule(seconds, message);
 

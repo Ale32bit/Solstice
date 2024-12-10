@@ -14,6 +14,7 @@ public class AdminModule {
             new GodCommand(dispatcher, registryAccess, environment);
             new HealCommand(dispatcher, registryAccess, environment);
             new IgniteCommand(dispatcher, registryAccess, environment);
+            new InventorySeeCommand(dispatcher, registryAccess, environment);
             new SmiteCommand(dispatcher, registryAccess, environment);
             new SudoCommand(dispatcher, registryAccess, environment);
         });

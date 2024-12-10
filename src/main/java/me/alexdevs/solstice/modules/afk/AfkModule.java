@@ -11,6 +11,7 @@ import me.alexdevs.solstice.modules.afk.commands.AfkCommand;
 import me.alexdevs.solstice.modules.afk.data.AfkConfig;
 import me.alexdevs.solstice.modules.afk.data.AfkLocale;
 import me.alexdevs.solstice.modules.afk.data.AfkPlayerData;
+import me.alexdevs.solstice.util.Format;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.*;
@@ -144,7 +145,7 @@ public class AfkModule {
     }
 
     private void loadConfig() {
-        afkTag = locale.get("tag");
+        afkTag = Format.parse(config.tag);
         absentTimeTrigger = config.timeTrigger * 20;
     }
 

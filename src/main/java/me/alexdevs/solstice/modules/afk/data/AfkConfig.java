@@ -13,4 +13,7 @@ public class AfkConfig {
 
     @Comment("AFK triggers after the player has been inactive for the following seconds. Defaults to 300 seconds.")
     public int timeTrigger = 300;
+
+    @Comment("This tag is displayed with `solstice:afk` placeholder when the player is AFK.")
+    public String tag = "<gray>[AFK]</gray> ";
 }

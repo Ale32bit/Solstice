@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.api;
 
-import me.alexdevs.solstice.core.BackTracker;
 import com.google.gson.annotations.Expose;
+import me.alexdevs.solstice.modules.back.BackModule;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -49,7 +49,7 @@ public class ServerPosition {
     public void teleport(ServerPlayerEntity player, boolean setBackPosition) {
         if (setBackPosition) {
             var currentPosition = new ServerPosition(player);
-            BackTracker.lastPlayerPositions.put(player.getUuid(), currentPosition);
+            BackModule.lastPlayerPositions.put(player.getUuid(), currentPosition);
         }
 
         var serverWorld = player.getServer().getWorld(RegistryKey.of(RegistryKeys.WORLD, new Identifier(this.world)));

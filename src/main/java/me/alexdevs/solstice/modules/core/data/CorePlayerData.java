@@ -4,7 +4,6 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.Date;
 
-@ConfigSerializable
 public class CorePlayerData {
     public String username;
     public Date firstJoinedDate;

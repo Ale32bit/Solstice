@@ -2,7 +2,6 @@ package me.alexdevs.solstice;
 
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSave;
-import me.alexdevs.solstice.commands.CommandInitializer;
 import me.alexdevs.solstice.config.Config;
 import me.alexdevs.solstice.config.ConfigManager;
 import me.alexdevs.solstice.config.locale.Locale;
@@ -137,14 +136,7 @@ public class Solstice implements ModInitializer {
             nextTickRunnables.clear();
         });
 
-        CommandInitializer.register();
         TeleportTracker.register();
-        BackTracker.register();
-        TabList.register();
-        MailManager.register();
-        CommandSpy.register();
-        AutoAnnouncements.register();
-        MuteManager.register();
     }
 
     public void broadcast(Text text) {

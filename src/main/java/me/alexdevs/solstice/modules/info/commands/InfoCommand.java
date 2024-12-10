@@ -26,15 +26,19 @@ public class InfoCommand extends ModCommand {
     public InfoCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
         super(dispatcher, commandRegistry, environment);
 
-        // WorldEdit's /info -> /tool info
-        Utils.removeCommands(dispatcher, "info");
-
         module = Solstice.modules.info;
     }
 
     @Override
+    public void register() {
+        // WorldEdit's /info -> /tool info
+        Utils.removeCommands(dispatcher, "info");
+        super.register();
+    }
+
+    @Override
     public List<String> getNames() {
-        return List.of("info", "infopages");
+        return List.of("info", "pages");
     }
 
     @Override
