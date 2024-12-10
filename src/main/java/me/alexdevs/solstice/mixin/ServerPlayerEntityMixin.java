@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.mixin;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.core.customFormats.CustomDeathMessage;
+import me.alexdevs.solstice.modules.styling.formatters.DeathFormatter;
 import me.alexdevs.solstice.api.ServerPosition;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
@@ -41,7 +41,7 @@ public class ServerPlayerEntityMixin {
     @Redirect(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/damage/DamageTracker;getDeathMessage()Lnet/minecraft/text/Text;"))
     private Text solstice$getDeathMessage(DamageTracker instance) {
         var player = (ServerPlayerEntity) (Object) this;
-        return CustomDeathMessage.onDeath(player, instance);
+        return DeathFormatter.onDeath(player, instance);
     }
 
     @Inject(method = "teleport(Lnet/minecraft/server/world/ServerWorld;DDDLjava/util/Set;FF)Z", at = @At("HEAD"))

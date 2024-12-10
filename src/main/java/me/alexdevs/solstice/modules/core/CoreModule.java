@@ -42,11 +42,6 @@ public class CoreModule {
                 Solstice.LOGGER.info("Player {} joined for the first time!", player.getGameProfile().getName());
                 playerData.firstJoinedDate = new Date();
                 SolsticeEvents.WELCOME.invoker().onWelcome(player, server);
-//                var spawnPosition = serverState.spawn;
-//
-//                if (spawnPosition != null) {
-//                    spawnPosition.teleport(player, false);
-//                }
             }
 
             if (playerData.username != null && !playerData.username.equals(player.getGameProfile().getName())) {

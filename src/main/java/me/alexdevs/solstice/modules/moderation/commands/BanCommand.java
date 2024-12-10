@@ -9,10 +9,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.core.customFormats.CustomBanMessage;
+import me.alexdevs.solstice.modules.styling.formatters.BanMessageFormatter;
 import me.alexdevs.solstice.modules.Utils;
 import me.alexdevs.solstice.util.Format;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.BannedPlayerEntry;
@@ -79,7 +78,7 @@ public class BanCommand extends ModCommand {
 
             var serverPlayerEntity = source.getServer().getPlayerManager().getPlayer(target.getId());
             if (serverPlayerEntity != null) {
-                serverPlayerEntity.networkHandler.disconnect(CustomBanMessage.format(target, banEntry));
+                serverPlayerEntity.networkHandler.disconnect(BanMessageFormatter.format(target, banEntry));
             }
         }
 

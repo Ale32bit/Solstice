@@ -12,10 +12,8 @@ public class Locale {
     public static class Commands {
         public Common common = new Common();
         public Near near = new Near();
-        public Spawn spawn = new Spawn();
         public TeleportRequest teleportRequest = new TeleportRequest();
         public Tell tell = new Tell();
-        public Warp warp = new Warp();
         public Seen seen = new Seen();
 
         public static class Common {
@@ -31,10 +29,6 @@ public class Locale {
             public String nearestPlayers = "<gold>Nearest players: ${playerList}</gold>";
             public String format = "${player} <gold>(</gold><yellow>${distance}</yellow><gold>)</gold>";
             public String comma = "<gold>, </gold>";
-        }
-
-        public static class Spawn {
-            public String teleporting = "<gold>Teleporting to spawn...</gold>";
         }
 
         public static class TeleportRequest {
@@ -60,15 +54,6 @@ public class Locale {
             public String message = "<gold>[</gold>${sourcePlayer} <gray>→</gray> ${targetPlayer}<gold>]</gold> ${message}";
             public String messageSpy = "\uD83D\uDC41 <gray>[${sourcePlayer} → ${targetPlayer}] ${message}</gray>";
             public String noLastSenderReply = "<red>You have no one to reply to.</red>"; // relatable
-        }
-
-        public static class Warp {
-            public String teleporting = "<gold>Warping to <yellow>${warp}</yellow>...</gold>";
-            public String warpNotFound = "<red>The warp <yellow>${warp}</yellow> does not exist!</red>";
-            public String warpList = "<gold>Server warps: ${warpList}</gold>";
-            public String warpsFormat = "<run_cmd:'/warp ${warp}'><hover:'Click to teleport'><yellow>${warp}</yellow></hover></run_cmd>";
-            public String warpsComma = "<gold>, </gold>";
-            public String noWarps = "<gold>There are no warps so far.</gold>";
         }
 
         public static class Seen {

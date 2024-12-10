@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Deprecated(forRemoval = true)
 public class StateManager {
     private static final Charset charset = StandardCharsets.UTF_8;
     private ServerState serverState;
@@ -81,19 +82,7 @@ public class StateManager {
             playerState.ipAddress = handler.getPlayer().getIp();
 
             if (playerState.firstJoinedDate == null) {
-                Solstice.LOGGER.info("Player {} joined for the first time!", player.getGameProfile().getName());
                 playerState.firstJoinedDate = new Date();
-                //SolsticeEvents.WELCOME.invoker().onWelcome(player, server);
-                var spawnPosition = serverState.spawn;
-
-                if (spawnPosition != null) {
-                    spawnPosition.teleport(player, false);
-                }
-            }
-
-            if (playerState.username != null && !playerState.username.equals(player.getGameProfile().getName())) {
-                Solstice.LOGGER.info("Player {} has changed their username from {}", player.getGameProfile().getName(), playerState.username);
-                //SolsticeEvents.USERNAME_CHANGE.invoker().onUsernameChange(player, playerState.username);
             }
 
             savePlayerState(player.getUuid(), playerState);

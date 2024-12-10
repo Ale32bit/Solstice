@@ -13,6 +13,7 @@ public class UtilitiesModule {
             new LoomCommand(dispatcher, registryAccess, environment);
             new SmithingCommand(dispatcher, registryAccess, environment);
             new StonecutterCommand(dispatcher, registryAccess, environment);
+            new SuicideCommand(dispatcher, registryAccess, environment);
             new TrashCommand(dispatcher, registryAccess, environment);
             new WorkbenchCommand(dispatcher, registryAccess, environment);
         });

@@ -12,10 +12,6 @@ public class ServerState {
     boolean saving = false;
 
     @Expose
-    public @Nullable ServerPosition spawn;
-    @Expose
-    public ConcurrentHashMap<String, ServerPosition> warps = new ConcurrentHashMap<>();
-    @Expose
     public ConcurrentHashMap<UUID, String> usernameCache = new ConcurrentHashMap<>();
 
 }

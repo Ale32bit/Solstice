@@ -6,7 +6,6 @@ import me.alexdevs.solstice.config.Config;
 import me.alexdevs.solstice.config.ConfigManager;
 import me.alexdevs.solstice.config.locale.Locale;
 import me.alexdevs.solstice.config.locale.LocaleManager;
-import me.alexdevs.solstice.core.*;
 import me.alexdevs.solstice.data.PlayerDataManager;
 import me.alexdevs.solstice.data.ServerData;
 import me.alexdevs.solstice.modules.Modules;
@@ -41,21 +40,24 @@ public class Solstice implements ModInitializer {
     public static final ConfigManager configManager = new ConfigManager(configDirectory.resolve("legacy_solstice.conf"));
     public static final LocaleManager localeManager = new LocaleManager(configDirectory.resolve("legacy_locale.json"));
 
+    @Deprecated(forRemoval = true)
     public static Config config() {
         return configManager.config();
     }
 
+    @Deprecated(forRemoval = true)
     public static Locale locale() {
         return localeManager.locale();
     }
 
     public static final me.alexdevs.solstice.locale.LocaleManager newLocaleManager = new me.alexdevs.solstice.locale.LocaleManager(configDirectory.resolve("locale.json"));
-    public static final me.alexdevs.solstice.util.data.HoconDataManager newConfigManager = new HoconDataManager();
+    public static final HoconDataManager newConfigManager = new HoconDataManager();
 
     static {
         newConfigManager.setDataPath(configDirectory.resolve("config.conf"));
     }
 
+    @Deprecated(forRemoval = true)
     public static final StateManager state = new StateManager();
 
     private static Solstice INSTANCE;
@@ -135,8 +137,6 @@ public class Solstice implements ModInitializer {
             nextTickRunnables.forEach(Runnable::run);
             nextTickRunnables.clear();
         });
-
-        TeleportTracker.register();
     }
 
     public void broadcast(Text text) {
