@@ -6,8 +6,12 @@ import eu.pb4.placeholders.api.Placeholders;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.PlayerActivityEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
-import me.alexdevs.solstice.core.AfkTracker;
-import me.alexdevs.solstice.util.Format;
+import me.alexdevs.solstice.locale.Locale;
+import me.alexdevs.solstice.modules.afk.commands.AfkCommand;
+import me.alexdevs.solstice.modules.afk.data.AfkConfig;
+import me.alexdevs.solstice.modules.afk.data.AfkLocale;
+import me.alexdevs.solstice.modules.afk.data.AfkPlayerData;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.*;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
@@ -23,63 +27,77 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AfkModule {
-    private int absentTimeTrigger = Solstice.config().afk.afkTimeTrigger * 20; // seconds * 20 ticks
-
-    private final ConcurrentHashMap<UUID, AfkTracker.PlayerActivityState> playerActivityStates = new ConcurrentHashMap<>();
+    public static final String ID = "afk";
+    private final ConcurrentHashMap<UUID, PlayerActivityState> playerActivityStates = new ConcurrentHashMap<>();
 
     public static Text afkTag;
+    private int absentTimeTrigger;
+
+    private Locale locale;
+    private AfkConfig config;
 
     public AfkModule() {
-        // TODO: use new locale, player data and config
-        loadAfkTag();
+        Solstice.newConfigManager.registerData(ID, AfkConfig.class, AfkConfig::new);
+        Solstice.playerData.registerData(ID, AfkPlayerData.class, AfkPlayerData::new);
+        Solstice.newLocaleManager.registerModule(ID, AfkLocale.MODULE);
+
+        CommandRegistrationCallback.EVENT.register(AfkCommand::new);
+
+
+        SolsticeEvents.READY.register((instance, server) -> register());
+    }
+
+    private void load() {
+        loadConfig();
+    }
+
+    private void register() {
+        locale = Solstice.newLocaleManager.getLocale(ID);
+        config = Solstice.newConfigManager.getData(AfkConfig.class);
+
+        load();
 
         Placeholders.register(new Identifier(Solstice.MOD_ID, "afk"), (context, argument) -> {
-            if(!context.hasPlayer())
+            if (!context.hasPlayer())
                 return PlaceholderResult.invalid("No player!");
             var player = context.player();
-            if(isPlayerAfk(player.getUuid())) {
+            if (isPlayerAfk(player.getUuid())) {
                 return PlaceholderResult.value(afkTag);
             } else {
                 return PlaceholderResult.value("");
             }
         });
 
-        if(!Solstice.config().afk.enableAfk)
+        if (!config.enable)
             return;
 
         PlayerActivityEvents.AFK.register((player, server) -> {
             Solstice.LOGGER.info("{} is AFK. Active time: {} seconds.", player.getGameProfile().getName(), getActiveTime(player));
-            if(!Solstice.config().afk.announceAfk)
+            if (!config.announce)
                 return;
 
             var playerContext = PlaceholderContext.of(player);
 
-            Solstice.getInstance().broadcast(Format.parse(
-                    Solstice.locale().commands.afk.goneAfk,
-                    playerContext
-            ));
+            Solstice.getInstance().broadcast(locale.get("goneAfk", playerContext));
         });
 
         PlayerActivityEvents.AFK_RETURN.register((player, server) -> {
             Solstice.LOGGER.info("{} is no longer AFK. Active time: {} seconds.", player.getGameProfile().getName(), getActiveTime(player));
-            if(!Solstice.config().afk.announceAfk)
+            if (!config.announce)
                 return;
 
             var playerContext = PlaceholderContext.of(player);
 
-            Solstice.getInstance().broadcast(Format.parse(
-                    Solstice.locale().commands.afk.returnAfk,
-                    playerContext
-            ));
+            Solstice.getInstance().broadcast(locale.get("returnAfk", playerContext));
         });
 
-        SolsticeEvents.RELOAD.register(inst -> loadAfkTag());
+        SolsticeEvents.RELOAD.register(inst -> load());
 
         ServerTickEvents.END_SERVER_TICK.register(this::updatePlayers);
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             final var player = handler.getPlayer();
-            playerActivityStates.put(player.getUuid(), new AfkTracker.PlayerActivityState(player, server.getTicks()));
+            playerActivityStates.put(player.getUuid(), new PlayerActivityState(player, server.getTicks()));
         });
 
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
@@ -125,16 +143,17 @@ public class AfkModule {
         });
     }
 
-    private static void loadAfkTag() {
-        afkTag = Format.parse(Solstice.locale().commands.afk.tag);
+    private void loadConfig() {
+        afkTag = locale.get("tag");
+        absentTimeTrigger = config.timeTrigger * 20;
     }
 
     private void updatePlayer(ServerPlayerEntity player, MinecraftServer server) {
         var currentTick = server.getTicks();
-        var playerState = playerActivityStates.computeIfAbsent(player.getUuid(), uuid -> new AfkTracker.PlayerActivityState(player, currentTick));
+        var playerState = playerActivityStates.computeIfAbsent(player.getUuid(), uuid -> new PlayerActivityState(player, currentTick));
 
         var oldPosition = playerState.position;
-        var newPosition = new AfkTracker.PlayerPosition(player);
+        var newPosition = new PlayerPosition(player);
         if (!oldPosition.equals(newPosition)) {
             playerState.position = newPosition;
             resetAfkState(player, server);
@@ -155,9 +174,9 @@ public class AfkModule {
     private void updatePlayerActiveTime(ServerPlayerEntity player, int currentTick) {
         var playerActivityState = playerActivityStates.get(player.getUuid());
         if (!playerActivityState.isAfk) {
-            var playerState = Solstice.state.getPlayerState(player);
+            var data = Solstice.playerData.get(player).getData(AfkPlayerData.class);
             var interval = currentTick - playerActivityState.activeStart;
-            playerState.activeTime += interval / 20;
+            data.activeTime += interval / 20;
         }
     }
 
@@ -176,45 +195,6 @@ public class AfkModule {
             playerState.isAfk = false;
             playerState.activeStart = server.getTicks();
             PlayerActivityEvents.AFK_RETURN.invoker().onAfkReturn(player, server);
-        }
-    }
-
-    public static class PlayerPosition {
-        public String dimension;
-        public double x;
-        public double y;
-        public double z;
-        public float yaw;
-        public float pitch;
-
-
-        public boolean equals(AfkTracker.PlayerPosition obj) {
-            return x == obj.x && y == obj.y && z == obj.z
-                    && yaw == obj.yaw && pitch == obj.pitch
-                    && dimension.equals(obj.dimension);
-        }
-
-        public PlayerPosition(ServerPlayerEntity player) {
-            dimension = player.getWorld().getRegistryKey().getValue().toString();
-            x = player.getX();
-            y = player.getY();
-            z = player.getZ();
-            yaw = player.getYaw();
-            pitch = player.getPitch();
-        }
-    }
-
-    public static class PlayerActivityState {
-        public AfkTracker.PlayerPosition position;
-        public int lastUpdate;
-        public boolean isAfk;
-        public int activeStart;
-
-        public PlayerActivityState(ServerPlayerEntity player, int lastUpdate) {
-            this.position = new AfkTracker.PlayerPosition(player);
-            this.lastUpdate = lastUpdate;
-            this.isAfk = false;
-            this.activeStart = lastUpdate;
         }
     }
 
@@ -240,7 +220,7 @@ public class AfkModule {
     }
 
     public int getActiveTime(ServerPlayerEntity player) {
-        var playerState = Solstice.state.getPlayerState(player);
-        return playerState.activeTime;
+        var data = Solstice.playerData.get(player).getData(AfkPlayerData.class);
+        return data.activeTime;
     }
 }

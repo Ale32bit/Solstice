@@ -1,56 +1,64 @@
-package me.alexdevs.solstice.commands.misc;
+package me.alexdevs.solstice.modules.info.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.commands.CommandInitializer;
-import me.alexdevs.solstice.core.InfoPages;
-import me.alexdevs.solstice.util.Format;
-import me.lucko.fabric.api.permissions.v0.Permissions;
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.modules.Utils;
+import me.alexdevs.solstice.modules.info.InfoModule;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
+import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import static net.minecraft.server.command.CommandManager.literal;
 import static net.minecraft.server.command.CommandManager.argument;
 
-public class InfoCommand {
+public class InfoCommand extends ModCommand {
+    private InfoModule module;
 
-    private static final Predicate<ServerCommandSource> requirement = Permissions.require("solstice.command.info", true);
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    public InfoCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
+        super(dispatcher, commandRegistry, environment);
+
         // WorldEdit's /info -> /tool info
-        CommandInitializer.removeCommands("info");
+        Utils.removeCommands(dispatcher, "info");
 
-        // experimenting with aliases, definitely doing something wrong
-        dispatcher.register(buildCommand("info"));
-        dispatcher.register(buildCommand("infopage"));
+        module = Solstice.modules.info;
     }
 
-    private static LiteralArgumentBuilder<ServerCommandSource> buildCommand(String command) {
-        return literal(command)
-                .requires(requirement)
+    @Override
+    public List<String> getNames() {
+        return List.of("info", "infopages");
+    }
+
+    @Override
+    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+        return literal(name)
+                .requires(require(true))
                 .executes(context -> {
+
                     var source = context.getSource();
-                    var pageList = InfoPages.enumerate();
+                    var pageList = module.enumerate();
                     var sourceContext = PlaceholderContext.of(source);
 
-                    if(pageList.isEmpty()) {
-                        context.getSource().sendFeedback(() -> Format.parse(
-                                Solstice.locale().commands.info.noPages,
+                    if (pageList.isEmpty()) {
+                        context.getSource().sendFeedback(() -> module.locale.get(
+                                "noPages",
                                 sourceContext
                         ), false);
                         return 1;
                     }
 
                     var listText = Text.empty();
-                    var comma = Format.parse(Solstice.locale().commands.info.pagesComma);
+                    var comma = module.locale.get("pagesComma");
                     var list = pageList.stream().toList();
-                    for(var i = 0; i < list.size(); i++) {
+                    for (var i = 0; i < list.size(); i++) {
                         if (i > 0) {
                             listText = listText.append(comma);
                         }
@@ -58,8 +66,8 @@ public class InfoCommand {
                                 "page", Text.of(list.get(i))
                         );
 
-                        listText = listText.append(Format.parse(
-                                Solstice.locale().commands.info.pagesFormat,
+                        listText = listText.append(module.locale.get(
+                                "pagesFormat",
                                 sourceContext,
                                 placeholders
                         ));
@@ -68,8 +76,8 @@ public class InfoCommand {
                     var placeholders = Map.of(
                             "pageList", (Text) listText
                     );
-                    context.getSource().sendFeedback(() -> Format.parse(
-                            Solstice.locale().commands.info.pageList,
+                    context.getSource().sendFeedback(() -> module.locale.get(
+                            "pageList",
                             sourceContext,
                             placeholders
                     ), false);
@@ -77,10 +85,10 @@ public class InfoCommand {
                     return 1;
                 })
                 .then(argument("page", StringArgumentType.word())
-                        .suggests((context, builder) -> CommandSource.suggestMatching(InfoPages.enumerate(), builder))
+                        .suggests((context, builder) -> CommandSource.suggestMatching(module.enumerate(), builder))
                         .executes(context -> {
                             var sourceContext = PlaceholderContext.of(context.getSource());
-                            var page = InfoPages.getPage(StringArgumentType.getString(context, "page"), sourceContext);
+                            var page = module.getPage(StringArgumentType.getString(context, "page"), sourceContext);
                             context.getSource().sendFeedback(() -> page, false);
                             return 1;
                         }));

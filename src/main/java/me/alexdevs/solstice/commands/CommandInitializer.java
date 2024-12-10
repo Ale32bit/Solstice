@@ -2,7 +2,7 @@ package me.alexdevs.solstice.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import me.alexdevs.solstice.commands.fun.*;
-import me.alexdevs.solstice.modules.home.commands.*;
+import me.alexdevs.solstice.modules.afk.commands.AfkCommand;
 import me.alexdevs.solstice.commands.misc.*;
 import me.alexdevs.solstice.commands.moderation.*;
 import me.alexdevs.solstice.commands.rtp.RandomTeleportCommand;
@@ -17,6 +17,9 @@ import me.alexdevs.solstice.commands.warp.DeleteWarpCommand;
 import me.alexdevs.solstice.commands.warp.SetWarpCommand;
 import me.alexdevs.solstice.commands.warp.WarpCommand;
 import me.alexdevs.solstice.commands.warp.WarpsCommand;
+import me.alexdevs.solstice.modules.info.commands.InfoCommand;
+import me.alexdevs.solstice.modules.info.commands.MotdCommand;
+import me.alexdevs.solstice.modules.info.commands.RulesCommand;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 
@@ -25,8 +28,6 @@ public class CommandInitializer {
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             CommandInitializer.dispatcher = dispatcher;
-
-            AfkCommand.register(dispatcher);
 
             TellCommand.register(dispatcher);
             ReplyCommand.register(dispatcher);
@@ -64,9 +65,6 @@ public class CommandInitializer {
             NearCommand.register(dispatcher);
             MailCommand.register(dispatcher);
             SeenCommand.register(dispatcher);
-            MotdCommand.register(dispatcher);
-            InfoCommand.register(dispatcher);
-            RulesCommand.register(dispatcher);
             SuicideCommand.register(dispatcher);
 
             AnvilCommand.register(dispatcher);

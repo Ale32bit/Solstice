@@ -15,6 +15,7 @@ import me.alexdevs.solstice.state.StateManager;
 import me.alexdevs.solstice.util.data.HoconDataManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.registry.RegistryKey;
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.ConfigurateException;
 
 import java.nio.file.Path;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -74,6 +76,8 @@ public class Solstice implements ModInitializer {
 
     public static final Modules modules = new Modules();
 
+    private static final ConcurrentLinkedQueue<Runnable> nextTickRunnables = new ConcurrentLinkedQueue<>();
+
     public Solstice() {
         INSTANCE = this;
     }
@@ -114,8 +118,6 @@ public class Solstice implements ModInitializer {
             playerData.setDataPath(path.resolve("players"));
 
             serverData.loadData(false);
-
-            InfoPages.register();
         });
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             SolsticeEvents.READY.invoker().onReady(INSTANCE, server);
@@ -130,6 +132,11 @@ public class Solstice implements ModInitializer {
             playerData.saveAll();
         });
 
+        ServerTickEvents.START_SERVER_TICK.register(server -> {
+            nextTickRunnables.forEach(Runnable::run);
+            nextTickRunnables.clear();
+        });
+
         CommandInitializer.register();
         TeleportTracker.register();
         BackTracker.register();
@@ -137,11 +144,14 @@ public class Solstice implements ModInitializer {
         MailManager.register();
         CommandSpy.register();
         AutoAnnouncements.register();
-        Motd.register();
         MuteManager.register();
     }
 
     public void broadcast(Text text) {
         server.getPlayerManager().broadcast(text, false);
+    }
+
+    public static void nextTick(Runnable runnable) {
+        nextTickRunnables.add(runnable);
     }
 }
