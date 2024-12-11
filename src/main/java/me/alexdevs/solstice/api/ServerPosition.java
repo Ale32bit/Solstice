@@ -65,6 +65,10 @@ public class ServerPosition {
                 this.yaw,
                 this.pitch
         );
+
+        // There is a bug (presumably in Fabric's api) that causes experience level to be set to 0 when teleporting between dimensions/worlds.
+        // Therefore, this will update the experience client side as a temporary solution.
+        player.addExperience(0);
     }
 
     public void teleport(ServerPlayerEntity player) {
