@@ -1,7 +1,9 @@
 package me.alexdevs.solstice.modules.core.data;
 
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 
+@ConfigSerializable
 public class CoreConfig {
     @Comment("Generic date format to use.\nMetric format: dd/MM/yyyy\nUSA format: MM/dd/yyyy")
     public String dateFormat = "dd/MM/yyyy";
