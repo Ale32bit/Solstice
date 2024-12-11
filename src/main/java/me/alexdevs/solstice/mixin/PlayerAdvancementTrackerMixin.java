@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.mixin;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.core.customFormats.CustomAdvancementMessage;
+import me.alexdevs.solstice.modules.styling.formatters.AdvancementFormatter;
 import net.minecraft.advancement.PlayerAdvancementTracker;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
@@ -25,7 +25,7 @@ public abstract class PlayerAdvancementTrackerMixin {
             var frameId = key.replace("chat.type.advancement.", "");
             var advancementContent = (TranslatableTextContent) ((MutableText) translatable.getArg(1)).getContent();
             var advancementKey = ((TranslatableTextContent) ((MutableText) advancementContent.getArg(0)).getContent()).getKey().replace(".title", "");
-            return CustomAdvancementMessage.getText(owner, advancementKey, frameId);
+            return AdvancementFormatter.getText(owner, advancementKey, frameId);
         } catch(Exception e) {
             Solstice.LOGGER.error("Exception customizing advancement message", e);
 

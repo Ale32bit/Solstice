@@ -2,15 +2,14 @@ package me.alexdevs.solstice;
 
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSave;
-import me.alexdevs.solstice.commands.CommandInitializer;
-import me.alexdevs.solstice.config.Config;
-import me.alexdevs.solstice.config.ConfigManager;
-import me.alexdevs.solstice.config.locale.Locale;
-import me.alexdevs.solstice.config.locale.LocaleManager;
-import me.alexdevs.solstice.core.*;
-import me.alexdevs.solstice.data.StateManager;
+import me.alexdevs.solstice.data.PlayerDataManager;
+import me.alexdevs.solstice.data.ServerData;
+import me.alexdevs.solstice.locale.LocaleManager;
+import me.alexdevs.solstice.modules.Modules;
+import me.alexdevs.solstice.util.data.HoconDataManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.registry.RegistryKey;
@@ -24,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.ConfigurateException;
 
 import java.nio.file.Path;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -33,16 +33,9 @@ public class Solstice implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(Solstice.class);
 
     public static final Path configDirectory = FabricLoader.getInstance().getConfigDir().resolve(MOD_ID);
-    public static final ConfigManager configManager = new ConfigManager(configDirectory.resolve("solstice.conf"));
-    public static final LocaleManager localeManager = new LocaleManager(configDirectory.resolve("locale.json"));
-    public static Config config() {
-        return configManager.config();
-    }
-    public static Locale locale() {
-        return localeManager.locale();
-    }
 
-    public static final StateManager state = new StateManager();
+    public static final HoconDataManager configManager = new HoconDataManager(configDirectory.resolve("config.conf"));
+    public static final LocaleManager localeManager = new LocaleManager(configDirectory.resolve("locale.json"));
 
     private static Solstice INSTANCE;
 
@@ -56,6 +49,13 @@ public class Solstice implements ModInitializer {
 
     public static final RegistryKey<MessageType> CHAT_TYPE = RegistryKey.of(RegistryKeys.MESSAGE_TYPE, new Identifier(MOD_ID, "chat"));
 
+    public static final ServerData serverData = new ServerData();
+    public static final PlayerDataManager playerData = new PlayerDataManager();
+
+    public static final Modules modules = new Modules();
+
+    private static final ConcurrentLinkedQueue<Runnable> nextTickRunnables = new ConcurrentLinkedQueue<>();
+
     public Solstice() {
         INSTANCE = this;
     }
@@ -66,8 +66,9 @@ public class Solstice implements ModInitializer {
         LOGGER.info("Initializing Solstice v{}...", modMeta.getVersion());
 
         try {
-            configManager.load();
+            configManager.prepareData();
             configManager.save();
+
         } catch (ConfigurateException e) {
             LOGGER.error("Error while loading Solstice config! Refusing to continue!", e);
             return;
@@ -83,33 +84,34 @@ public class Solstice implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             Solstice.server = server;
-            InfoPages.register();
-            state.register(server.getSavePath(WorldSavePath.ROOT).resolve("data").resolve(MOD_ID));
-        });
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            SolsticeEvents.READY.invoker().onReady(INSTANCE, server);
-        });
-        ServerLifecycleEvents.SERVER_STOPPING.register(server -> scheduler.shutdown());
-        ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-            scheduler.shutdownNow();
-        });
-        WorldSave.EVENT.register((server1, suppressLogs, flush, force) -> state.save());
+            var path = server.getSavePath(WorldSavePath.ROOT).resolve("data").resolve(MOD_ID);
+            if(!path.toFile().exists()) {
+                path.toFile().mkdirs();
+            }
+            serverData.setDataPath(path.resolve("server.json"));
+            playerData.setDataPath(path.resolve("players"));
 
-        CommandInitializer.register();
-        AfkTracker.register();
-        TeleportTracker.register();
-        BackTracker.register();
-        TabList.register();
-        BossBarManager.register();
-        AutoRestart.register();
-        MailManager.register();
-        CommandSpy.register();
-        AutoAnnouncements.register();
-        Motd.register();
-        MuteManager.register();
+            serverData.loadData(false);
+        });
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> SolsticeEvents.READY.invoker().onReady(INSTANCE, server));
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> scheduler.shutdown());
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> scheduler.shutdownNow());
+        WorldSave.EVENT.register((server1, suppressLogs, flush, force) -> {
+            serverData.save();
+            playerData.saveAll();
+        });
+
+        ServerTickEvents.START_SERVER_TICK.register(server -> {
+            nextTickRunnables.forEach(Runnable::run);
+            nextTickRunnables.clear();
+        });
     }
 
     public void broadcast(Text text) {
         server.getPlayerManager().broadcast(text, false);
+    }
+
+    public static void nextTick(Runnable runnable) {
+        nextTickRunnables.add(runnable);
     }
 }

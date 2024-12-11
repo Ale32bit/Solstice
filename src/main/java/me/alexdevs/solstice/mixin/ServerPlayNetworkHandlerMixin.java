@@ -1,7 +1,8 @@
 package me.alexdevs.solstice.mixin;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.core.customFormats.CustomConnectionMessage;
+import me.alexdevs.solstice.modules.styling.formatters.ConnectionActivityFormatter;
+import me.alexdevs.solstice.modules.tablist.data.TabListConfig;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -28,7 +29,7 @@ public abstract class ServerPlayNetworkHandlerMixin {
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void solstice$updatePlayerList(CallbackInfo ci) {
-        if(Solstice.config().customTabList.enableTabList) {
+        if(Solstice.configManager.getData(TabListConfig.class).enable) {
             var packet = new PlayerListS2CPacket(EnumSet.of(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, PlayerListS2CPacket.Action.UPDATE_LISTED), List.of(this.player));
             this.server.getPlayerManager().sendToAll(packet);
         }
@@ -36,6 +37,6 @@ public abstract class ServerPlayNetworkHandlerMixin {
 
     @ModifyArg(method = "onDisconnected", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Z)V"))
     private Text solstice$getPlayerLeaveMessage(Text message) {
-        return CustomConnectionMessage.onLeave(this.player);
+        return ConnectionActivityFormatter.onLeave(this.player);
     }
 }

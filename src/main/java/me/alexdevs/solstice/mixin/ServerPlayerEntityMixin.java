@@ -1,13 +1,14 @@
 package me.alexdevs.solstice.mixin;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.core.BackTracker;
-import me.alexdevs.solstice.core.customFormats.CustomDeathMessage;
+import me.alexdevs.solstice.modules.styling.formatters.DeathFormatter;
 import me.alexdevs.solstice.api.ServerPosition;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
 import eu.pb4.placeholders.api.parsers.NodeParser;
 import eu.pb4.placeholders.api.parsers.TextParserV1;
+import me.alexdevs.solstice.modules.back.BackModule;
+import me.alexdevs.solstice.modules.tablist.data.TabListConfig;
 import net.minecraft.entity.damage.DamageTracker;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -29,10 +30,10 @@ public class ServerPlayerEntityMixin {
 
     @Inject(method = "getPlayerListName", at = @At("HEAD"), cancellable = true)
     private void solstice$customizePlayerListName(CallbackInfoReturnable<Text> callback) {
-        if (Solstice.config().customTabList.enableTabList) {
+        if (Solstice.configManager.getData(TabListConfig.class).enable) {
             var player = (ServerPlayerEntity) (Object) this;
             var playerContext = PlaceholderContext.of(player);
-            var text = Placeholders.parseText(parser.parseNode(Solstice.config().customTabList.playerTabName), playerContext);
+            var text = Placeholders.parseText(parser.parseNode(Solstice.configManager.getData(TabListConfig.class).playerTabName), playerContext);
             callback.setReturnValue(text);
         }
     }
@@ -40,12 +41,12 @@ public class ServerPlayerEntityMixin {
     @Redirect(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/damage/DamageTracker;getDeathMessage()Lnet/minecraft/text/Text;"))
     private Text solstice$getDeathMessage(DamageTracker instance) {
         var player = (ServerPlayerEntity) (Object) this;
-        return CustomDeathMessage.onDeath(player, instance);
+        return DeathFormatter.onDeath(player, instance);
     }
 
     @Inject(method = "teleport(Lnet/minecraft/server/world/ServerWorld;DDDLjava/util/Set;FF)Z", at = @At("HEAD"))
     public void solstice$requestTeleport(ServerWorld world, double destX, double destY, double destZ, Set<PositionFlag> flags, float yaw, float pitch, CallbackInfoReturnable<Boolean> cir) {
         var player = (ServerPlayerEntity) (Object) this;
-        BackTracker.lastPlayerPositions.put(player.getUuid(), new ServerPosition(player));
+        BackModule.lastPlayerPositions.put(player.getUuid(), new ServerPosition(player));
     }
 }

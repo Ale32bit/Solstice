@@ -1,18 +1,5 @@
-# v0.3.1-alpha
+# 1.0.0 - BREAKING CHANGES
 
-- Bugfix wrong permission node `solstice.command.invsee.exempt`.
-- Added `/craft` alias to `/workbench`.
+**BREAKING CHANGES: Player state files, server state file, locale file and config file are NOT compatible! Make a backup before upgrading.**
 
-# v0.3.0-alpha
-
-- Added many utility commands to open various blocks GUIs:
-  - Anvil - `/anvil`
-  - Cartography table - `/cartography`
-  - Grindstone - `/grindstone`
-  - Loom - `/loom`
-  - Smithing table - `/smithing`
-  - Stonecutter - `/stonecutter`
-  - Crafting table - `/workbench`
-- Added `/trash` command, this opens an empty virtual chest that voids all content when closed.
-- Added `/enderchest [player]` command, this opens the own enderchest, or a player's.
-- Added `/invsee <player>` command, this opens the inventory of another player that you can manipulate.
+- Complete refactoring of the code!

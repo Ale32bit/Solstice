@@ -1,13 +1,15 @@
 package me.alexdevs.solstice.api;
 
-import me.alexdevs.solstice.core.BackTracker;
 import com.google.gson.annotations.Expose;
+import me.alexdevs.solstice.modules.back.BackModule;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
+@ConfigSerializable
 public class ServerPosition {
     @Expose
     public double x;
@@ -21,6 +23,10 @@ public class ServerPosition {
     public float pitch;
     @Expose
     public String world;
+
+    public ServerPosition() {
+
+    }
 
     public ServerPosition(double x, double y, double z, float yaw, float pitch, ServerWorld world) {
         this.x = x;
@@ -43,7 +49,7 @@ public class ServerPosition {
     public void teleport(ServerPlayerEntity player, boolean setBackPosition) {
         if (setBackPosition) {
             var currentPosition = new ServerPosition(player);
-            BackTracker.lastPlayerPositions.put(player.getUuid(), currentPosition);
+            BackModule.lastPlayerPositions.put(player.getUuid(), currentPosition);
         }
 
         var serverWorld = player.getServer().getWorld(RegistryKey.of(RegistryKeys.WORLD, new Identifier(this.world)));
@@ -60,10 +66,9 @@ public class ServerPosition {
                 this.pitch
         );
 
-        //There is a bug (presumably in fabrics api) that causes experience level to be set to 0 when teleporting between dimensions/worlds
-        //Therefore this will update the experience client side as a temporary solution
+        // There is a bug (presumably in Fabric's api) that causes experience level to be set to 0 when teleporting between dimensions/worlds.
+        // Therefore, this will update the experience client side as a temporary solution.
         player.addExperience(0);
-
     }
 
     public void teleport(ServerPlayerEntity player) {

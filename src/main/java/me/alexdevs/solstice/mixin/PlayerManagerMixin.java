@@ -3,9 +3,9 @@ package me.alexdevs.solstice.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.authlib.GameProfile;
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.core.customFormats.CustomBanMessage;
-import me.alexdevs.solstice.core.customFormats.CustomConnectionMessage;
-import me.alexdevs.solstice.core.customFormats.CustomSentMessage;
+import me.alexdevs.solstice.modules.styling.formatters.BanMessageFormatter;
+import me.alexdevs.solstice.modules.styling.formatters.ConnectionActivityFormatter;
+import me.alexdevs.solstice.modules.styling.CustomSentMessage;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SentMessage;
@@ -50,16 +50,16 @@ public abstract class PlayerManagerMixin {
         var args = ogText.getArgs();
 
         if (args.length == 1) {
-            return CustomConnectionMessage.onJoin(solstice$player);
+            return ConnectionActivityFormatter.onJoin(solstice$player);
         } else {
-            return CustomConnectionMessage.onJoinRenamed(solstice$player, (String) args[1]);
+            return ConnectionActivityFormatter.onJoinRenamed(solstice$player, (String) args[1]);
         }
     }
 
     @Inject(method = "checkCanJoin", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
     public void solstice$formatBanMessage(SocketAddress address, GameProfile profile, CallbackInfoReturnable<Text> cir, @Local BannedPlayerEntry bannedPlayerEntry, @Local MutableText mutableText) {
         try {
-            var reasonText = CustomBanMessage.format(profile, bannedPlayerEntry);
+            var reasonText = BanMessageFormatter.format(profile, bannedPlayerEntry);
             cir.setReturnValue(reasonText);
         } catch (Exception ex) {
             Solstice.LOGGER.error("Something went wrong while formatting the ban message", ex);
