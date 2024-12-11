@@ -70,15 +70,11 @@ public class AutoRestartModule {
             restart();
         });
 
-        SolsticeEvents.RELOAD.register(instance -> {
-            setup();
-        });
+        SolsticeEvents.RELOAD.register(instance -> setup());
     }
 
     public void restart() {
-        Solstice.server.getPlayerManager().getPlayerList().forEach(player -> {
-            player.networkHandler.disconnect(locale.get("kickMessage"));
-        });
+        Solstice.server.getPlayerManager().getPlayerList().forEach(player -> player.networkHandler.disconnect(locale.get("kickMessage")));
 
         Solstice.nextTick(() -> Solstice.server.stop(false));
     }
@@ -128,9 +124,7 @@ public class AutoRestartModule {
         solstice.broadcast(text);
 
         var pitch = config.restartSoundPitch;
-        server.getPlayerManager().getPlayerList().forEach(player -> {
-            player.playSound(sound, SoundCategory.MASTER, 1f, pitch);
-        });
+        server.getPlayerManager().getPlayerList().forEach(player -> player.playSound(sound, SoundCategory.MASTER, 1f, pitch));
     }
 
     @Nullable
@@ -143,9 +137,7 @@ public class AutoRestartModule {
         // start bar 10 mins earlier
         var barStartTime = delay - barTime;
 
-        currentSchedule = Solstice.scheduler.schedule(() -> {
-            schedule(barTime, locale.raw("barLabel"));
-        }, barStartTime, TimeUnit.SECONDS);
+        currentSchedule = Solstice.scheduler.schedule(() -> schedule(barTime, locale.raw("barLabel")), barStartTime, TimeUnit.SECONDS);
 
         Solstice.LOGGER.info("Restart scheduled for in {} seconds", delay);
         return delay;

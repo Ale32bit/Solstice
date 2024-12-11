@@ -31,7 +31,7 @@ public class InfoModule {
             "formatting.txt"
     };
     public final String nameFilterRegex = "[^a-z0-9-]";
-    private Path infoDir;
+    private final Path infoDir;
 
     private final InfoConfig config;
     public final Locale locale;

@@ -90,13 +90,9 @@ public class Solstice implements ModInitializer {
 
             serverData.loadData(false);
         });
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            SolsticeEvents.READY.invoker().onReady(INSTANCE, server);
-        });
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> SolsticeEvents.READY.invoker().onReady(INSTANCE, server));
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> scheduler.shutdown());
-        ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-            scheduler.shutdownNow();
-        });
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> scheduler.shutdownNow());
         WorldSave.EVENT.register((server1, suppressLogs, flush, force) -> {
             serverData.save();
             playerData.saveAll();

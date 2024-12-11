@@ -28,13 +28,12 @@ public class ChatFormatter {
         var locale = Solstice.localeManager.getLocale(StylingModule.ID);
 
         var playerContext = PlaceholderContext.of(player);
-        var text = locale.get(
+        return locale.get(
                 "chatFormat",
                 playerContext,
                 Map.of(
                         "message", messageText
                 )
         );
-        return text;
     }
 }

@@ -25,9 +25,7 @@ public class CoreModule {
         Solstice.playerData.registerData(ID, CorePlayerData.class, CorePlayerData::new);
         Solstice.serverData.registerData(ID, CoreServerData.class, CoreServerData::new);
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, registry, environment) -> {
-            new SolsticeCommand(dispatcher, registry, environment);
-        });
+        CommandRegistrationCallback.EVENT.register(SolsticeCommand::new);
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             var player = handler.getPlayer();

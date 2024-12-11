@@ -1,6 +1,5 @@
 package me.alexdevs.solstice.util.parser;
 
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.core.CoreModule;
 import me.alexdevs.solstice.util.Format;
 import eu.pb4.placeholders.api.node.TextNode;

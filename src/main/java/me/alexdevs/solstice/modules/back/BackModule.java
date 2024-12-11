@@ -22,13 +22,9 @@ public class BackModule {
 
         CommandRegistrationCallback.EVENT.register(BackCommand::new);
 
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            lastPlayerPositions.remove(handler.getPlayer().getUuid());
-        });
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> lastPlayerPositions.remove(handler.getPlayer().getUuid()));
 
-        PlayerTeleport.EVENT.register((player, origin, destination) -> {
-            lastPlayerPositions.put(player.getUuid(), origin);
-        });
+        PlayerTeleport.EVENT.register((player, origin, destination) -> lastPlayerPositions.put(player.getUuid(), origin));
 
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
             if (entity.isPlayer()) {

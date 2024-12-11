@@ -1,10 +1,8 @@
 package me.alexdevs.solstice.util;
 
 import me.alexdevs.solstice.Solstice;
-import eu.pb4.placeholders.api.Placeholders;
 import eu.pb4.placeholders.api.TextParserUtils;
 import eu.pb4.placeholders.api.parsers.NodeParser;
-import eu.pb4.placeholders.api.parsers.PatternPlaceholderParser;
 import eu.pb4.placeholders.api.parsers.TextParserV1;
 import me.alexdevs.solstice.modules.core.CoreModule;
 import me.alexdevs.solstice.modules.styling.StylingModule;
@@ -33,25 +31,23 @@ public class Components {
     }
 
     public static Text button(String label, String hoverText, String command) {
-        var btn = button(
+
+        return button(
                 Format.parse(label),
                 Format.parse(hoverText),
                 command,
                 false
         );
-
-        return btn;
     }
 
     public static Text buttonSuggest(String label, String hoverText, String command) {
-        var btn = button(
+
+        return button(
                 Format.parse(label),
                 Format.parse(hoverText),
                 command,
                 true
         );
-
-        return btn;
     }
 
     public static Text chat(SignedMessage message, ServerPlayerEntity player) {
