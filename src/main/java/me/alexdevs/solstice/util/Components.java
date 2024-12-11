@@ -20,7 +20,7 @@ import java.util.Map;
 public class Components {
     public static Text button(Text label, Text hoverText, String command, boolean suggest) {
         var locale = Solstice.localeManager.getLocale(CoreModule.ID);
-        var format = suggest ? locale.raw("buttonSuggest") : locale.raw("button");
+        var format = suggest ? locale.raw("~buttonSuggest") : locale.raw("~button");
         var placeholders = Map.of(
                 "label", label,
                 "hoverText", hoverText,
