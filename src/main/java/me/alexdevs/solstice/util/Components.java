@@ -7,6 +7,7 @@ import eu.pb4.placeholders.api.parsers.NodeParser;
 import eu.pb4.placeholders.api.parsers.PatternPlaceholderParser;
 import eu.pb4.placeholders.api.parsers.TextParserV1;
 import me.alexdevs.solstice.modules.core.CoreModule;
+import me.alexdevs.solstice.modules.styling.StylingModule;
 import me.alexdevs.solstice.modules.styling.data.StylingConfig;
 import me.alexdevs.solstice.util.parser.MarkdownParser;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -28,13 +29,13 @@ public class Components {
         );
 
         var text = TextParserUtils.formatText(format);
-        return Placeholders.parseText(text, PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN, placeholders);
+        return Format.parse(text, placeholders);
     }
 
     public static Text button(String label, String hoverText, String command) {
         var btn = button(
-                TextParserUtils.formatText(label),
-                TextParserUtils.formatText(hoverText),
+                Format.parse(label),
+                Format.parse(hoverText),
                 command,
                 false
         );
@@ -44,8 +45,8 @@ public class Components {
 
     public static Text buttonSuggest(String label, String hoverText, String command) {
         var btn = button(
-                TextParserUtils.formatText(label),
-                TextParserUtils.formatText(hoverText),
+                Format.parse(label),
+                Format.parse(hoverText),
                 command,
                 true
         );
@@ -54,13 +55,13 @@ public class Components {
     }
 
     public static Text chat(SignedMessage message, ServerPlayerEntity player) {
-        var allowAdvancedChatFormat = Permissions.check(player, "solstice.chat.advanced");
+        var allowAdvancedChatFormat = Permissions.check(player, StylingModule.ADVANCED_CHAT_FORMATTING_PERMISSION);
 
         return chat(message.getSignedContent(), allowAdvancedChatFormat);
     }
 
     public static Text chat(String message, ServerPlayerEntity player) {
-        var allowAdvancedChatFormat = Permissions.check(player, "solstice.chat.advanced");
+        var allowAdvancedChatFormat = Permissions.check(player, StylingModule.ADVANCED_CHAT_FORMATTING_PERMISSION);
 
         return chat(message, allowAdvancedChatFormat);
     }

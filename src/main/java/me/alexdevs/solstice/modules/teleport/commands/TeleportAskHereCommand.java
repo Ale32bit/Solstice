@@ -83,12 +83,12 @@ public class TeleportAskHereCommand extends ModCommand {
         var placeholders = Map.of(
                 "requesterPlayer", player.getDisplayName(),
                 "acceptButton", Components.button(
-                        locale.raw("accept"),
-                        locale.raw("hoverAccept"),
+                        locale.raw("~accept"),
+                        locale.raw("~hoverAccept"),
                         "/tpaccept " + request.requestId),
                 "refuseButton", Components.button(
-                        locale.raw("refuse"),
-                        locale.raw("hoverRefuse"),
+                        locale.raw("~refuse"),
+                        locale.raw("~hoverRefuse"),
                         "/tpdeny " + request.requestId)
         );
 

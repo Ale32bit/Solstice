@@ -12,7 +12,7 @@ public class TeleportLocale {
             Map.entry("hoverAccept", "Click to accept request"),
             Map.entry("hoverRefuse", "Click to refuse request"),
             Map.entry("noPending", "<gold>There are no pending teleport requests for you.</gold>"),
-            Map.entry("unavailable", "<red>This requested expired or is no longer available.</red>"),
+            Map.entry("unavailable", "<red>This request expired or is no longer available.</red>"),
             Map.entry("playerUnavailable", "<red>The other player is no longer available.</red>"),
             Map.entry("requestAcceptedResult", "<green>Teleport request accepted.</green>"),
             Map.entry("requestRefusedResult", "<gold>Teleport request refused.</gold>"),
