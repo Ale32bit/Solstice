@@ -51,6 +51,7 @@ public class CommandInitializer {
             NicknameCommand.register(dispatcher);
             HealCommand.register(dispatcher);
             FeedCommand.register(dispatcher);
+            HatCommand.register(dispatcher);
 
             SetSpawnCommand.register(dispatcher);
             DelSpawnCommand.register(dispatcher);

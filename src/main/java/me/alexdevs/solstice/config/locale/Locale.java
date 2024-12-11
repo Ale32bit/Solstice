@@ -23,6 +23,7 @@ public class Locale {
         public Seen seen = new Seen();
         public Ignore ignore = new Ignore();
         public Info info = new Info();
+        public Hat hat = new Hat();
 
         public static class Common {
             // `{{command}}` is replaced as a string before parsing
@@ -160,6 +161,10 @@ public class Locale {
             public String pagesFormat = "<run_cmd:'/info ${page}'><hover:'Click to read'><yellow>${page}</yellow></hover></run_cmd>";
             public String pagesComma = "<gold>, </gold>";
             public String noPages  = "<gold>There are no pages so far.</gold>";
+        }
+        public static class Hat {
+            public String noItemInHand = "<red>No item in you're hand!</red>";
+            public String hatPutOn = "<gold>Checkout you're new hat!</gold>";
         }
     }
 }
