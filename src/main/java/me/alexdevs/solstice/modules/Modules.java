@@ -4,6 +4,7 @@ import me.alexdevs.solstice.modules.admin.AdminModule;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.autoannouncement.AutoAnnouncementModule;
 import me.alexdevs.solstice.modules.back.BackModule;
+import me.alexdevs.solstice.modules.fun.FunModule;
 import me.alexdevs.solstice.modules.near.NearModule;
 import me.alexdevs.solstice.modules.seen.SeenModule;
 import me.alexdevs.solstice.modules.styling.StylingModule;
@@ -34,6 +35,7 @@ public class Modules {
     public final CoreModule core = new CoreModule();
     public final CustomNameModule customName = new CustomNameModule();
     public final FormattableSignsModule formattableSigns = new FormattableSignsModule();
+    public final FunModule fun = new FunModule();
     public final HomeModule home = new HomeModule();
     public final InfoModule info = new InfoModule();
     public final MailModule mail = new MailModule();
