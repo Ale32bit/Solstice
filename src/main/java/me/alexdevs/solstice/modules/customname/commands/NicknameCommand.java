@@ -41,6 +41,7 @@ public class NicknameCommand extends ModCommand {
                         .executes(context -> execute(context, StringArgumentType.getString(context, "nickname"), null))
                 )
                 .then(argument("player", EntityArgumentType.player())
+                        .requires(require("others", 2))
                         .then(literal("clear")
                                 .executes(context -> executeClear(context, EntityArgumentType.getPlayer(context, "player")))
                         )
