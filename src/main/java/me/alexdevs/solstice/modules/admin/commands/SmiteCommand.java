@@ -52,7 +52,6 @@ public class SmiteCommand extends ModCommand {
             targets.forEach(target ->
                     entityType.create(
                             target.getServerWorld(),
-                            null,
                             (entity) -> target.getWorld().spawnEntity(entity),
                             target.getBlockPos(),
                             SpawnReason.COMMAND,

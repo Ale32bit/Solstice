@@ -57,7 +57,7 @@ public class UnbanCommand extends ModCommand {
             if (banList.contains(profile)) {
                 banList.remove(profile);
                 pardonCount++;
-                source.sendFeedback(() -> Text.translatable("commands.pardon.success", Texts.toText(profile)), true);
+                source.sendFeedback(() -> Text.translatable("commands.pardon.success", Text.of(profile.getName())), true);
             }
         }
 

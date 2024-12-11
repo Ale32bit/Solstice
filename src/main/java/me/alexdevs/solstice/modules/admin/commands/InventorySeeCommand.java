@@ -7,6 +7,7 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandlerType;
@@ -54,7 +55,7 @@ public class InventorySeeCommand extends ModCommand {
                             }
 
                             var barrier = new ItemStack(Items.BARRIER);
-                            barrier.setCustomName(Text.literal(""));
+                            barrier.set(DataComponentTypes.CUSTOM_NAME, Text.literal(""));
                             for (var i = targetInventory.size(); i < container.getSize(); i++) {
                                 container.setSlot(i, barrier);
                             }

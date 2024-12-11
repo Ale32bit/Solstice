@@ -21,6 +21,11 @@ public interface CustomSentMessage extends SentMessage {
 
     record Profileless(Text getContent) implements SentMessage {
         @Override
+        public Text content() {
+            return getContent;
+        }
+
+        @Override
         public void send(ServerPlayerEntity sender, boolean filterMaskEnabled, MessageType.Parameters params) {
             sender.networkHandler.sendProfilelessChatMessage(this.getContent, params);
         }
@@ -28,7 +33,7 @@ public interface CustomSentMessage extends SentMessage {
 
     record Chat(SignedMessage message, ServerPlayerEntity sender) implements SentMessage {
         @Override
-        public Text getContent() {
+        public Text content() {
             return this.message.getContent();
         }
 
@@ -39,7 +44,7 @@ public interface CustomSentMessage extends SentMessage {
             }
             SignedMessage signedMessage = this.message.withFilterMaskEnabled(filterMaskEnabled);
             if (!signedMessage.isFullyFiltered()) {
-                switch (params.type().chat().translationKey()) {
+                switch (params.type().value().chat().translationKey()) {
                     case "chat.type.text":
                         ChatFormatter.sendChatMessage(receiver, message, params, sender);
                         break;

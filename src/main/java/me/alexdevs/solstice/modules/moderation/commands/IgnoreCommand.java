@@ -47,7 +47,7 @@ public class IgnoreCommand extends ModCommand {
 
                             var targetName = StringArgumentType.getString(context, "target");
 
-                            context.getSource().getServer().getUserCache().findByNameAsync(targetName, profileOpt -> {
+                            context.getSource().getServer().getUserCache().findByNameAsync(targetName).thenAcceptAsync(profileOpt -> {
                                 var playerContext = PlaceholderContext.of(player);
 
                                 if (profileOpt.isEmpty()) {

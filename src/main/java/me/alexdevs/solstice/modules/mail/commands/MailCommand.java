@@ -71,7 +71,7 @@ public class MailCommand extends ModCommand {
         var playerContext = PlaceholderContext.of(player);
         var mails = mailModule.getMailList(player.getUuid());
 
-        if(mails.isEmpty()) {
+        if (mails.isEmpty()) {
             context.getSource().sendFeedback(() -> locale.get("emptyMailbox", playerContext), false);
             return 1;
         }
@@ -170,7 +170,7 @@ public class MailCommand extends ModCommand {
     private int sendMail(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         var sender = context.getSource().getPlayerOrThrow();
         var username = StringArgumentType.getString(context, "recipient");
-        context.getSource().getServer().getUserCache().findByNameAsync(username, gameProfile -> {
+        context.getSource().getServer().getUserCache().findByNameAsync(username).thenAcceptAsync(gameProfile -> {
             if (gameProfile.isEmpty()) {
                 var playerContext = PlaceholderContext.of(sender);
 
@@ -193,13 +193,13 @@ public class MailCommand extends ModCommand {
 
             context.getSource().sendFeedback(() -> locale.get("mailSent", senderContext), false);
 
-            if(actuallySent) {
+            if (actuallySent) {
                 var recPlayer = server.getPlayerManager().getPlayer(recipient.getId());
                 if (recPlayer == null) {
                     return;
                 }
 
-                if(ModerationModule.isIgnoring(recPlayer, sender))
+                if (ModerationModule.isIgnoring(recPlayer, sender))
                     return;
 
                 var recContext = PlaceholderContext.of(recPlayer);

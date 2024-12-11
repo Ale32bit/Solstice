@@ -124,7 +124,7 @@ public class AutoRestartModule {
         solstice.broadcast(text);
 
         var pitch = config.restartSoundPitch;
-        server.getPlayerManager().getPlayerList().forEach(player -> player.playSound(sound, SoundCategory.MASTER, 1f, pitch));
+        server.getPlayerManager().getPlayerList().forEach(player -> player.playSoundToPlayer(sound, SoundCategory.MASTER, 1f, pitch));
     }
 
     @Nullable

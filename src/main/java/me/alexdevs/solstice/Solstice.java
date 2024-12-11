@@ -47,7 +47,7 @@ public class Solstice implements ModInitializer {
 
     public static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public static final RegistryKey<MessageType> CHAT_TYPE = RegistryKey.of(RegistryKeys.MESSAGE_TYPE, new Identifier(MOD_ID, "chat"));
+    public static final RegistryKey<MessageType> CHAT_TYPE = RegistryKey.of(RegistryKeys.MESSAGE_TYPE, Identifier.of(MOD_ID, "chat"));
 
     public static final ServerData serverData = new ServerData();
     public static final PlayerDataManager playerData = new PlayerDataManager();

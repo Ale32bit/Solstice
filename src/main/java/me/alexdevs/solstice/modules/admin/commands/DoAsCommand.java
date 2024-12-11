@@ -92,7 +92,7 @@ public class DoAsCommand extends ModCommand {
                 player.getRotationClient(),
                 player.getServerWorld(),
                 opLevel,
-                player.getEntityName(),
+                player.getGameProfile().getName(),
                 player.getDisplayName(),
                 server,
                 player

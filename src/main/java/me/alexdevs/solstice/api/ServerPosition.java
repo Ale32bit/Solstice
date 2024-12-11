@@ -52,7 +52,7 @@ public class ServerPosition {
             BackModule.lastPlayerPositions.put(player.getUuid(), currentPosition);
         }
 
-        var serverWorld = player.getServer().getWorld(RegistryKey.of(RegistryKeys.WORLD, new Identifier(this.world)));
+        var serverWorld = player.getServer().getWorld(RegistryKey.of(RegistryKeys.WORLD, Identifier.tryParse(this.world)));
 
         player.setVelocity(player.getVelocity().multiply(1f, 0f, 1f));
         player.setOnGround(true);

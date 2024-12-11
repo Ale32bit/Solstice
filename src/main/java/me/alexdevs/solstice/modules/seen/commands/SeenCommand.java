@@ -45,7 +45,7 @@ public class SeenCommand extends ModCommand {
                         .executes(context -> {
                             var targetName = StringArgumentType.getString(context, "player");
                             var source = context.getSource();
-                            source.getServer().getUserCache().findByNameAsync(targetName, (profile) -> {
+                            source.getServer().getUserCache().findByNameAsync(targetName).thenAcceptAsync((profile) -> {
                                 if (profile.isEmpty()) {
                                     source.sendFeedback(() -> locale.get("playerNotFound"), false);
                                     return;

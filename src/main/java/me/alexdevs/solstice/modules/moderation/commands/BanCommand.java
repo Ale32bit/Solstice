@@ -74,7 +74,7 @@ public class BanCommand extends ModCommand {
 
             var playerContext = PlaceholderContext.of(target, server);
 
-            source.sendFeedback(() -> Text.translatable("commands.ban.success", Texts.toText(target), Format.parse(banEntry.getReason(), playerContext)), true);
+            source.sendFeedback(() -> Text.translatable("commands.ban.success", Text.of(target.getName()), Format.parse(banEntry.getReason(), playerContext)), true);
 
             var serverPlayerEntity = source.getServer().getPlayerManager().getPlayer(target.getId());
             if (serverPlayerEntity != null) {

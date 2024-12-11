@@ -38,7 +38,7 @@ public class TeleportOfflineCommand extends ModCommand {
 
                             var targetName = StringArgumentType.getString(context, "player");
 
-                            server.getUserCache().findByNameAsync(targetName, gameProfile -> {
+                            server.getUserCache().findByNameAsync(targetName).thenAcceptAsync(gameProfile -> {
                                 if (gameProfile.isEmpty()) {
                                     source.sendError(Text.of("Could not find player"));
                                     return;
