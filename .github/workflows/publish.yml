@@ -57,7 +57,7 @@ jobs:
 
           name: "${{env.RELEASE_NAME}}"
           version: "${{env.VERSION}}"
-          version-type: alpha
+          version-type: beta
           changelog-file: CHANGELOG.md
 
           loaders: fabric
