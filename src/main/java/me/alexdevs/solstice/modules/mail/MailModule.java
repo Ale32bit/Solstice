@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class MailModule {
     public static final String ID = "mail";
@@ -31,18 +32,21 @@ public class MailModule {
             var player = handler.getPlayer();
             var playerContext = PlaceholderContext.of(player);
 
-            if (!getMailData(player.getUuid()).mails.isEmpty()) {
-                player.sendMessage(locale.get("mailPending", playerContext));
-            }
+            Solstice.scheduler.schedule(() -> {
+                if (!getMailData(player.getUuid()).mails.isEmpty()) {
+                    player.sendMessage(locale.get("mailPending", playerContext));
+                }
+            }, 1, TimeUnit.SECONDS);
         });
     }
 
-    public void sendMail(UUID playerUuid, PlayerMail mail) {
+    public boolean sendMail(UUID playerUuid, PlayerMail mail) {
         var playerData = ModerationModule.getPlayerData(playerUuid);
         if (playerData.ignoredPlayers.contains(mail.sender)) {
-            return;
+            return false;
         }
         getMailData(playerUuid).mails.add(mail);
+        return true;
     }
 
     public List<PlayerMail> getMailList(UUID playerUuid) {

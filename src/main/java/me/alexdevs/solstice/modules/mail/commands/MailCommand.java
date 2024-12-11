@@ -7,6 +7,7 @@ import me.alexdevs.solstice.api.PlayerMail;
 import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.core.CoreModule;
 import me.alexdevs.solstice.modules.mail.MailModule;
+import me.alexdevs.solstice.modules.moderation.ModerationModule;
 import me.alexdevs.solstice.util.Components;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -186,19 +187,24 @@ public class MailCommand extends ModCommand {
             var server = context.getSource().getServer();
 
             var mail = new PlayerMail(message, sender.getUuid());
-            mailModule.sendMail(recipient.getId(), mail);
+            var actuallySent = mailModule.sendMail(recipient.getId(), mail);
 
             var senderContext = PlaceholderContext.of(sender);
 
             context.getSource().sendFeedback(() -> locale.get("mailSent", senderContext), false);
 
-            var recPlayer = server.getPlayerManager().getPlayer(recipient.getId());
-            if (recPlayer == null) {
-                return;
-            }
+            if(actuallySent) {
+                var recPlayer = server.getPlayerManager().getPlayer(recipient.getId());
+                if (recPlayer == null) {
+                    return;
+                }
 
-            var recContext = PlaceholderContext.of(recPlayer);
-            recPlayer.sendMessage(locale.get("mailReceived", recContext));
+                if(ModerationModule.isIgnoring(recPlayer, sender))
+                    return;
+
+                var recContext = PlaceholderContext.of(recPlayer);
+                recPlayer.sendMessage(locale.get("mailReceived", recContext));
+            }
         });
 
         return 1;

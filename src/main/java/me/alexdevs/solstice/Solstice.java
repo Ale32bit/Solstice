@@ -85,6 +85,9 @@ public class Solstice implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             Solstice.server = server;
             var path = server.getSavePath(WorldSavePath.ROOT).resolve("data").resolve(MOD_ID);
+            if(!path.toFile().exists()) {
+                path.toFile().mkdirs();
+            }
             serverData.setDataPath(path.resolve("server.json"));
             playerData.setDataPath(path.resolve("players"));
 

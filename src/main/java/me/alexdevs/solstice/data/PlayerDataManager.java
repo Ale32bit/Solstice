@@ -89,6 +89,9 @@ public class PlayerDataManager {
      * Save all player data without disposing.
      */
     public void saveAll() {
+        if(!this.basePath.toFile().exists()) {
+            this.basePath.toFile().mkdirs();
+        }
         for (var entry : playerData.entrySet()) {
             var data = entry.getValue();
             data.save();

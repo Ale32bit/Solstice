@@ -79,8 +79,10 @@ public class InfoModule {
                     Solstice.LOGGER.warn("Could not send MOTD because info/motd.txt does not exist!");
                     return;
                 }
-                var motd = buildMotd(PlaceholderContext.of(handler.getPlayer()));
-                Solstice.nextTick(() -> handler.getPlayer().sendMessage(motd));
+                Solstice.nextTick(() -> {
+                    var motd = buildMotd(PlaceholderContext.of(handler.getPlayer()));
+                    handler.getPlayer().sendMessage(motd);
+                });
             }
         });
     }
