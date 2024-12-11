@@ -67,15 +67,20 @@ public class AutoRestartModule {
             if (restartBar == null || !timeBar.getUuid().equals(restartBar.getUuid()))
                 return;
 
-            server.getPlayerManager().getPlayerList().forEach(player -> {
-                player.networkHandler.disconnect(locale.get("kickMessage"));
-            });
-            server.stop(false);
+            restart();
         });
 
         SolsticeEvents.RELOAD.register(instance -> {
             setup();
         });
+    }
+
+    public void restart() {
+        Solstice.server.getPlayerManager().getPlayerList().forEach(player -> {
+            player.networkHandler.disconnect(locale.get("kickMessage"));
+        });
+
+        Solstice.nextTick(() -> Solstice.server.stop(false));
     }
 
     private void setup() {

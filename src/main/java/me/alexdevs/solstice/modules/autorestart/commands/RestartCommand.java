@@ -34,6 +34,11 @@ public class RestartCommand extends ModCommand {
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
                 .requires(require(4))
+                .then(literal("now")
+                        .executes(context -> {
+                            Solstice.modules.autoRestart.restart();
+                            return 1;
+                        }))
                 .then(literal("schedule")
                         .then(argument("seconds", IntegerArgumentType.integer(0))
                                 .executes(context -> schedule(context, IntegerArgumentType.getInteger(context, "seconds"), null))
