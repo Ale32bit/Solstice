@@ -12,7 +12,7 @@ public class StylingLocale {
             Map.entry("joinFormat", "<green>+</green> %player:displayname% <yellow>joined!</yellow>"),
             Map.entry("joinRenamedFormat", "<green>+</green> %player:displayname% <yellow>joined! <i>(Previously known as ${previousName})</i></yellow>"),
             Map.entry("leaveFormat", "<red>-</red> %player:displayname% <yellow>left!</yellow>"),
-            Map.entry("deathFormat", "<gray>\u2620 ${message}</gray>")
-
+            Map.entry("deathFormat", "<gray>\u2620 ${message}</gray>"),
+            Map.entry("welcome", "<light_purple>Welcome %player:displayname% to the server!</light_purple>")
     );
 }
