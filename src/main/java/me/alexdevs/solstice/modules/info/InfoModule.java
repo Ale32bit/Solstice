@@ -37,11 +37,11 @@ public class InfoModule {
     public final Locale locale;
 
     public InfoModule() {
-        Solstice.newConfigManager.registerData(ID, InfoConfig.class, InfoConfig::new);
-        Solstice.newLocaleManager.registerModule(ID, InfoLocale.MODULE);
+        Solstice.configManager.registerData(ID, InfoConfig.class, InfoConfig::new);
+        Solstice.localeManager.registerModule(ID, InfoLocale.MODULE);
 
-        config = Solstice.newConfigManager.getData(InfoConfig.class);
-        locale = Solstice.newLocaleManager.getLocale(ID);
+        config = Solstice.configManager.getData(InfoConfig.class);
+        locale = Solstice.localeManager.getLocale(ID);
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             new InfoCommand(dispatcher, registryAccess, environment);

@@ -5,10 +5,8 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.warp.WarpModule;
 import me.alexdevs.solstice.modules.warp.data.WarpServerData;
-import me.alexdevs.solstice.util.Format;
 import com.mojang.brigadier.CommandDispatcher;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -39,7 +37,7 @@ public class WarpsCommand extends ModCommand {
                     var warpList = serverDate.warps.keySet().stream().toList();
                     var sourceContext = PlaceholderContext.of(source);
 
-                    var locale = Solstice.newLocaleManager.getLocale(WarpModule.ID);
+                    var locale = Solstice.localeManager.getLocale(WarpModule.ID);
 
                     if(warpList.isEmpty()) {
                         context.getSource().sendFeedback(() -> locale.get(

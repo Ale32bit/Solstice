@@ -38,9 +38,9 @@ public class AfkModule {
     private AfkConfig config;
 
     public AfkModule() {
-        Solstice.newConfigManager.registerData(ID, AfkConfig.class, AfkConfig::new);
+        Solstice.configManager.registerData(ID, AfkConfig.class, AfkConfig::new);
         Solstice.playerData.registerData(ID, AfkPlayerData.class, AfkPlayerData::new);
-        Solstice.newLocaleManager.registerModule(ID, AfkLocale.MODULE);
+        Solstice.localeManager.registerModule(ID, AfkLocale.MODULE);
 
         CommandRegistrationCallback.EVENT.register(AfkCommand::new);
 
@@ -53,8 +53,8 @@ public class AfkModule {
     }
 
     private void register() {
-        locale = Solstice.newLocaleManager.getLocale(ID);
-        config = Solstice.newConfigManager.getData(AfkConfig.class);
+        locale = Solstice.localeManager.getLocale(ID);
+        config = Solstice.configManager.getData(AfkConfig.class);
 
         load();
 

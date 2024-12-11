@@ -24,7 +24,7 @@ public class CustomNameModule {
     private final ConcurrentHashMap<UUID, String> namesCache = new ConcurrentHashMap<>();
 
     public CustomNameModule() {
-        Solstice.newConfigManager.registerData(ID, CustomNameConfig.class, CustomNameConfig::new);
+        Solstice.configManager.registerData(ID, CustomNameConfig.class, CustomNameConfig::new);
         Solstice.playerData.registerData(ID, CustomNamePlayerData.class, CustomNamePlayerData::new);
 
         CommandRegistrationCallback.EVENT.register(NicknameCommand::new);
@@ -46,7 +46,7 @@ public class CustomNameModule {
     }
 
     public String fetchUsernameFormat(ServerPlayerEntity player) {
-        var formats = Solstice.newConfigManager.getData(CustomNameConfig.class).nameFormats;
+        var formats = Solstice.configManager.getData(CustomNameConfig.class).nameFormats;
 
         String format = null;
         for (var f : formats) {

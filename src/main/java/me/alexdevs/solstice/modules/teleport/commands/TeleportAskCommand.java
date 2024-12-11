@@ -1,31 +1,46 @@
 package me.alexdevs.solstice.modules.teleport.commands;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.locale.Locale;
+import me.alexdevs.solstice.modules.moderation.ModerationModule;
 import me.alexdevs.solstice.modules.teleport.TeleportModule;
 import me.alexdevs.solstice.modules.teleport.TeleportRequest;
-import me.alexdevs.solstice.util.Format;
-import me.alexdevs.solstice.core.TeleportTracker;
 import me.alexdevs.solstice.util.Components;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
+import java.util.List;
 import java.util.Map;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class TeleportAskCommand {
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        var requirement = Permissions.require("solstice.command.tpa", true);
-        var node = dispatcher.register(literal("tpa")
-                .requires(requirement)
+public class TeleportAskCommand extends ModCommand {
+    private final Locale locale = Solstice.localeManager.getLocale(TeleportModule.ID);
+
+    public TeleportAskCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
+        super(dispatcher, commandRegistry, environment);
+    }
+
+    @Override
+    public List<String> getNames() {
+        return List.of("tpa", "tpask");
+    }
+
+    @Override
+    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+        return literal(name)
+                .requires(require(true))
                 .then(argument("player", StringArgumentType.word())
                         .suggests((context, builder) -> {
                             var playerManager = context.getSource().getServer().getPlayerManager();
@@ -33,15 +48,10 @@ public class TeleportAskCommand {
                                     playerManager.getPlayerNames(),
                                     builder);
                         })
-                        .executes(context -> {
-                            execute(context);
-                            return 1;
-                        })));
-
-        dispatcher.register(literal("tpask").requires(requirement).redirect(node));
+                        .executes(this::execute));
     }
 
-    private static void execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         var source = context.getSource();
         var player = context.getSource().getPlayerOrThrow();
 
@@ -54,15 +64,17 @@ public class TeleportAskCommand {
             var placeholders = Map.of(
                     "targetPlayer", Text.of(targetName)
             );
-            source.sendFeedback(() -> Format.parse(
-                    Solstice.locale().commands.teleportRequest.playerNotFound,
+            source.sendFeedback(() -> locale.get(
+                    "playerNotFound",
                     playerContext,
                     placeholders
             ), false);
-            return;
+            return 0;
         }
 
-        // TODO: make tpa and tpahere respect ignore list of target
+        if(ModerationModule.getPlayerData(target.getUuid()).ignoredPlayers.contains(player.getUuid())) {
+            return 0;
+        }
 
         var request = new TeleportRequest(player.getUuid(), target.getUuid());
         var targetRequests = TeleportModule.teleportRequests.get(target.getUuid());
@@ -71,25 +83,26 @@ public class TeleportAskCommand {
         var placeholders = Map.of(
                 "requesterPlayer", player.getDisplayName(),
                 "acceptButton", Components.button(
-                        Solstice.locale().commands.common.accept,
-                        Solstice.locale().commands.teleportRequest.hoverAccept,
+                        locale.raw("accept"),
+                        locale.raw("hoverAccept"),
                         "/tpaccept " + request.requestId),
                 "refuseButton", Components.button(
-                        Solstice.locale().commands.common.refuse,
-                        Solstice.locale().commands.teleportRequest.hoverRefuse,
+                        locale.raw("refuse"),
+                        locale.raw("hoverRefuse"),
                         "/tpdeny " + request.requestId)
         );
 
-        target.sendMessage(Format.parse(
-                Solstice.locale().commands.teleportRequest.pendingTeleport,
+        target.sendMessage(locale.get(
+                "pendingTeleport",
                 targetContext,
                 placeholders
         ));
 
-        source.sendFeedback(() -> Format.parse(
-                Solstice.locale().commands.teleportRequest.requestSent,
+        source.sendFeedback(() -> locale.get(
+                "requestSent",
                 playerContext
         ), false);
-    }
 
+        return 1;
+    }
 }

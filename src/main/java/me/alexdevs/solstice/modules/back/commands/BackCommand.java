@@ -16,7 +16,7 @@ import java.util.List;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class BackCommand extends ModCommand {
-    private final Locale locale = Solstice.newLocaleManager.getLocale(BackModule.ID);
+    private final Locale locale = Solstice.localeManager.getLocale(BackModule.ID);
 
     public BackCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
         super(dispatcher, commandRegistry, environment);

@@ -13,7 +13,7 @@ public class SpawnModule {
     public static final String ID = "spawn";
 
     public SpawnModule() {
-        Solstice.newLocaleManager.registerModule(ID, SpawnLocale.MODULE);
+        Solstice.localeManager.registerModule(ID, SpawnLocale.MODULE);
         Solstice.serverData.registerData(ID, SpawnServerData.class, SpawnServerData::new);
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {

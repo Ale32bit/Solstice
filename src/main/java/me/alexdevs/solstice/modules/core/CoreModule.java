@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.modules.core;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.modules.core.commands.SolsticeCommand;
 import me.alexdevs.solstice.modules.core.data.CoreConfig;
@@ -18,8 +19,8 @@ public class CoreModule {
 
 
     public CoreModule() {
-        Solstice.newConfigManager.registerData(ID, CoreConfig.class, CoreConfig::new);
-        Solstice.newLocaleManager.registerShared(CoreLocale.SHARED);
+        Solstice.configManager.registerData(ID, CoreConfig.class, CoreConfig::new);
+        Solstice.localeManager.registerShared(CoreLocale.SHARED);
 
         Solstice.playerData.registerData(ID, CorePlayerData.class, CorePlayerData::new);
         Solstice.serverData.registerData(ID, CoreServerData.class, CoreServerData::new);
@@ -53,12 +54,13 @@ public class CoreModule {
         ServerPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             var playerData = Solstice.playerData.get(handler.getPlayer()).getData(CorePlayerData.class);
             playerData.lastSeenDate = new Date();
+            playerData.logoffPosition = new ServerPosition(handler.getPlayer());
             Solstice.playerData.dispose(handler.getPlayer().getUuid());
         });
     }
 
     public static CoreConfig getConfig() {
-        return Solstice.newConfigManager.getData(CoreConfig.class);
+        return Solstice.configManager.getData(CoreConfig.class);
     }
 
     public static CorePlayerData getPlayerData(UUID uuid) {

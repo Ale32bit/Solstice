@@ -21,7 +21,7 @@ public class TabListModule {
     private ScheduledFuture<?> scheduledFuture = null;
 
     public TabListModule() {
-        Solstice.newConfigManager.registerData(ID, TabListConfig.class, TabListConfig::new);
+        Solstice.configManager.registerData(ID, TabListConfig.class, TabListConfig::new);
 
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             this.server = server;
@@ -37,7 +37,7 @@ public class TabListModule {
     }
 
     private void schedule() {
-        var config = Solstice.newConfigManager.getData(TabListConfig.class);
+        var config = Solstice.configManager.getData(TabListConfig.class);
         if (!config.enable)
             return;
 
@@ -45,7 +45,7 @@ public class TabListModule {
     }
 
     public void updateTab() {
-        var config = Solstice.newConfigManager.getData(TabListConfig.class);
+        var config = Solstice.configManager.getData(TabListConfig.class);
         var period = Math.max(config.phasePeriod, 1);
 
         var phase = (Math.sin((server.getTicks() * Math.PI * 2) / period) + 1) / 2d;

@@ -22,7 +22,7 @@ public class AutoAnnouncementModule {
     private AutoAnnouncementConfig config;
 
     public AutoAnnouncementModule() {
-        Solstice.newConfigManager.registerData(ID, AutoAnnouncementConfig.class, AutoAnnouncementConfig::new);
+        Solstice.configManager.registerData(ID, AutoAnnouncementConfig.class, AutoAnnouncementConfig::new);
 
         SolsticeEvents.RELOAD.register(instance -> {
             if (scheduledFuture != null) {
@@ -66,7 +66,7 @@ public class AutoAnnouncementModule {
     }
 
     private void setup() {
-        this.config = Solstice.newConfigManager.getData(AutoAnnouncementConfig.class);
+        this.config = Solstice.configManager.getData(AutoAnnouncementConfig.class);
         currentLine = 0;
         if (config.enable) {
             scheduledFuture = Solstice.scheduler.scheduleAtFixedRate(this::announce, config.delay, config.delay, TimeUnit.SECONDS);

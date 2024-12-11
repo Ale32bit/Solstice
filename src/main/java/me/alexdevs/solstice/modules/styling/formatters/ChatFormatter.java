@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.modules.styling.formatters;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.util.Format;
+import me.alexdevs.solstice.modules.styling.StylingModule;
 import me.alexdevs.solstice.util.Components;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import net.minecraft.network.message.MessageType;
@@ -25,9 +25,11 @@ public class ChatFormatter {
     public static Text getFormattedMessage(SignedMessage message, ServerPlayerEntity player) {
         Text messageText = Components.chat(message, player);
 
+        var locale = Solstice.localeManager.getLocale(StylingModule.ID);
+
         var playerContext = PlaceholderContext.of(player);
-        var text = Format.parse(
-                Solstice.config().formats.chatFormat,
+        var text = locale.get(
+                "chatFormat",
                 playerContext,
                 Map.of(
                         "message", messageText

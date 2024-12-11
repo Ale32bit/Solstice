@@ -30,10 +30,10 @@ public class ServerPlayerEntityMixin {
 
     @Inject(method = "getPlayerListName", at = @At("HEAD"), cancellable = true)
     private void solstice$customizePlayerListName(CallbackInfoReturnable<Text> callback) {
-        if (Solstice.newConfigManager.getData(TabListConfig.class).enable) {
+        if (Solstice.configManager.getData(TabListConfig.class).enable) {
             var player = (ServerPlayerEntity) (Object) this;
             var playerContext = PlaceholderContext.of(player);
-            var text = Placeholders.parseText(parser.parseNode(Solstice.newConfigManager.getData(TabListConfig.class).playerTabName), playerContext);
+            var text = Placeholders.parseText(parser.parseNode(Solstice.configManager.getData(TabListConfig.class).playerTabName), playerContext);
             callback.setReturnValue(text);
         }
     }

@@ -1,6 +1,5 @@
 package me.alexdevs.solstice.modules.autoannouncement;
 
-import me.alexdevs.solstice.config.Config;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;

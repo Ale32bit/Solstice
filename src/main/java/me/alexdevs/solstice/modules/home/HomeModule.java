@@ -14,9 +14,9 @@ public class HomeModule {
     public static final String ID = "home";
 
     public HomeModule() {
-        Solstice.newConfigManager.registerData(ID, HomeConfig.class, HomeConfig::new);
+        Solstice.configManager.registerData(ID, HomeConfig.class, HomeConfig::new);
         Solstice.playerData.registerData(ID, HomePlayerData.class, HomePlayerData::new);
-        Solstice.newLocaleManager.registerModule(ID, HomeLocale.MODULE);
+        Solstice.localeManager.registerModule(ID, HomeLocale.MODULE);
 
         CommandRegistrationCallback.EVENT.register((commandDispatcher, commandRegistryAccess, registrationEnvironment) -> {
             new DeleteHomeCommand(commandDispatcher, commandRegistryAccess, registrationEnvironment);
@@ -32,10 +32,10 @@ public class HomeModule {
     }
 
     public Locale getLocale() {
-        return Solstice.newLocaleManager.getLocale(ID);
+        return Solstice.localeManager.getLocale(ID);
     }
 
     public HomeConfig getConfig() {
-        return Solstice.newConfigManager.getData(HomeConfig.class);
+        return Solstice.configManager.getData(HomeConfig.class);
     }
 }

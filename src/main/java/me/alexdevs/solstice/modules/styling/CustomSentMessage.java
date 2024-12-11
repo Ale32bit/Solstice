@@ -1,9 +1,8 @@
 package me.alexdevs.solstice.modules.styling;
 
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.modules.moderation.ModerationModule;
 import me.alexdevs.solstice.modules.styling.formatters.ChatFormatter;
 import me.alexdevs.solstice.modules.styling.formatters.EmoteFormatter;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SentMessage;
 import net.minecraft.network.message.SignedMessage;
@@ -35,12 +34,10 @@ public interface CustomSentMessage extends SentMessage {
 
         @Override
         public void send(ServerPlayerEntity receiver, boolean filterMaskEnabled, MessageType.Parameters params) {
-            var receiverState = Solstice.state.getPlayerState(receiver);
-            if(receiverState.ignoredPlayers.contains(sender.getUuid()) && !Permissions.check(sender, "solstice.ignore.bypass", 2)) {
+            if (ModerationModule.isIgnoring(receiver, sender)) {
                 return;
             }
             SignedMessage signedMessage = this.message.withFilterMaskEnabled(filterMaskEnabled);
-            //Solstice.LOGGER.info("Message params type: {}", params.type().chat().translationKey());
             if (!signedMessage.isFullyFiltered()) {
                 switch (params.type().chat().translationKey()) {
                     case "chat.type.text":

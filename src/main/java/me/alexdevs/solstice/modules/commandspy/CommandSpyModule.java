@@ -14,10 +14,10 @@ public class CommandSpyModule {
     public static final String PERMISSION = "solstice.commandspy";
 
     public CommandSpyModule() {
-        Solstice.newConfigManager.registerData(ID, CommandSpyConfig.class, CommandSpyConfig::new);
-        Solstice.newLocaleManager.registerModule(ID, CommandSpyLocale.MODULE);
+        Solstice.configManager.registerData(ID, CommandSpyConfig.class, CommandSpyConfig::new);
+        Solstice.localeManager.registerModule(ID, CommandSpyLocale.MODULE);
 
-        var locale = Solstice.newLocaleManager.getLocale(ID);
+        var locale = Solstice.localeManager.getLocale(ID);
 
         SolsticeEvents.PLAYER_COMMAND.register((source, command) -> {
             var parts = command.split("\\s");
@@ -42,6 +42,6 @@ public class CommandSpyModule {
     }
 
     public boolean isIgnored(String command) {
-        return Solstice.newConfigManager.getData(CommandSpyConfig.class).ignoredCommands.contains(command);
+        return Solstice.configManager.getData(CommandSpyConfig.class).ignoredCommands.contains(command);
     }
 }

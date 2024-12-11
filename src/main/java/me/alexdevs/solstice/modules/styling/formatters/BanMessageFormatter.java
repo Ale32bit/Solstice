@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules.styling.formatters;
 import com.mojang.authlib.GameProfile;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.modules.moderation.ModerationModule;
 import me.alexdevs.solstice.util.Format;
 import net.minecraft.server.BannedPlayerEntry;
 import net.minecraft.text.Text;
@@ -12,7 +13,8 @@ import java.util.Map;
 
 public class BanMessageFormatter {
     public static Text format(GameProfile profile, BannedPlayerEntry entry) {
-        var df = new SimpleDateFormat(Solstice.config().formats.dateFormat);
+        var locale = Solstice.localeManager.getLocale(ModerationModule.ID);
+        var df = new SimpleDateFormat(locale.raw("~dateFormat"));
 
         var context = PlaceholderContext.of(profile, Solstice.server);
         var expiryDate = Text.of(entry.getExpiryDate() != null ? df.format(entry.getExpiryDate()) : "never");
@@ -23,7 +25,7 @@ public class BanMessageFormatter {
                 "source", Text.of(entry.getSource())
         );
 
-        var format = entry.getExpiryDate() != null ? Solstice.config().formats.tempBanMessageFormat : Solstice.config().formats.banMessageFormat;
+        var format = entry.getExpiryDate() != null ? locale.raw("tempBanMessageFormat") : locale.raw("banMessageFormat");
 
         return Format.parse(format, context, placeholders);
     }

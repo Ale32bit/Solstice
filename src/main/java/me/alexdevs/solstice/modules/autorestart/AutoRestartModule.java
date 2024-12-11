@@ -35,14 +35,14 @@ public class AutoRestartModule {
     private static Locale locale;
 
     public AutoRestartModule() {
-        Solstice.newConfigManager.registerData(ID, AutoRestartConfig.class, AutoRestartConfig::new);
-        Solstice.newLocaleManager.registerModule(ID, AutoRestartLocale.MODULE);
+        Solstice.configManager.registerData(ID, AutoRestartConfig.class, AutoRestartConfig::new);
+        Solstice.localeManager.registerModule(ID, AutoRestartLocale.MODULE);
 
         CommandRegistrationCallback.EVENT.register(RestartCommand::new);
 
         SolsticeEvents.READY.register((instance, server) -> {
-            config = Solstice.newConfigManager.getData(AutoRestartConfig.class);
-            locale = Solstice.newLocaleManager.getLocale(ID);
+            config = Solstice.configManager.getData(AutoRestartConfig.class);
+            locale = Solstice.localeManager.getLocale(ID);
             setup();
             if (config.enable) {
                 scheduleNextRestart();

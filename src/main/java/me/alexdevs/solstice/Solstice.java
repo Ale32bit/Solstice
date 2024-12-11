@@ -2,14 +2,10 @@ package me.alexdevs.solstice;
 
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSave;
-import me.alexdevs.solstice.config.Config;
-import me.alexdevs.solstice.config.ConfigManager;
-import me.alexdevs.solstice.config.locale.Locale;
-import me.alexdevs.solstice.config.locale.LocaleManager;
 import me.alexdevs.solstice.data.PlayerDataManager;
 import me.alexdevs.solstice.data.ServerData;
+import me.alexdevs.solstice.locale.LocaleManager;
 import me.alexdevs.solstice.modules.Modules;
-import me.alexdevs.solstice.state.StateManager;
 import me.alexdevs.solstice.util.data.HoconDataManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -37,28 +33,9 @@ public class Solstice implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(Solstice.class);
 
     public static final Path configDirectory = FabricLoader.getInstance().getConfigDir().resolve(MOD_ID);
-    public static final ConfigManager configManager = new ConfigManager(configDirectory.resolve("legacy_solstice.conf"));
-    public static final LocaleManager localeManager = new LocaleManager(configDirectory.resolve("legacy_locale.json"));
 
-    @Deprecated(forRemoval = true)
-    public static Config config() {
-        return configManager.config();
-    }
-
-    @Deprecated(forRemoval = true)
-    public static Locale locale() {
-        return localeManager.locale();
-    }
-
-    public static final me.alexdevs.solstice.locale.LocaleManager newLocaleManager = new me.alexdevs.solstice.locale.LocaleManager(configDirectory.resolve("locale.json"));
-    public static final HoconDataManager newConfigManager = new HoconDataManager();
-
-    static {
-        newConfigManager.setDataPath(configDirectory.resolve("config.conf"));
-    }
-
-    @Deprecated(forRemoval = true)
-    public static final StateManager state = new StateManager();
+    public static final HoconDataManager configManager = new HoconDataManager(configDirectory.resolve("config.conf"));
+    public static final LocaleManager localeManager = new LocaleManager(configDirectory.resolve("locale.json"));
 
     private static Solstice INSTANCE;
 
@@ -89,11 +66,8 @@ public class Solstice implements ModInitializer {
         LOGGER.info("Initializing Solstice v{}...", modMeta.getVersion());
 
         try {
-            configManager.load();
+            configManager.prepareData();
             configManager.save();
-
-            newConfigManager.prepareData();
-            newConfigManager.save();
 
         } catch (ConfigurateException e) {
             LOGGER.error("Error while loading Solstice config! Refusing to continue!", e);
@@ -103,9 +77,6 @@ public class Solstice implements ModInitializer {
         try {
             localeManager.load();
             localeManager.save();
-
-            newLocaleManager.load();
-            newLocaleManager.save();
         } catch (Exception e) {
             LOGGER.error("Error while loading Solstice locale! Refusing to continue!", e);
             return;
@@ -114,7 +85,6 @@ public class Solstice implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             Solstice.server = server;
             var path = server.getSavePath(WorldSavePath.ROOT).resolve("data").resolve(MOD_ID);
-            state.register(path);
             serverData.setDataPath(path.resolve("server.json"));
             playerData.setDataPath(path.resolve("players"));
 
@@ -128,7 +98,6 @@ public class Solstice implements ModInitializer {
             scheduler.shutdownNow();
         });
         WorldSave.EVENT.register((server1, suppressLogs, flush, force) -> {
-            state.save();
             serverData.save();
             playerData.saveAll();
         });

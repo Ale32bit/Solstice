@@ -18,7 +18,7 @@ public class BackModule {
     public static final String ID = "back";
 
     public BackModule() {
-        Solstice.newLocaleManager.registerModule(ID, BackLocale.MODULE);
+        Solstice.localeManager.registerModule(ID, BackLocale.MODULE);
 
         CommandRegistrationCallback.EVENT.register(BackCommand::new);
 

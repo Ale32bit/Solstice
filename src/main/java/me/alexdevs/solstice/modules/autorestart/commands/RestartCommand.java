@@ -48,7 +48,7 @@ public class RestartCommand extends ModCommand {
 
     private int schedule(CommandContext<ServerCommandSource> context, int seconds, @Nullable String message) {
         if (message == null) {
-            message = Solstice.newLocaleManager.getLocale(AutoRestartModule.ID).raw("barLabel");
+            message = Solstice.localeManager.getLocale(AutoRestartModule.ID).raw("barLabel");
         }
         Solstice.modules.autoRestart.schedule(seconds, message);
 

@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.modules.teleport;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.modules.teleport.data.TeleportConfig;
 
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ public class TeleportRequest {
         this.player = player;
         this.target = target;
         // Seconds in config per 20 ticks
-        this.remainingTicks = Solstice.config().teleportRequests.teleportRequestTimeout * 20;
+        this.remainingTicks = Solstice.configManager.getData(TeleportConfig.class).teleportRequestTimeout * 20;
     }
 
     public void expire() {

@@ -24,6 +24,14 @@ public class HoconDataManager {
     protected final Map<Class<?>, Object> data = new HashMap<>();
     protected final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
 
+    public HoconDataManager() {
+
+    }
+
+    public HoconDataManager(final Path filePath) {
+        setDataPath(filePath);
+    }
+
     protected static HoconConfigurationLoader getLoader(Path path) {
         return HoconConfigurationLoader
                 .builder()

@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.modules.styling.formatters;
 
-import me.alexdevs.solstice.util.Format;
+import me.alexdevs.solstice.modules.styling.StylingModule;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.util.Components;
 import eu.pb4.placeholders.api.PlaceholderContext;
@@ -14,12 +14,13 @@ import java.util.Map;
 
 public class EmoteFormatter {
     public static void sendEmoteMessage(ServerPlayerEntity receiver, SignedMessage message, MessageType.Parameters params, ServerPlayerEntity sender) {
+        var locale = Solstice.localeManager.getLocale(StylingModule.ID);
         var playerContext = PlaceholderContext.of(sender);
 
         Text messageText = Components.chat(message, sender);
 
-        var text = Format.parse(
-                Solstice.config().formats.emoteFormat,
+        var text = locale.get(
+                "emoteFormat",
                 playerContext,
                 Map.of(
                         "message", messageText

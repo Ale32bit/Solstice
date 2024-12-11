@@ -7,8 +7,6 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.moderation.ModerationModule;
-import me.alexdevs.solstice.util.Format;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -20,7 +18,7 @@ import java.util.Map;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class IgnoreListCommand extends ModCommand {
-    private final Locale locale = Solstice.newLocaleManager.getLocale(ModerationModule.ID);
+    private final Locale locale = Solstice.localeManager.getLocale(ModerationModule.ID);
 
     public IgnoreListCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
         super(dispatcher, commandRegistry, environment);

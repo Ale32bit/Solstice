@@ -27,7 +27,7 @@ import java.util.Map;
 import static net.minecraft.server.command.CommandManager.*;
 
 public class MailCommand extends ModCommand {
-    private final Locale locale = Solstice.newLocaleManager.getLocale(MailModule.ID);
+    private final Locale locale = Solstice.localeManager.getLocale(MailModule.ID);
     private final MailModule mailModule = Solstice.modules.mail;
 
     public MailCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, RegistrationEnvironment environment) {

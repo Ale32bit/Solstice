@@ -20,10 +20,10 @@ public class MailModule {
     public final Locale locale;
 
     public MailModule() {
-        Solstice.newLocaleManager.registerModule(ID, MailLocale.MODULE);
+        Solstice.localeManager.registerModule(ID, MailLocale.MODULE);
         Solstice.playerData.registerData(ID, MailPlayerData.class, MailPlayerData::new);
 
-        this.locale = Solstice.newLocaleManager.getLocale(ID);
+        this.locale = Solstice.localeManager.getLocale(ID);
 
         CommandRegistrationCallback.EVENT.register(MailCommand::new);
 

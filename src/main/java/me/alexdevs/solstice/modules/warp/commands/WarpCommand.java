@@ -4,14 +4,12 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.warp.WarpModule;
 import me.alexdevs.solstice.modules.warp.data.WarpServerData;
-import me.alexdevs.solstice.util.Format;
 import me.alexdevs.solstice.Solstice;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
@@ -55,7 +53,7 @@ public class WarpCommand extends ModCommand {
         var warps = serverDate.warps;
         var playerContext = PlaceholderContext.of(player);
 
-        var locale = Solstice.newLocaleManager.getLocale(WarpModule.ID);
+        var locale = Solstice.localeManager.getLocale(WarpModule.ID);
 
         if (!warps.containsKey(name)) {
             context.getSource().sendFeedback(() -> locale.get(

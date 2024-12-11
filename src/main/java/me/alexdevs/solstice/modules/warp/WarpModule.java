@@ -13,7 +13,7 @@ public class WarpModule {
     public static final String ID = "warp";
 
     public WarpModule() {
-        Solstice.newLocaleManager.registerModule(ID, WarpLocale.MODULE);
+        Solstice.localeManager.registerModule(ID, WarpLocale.MODULE);
         Solstice.serverData.registerData(ID, WarpServerData.class, WarpServerData::new);
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {

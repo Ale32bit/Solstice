@@ -6,12 +6,10 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.spawn.SpawnModule;
 import me.alexdevs.solstice.modules.spawn.data.SpawnServerData;
-import me.alexdevs.solstice.util.Format;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
 import com.mojang.brigadier.CommandDispatcher;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
@@ -55,7 +53,7 @@ public class SpawnCommand extends ModCommand {
             spawnPosition = new ServerPosition(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), 0, 0, server.getOverworld());
         }
 
-        var locale = Solstice.newLocaleManager.getLocale(SpawnModule.ID);
+        var locale = Solstice.localeManager.getLocale(SpawnModule.ID);
 
         context.getSource().sendFeedback(() -> locale.get(
                 "teleporting",
