@@ -4,6 +4,7 @@ import me.alexdevs.solstice.modules.admin.AdminModule;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.autoannouncement.AutoAnnouncementModule;
 import me.alexdevs.solstice.modules.back.BackModule;
+import me.alexdevs.solstice.modules.experiments.ExperimentsModule;
 import me.alexdevs.solstice.modules.fun.FunModule;
 import me.alexdevs.solstice.modules.near.NearModule;
 import me.alexdevs.solstice.modules.seen.SeenModule;
@@ -50,4 +51,6 @@ public class Modules {
     public final TimeBarModule timeBar = new TimeBarModule();
     public final UtilitiesModule utilities = new UtilitiesModule();
     public final WarpModule warp = new WarpModule();
+
+    public final ExperimentsModule experiments = new ExperimentsModule();
 }
