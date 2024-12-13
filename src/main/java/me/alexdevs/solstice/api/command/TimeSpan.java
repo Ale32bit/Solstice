@@ -1,16 +1,13 @@
 package me.alexdevs.solstice.api.command;
 
+import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import me.alexdevs.solstice.Solstice;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -21,30 +18,34 @@ import java.util.regex.Pattern;
 public class TimeSpan {
     private static final Pattern minorTimeString = Pattern.compile("^\\d+$");
     private static final Pattern timeString = Pattern.compile("^((\\d+)w)?((\\d+)d)?((\\d+)h)?((\\d+)m)?((\\d+)s)?$");
+    private static final Pattern timeStringNoEnd = Pattern.compile("^((\\d+)w)?((\\d+)d)?((\\d+)h)?((\\d+)m)?((\\d+)s)?");
+    private static final Pattern lastDigits = Pattern.compile("\\d+$");
 
     private static final int secondsInMinute = 60;
     private static final int secondsInHour = 60 * secondsInMinute;
     private static final int secondsInDay = 24 * secondsInHour;
     private static final int secondsInWeek = 7 * secondsInDay;
 
-    private static long amount(@Nullable final String g, final int multiplier) {
+    public static final SimpleCommandExceptionType INVALID_TIMESPAN = new SimpleCommandExceptionType(new LiteralMessage("Invalid timespan"));
+
+    private static int amount(@Nullable final String g, final int multiplier) {
         if (g != null && !g.isEmpty()) {
-            return multiplier * Long.parseUnsignedLong(g);
+            return multiplier * Integer.parseUnsignedInt(g);
         }
 
         return 0;
     }
 
 
-    public static Optional<? extends Long> parse(String s) {
+    public static Optional<? extends Integer> parse(String s) {
         // First, if just digits, return the number in seconds.
         if (minorTimeString.matcher(s).matches()) {
-            return Optional.of(Long.parseUnsignedLong(s));
+            return Optional.of(Integer.parseUnsignedInt(s));
         }
 
         final Matcher m = timeString.matcher(s);
         if (m.matches()) {
-            long time = amount(m.group(2), secondsInWeek);
+            int time = amount(m.group(2), secondsInWeek);
             time += amount(m.group(4), secondsInDay);
             time += amount(m.group(6), secondsInHour);
             time += amount(m.group(8), secondsInMinute);
@@ -59,23 +60,53 @@ public class TimeSpan {
     }
 
     public static CompletableFuture<Suggestions> suggest(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
-        Solstice.LOGGER.info("{}", builder.getRemainingLowerCase());
+        var original = builder.getRemainingLowerCase();
+        if (original.isEmpty()) {
+            return Suggestions.empty();
+        }
 
-        for (int i = 0; i < 5; i++) {
-            var original = builder.getRemainingLowerCase();
-            if (minorTimeString.matcher(builder.getRemaining()).matches()) {
-                builder.suggest(original);
+        if (timeString.matcher(original).matches()) {
+            builder.suggest(original);
+            return builder.buildFuture();
+        }
 
-                builder.suggest(original + "w");
-                builder.suggest(original + "d");
-                builder.suggest(original + "h");
-                builder.suggest(original + "m");
-                builder.suggest(original + "s");
+        var units = List.of(
+                new Unit("w", "Week"),
+                new Unit("d", "Day"),
+                new Unit("h", "Hour"),
+                new Unit("m", "Minute"),
+                new Unit("s", "Second")
+        );
 
-                builder = builder.createOffset(builder.getInput().length());
+        if (minorTimeString.matcher(original).matches()) {
+            for (var unit : units) {
+                builder.suggest(original + unit.unit, new LiteralMessage(unit.tooltip));
+            }
+            return builder.buildFuture();
+        }
+
+
+        if (timeStringNoEnd.matcher(original).find() && lastDigits.matcher(original).find()) {
+            var max = 0;
+            for (var i = 0; i < units.size(); i++) {
+                if (original.contains(units.get(i).unit))
+                    max = i + 1;
+            }
+
+            for (var i = max; i < units.size(); i++) {
+                var unit = units.get(i);
+                if (!original.contains(unit.unit)) {
+                    builder.suggest(original + unit.unit, new LiteralMessage(unit.tooltip));
+                }
             }
         }
 
+
+
         return builder.buildFuture();
+    }
+
+    private record Unit(String unit, String tooltip) {
+
     }
 }
