@@ -1,5 +1,6 @@
 package me.alexdevs.solstice;
 
+import com.mojang.brigadier.CommandDispatcher;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSave;
 import me.alexdevs.solstice.data.PlayerDataManager;
