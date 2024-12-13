@@ -14,6 +14,6 @@ public class ModerationLocale {
             Map.entry("ignoreListComma", "<gold>, </gold>"),
             Map.entry("ignoreListEmpty ", "<gold>You are not ignoring anyone at the moment.</gold>"),
             Map.entry("banMessageFormat", "<red>You are banned from this server:</red>\n\n${reason}"),
-            Map.entry("tempBanMessageFormat", "<red>You are temporary banned from this server:</red>\n\n${reason}\n\n<gray>Expires: ${expiry_date}</gray>")
+            Map.entry("tempBanMessageFormat", "<red>You are temporarily banned from this server:</red>\n\n${reason}\n\n<gray>Expires: ${expiry_date}</gray>")
     );
 }
