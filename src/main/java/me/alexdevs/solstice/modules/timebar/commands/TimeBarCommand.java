@@ -2,15 +2,14 @@ package me.alexdevs.solstice.modules.timebar.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.UuidArgumentType;
@@ -60,7 +59,8 @@ public class TimeBarCommand extends ModCommand {
         return literal(name)
                 .requires(require(3))
                 .then(literal("start")
-                        .then(argument("seconds", IntegerArgumentType.integer(0))
+                        .then(argument("duration", StringArgumentType.word())
+                                .suggests(TimeSpan::suggest)
                                 .then(argument("color", StringArgumentType.word())
                                         .suggests((context, builder) -> {
                                             var colors = Arrays.stream(BossBar.Color.values()).map(Enum::toString).toList();
@@ -88,8 +88,8 @@ public class TimeBarCommand extends ModCommand {
                                 .executes(this::executeCancel)));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context) {
-        var seconds = IntegerArgumentType.getInteger(context, "seconds");
+    private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        var seconds = TimeSpan.getTimeSpan(context, "duration");
         var colorName = StringArgumentType.getString(context, "color");
         var styleName = StringArgumentType.getString(context, "style");
         var countdown = BoolArgumentType.getBool(context, "countdown");

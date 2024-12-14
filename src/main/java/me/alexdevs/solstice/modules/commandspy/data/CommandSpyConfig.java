@@ -10,6 +10,6 @@ import java.util.List;
 public class CommandSpyConfig {
     @Comment("Commands to ignore.")
     public ArrayList<String> ignoredCommands = new ArrayList<>(List.of(
-            "tell", "w", "msg", "dm", "r"
+            "tell", "w", "msg", "dm", "r", "staffchat", "sc", "helpop", "sos"
     ));
 }
