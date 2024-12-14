@@ -1,3 +1,8 @@
+# 1.1.1
+
+- Bugfix missing dependencies for a dependency.
+- Username formats are no longer cached.
+
 # 1.1.0
 
 - Added staff chat via `/staffchat` command. Also toggleable.
