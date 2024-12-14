@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.autorestart.AutoRestartModule;
 import net.minecraft.command.CommandRegistryAccess;
@@ -40,8 +41,9 @@ public class RestartCommand extends ModCommand {
                             return 1;
                         }))
                 .then(literal("schedule")
-                        .then(argument("seconds", IntegerArgumentType.integer(0))
-                                .executes(context -> schedule(context, IntegerArgumentType.getInteger(context, "seconds"), null))
+                        .then(argument("timespan", StringArgumentType.word())
+                                .suggests(TimeSpan::suggest)
+                                .executes(context -> schedule(context, TimeSpan.getTimeSpan(context, "timespan"), null))
                                 .then(argument("message", StringArgumentType.greedyString())
                                         .executes(context -> schedule(context, IntegerArgumentType.getInteger(context, "seconds"), StringArgumentType.getString(context, "message")))))
                         .then(literal("next")

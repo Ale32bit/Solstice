@@ -2,6 +2,7 @@ package me.alexdevs.solstice.api.command;
 
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
@@ -57,6 +58,16 @@ public class TimeSpan {
         }
 
         return Optional.empty();
+    }
+
+    public static int getTimeSpan(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
+        var argument = context.getArgument(name, String.class);
+        var timespan = parse(argument);
+        if (timespan.isPresent()) {
+            return timespan.get();
+        }
+
+        throw INVALID_TIMESPAN.create();
     }
 
     public static CompletableFuture<Suggestions> suggest(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {

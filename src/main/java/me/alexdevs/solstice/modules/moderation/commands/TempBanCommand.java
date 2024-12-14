@@ -40,19 +40,14 @@ public class TempBanCommand extends ModCommand {
                 .then(argument("targets", GameProfileArgumentType.gameProfile())
                         .then(argument("duration", StringArgumentType.string())
                                 .suggests(TimeSpan::suggest)
-                                .executes(context -> execute(context, GameProfileArgumentType.getProfileArgument(context, "targets"), null, StringArgumentType.getString(context, "duration")))
+                                .executes(context -> execute(context, GameProfileArgumentType.getProfileArgument(context, "targets"), null, TimeSpan.getTimeSpan(context, "duration")))
                                 .then(argument("reason", StringArgumentType.greedyString())
-                                        .executes(context -> execute(context, GameProfileArgumentType.getProfileArgument(context, "targets"), StringArgumentType.getString(context, "reason"), StringArgumentType.getString(context, "duration"))))));
+                                        .executes(context -> execute(context, GameProfileArgumentType.getProfileArgument(context, "targets"), StringArgumentType.getString(context, "reason"), TimeSpan.getTimeSpan(context, "duration"))))));
 
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, Collection<GameProfile> targets, String reason, String duration) throws CommandSyntaxException {
-        var totalSeconds = TimeSpan.parse(duration);
-
-        if(totalSeconds.isEmpty())
-            throw TimeSpan.INVALID_TIMESPAN.create();
-
-        var expiryDate = getDateFromNow(totalSeconds.get());
+    private int execute(CommandContext<ServerCommandSource> context, Collection<GameProfile> targets, String reason, int duration) throws CommandSyntaxException {
+        var expiryDate = getDateFromNow(duration);
 
         return BanCommand.execute(context, targets, reason, expiryDate);
     }
