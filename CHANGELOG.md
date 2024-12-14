@@ -1,3 +1,10 @@
+# 1.1.0
+
+- Added staff chat via `/staffchat` command. Also toggleable.
+- Added `/helpop` for players to send prima help requests to all operators.
+- Added TimeSpan to `/restart` and `/timebar`.
+- Clarified comment for username formats.
+
 # 1.0.1
 
 - Bugfix `/ban` and `/tempban` crashing.
