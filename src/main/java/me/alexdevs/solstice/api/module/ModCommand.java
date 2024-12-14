@@ -25,7 +25,7 @@ public abstract class ModCommand {
         this.register();
     }
 
-    protected void register() {
+    public void register() {
         for (var name : getNames()) {
             dispatcher.register(command(name));
         }
@@ -39,27 +39,27 @@ public abstract class ModCommand {
         return Solstice.MOD_ID + ".command." + getName();
     }
 
-    protected Predicate<ServerCommandSource> require() {
+    public Predicate<ServerCommandSource> require() {
         return Permissions.require(getPermissionNode());
     }
 
-    protected Predicate<ServerCommandSource> require(int defaultRequiredLevel) {
+    public Predicate<ServerCommandSource> require(int defaultRequiredLevel) {
         return Permissions.require(getPermissionNode(), defaultRequiredLevel);
     }
 
-    protected Predicate<ServerCommandSource> require(boolean defaultValue) {
+    public Predicate<ServerCommandSource> require(boolean defaultValue) {
         return Permissions.require(getPermissionNode(), defaultValue);
     }
 
-    protected Predicate<ServerCommandSource> require(String subNode) {
+    public Predicate<ServerCommandSource> require(String subNode) {
         return Permissions.require(getPermissionNode() + "." + subNode);
     }
 
-    protected Predicate<ServerCommandSource> require(String subNode, int defaultRequiredLevel) {
+    public Predicate<ServerCommandSource> require(String subNode, int defaultRequiredLevel) {
         return Permissions.require(getPermissionNode() + "." + subNode, defaultRequiredLevel);
     }
 
-    protected Predicate<ServerCommandSource> require(String subNode, boolean defaultValue) {
+    public Predicate<ServerCommandSource> require(String subNode, boolean defaultValue) {
         return Permissions.require(getPermissionNode() + "." + subNode, defaultValue);
     }
 
