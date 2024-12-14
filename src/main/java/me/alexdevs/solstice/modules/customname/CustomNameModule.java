@@ -23,7 +23,6 @@ public class CustomNameModule {
     public static final String ID = "customName";
 
     private ArrayList<CustomNameConfig.NameFormat> formats = new ArrayList<>();
-    private final ConcurrentHashMap<UUID, String> namesCache = new ConcurrentHashMap<>();
 
     public CustomNameModule() {
         Solstice.configManager.registerData(ID, CustomNameConfig.class, CustomNameConfig::new);
