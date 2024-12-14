@@ -6,8 +6,10 @@ import me.alexdevs.solstice.modules.autoannouncement.AutoAnnouncementModule;
 import me.alexdevs.solstice.modules.back.BackModule;
 import me.alexdevs.solstice.modules.experiments.ExperimentsModule;
 import me.alexdevs.solstice.modules.fun.FunModule;
+import me.alexdevs.solstice.modules.helpop.HelpOpModule;
 import me.alexdevs.solstice.modules.near.NearModule;
 import me.alexdevs.solstice.modules.seen.SeenModule;
+import me.alexdevs.solstice.modules.staffchat.StaffChatModule;
 import me.alexdevs.solstice.modules.styling.StylingModule;
 import me.alexdevs.solstice.modules.commandspy.CommandSpyModule;
 import me.alexdevs.solstice.modules.core.CoreModule;
@@ -37,6 +39,7 @@ public class Modules {
     public final CustomNameModule customName = new CustomNameModule();
     public final FormattableSignsModule formattableSigns = new FormattableSignsModule();
     public final FunModule fun = new FunModule();
+    public final HelpOpModule helpOp = new HelpOpModule();
     public final HomeModule home = new HomeModule();
     public final InfoModule info = new InfoModule();
     public final MailModule mail = new MailModule();
@@ -44,6 +47,7 @@ public class Modules {
     public final NearModule near = new NearModule();
     public final SeenModule seen = new SeenModule();
     public final SpawnModule spawn = new SpawnModule();
+    public final StaffChatModule staffChat = new StaffChatModule();
     public final StylingModule styling = new StylingModule();
     public final TabListModule tabList = new TabListModule();
     public final TeleportModule teleport = new TeleportModule();
