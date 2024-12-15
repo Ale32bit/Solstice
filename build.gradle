@@ -45,6 +45,8 @@ dependencies {
 	include implementation("org.spongepowered:configurate-core:${project.configurate_version}")
 	include implementation("org.spongepowered:configurate-hocon:${project.configurate_version}")
 	include implementation("org.spongepowered:configurate-gson:${project.configurate_version}")
+	include "com.typesafe:config:1.4.3"
+	include "io.leangen.geantyref:geantyref:2.0.0"
 
 	include modImplementation("me.lucko:fabric-permissions-api:${project.permissions_api_version}")
 

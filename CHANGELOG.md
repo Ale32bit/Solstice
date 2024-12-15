@@ -1,7 +1,11 @@
+# 1.1.1
+
+- Bugfix missing dependencies for a dependency.
+
 # 1.1.0
 
 - Added staff chat via `/staffchat` command. Also toggleable.
-- Added `/helpop` for players to send prima help requests to all operators.
+- Added `/helpop` for players to send help requests to all operators.
 - Added TimeSpan to `/restart` and `/timebar`.
 - Clarified comment for username formats.
 
