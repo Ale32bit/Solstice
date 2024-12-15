@@ -1,3 +1,7 @@
+# 1.1.2
+
+- Bugfix misconfigured permission node for `/warp`.
+
 # 1.1.1
 
 - Bugfix missing dependencies for a dependency.

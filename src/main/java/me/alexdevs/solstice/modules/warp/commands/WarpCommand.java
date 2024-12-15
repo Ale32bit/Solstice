@@ -35,7 +35,7 @@ public class WarpCommand extends ModCommand {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
-                .requires(require(name))
+                .requires(require(true))
                 .then(argument("name", StringArgumentType.word())
                         .suggests((context, builder) -> {
                             if (!context.getSource().isExecutedByPlayer())
