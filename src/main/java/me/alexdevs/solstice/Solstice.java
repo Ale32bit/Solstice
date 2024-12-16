@@ -5,6 +5,7 @@ import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSave;
 import me.alexdevs.solstice.data.PlayerDataManager;
 import me.alexdevs.solstice.data.ServerData;
+import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.locale.LocaleManager;
 import me.alexdevs.solstice.modules.Modules;
 import me.alexdevs.solstice.util.data.HoconDataManager;
@@ -81,6 +82,10 @@ public class Solstice implements ModInitializer {
         } catch (Exception e) {
             LOGGER.error("Error while loading Solstice locale! Refusing to continue!", e);
             return;
+        }
+
+        if(FabricLoader.getInstance().isModLoaded("luckperms")) {
+            LuckPermsIntegration.register();
         }
 
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {

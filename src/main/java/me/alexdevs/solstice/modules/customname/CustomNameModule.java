@@ -1,8 +1,10 @@
 package me.alexdevs.solstice.modules.customname;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.Placeholders;
 import eu.pb4.placeholders.api.TextParserUtils;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.modules.customname.commands.NicknameCommand;
 import me.alexdevs.solstice.modules.customname.data.CustomNameConfig;
 import me.alexdevs.solstice.modules.customname.data.CustomNamePlayerData;
@@ -85,14 +87,32 @@ public class CustomNameModule {
 
         var playerData = Solstice.playerData.get(player).getData(CustomNamePlayerData.class);
 
-        var name = playerData.nickname == null ? Text.of(player.getGameProfile().getName()) : TextParserUtils.formatText(playerData.nickname);
+        var name = playerData.nickname == null ? player.getGameProfile().getName() : playerData.nickname;
 
-        var placeholders = Map.of(
-                "name", name
+        var prefix = LuckPermsIntegration.getPrefix(player);
+        var suffix = LuckPermsIntegration.getSuffix(player);
+        if(prefix == null)
+            prefix = "";
+        if(suffix == null)
+            suffix = "";
+
+        Map<String, String> placeholders = Map.of(
+                "name", name,
+                "prefix", prefix,
+                "suffix", suffix
         );
 
+        var pattern = Format.PLACEHOLDER_PATTERN;
+        var output = format;
+        var matcher = pattern.matcher(format);
+        while(matcher.find()) {
+            var chunk = matcher.group();
+            var key = matcher.group("id");
+            output = output.replace(chunk, placeholders.getOrDefault(key, ""));
+        }
+
         var playerContext = PlaceholderContext.of(player);
-        return Format.parse(format, playerContext, placeholders).copy();
+        return Format.parse(output, playerContext).copy();
     }
 
     public void setCustomName(ServerPlayerEntity player, String name) {
