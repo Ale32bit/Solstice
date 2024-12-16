@@ -53,6 +53,8 @@ dependencies {
 	include modImplementation("eu.pb4:placeholder-api:${project.placeholderapi_version}")
 	include modImplementation("eu.pb4:sgui:${project.sgui_version}")
 
+	modCompileOnly "net.luckperms:api:5.4"
+
 }
 
 processResources {

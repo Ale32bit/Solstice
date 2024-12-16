@@ -1,3 +1,8 @@
+# 1.1.3
+
+- Added `${prefix}` and `${suffix}` as name format placeholders pre-processed.
+- Changing LuckPerms prefix and suffix no longer requires reloading.
+
 # 1.1.2
 
 - Bugfix misconfigured permission node for `/warp`.
