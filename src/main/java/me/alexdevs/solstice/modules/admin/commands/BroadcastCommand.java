@@ -3,13 +3,10 @@ package me.alexdevs.solstice.modules.admin.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.modules.admin.AdminModule;
 import me.alexdevs.solstice.util.Format;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 
 import java.util.List;
@@ -17,9 +14,10 @@ import java.util.List;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class BroadcastCommand extends ModCommand {
-    public BroadcastCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+public class BroadcastCommand extends ModCommand<AdminModule> {
+
+    public BroadcastCommand(AdminModule module) {
+        super(module);
     }
 
     @Override

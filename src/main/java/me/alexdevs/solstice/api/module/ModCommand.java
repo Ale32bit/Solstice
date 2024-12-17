@@ -11,20 +11,48 @@ import net.minecraft.server.command.ServerCommandSource;
 import java.util.List;
 import java.util.function.Predicate;
 
-public abstract class ModCommand {
-    protected final CommandDispatcher<ServerCommandSource> dispatcher;
-    protected final CommandRegistryAccess commandRegistry;
-    protected final CommandManager.RegistrationEnvironment environment;
+public abstract class ModCommand<T extends ModuleBase> {
+    protected CommandDispatcher<ServerCommandSource> dispatcher;
+    protected CommandRegistryAccess commandRegistry;
+    protected CommandManager.RegistrationEnvironment environment;
+    protected final T module;
 
+    @Deprecated(forRemoval = true)
     public ModCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
         this.dispatcher = dispatcher;
         this.commandRegistry = commandRegistry;
         this.environment = environment;
 
+        this.module = null;
+
         this.register();
     }
 
+    public ModCommand(T module) {
+        this.commandRegistry = null;
+        this.environment = null;
+        this.dispatcher = null;
+
+        this.module = module;
+    }
+
+    public static <T extends ModuleBase> ModCommand<T> init(Class<? extends ModCommand<T>> commandClass, T module) {
+        try {
+            return commandClass.getDeclaredConstructor(module.getClass()).newInstance(module);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to initialize ModCommand: " + commandClass.getSimpleName(), e);
+        }
+    }
+
     public void register() {
+        this.register(dispatcher, commandRegistry, environment);
+    }
+
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
+        this.dispatcher = dispatcher;
+        this.commandRegistry = commandRegistry;
+        this.environment = environment;
+
         for (var name : getNames()) {
             dispatcher.register(command(name));
         }
@@ -35,6 +63,8 @@ public abstract class ModCommand {
     }
 
     public String getPermissionNode() {
+        if(module != null)
+            return module.getPermissionNode();
         return Solstice.MOD_ID + ".command." + getName();
     }
 

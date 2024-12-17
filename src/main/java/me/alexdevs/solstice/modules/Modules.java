@@ -1,5 +1,8 @@
 package me.alexdevs.solstice.modules;
 
+import com.mojang.brigadier.CommandDispatcher;
+import me.alexdevs.solstice.api.events.ModuleEvents;
+import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.admin.AdminModule;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.autoannouncement.AutoAnnouncementModule;
@@ -27,6 +30,13 @@ import me.alexdevs.solstice.modules.tell.TellModule;
 import me.alexdevs.solstice.modules.timebar.TimeBarModule;
 import me.alexdevs.solstice.modules.utilities.UtilitiesModule;
 import me.alexdevs.solstice.modules.warp.WarpModule;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Modules {
     public final AdminModule admin = new AdminModule();
@@ -57,4 +67,14 @@ public class Modules {
     public final WarpModule warp = new WarpModule();
 
     public final ExperimentsModule experiments = new ExperimentsModule();
+
+    public Modules() {
+        CommandRegistrationCallback.EVENT.register(this::registerCommands);
+    }
+
+    private void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
+        var commands = ModuleEvents.COMMAND.invoker().register(dispatcher, commandRegistry, environment);
+
+
+    }
 }
