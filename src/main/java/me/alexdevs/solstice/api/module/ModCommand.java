@@ -36,14 +36,6 @@ public abstract class ModCommand<T extends ModuleBase> {
         this.module = module;
     }
 
-    public static <T extends ModuleBase> ModCommand<T> init(Class<? extends ModCommand<T>> commandClass, T module) {
-        try {
-            return commandClass.getDeclaredConstructor(module.getClass()).newInstance(module);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize ModCommand: " + commandClass.getSimpleName(), e);
-        }
-    }
-
     public void register() {
         this.register(dispatcher, commandRegistry, environment);
     }

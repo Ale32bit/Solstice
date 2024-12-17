@@ -4,13 +4,12 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.admin.commands.*;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
-public class AdminModule extends ModuleBase {
+public class AdminModule {
     public static final String ID = "admin";
     public AdminModule() {
-        super(ID);
+        //super(ID);
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            new BroadcastCommand(this);
             new DoAsCommand(dispatcher, registryAccess, environment);
             new ExtinguishCommand(dispatcher, registryAccess, environment);
             new FeedCommand(dispatcher, registryAccess, environment);

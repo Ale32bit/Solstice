@@ -1,12 +1,13 @@
-package me.alexdevs.solstice.modules.admin.commands;
+package me.alexdevs.solstice.modules.broadcast.commands;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.admin.AdminModule;
+import me.alexdevs.solstice.modules.broadcast.BroadcastModule;
 import me.alexdevs.solstice.util.Format;
-import com.mojang.brigadier.arguments.StringArgumentType;
-import eu.pb4.placeholders.api.PlaceholderContext;
 import net.minecraft.server.command.ServerCommandSource;
 
 import java.util.List;
@@ -14,9 +15,9 @@ import java.util.List;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class BroadcastCommand extends ModCommand<AdminModule> {
+public class BroadcastCommand extends ModCommand<BroadcastModule> {
 
-    public BroadcastCommand(AdminModule module) {
+    public BroadcastCommand(BroadcastModule module) {
         super(module);
     }
 
