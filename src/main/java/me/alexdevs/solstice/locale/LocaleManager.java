@@ -123,6 +123,22 @@ public class LocaleManager {
         }
     }
 
+    public Map<String, String> generateMap() {
+        var map = new HashMap<String, String>();
+
+        for(var entry : defaultMap.shared.entrySet()) {
+            map.put("shared." + entry.getKey(), entry.getValue());
+        }
+
+        for(var modEntry : defaultMap.modules.entrySet()) {
+            for (var entry : modEntry.getValue().entrySet()) {
+                map.put("module." + modEntry.getKey() + "." + entry.getKey(), entry.getValue());
+            }
+        }
+
+        return map;
+    }
+
     public enum LocaleType {
         SHARED,
         MODULE
