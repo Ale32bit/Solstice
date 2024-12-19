@@ -2,7 +2,9 @@ package me.alexdevs.solstice.locale;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import me.alexdevs.solstice.Solstice;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
@@ -27,16 +29,13 @@ public class LocaleManager {
 
     private final Path path;
 
-    private ConcurrentHashMap<String, String> oldLocale;
-    private final Map<String, String> oldDefaultMap = new HashMap<>();
     private final TypeToken<?> oldType = TypeToken.getParameterized(Map.class, String.class, String.class);
 
     private LocaleModel locale;
     private final LocaleModel defaultMap = new LocaleModel();
-    private final TypeToken<?> type = TypeToken.get(LocaleModel.class);
 
-    private final Pattern sharedRegex = Pattern.compile("^shared\\.(.+)$");
-    private final Pattern moduleRegex = Pattern.compile("^module\\.(\\w+)\\.(.+)$");
+    private static final Pattern sharedRegex = Pattern.compile("^shared\\.(.+)$");
+    private static final Pattern moduleRegex = Pattern.compile("^module\\.(\\w+)\\.(.+)$");
 
 
     public LocaleManager(Path path) {
@@ -44,75 +43,84 @@ public class LocaleManager {
     }
 
     public Locale getLocale(String id) {
-        return new Locale(id, () -> oldLocale);
+        return new Locale(id, () -> locale);
     }
 
 
-    public void registerModule(String id, Map<String, String> defaultMap) {
-        this.oldDefaultMap.putAll(
-                defaultMap.entrySet().stream().collect(Collectors.toMap(
-                        entry -> "module." + id + "." + entry.getKey(),
-                        Map.Entry::getValue
-                ))
-        );
-
-
+    public void registerModule(String id, Map<String, String> defaults) {
+        this.defaultMap.modules.put(id, new ConcurrentHashMap<>(defaults));
     }
 
-    public void registerShared(Map<String, String> defaultMap) {
-        this.oldDefaultMap.putAll(
-                defaultMap.entrySet().stream().collect(Collectors.toMap(
-                        entry -> "shared." + entry.getKey(),
-                        Map.Entry::getValue
-                ))
-        );
+    public void registerShared(Map<String, String> defaults) {
+        this.defaultMap.shared.putAll(defaults);
     }
 
-    @SuppressWarnings("unchecked")
     public void load() throws IOException {
         if (!path.toFile().exists()) {
-            oldLocale = new ConcurrentHashMap<>();
+            locale = new LocaleModel();
             prepare();
             return;
         }
         var bf = new BufferedReader(new FileReader(path.toFile(), StandardCharsets.UTF_8));
-        oldLocale = new ConcurrentHashMap<>((Map<String, String>) gson.fromJson(bf, oldType));
-        prepare();
+        locale = gson.fromJson(bf, LocaleModel.class);
         bf.close();
+
+        if(locale.shared.isEmpty() && locale.modules.isEmpty()) {
+            Solstice.LOGGER.warn("Locale casting failure. Attempting migration...");
+            migrate();
+        }
+
+        prepare();
     }
 
     public void save() throws IOException {
         var fw = new FileWriter(path.toFile(), StandardCharsets.UTF_8);
-        gson.toJson(oldLocale, fw);
+        gson.toJson(locale, fw);
         fw.close();
     }
 
     private void prepare() {
-        if (oldLocale == null)
+        if (locale == null)
             return;
 
-        oldDefaultMap.forEach((key, value) -> oldLocale.putIfAbsent(key, value));
+        defaultMap.modules.forEach((id, map) -> defaultMap.modules.putIfAbsent(id, new ConcurrentHashMap<>()));
+        defaultMap.shared.forEach((key, value) -> defaultMap.shared.putIfAbsent(key, value));
+
+        defaultMap.modules.forEach((id, map) -> {
+            var defMap = defaultMap.modules.get(id);
+            defMap.forEach(map::putIfAbsent);
+        });
     }
 
-    private void convert() {
+    @SuppressWarnings("unchecked")
+    private void migrate() {
+        locale = new LocaleModel();
+        try {
+            var bf = new BufferedReader(new FileReader(path.toFile(), StandardCharsets.UTF_8));
+            var oldLocale = (Map<String, String>) gson.fromJson(bf, oldType);
 
-    }
+            for (var entry : oldLocale.entrySet()) {
+                var path = getPath(entry.getKey());
+                if (path == null) {
+                    Solstice.LOGGER.warn("Invalid locale path: {}", entry.getKey());
+                    continue;
+                }
 
-    private @Nullable LocalePath getPath(String fullPath) {
-        var matcher = sharedRegex.matcher(fullPath);
-        if (matcher.find()) {
-            var key = matcher.group(1);
-            return new LocalePath(LocaleType.SHARED, key);
+                if (path.type() == LocaleType.SHARED) {
+                    locale.shared.put(path.key(), entry.getValue());
+                } else if (path.type() == LocaleType.MODULE) {
+                    locale.modules
+                            .computeIfAbsent(path.moduleId(), key -> new ConcurrentHashMap<>())
+                            .put(path.key(), entry.getValue());
+                }
+            }
+
+            bf.close();
+
+            Solstice.LOGGER.info("Successfully migrated locale!");
+        } catch (IOException | JsonSyntaxException e) {
+            Solstice.LOGGER.error("Could not load locale", e);
         }
-
-        matcher = moduleRegex.matcher(fullPath);
-        if (matcher.find()) {
-            var moduleId = matcher.group(1);
-            var key = matcher.group(2);
-            return new LocalePath(LocaleType.MODULE, key, moduleId);
-        }
-
-        return null;
     }
 
     public enum LocaleType {
@@ -120,7 +128,7 @@ public class LocaleManager {
         MODULE
     }
 
-    private static final class LocalePath {
+    public static final class LocalePath {
         private final LocaleType type;
         private final String key;
         private final @Nullable String moduleId;
@@ -149,8 +157,40 @@ public class LocaleManager {
 
     }
 
+    public static @Nullable LocalePath getPath(String fullPath) {
+        var matcher = sharedRegex.matcher(fullPath);
+        if (matcher.find()) {
+            var key = matcher.group(1);
+            return new LocalePath(LocaleType.SHARED, key);
+        }
+
+        matcher = moduleRegex.matcher(fullPath);
+        if (matcher.find()) {
+            var moduleId = matcher.group(1);
+            var key = matcher.group(2);
+            return new LocalePath(LocaleType.MODULE, key, moduleId);
+        }
+
+        return null;
+    }
+
     public static class LocaleModel {
-        public Map<String, String> shared = new ConcurrentHashMap<>();
-        public Map<String, Map<String, String>> modules = new ConcurrentHashMap<>();
+        public ConcurrentHashMap<String, String> shared = new ConcurrentHashMap<>();
+        public ConcurrentHashMap<String, ConcurrentHashMap<String, String>> modules = new ConcurrentHashMap<>();
+
+        public String get(String fullPath) {
+            var path = getPath(fullPath);
+            if (path == null) {
+                return fullPath;
+            }
+
+            if (path.type() == LocaleType.SHARED) {
+                return shared.getOrDefault(path.key(), fullPath);
+            } else if (path.type() == LocaleType.MODULE) {
+                return modules.get(path.moduleId()).getOrDefault(path.key(), fullPath);
+            }
+
+            return fullPath;
+        }
     }
 }
