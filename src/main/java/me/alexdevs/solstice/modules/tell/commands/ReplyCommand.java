@@ -19,11 +19,11 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 
-public class ReplyCommand extends ModCommand {
+public class ReplyCommand extends ModCommand<TellModule> {
     private final Locale locale = Solstice.localeManager.getLocale(TellModule.ID);
 
-    public ReplyCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+    public ReplyCommand(TellModule module) {
+        super(module);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ReplyCommand extends ModCommand {
 
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return literal("")
+        return literal(name)
                 .requires(require(true))
                 .then(argument("message", StringArgumentType.greedyString())
                         .executes(this::execute));
@@ -44,7 +44,7 @@ public class ReplyCommand extends ModCommand {
         var senderName = source.getName();
         var message = StringArgumentType.getString(context, "message");
 
-        if (!Solstice.modules.tell.lastSender.containsKey(senderName)) {
+        if (!module.lastSender.containsKey(senderName)) {
             var playerContext = PlaceholderContext.of(context.getSource());
             source.sendFeedback(() -> locale.get(
                     "noLastSenderReply",
@@ -53,9 +53,9 @@ public class ReplyCommand extends ModCommand {
             return 1;
         }
 
-        var targetName = Solstice.modules.tell.lastSender.get(senderName);
+        var targetName = module.lastSender.get(senderName);
 
-        Solstice.modules.tell.sendDirectMessage(targetName, source, message);
+        module.sendDirectMessage(targetName, source, message);
 
         return 1;
     }

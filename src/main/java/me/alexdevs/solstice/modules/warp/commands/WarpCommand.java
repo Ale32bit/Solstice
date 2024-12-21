@@ -22,9 +22,9 @@ import java.util.Map;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class WarpCommand extends ModCommand {
-    public WarpCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+public class WarpCommand extends ModCommand<WarpModule> {
+    public WarpCommand(WarpModule module) {
+        super(module);
     }
 
     @Override

@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules.utilities.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.modules.utilities.UtilitiesModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.screen.GrindstoneScreenHandler;
@@ -17,9 +18,9 @@ import java.util.List;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class GrindstoneCommand extends ModCommand {
-    public GrindstoneCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+public class GrindstoneCommand extends ModCommand<UtilitiesModule> {
+    public GrindstoneCommand(UtilitiesModule module) {
+        super(module);
     }
 
     @Override

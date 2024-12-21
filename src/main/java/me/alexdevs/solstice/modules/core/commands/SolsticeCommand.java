@@ -1,14 +1,13 @@
 package me.alexdevs.solstice.modules.core.commands;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.modules.core.CoreModule;
+import me.alexdevs.solstice.modules.customName.CustomNameModule;
 import me.alexdevs.solstice.util.Format;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
@@ -17,9 +16,9 @@ import java.util.Map;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class SolsticeCommand extends ModCommand {
-    public SolsticeCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+public class SolsticeCommand extends ModCommand<CoreModule> {
+    public SolsticeCommand(CoreModule module) {
+        super(module);
     }
 
     @Override
@@ -58,7 +57,7 @@ public class SolsticeCommand extends ModCommand {
                                 Solstice.configManager.loadData(true);
                                 Solstice.localeManager.load();
 
-                                Solstice.modules.customName.refreshNames();
+                                Solstice.modules.getModule(CustomNameModule.class).refreshNames();
                             } catch (Exception e) {
                                 Solstice.LOGGER.error("Failed to reload Solstice", e);
                                 context.getSource().sendFeedback(() -> Text.of("Failed to load Solstice config. Check console for more info."), true);

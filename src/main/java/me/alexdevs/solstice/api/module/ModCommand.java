@@ -17,6 +17,14 @@ public abstract class ModCommand<T extends ModuleBase> {
     protected CommandManager.RegistrationEnvironment environment;
     protected final T module;
 
+    public ModCommand(T module) {
+        this.commandRegistry = null;
+        this.environment = null;
+        this.dispatcher = null;
+
+        this.module = module;
+    }
+
     @Deprecated(forRemoval = true)
     public ModCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
         this.dispatcher = dispatcher;
@@ -26,14 +34,6 @@ public abstract class ModCommand<T extends ModuleBase> {
         this.module = null;
 
         this.register();
-    }
-
-    public ModCommand(T module) {
-        this.commandRegistry = null;
-        this.environment = null;
-        this.dispatcher = null;
-
-        this.module = module;
     }
 
     public void register() {
@@ -55,9 +55,11 @@ public abstract class ModCommand<T extends ModuleBase> {
     }
 
     public String getPermissionNode() {
-        if(module != null)
-            return module.getPermissionNode();
-        return Solstice.MOD_ID + ".command." + getName();
+        return module.getPermissionNode();
+    }
+
+    public String getPermissionNode(String subNode) {
+        return module.getPermissionNode() + "." + subNode;
     }
 
     public Predicate<ServerCommandSource> require() {
@@ -73,15 +75,15 @@ public abstract class ModCommand<T extends ModuleBase> {
     }
 
     public Predicate<ServerCommandSource> require(String subNode) {
-        return Permissions.require(getPermissionNode() + "." + subNode);
+        return Permissions.require(getPermissionNode(subNode));
     }
 
     public Predicate<ServerCommandSource> require(String subNode, int defaultRequiredLevel) {
-        return Permissions.require(getPermissionNode() + "." + subNode, defaultRequiredLevel);
+        return Permissions.require(getPermissionNode(subNode), defaultRequiredLevel);
     }
 
     public Predicate<ServerCommandSource> require(String subNode, boolean defaultValue) {
-        return Permissions.require(getPermissionNode() + "." + subNode, defaultValue);
+        return Permissions.require(getPermissionNode(subNode), defaultValue);
     }
 
     /**

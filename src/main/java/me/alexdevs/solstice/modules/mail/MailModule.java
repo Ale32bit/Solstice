@@ -3,6 +3,8 @@ package me.alexdevs.solstice.modules.mail;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.PlayerMail;
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.mail.commands.MailCommand;
 import me.alexdevs.solstice.modules.mail.data.MailLocale;
@@ -11,16 +13,19 @@ import me.alexdevs.solstice.modules.moderation.ModerationModule;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class MailModule {
+public class MailModule extends ModuleBase {
     public static final String ID = "mail";
 
     public final Locale locale;
 
     public MailModule() {
+        super(ID);
+
         Solstice.localeManager.registerModule(ID, MailLocale.MODULE);
         Solstice.playerData.registerData(ID, MailPlayerData.class, MailPlayerData::new);
 
@@ -68,5 +73,10 @@ public class MailModule {
 
     public MailPlayerData getMailData(UUID playerUuid) {
         return Solstice.playerData.get(playerUuid).getData(MailPlayerData.class);
+    }
+
+    @Override
+    public Collection<? extends ModCommand<?>> getCommands() {
+        return List.of();
     }
 }

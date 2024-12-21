@@ -7,6 +7,7 @@ import me.alexdevs.solstice.modules.Utils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import me.alexdevs.solstice.modules.tell.TellModule;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
@@ -18,9 +19,9 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 
-public class TellCommand extends ModCommand {
-    public TellCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+public class TellCommand extends ModCommand<TellModule> {
+    public TellCommand(TellModule module) {
+        super(module);
     }
 
     @Override
@@ -54,7 +55,7 @@ public class TellCommand extends ModCommand {
         var targetName = StringArgumentType.getString(context, "player");
         var message = StringArgumentType.getString(context, "message");
 
-        Solstice.modules.tell.sendDirectMessage(targetName, source, message);
+        module.sendDirectMessage(targetName, source, message);
         return 1;
     }
 }

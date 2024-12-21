@@ -8,6 +8,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.modules.warp.WarpModule;
 import me.alexdevs.solstice.modules.warp.data.WarpServerData;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandRegistryAccess;
@@ -21,9 +22,9 @@ import java.util.List;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class SetWarpCommand extends ModCommand {
-    public SetWarpCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+public class SetWarpCommand extends ModCommand<WarpModule> {
+    public SetWarpCommand(WarpModule module) {
+        super(module);
     }
 
     @Override

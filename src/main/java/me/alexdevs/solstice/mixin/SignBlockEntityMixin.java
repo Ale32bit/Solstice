@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.mixin;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.modules.formattablesigns.FormattableSignsModule;
+import me.alexdevs.solstice.modules.formattableSigns.FormattableSignsModule;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.block.entity.SignText;
 import net.minecraft.entity.player.PlayerEntity;

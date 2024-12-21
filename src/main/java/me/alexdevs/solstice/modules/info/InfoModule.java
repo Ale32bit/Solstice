@@ -2,6 +2,8 @@ package me.alexdevs.solstice.modules.info;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.info.commands.InfoCommand;
 import me.alexdevs.solstice.modules.info.commands.MotdCommand;
@@ -20,9 +22,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
-public class InfoModule {
+public class InfoModule extends ModuleBase {
     public static final String ID = "info";
 
     private static final String[] startingPages = new String[]{
@@ -37,6 +40,8 @@ public class InfoModule {
     public final Locale locale;
 
     public InfoModule() {
+        super(ID);
+
         Solstice.configManager.registerData(ID, InfoConfig.class, InfoConfig::new);
         Solstice.localeManager.registerModule(ID, InfoLocale.MODULE);
 
@@ -131,5 +136,10 @@ public class InfoModule {
             Solstice.LOGGER.error("Could not read info file", e);
             return locale.get("pageError");
         }
+    }
+
+    @Override
+    public Collection<? extends ModCommand<?>> getCommands() {
+        return List.of();
     }
 }

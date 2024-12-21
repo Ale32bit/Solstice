@@ -4,8 +4,11 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.events.PlayerActivityEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.afk.commands.AfkCommand;
 import me.alexdevs.solstice.modules.afk.data.AfkConfig;
@@ -24,13 +27,19 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class AfkModule {
+public class AfkModule extends ModuleBase {
     public static final String ID = "afk";
-    private final ConcurrentHashMap<UUID, PlayerActivityState> playerActivityStates = new ConcurrentHashMap<>();
 
+    private final List<ModCommand<AfkModule>> commands = List.of(
+            new AfkCommand(this)
+    );
+
+    private final ConcurrentHashMap<UUID, PlayerActivityState> playerActivityStates = new ConcurrentHashMap<>();
     public static Text afkTag;
     private int absentTimeTrigger;
 
@@ -38,12 +47,10 @@ public class AfkModule {
     private AfkConfig config;
 
     public AfkModule() {
+        super(ID);
         Solstice.configManager.registerData(ID, AfkConfig.class, AfkConfig::new);
         Solstice.playerData.registerData(ID, AfkPlayerData.class, AfkPlayerData::new);
         Solstice.localeManager.registerModule(ID, AfkLocale.MODULE);
-
-        CommandRegistrationCallback.EVENT.register(AfkCommand::new);
-
 
         SolsticeEvents.READY.register((instance, server) -> register());
     }
@@ -154,7 +161,7 @@ public class AfkModule {
         var playerState = playerActivityStates.computeIfAbsent(player.getUuid(), uuid -> new PlayerActivityState(player, currentTick));
 
         var oldPosition = playerState.position;
-        var newPosition = new PlayerPosition(player);
+        var newPosition = new ServerPosition(player);
         if (!oldPosition.equals(newPosition)) {
             playerState.position = newPosition;
             resetAfkState(player, server);
@@ -223,5 +230,10 @@ public class AfkModule {
     public int getActiveTime(ServerPlayerEntity player) {
         var data = Solstice.playerData.get(player).getData(AfkPlayerData.class);
         return data.activeTime;
+    }
+
+    @Override
+    public Collection<? extends ModCommand<?>> getCommands() {
+        return commands;
     }
 }

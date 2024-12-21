@@ -2,6 +2,8 @@ package me.alexdevs.solstice.modules.tell;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.moderation.ModerationModule;
 import me.alexdevs.solstice.modules.tell.commands.ReplyCommand;
 import me.alexdevs.solstice.modules.tell.commands.TellCommand;
@@ -13,15 +15,19 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class TellModule {
+public class TellModule extends ModuleBase {
     public static final String ID = "tell";
     public static final String SOCIALSPY_PERMISSION = "solstice.socialspy";
     public final HashMap<String, String> lastSender = new HashMap<>();
 
     public TellModule() {
+        super(ID);
+
         Solstice.localeManager.registerModule(ID, TellLocale.MODULE);
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
@@ -135,5 +141,10 @@ public class TellModule {
                 player.sendMessage(spyText);
             }
         });
+    }
+
+    @Override
+    public Collection<? extends ModCommand<?>> getCommands() {
+        return List.of();
     }
 }

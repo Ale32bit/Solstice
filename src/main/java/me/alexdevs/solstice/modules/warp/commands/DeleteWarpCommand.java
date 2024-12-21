@@ -6,6 +6,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.modules.warp.WarpModule;
 import me.alexdevs.solstice.modules.warp.data.WarpServerData;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandRegistryAccess;
@@ -20,9 +21,9 @@ import java.util.List;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class DeleteWarpCommand extends ModCommand {
-    public DeleteWarpCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+public class DeleteWarpCommand extends ModCommand<WarpModule> {
+    public DeleteWarpCommand(WarpModule module) {
+        super(module);
     }
 
     @Override

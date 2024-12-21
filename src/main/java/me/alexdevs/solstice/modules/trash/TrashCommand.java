@@ -1,0 +1,40 @@
+package me.alexdevs.solstice.modules.trash;
+
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.modules.utilities.UtilitiesModule;
+import net.minecraft.screen.GenericContainerScreenHandler;
+import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Text;
+
+import java.util.List;
+
+import static net.minecraft.server.command.CommandManager.literal;
+
+public class TrashCommand extends ModCommand<UtilitiesModule> {
+    public TrashCommand(UtilitiesModule module) {
+        super(module);
+    }
+
+    @Override
+    public List<String> getNames() {
+        return List.of("trash");
+    }
+
+    @Override
+    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+        return literal(name)
+                .requires(require(2))
+                .executes(context -> {
+                    var player = context.getSource().getPlayerOrThrow();
+
+                    player.openHandledScreen(
+                            new SimpleNamedScreenHandlerFactory((syncId, inventory, playerx) ->
+                                    GenericContainerScreenHandler.createGeneric9x3(syncId, inventory),
+                                    Text.of("Trash")));
+
+                    return 1;
+                });
+    }
+}

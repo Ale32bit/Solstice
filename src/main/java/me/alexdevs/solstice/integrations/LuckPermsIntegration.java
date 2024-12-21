@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.integrations;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.modules.customName.CustomNameModule;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.luckperms.api.LuckPerms;
@@ -47,7 +48,7 @@ public class LuckPermsIntegration {
     public static class Listeners {
 
         public static void onDataRecalculate(UserDataRecalculateEvent event) {
-            Solstice.modules.customName.refreshNames();
+            Solstice.modules.getModule(CustomNameModule.class).refreshNames();
         }
     }
 }

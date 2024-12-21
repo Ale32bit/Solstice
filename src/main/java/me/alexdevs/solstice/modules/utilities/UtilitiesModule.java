@@ -1,21 +1,33 @@
 package me.alexdevs.solstice.modules.utilities;
 
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.modules.suicide.commands.SuicideCommand;
+import me.alexdevs.solstice.modules.trash.TrashCommand;
 import me.alexdevs.solstice.modules.utilities.commands.*;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
-public class UtilitiesModule {
+import java.util.Collection;
+import java.util.List;
+
+public class UtilitiesModule extends ModuleBase {
+    public static final String ID = "utilities";
+
+    private final List<ModCommand<UtilitiesModule>> commands = List.of(
+            new AnvilCommand(this),
+            new CartographyCommand(this),
+            new GrindstoneCommand(this),
+            new LoomCommand(this),
+            new SmithingCommand(this),
+            new StonecutterCommand(this),
+            new WorkbenchCommand(this)
+    );
+
     public UtilitiesModule() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            new AnvilCommand(dispatcher, registryAccess, environment);
-            new CartographyCommand(dispatcher, registryAccess, environment);
-            new EnderchestCommand(dispatcher, registryAccess, environment);
-            new GrindstoneCommand(dispatcher, registryAccess, environment);
-            new LoomCommand(dispatcher, registryAccess, environment);
-            new SmithingCommand(dispatcher, registryAccess, environment);
-            new StonecutterCommand(dispatcher, registryAccess, environment);
-            new SuicideCommand(dispatcher, registryAccess, environment);
-            new TrashCommand(dispatcher, registryAccess, environment);
-            new WorkbenchCommand(dispatcher, registryAccess, environment);
-        });
+        super(ID);
+    }
+
+    @Override
+    public Collection<? extends ModCommand<?>> getCommands() {
+        return commands;
     }
 }

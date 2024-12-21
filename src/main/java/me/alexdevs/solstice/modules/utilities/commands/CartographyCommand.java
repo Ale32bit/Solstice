@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules.utilities.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.modules.utilities.UtilitiesModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.screen.CartographyTableScreenHandler;
@@ -17,9 +18,9 @@ import java.util.List;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class CartographyCommand extends ModCommand {
-    public CartographyCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+public class CartographyCommand extends ModCommand<UtilitiesModule> {
+    public CartographyCommand(UtilitiesModule module) {
+        super(module);
     }
 
     @Override

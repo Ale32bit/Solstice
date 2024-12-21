@@ -17,9 +17,9 @@ import java.util.Map;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class WarpsCommand extends ModCommand {
-    public WarpsCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+public class WarpsCommand extends ModCommand<WarpModule> {
+    public WarpsCommand(WarpModule module) {
+        super(module);
     }
 
     @Override

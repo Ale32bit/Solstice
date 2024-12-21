@@ -1,6 +1,8 @@
 package me.alexdevs.solstice.modules.moderation;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.moderation.commands.*;
 import me.alexdevs.solstice.modules.moderation.data.ModerationLocale;
@@ -10,15 +12,19 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
-public class ModerationModule {
+public class ModerationModule extends ModuleBase {
     public static final String ID = "moderation";
     public static final String IGNORE_BYPASS_PERMISSION = "solstice.ignore.bypass";
 
     private final Locale locale = Solstice.localeManager.getLocale(ModerationModule.ID);
 
     public ModerationModule() {
+        super(ID);
+
         Solstice.playerData.registerData(ID, ModerationPlayerData.class, ModerationPlayerData::new);
         Solstice.localeManager.registerModule(ID, ModerationLocale.MODULE);
 
@@ -52,5 +58,10 @@ public class ModerationModule {
 
     public static boolean isIgnoring(ServerPlayerEntity player, ServerPlayerEntity target) {
         return getPlayerData(player.getUuid()).ignoredPlayers.contains(target.getUuid()) && !Permissions.check(target, IGNORE_BYPASS_PERMISSION, 2);
+    }
+
+    @Override
+    public Collection<? extends ModCommand<?>> getCommands() {
+        return List.of();
     }
 }
