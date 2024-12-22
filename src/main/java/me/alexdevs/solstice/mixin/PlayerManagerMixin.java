@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.authlib.GameProfile;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.styling.CustomSentMessage;
-import me.alexdevs.solstice.modules.styling.formatters.BanMessageFormatter;
+import me.alexdevs.solstice.modules.ban.formatters.BanMessageFormatter;
 import me.alexdevs.solstice.modules.styling.formatters.ConnectionActivityFormatter;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.message.MessageType;

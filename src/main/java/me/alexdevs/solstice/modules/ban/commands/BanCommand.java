@@ -11,7 +11,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.Utils;
 import me.alexdevs.solstice.modules.ban.BanModule;
-import me.alexdevs.solstice.modules.styling.formatters.BanMessageFormatter;
+import me.alexdevs.solstice.modules.ban.formatters.BanMessageFormatter;
 import me.alexdevs.solstice.util.Format;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.GameProfileArgumentType;

@@ -4,6 +4,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.styling.StylingModule;
 import me.alexdevs.solstice.util.Components;
+import me.alexdevs.solstice.util.Format;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.registry.RegistryKeys;
@@ -14,13 +15,13 @@ import java.util.Map;
 
 public class EmoteFormatter {
     public static void sendEmoteMessage(ServerPlayerEntity receiver, SignedMessage message, MessageType.Parameters params, ServerPlayerEntity sender) {
-        var locale = Solstice.localeManager.getLocale(StylingModule.ID);
+        var config = Solstice.modules.getModule(StylingModule.class).getConfig();
         var playerContext = PlaceholderContext.of(sender);
 
         Text messageText = Components.chat(message, sender);
 
-        var text = locale.get(
-                "emoteFormat",
+        var text = Format.parse(
+                config.emoteFormat,
                 playerContext,
                 Map.of(
                         "message", messageText

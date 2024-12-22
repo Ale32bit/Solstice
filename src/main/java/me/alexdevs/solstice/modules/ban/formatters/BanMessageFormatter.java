@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.modules.styling.formatters;
+package me.alexdevs.solstice.modules.ban.formatters;
 
 import com.mojang.authlib.GameProfile;
 import eu.pb4.placeholders.api.PlaceholderContext;
