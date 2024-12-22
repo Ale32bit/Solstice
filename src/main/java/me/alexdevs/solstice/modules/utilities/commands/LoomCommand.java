@@ -27,7 +27,7 @@ public class LoomCommand extends ModCommand<UtilitiesModule> {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
-                .requires(require(2))
+                .requires(require("loom", 2))
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrThrow();
                     var screen = new SimpleNamedScreenHandlerFactory(

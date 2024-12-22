@@ -30,7 +30,7 @@ public class DeleteWarpCommand extends ModCommand<WarpModule> {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
-                .requires(require(2))
+                .requires(require("set", 2))
                 .then(argument("name", StringArgumentType.word())
                         .suggests((context, builder) -> {
                             if (!context.getSource().isExecutedByPlayer())

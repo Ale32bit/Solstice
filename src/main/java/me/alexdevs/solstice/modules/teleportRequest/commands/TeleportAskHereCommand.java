@@ -37,8 +37,8 @@ public class TeleportAskHereCommand extends ModCommand<TeleportRequestModule> {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
+                .requires(require("here", true))
                 .then(argument("player", StringArgumentType.word())
-                        .requires(require("here", true))
                         .suggests((context, builder) -> {
                             var playerManager = context.getSource().getServer().getPlayerManager();
                             return CommandSource.suggestMatching(

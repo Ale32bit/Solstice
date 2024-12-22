@@ -28,7 +28,7 @@ public class SetSpawnCommand extends ModCommand<SpawnModule> {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
-                .requires(require(3))
+                .requires(require("set", 3))
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrThrow();
                     var spawnPosition = new ServerPosition(player);

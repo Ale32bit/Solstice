@@ -31,7 +31,7 @@ public class SetWarpCommand extends ModCommand<WarpModule> {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
-                .requires(require(2))
+                .requires(require("set", 2))
                 .then(argument("name", StringArgumentType.word())
                         .executes(context -> execute(context,
                                 StringArgumentType.getString(context, "name"))));

@@ -8,6 +8,8 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 public class Modules {
@@ -16,6 +18,10 @@ public class Modules {
 
     public Modules() {
         CommandRegistrationCallback.EVENT.register(this::registerCommands);
+    }
+
+    public Collection<? extends ModuleBase> getModules() {
+        return Collections.unmodifiableSet(modules);
     }
 
     public <T> T getModule(Class<T> classOfModule) {
@@ -33,7 +39,7 @@ public class Modules {
 
     private void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
         for (var module : modules) {
-            for(var command : module.getCommands()) {
+            for (var command : module.getCommands()) {
                 command.register(dispatcher, commandRegistry, environment);
             }
         }

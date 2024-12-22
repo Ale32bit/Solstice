@@ -27,7 +27,7 @@ public class AnvilCommand extends ModCommand<UtilitiesModule> {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
-                .requires(require(2))
+                .requires(require("anvil", 2))
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrThrow();
                     var screen = new SimpleNamedScreenHandlerFactory(

@@ -23,7 +23,7 @@ public class RulesCommand extends ModCommand<InfoModule> {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
-                .requires(require(true))
+                .requires(require("rules", true))
                 .executes(context -> {
                     var sourceContext = PlaceholderContext.of(context.getSource());
                     var rules = module.getPage("rules", sourceContext);

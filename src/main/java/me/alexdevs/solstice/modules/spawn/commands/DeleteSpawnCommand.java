@@ -26,7 +26,7 @@ public class DeleteSpawnCommand extends ModCommand<SpawnModule> {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
-                .requires(require(3))
+                .requires(require("set", 3))
                 .executes(context -> {
                     var serverData = Solstice.serverData.getData(SpawnServerData.class);
                     serverData.spawn = null;

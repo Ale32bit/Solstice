@@ -52,7 +52,7 @@ public class SeenCommand extends ModCommand<SeenModule> {
                                 }
                                 boolean extended;
                                 if (context.getSource().isExecutedByPlayer()) {
-                                    extended = Permissions.check(context.getSource().getPlayer(), getPermissionNode() + ".extended", 2);
+                                    extended = Permissions.check(context.getSource().getPlayer(), getPermissionNode("extended"), 2);
                                 } else {
                                     extended = true;
                                 }

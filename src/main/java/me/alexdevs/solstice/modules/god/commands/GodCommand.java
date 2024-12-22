@@ -36,6 +36,7 @@ public class GodCommand extends ModCommand<GodModule> {
                     return 1;
                 })
                 .then(argument("player", EntityArgumentType.player())
+                        .requires(require("others", 3))
                         .executes(context -> {
                             var player = EntityArgumentType.getPlayer(context, "player");
 

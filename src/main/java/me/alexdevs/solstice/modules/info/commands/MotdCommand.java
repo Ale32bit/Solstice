@@ -23,7 +23,7 @@ public class MotdCommand extends ModCommand<InfoModule> {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
-                .requires(require(true))
+                .requires(require("motd", true))
                 .executes(context -> {
                     var sourceContext = PlaceholderContext.of(context.getSource());
 

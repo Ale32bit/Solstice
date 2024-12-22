@@ -40,7 +40,7 @@ public class TempBanCommand extends ModCommand<BanModule> {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
-                .requires(require(3))
+                .requires(require("tempban", 3))
                 .then(argument("targets", GameProfileArgumentType.gameProfile())
                         .then(argument("duration", StringArgumentType.string())
                                 .suggests(TimeSpan::suggest)

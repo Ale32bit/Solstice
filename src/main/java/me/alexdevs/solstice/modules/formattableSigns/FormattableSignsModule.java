@@ -26,6 +26,6 @@ public class FormattableSignsModule extends ModuleBase {
     }
 
     public boolean canFormatSign(PlayerEntity player) {
-        return Permissions.check(player, getPermissionNode(), 2);
+        return Permissions.check(player, getPermissionNode("base"), 2);
     }
 }

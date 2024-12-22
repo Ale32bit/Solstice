@@ -39,11 +39,15 @@ public abstract class ModCommand<T extends ModuleBase> {
     }
 
     public String getPermissionNode() {
-        return module.getPermissionNode();
+        var node = module.getPermissionNode("base");
+        Debug.commandDebugList.add(new Debug.CommandDebug(module.id, getName(), getNames(), node));
+        return node;
     }
 
     public String getPermissionNode(String subNode) {
-        return module.getPermissionNode() + "." + subNode;
+        var node = module.getPermissionNode(subNode);
+        Debug.commandDebugList.add(new Debug.CommandDebug(module.id, getName(), getNames(), node));
+        return node;
     }
 
     public Predicate<ServerCommandSource> require() {

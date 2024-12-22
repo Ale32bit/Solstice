@@ -33,9 +33,10 @@ public class FeedCommand extends ModCommand<FeedModule> {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
-                .requires(Permissions.require("solstice.command.feed", 2))
+                .requires(require(2))
                 .executes(context -> execute(context, null))
                 .then(argument("targets", EntityArgumentType.players())
+                        .requires(require("others", 2))
                         .executes(context -> execute(context, EntityArgumentType.getPlayers(context, "targets"))));
     }
 

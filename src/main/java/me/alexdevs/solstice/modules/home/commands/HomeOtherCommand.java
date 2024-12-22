@@ -30,7 +30,7 @@ public class HomeOtherCommand extends ModCommand<HomeModule> {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
-                .requires(require(2))
+                .requires(require("others", 2))
                 .then(argument("player", GameProfileArgumentType.gameProfile())
                         .executes(context -> execute(context, "home"))
                         .then(argument("name", StringArgumentType.word())

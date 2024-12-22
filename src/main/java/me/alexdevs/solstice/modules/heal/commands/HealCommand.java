@@ -34,6 +34,7 @@ public class HealCommand extends ModCommand<HealModule> {
                 .requires(require(2))
                 .executes(context -> execute(context, null))
                 .then(argument("targets", EntityArgumentType.entities())
+                        .requires(require("others", 2))
                         .executes(context -> execute(context, EntityArgumentType.getEntities(context, "targets"))));
     }
 

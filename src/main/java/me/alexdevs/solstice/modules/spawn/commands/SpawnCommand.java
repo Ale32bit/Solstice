@@ -68,7 +68,7 @@ public class SpawnCommand extends ModCommand<SpawnModule> {
                 .requires(require(true))
                 .executes(context -> execute(context, null))
                 .then(argument("players", EntityArgumentType.players())
-                        .requires(require("other", 2))
+                        .requires(require("others", 2))
                         .executes(context -> execute(context, EntityArgumentType.getPlayers(context, "players"))));
     }
 }

@@ -37,7 +37,7 @@ public class TeleportAskCommand extends ModCommand<TeleportRequestModule> {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
-                .requires(require(true))
+                .requires(require("ask", true))
                 .then(argument("player", StringArgumentType.word())
                         .suggests((context, builder) -> {
                             var playerManager = context.getSource().getServer().getPlayerManager();
