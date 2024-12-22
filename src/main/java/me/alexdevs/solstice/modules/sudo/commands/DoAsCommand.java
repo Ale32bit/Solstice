@@ -30,6 +30,26 @@ public class DoAsCommand extends ModCommand<SudoModule> {
         }
     }
 
+    public static ServerCommandSource buildPlayerSource(CommandOutput commandOutput, MinecraftServer server, ServerPlayerEntity player) {
+        var opList = server.getPlayerManager().getOpList();
+        var operator = opList.get(player.getGameProfile());
+        int opLevel = 0;
+        if (operator != null) {
+            opLevel = operator.getPermissionLevel();
+        }
+        return new ServerCommandSource(
+                commandOutput,
+                player.getPos(),
+                player.getRotationClient(),
+                player.getServerWorld(),
+                opLevel,
+                player.getEntityName(),
+                player.getDisplayName(),
+                server,
+                player
+        );
+    }
+
     @Override
     public List<String> getNames() {
         return List.of("doas");
@@ -72,25 +92,5 @@ public class DoAsCommand extends ModCommand<SudoModule> {
                                 })
                         )
                 );
-    }
-
-    public static ServerCommandSource buildPlayerSource(CommandOutput commandOutput, MinecraftServer server, ServerPlayerEntity player) {
-        var opList = server.getPlayerManager().getOpList();
-        var operator = opList.get(player.getGameProfile());
-        int opLevel = 0;
-        if (operator != null) {
-            opLevel = operator.getPermissionLevel();
-        }
-        return new ServerCommandSource(
-                commandOutput,
-                player.getPos(),
-                player.getRotationClient(),
-                player.getServerWorld(),
-                opLevel,
-                player.getEntityName(),
-                player.getDisplayName(),
-                server,
-                player
-        );
     }
 }

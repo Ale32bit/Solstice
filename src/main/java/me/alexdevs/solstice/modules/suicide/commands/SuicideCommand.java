@@ -3,7 +3,6 @@ package me.alexdevs.solstice.modules.suicide.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.suicide.SuicideModule;
-import me.alexdevs.solstice.modules.utilities.UtilitiesModule;
 import net.minecraft.server.command.ServerCommandSource;
 
 import java.util.List;

@@ -2,15 +2,12 @@ package me.alexdevs.solstice.modules.commandSpy;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
-import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.commandSpy.data.CommandSpyConfig;
 import me.alexdevs.solstice.modules.commandSpy.data.CommandSpyLocale;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.text.Text;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 public class CommandSpyModule extends ModuleBase {
@@ -21,8 +18,6 @@ public class CommandSpyModule extends ModuleBase {
 
         Solstice.configManager.registerData(ID, CommandSpyConfig.class, CommandSpyConfig::new);
         Solstice.localeManager.registerModule(ID, CommandSpyLocale.MODULE);
-
-        var locale = Solstice.localeManager.getLocale(ID);
 
         SolsticeEvents.PLAYER_COMMAND.register((source, command) -> {
             var parts = command.split("\\s");
@@ -35,7 +30,7 @@ public class CommandSpyModule extends ModuleBase {
 
             var players = source.getServer().getPlayerManager().getPlayerList();
             var placeholders = Map.of("player", Text.of(source.getGameProfile().getName()), "command", Text.of(command));
-            var message = locale.get("spyFormat", placeholders);
+            var message = locale().get("spyFormat", placeholders);
             for (var player : players) {
                 var commandSpyEnabled = Permissions.check(player, this.getPermissionNode("base"));
 
@@ -48,10 +43,5 @@ public class CommandSpyModule extends ModuleBase {
 
     public boolean isIgnored(String command) {
         return Solstice.configManager.getData(CommandSpyConfig.class).ignoredCommands.contains(command);
-    }
-
-    @Override
-    public Collection<? extends ModCommand<?>> getCommands() {
-        return List.of();
     }
 }

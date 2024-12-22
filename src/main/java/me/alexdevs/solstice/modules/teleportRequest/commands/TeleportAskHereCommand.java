@@ -1,21 +1,18 @@
 package me.alexdevs.solstice.modules.teleportRequest.commands;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.locale.Locale;
-import me.alexdevs.solstice.modules.moderation.ModerationModule;
-import me.alexdevs.solstice.modules.teleportRequest.TeleportRequestModule;
-import me.alexdevs.solstice.modules.teleportRequest.TeleportRequest;
-import me.alexdevs.solstice.util.Components;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import net.minecraft.command.CommandRegistryAccess;
+import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.locale.Locale;
+import me.alexdevs.solstice.modules.ignore.IgnoreModule;
+import me.alexdevs.solstice.modules.teleportRequest.TeleportRequest;
+import me.alexdevs.solstice.modules.teleportRequest.TeleportRequestModule;
+import me.alexdevs.solstice.util.Components;
 import net.minecraft.command.CommandSource;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
@@ -71,7 +68,8 @@ public class TeleportAskHereCommand extends ModCommand<TeleportRequestModule> {
             return 0;
         }
 
-        if(ModerationModule.getPlayerData(target.getUuid()).ignoredPlayers.contains(player.getUuid())) {
+        var ignoreModule = Solstice.modules.getModule(IgnoreModule.class);
+        if (ignoreModule.getPlayerData(target.getUuid()).ignoredPlayers.contains(player.getUuid())) {
             return 0;
         }
 

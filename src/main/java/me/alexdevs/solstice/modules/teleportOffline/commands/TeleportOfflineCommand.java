@@ -1,13 +1,11 @@
 package me.alexdevs.solstice.modules.teleportOffline.commands;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.Solstice;
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.core.data.CorePlayerData;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
+import me.alexdevs.solstice.modules.teleportOffline.TeleportOfflineModule;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
@@ -16,14 +14,14 @@ import java.util.List;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class TeleportOfflineCommand extends ModCommand {
-    public TeleportOfflineCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+public class TeleportOfflineCommand extends ModCommand<TeleportOfflineModule> {
+    public TeleportOfflineCommand(TeleportOfflineModule module) {
+        super(module);
     }
 
     @Override
     public List<String> getNames() {
-        return List.of("tpoffline");
+        return List.of("tpoffline", "tpoff");
     }
 
     @Override

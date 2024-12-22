@@ -1,21 +1,17 @@
 package me.alexdevs.solstice.modules.timeBar.commands;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.timeBar.TimeBarModule;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.UuidArgumentType;
 import net.minecraft.entity.boss.BossBar;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
@@ -33,6 +29,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class TimeBarCommand extends ModCommand<TimeBarModule> {
     private static final ConcurrentHashMap<UUID, BarCommand> runningBars = new ConcurrentHashMap<>();
+
     public TimeBarCommand(TimeBarModule module) {
         super(module);
 

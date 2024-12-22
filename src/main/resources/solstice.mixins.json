@@ -7,15 +7,15 @@
   ],
   "client": [],
   "server": [
+    "CommandDispatcherMixin",
+    "MinecraftServerMixin",
+    "PlayerAdvancementTrackerMixin",
     "PlayerEntityMixin",
+    "PlayerManagerMixin",
     "RegistryLoaderMixin",
     "SentMessageMixin",
     "ServerPlayerEntityMixin",
     "ServerPlayNetworkHandlerMixin",
-    "PlayerManagerMixin",
-    "CommandDispatcherMixin",
-    "MinecraftServerMixin",
-    "PlayerAdvancementTrackerMixin",
     "SignBlockEntityMixin"
   ],
   "injectors": {

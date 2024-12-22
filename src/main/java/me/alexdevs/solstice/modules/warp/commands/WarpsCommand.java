@@ -1,14 +1,11 @@
 package me.alexdevs.solstice.modules.warp.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.warp.WarpModule;
 import me.alexdevs.solstice.modules.warp.data.WarpServerData;
-import com.mojang.brigadier.CommandDispatcher;
-import eu.pb4.placeholders.api.PlaceholderContext;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
@@ -39,7 +36,7 @@ public class WarpsCommand extends ModCommand<WarpModule> {
 
                     var locale = Solstice.localeManager.getLocale(WarpModule.ID);
 
-                    if(warpList.isEmpty()) {
+                    if (warpList.isEmpty()) {
                         context.getSource().sendFeedback(() -> locale.get(
                                 "noWarps",
                                 sourceContext
@@ -49,7 +46,7 @@ public class WarpsCommand extends ModCommand<WarpModule> {
 
                     var listText = Text.empty();
                     var comma = locale.get("warpsComma");
-                    for(var i = 0; i < warpList.size(); i++) {
+                    for (var i = 0; i < warpList.size(); i++) {
                         if (i > 0) {
                             listText = listText.append(comma);
                         }

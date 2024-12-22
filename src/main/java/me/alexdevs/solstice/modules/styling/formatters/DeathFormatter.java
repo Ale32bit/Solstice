@@ -1,8 +1,8 @@
 package me.alexdevs.solstice.modules.styling.formatters;
 
+import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.styling.StylingModule;
-import eu.pb4.placeholders.api.PlaceholderContext;
 import net.minecraft.entity.damage.DamageTracker;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;

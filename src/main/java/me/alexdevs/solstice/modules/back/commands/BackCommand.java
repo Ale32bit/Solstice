@@ -1,14 +1,11 @@
 package me.alexdevs.solstice.modules.back.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.back.BackModule;
-import com.mojang.brigadier.CommandDispatcher;
-import eu.pb4.placeholders.api.PlaceholderContext;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 
 import java.util.List;

@@ -2,9 +2,7 @@ package me.alexdevs.solstice.data;
 
 import com.google.gson.*;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.configurate.ConfigurateException;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -21,15 +19,13 @@ public class PlayerData {
     protected final Map<String, Class<?>> classMap = new HashMap<>();
     protected final Map<Class<?>, Object> data = new HashMap<>();
     protected final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
-
-    protected JsonObject node;
-
     protected final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .disableHtmlEscaping()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
             .serializeNulls()
             .create();
+    protected JsonObject node;
 
     public PlayerData(Path basePath, UUID uuid, Map<String, Class<?>> classMap, Map<Class<?>, Supplier<?>> providers) {
         this.uuid = uuid;
@@ -88,7 +84,7 @@ public class PlayerData {
     }
 
     protected JsonObject loadNode() {
-        if(!this.filePath.toFile().exists())
+        if (!this.filePath.toFile().exists())
             return new JsonObject();
         try (var fr = new FileReader(this.filePath.toFile())) {
             var reader = gson.newJsonReader(fr);

@@ -3,26 +3,19 @@ package me.alexdevs.solstice.modules.core;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
-import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.core.commands.SolsticeCommand;
 import me.alexdevs.solstice.modules.core.data.CoreConfig;
 import me.alexdevs.solstice.modules.core.data.CoreLocale;
 import me.alexdevs.solstice.modules.core.data.CorePlayerData;
 import me.alexdevs.solstice.modules.core.data.CoreServerData;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 public class CoreModule extends ModuleBase {
     public static final String ID = "core";
-    private final List<ModCommand<CoreModule>> commands = List.of(
-            new SolsticeCommand(this)
-    );
 
     public CoreModule() {
         super(ID);
@@ -32,6 +25,8 @@ public class CoreModule extends ModuleBase {
 
         Solstice.playerData.registerData(ID, CorePlayerData.class, CorePlayerData::new);
         Solstice.serverData.registerData(ID, CoreServerData.class, CoreServerData::new);
+
+        commands.add(new SolsticeCommand(this));
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             var player = handler.getPlayer();
@@ -77,10 +72,5 @@ public class CoreModule extends ModuleBase {
 
     public static String getUsername(UUID uuid) {
         return Solstice.serverData.getData(CoreServerData.class).usernameCache.getOrDefault(uuid, uuid.toString());
-    }
-
-    @Override
-    public Collection<? extends ModCommand<?>> getCommands() {
-        return commands;
     }
 }

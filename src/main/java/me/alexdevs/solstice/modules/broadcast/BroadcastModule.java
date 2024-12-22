@@ -1,23 +1,20 @@
 package me.alexdevs.solstice.modules.broadcast;
 
-import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.broadcast.commands.BroadcastCommand;
-
-import java.util.Collection;
-import java.util.List;
+import me.alexdevs.solstice.modules.broadcast.commands.PlainBroadcastCommand;
+import me.alexdevs.solstice.modules.broadcast.data.BroadcastConfig;
 
 public class BroadcastModule extends ModuleBase {
-    private final Collection<? extends ModCommand<BroadcastModule>> commands;
+    public static final String ID = "broadcast";
 
     public BroadcastModule() {
-        super("broadcast");
+        super(ID);
 
-        commands = List.of(new BroadcastCommand(this));
-    }
+        Solstice.configManager.registerData(ID, BroadcastConfig.class, BroadcastConfig::new);
 
-    @Override
-    public Collection<? extends ModCommand<?>> getCommands() {
-        return commands;
+        commands.add(new BroadcastCommand(this));
+        commands.add(new PlainBroadcastCommand(this));
     }
 }

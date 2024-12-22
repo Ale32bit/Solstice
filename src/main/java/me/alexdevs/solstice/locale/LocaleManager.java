@@ -16,9 +16,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class LocaleManager {
     private static final Gson gson = new GsonBuilder()
@@ -26,26 +24,38 @@ public class LocaleManager {
             .setPrettyPrinting()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
             .create();
-
-    private final Path path;
-
-    private final TypeToken<?> oldType = TypeToken.getParameterized(Map.class, String.class, String.class);
-
-    private LocaleModel locale;
-    private final LocaleModel defaultMap = new LocaleModel();
-
     private static final Pattern sharedRegex = Pattern.compile("^shared\\.(.+)$");
     private static final Pattern moduleRegex = Pattern.compile("^module\\.(\\w+)\\.(.+)$");
+    private final Path path;
+    private final TypeToken<?> oldType = TypeToken.getParameterized(Map.class, String.class, String.class);
+    private final LocaleModel defaultMap = new LocaleModel();
+    private LocaleModel locale;
 
 
     public LocaleManager(Path path) {
         this.path = path;
     }
 
+    public static @Nullable LocalePath getPath(String fullPath) {
+        var matcher = sharedRegex.matcher(fullPath);
+        if (matcher.find()) {
+            var key = matcher.group(1);
+            return new LocalePath(LocaleType.SHARED, key);
+        }
+
+        matcher = moduleRegex.matcher(fullPath);
+        if (matcher.find()) {
+            var moduleId = matcher.group(1);
+            var key = matcher.group(2);
+            return new LocalePath(LocaleType.MODULE, key, moduleId);
+        }
+
+        return null;
+    }
+
     public Locale getLocale(String id) {
         return new Locale(id, () -> locale);
     }
-
 
     public void registerModule(String id, Map<String, String> defaults) {
         this.defaultMap.modules.put(id, new ConcurrentHashMap<>(defaults));
@@ -65,7 +75,7 @@ public class LocaleManager {
         locale = gson.fromJson(bf, LocaleModel.class);
         bf.close();
 
-        if(locale.shared.isEmpty() && locale.modules.isEmpty()) {
+        if (locale.shared.isEmpty() && locale.modules.isEmpty()) {
             Solstice.LOGGER.warn("Locale casting failure. Attempting migration...");
             migrate();
         }
@@ -83,13 +93,15 @@ public class LocaleManager {
         if (locale == null)
             return;
 
-        defaultMap.modules.forEach((id, map) -> defaultMap.modules.putIfAbsent(id, new ConcurrentHashMap<>()));
-        defaultMap.shared.forEach((key, value) -> defaultMap.shared.putIfAbsent(key, value));
+        defaultMap.shared.forEach((key, value) -> locale.shared.putIfAbsent(key, value));
 
-        defaultMap.modules.forEach((id, map) -> {
-            var defMap = defaultMap.modules.get(id);
-            defMap.forEach(map::putIfAbsent);
-        });
+        //defaultMap.modules.forEach((id, map) -> locale.modules.putIfAbsent(id, new ConcurrentHashMap<>()));
+        for (var defaultMods : defaultMap.modules.entrySet()) {
+            var module = locale.modules.computeIfAbsent(defaultMods.getKey(), id -> new ConcurrentHashMap<>());
+            for (var modLocale : defaultMap.modules.get(defaultMods.getKey()).entrySet()) {
+                module.putIfAbsent(modLocale.getKey(), modLocale.getValue());
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -126,17 +138,22 @@ public class LocaleManager {
     public Map<String, String> generateMap() {
         var map = new HashMap<String, String>();
 
-        for(var entry : defaultMap.shared.entrySet()) {
+        for (var entry : defaultMap.shared.entrySet()) {
             map.put("shared." + entry.getKey(), entry.getValue());
         }
 
-        for(var modEntry : defaultMap.modules.entrySet()) {
+        for (var modEntry : defaultMap.modules.entrySet()) {
             for (var entry : modEntry.getValue().entrySet()) {
                 map.put("module." + modEntry.getKey() + "." + entry.getKey(), entry.getValue());
             }
         }
 
         return map;
+    }
+
+    public void reload() throws IOException {
+        load();
+        save();
     }
 
     public enum LocaleType {
@@ -173,23 +190,6 @@ public class LocaleManager {
 
     }
 
-    public static @Nullable LocalePath getPath(String fullPath) {
-        var matcher = sharedRegex.matcher(fullPath);
-        if (matcher.find()) {
-            var key = matcher.group(1);
-            return new LocalePath(LocaleType.SHARED, key);
-        }
-
-        matcher = moduleRegex.matcher(fullPath);
-        if (matcher.find()) {
-            var moduleId = matcher.group(1);
-            var key = matcher.group(2);
-            return new LocalePath(LocaleType.MODULE, key, moduleId);
-        }
-
-        return null;
-    }
-
     public static class LocaleModel {
         public ConcurrentHashMap<String, String> shared = new ConcurrentHashMap<>();
         public ConcurrentHashMap<String, ConcurrentHashMap<String, String>> modules = new ConcurrentHashMap<>();
@@ -203,7 +203,11 @@ public class LocaleManager {
             if (path.type() == LocaleType.SHARED) {
                 return shared.getOrDefault(path.key(), fullPath);
             } else if (path.type() == LocaleType.MODULE) {
-                return modules.get(path.moduleId()).getOrDefault(path.key(), fullPath);
+                var module = modules.get(path.moduleId());
+                if (module == null) {
+                    return fullPath;
+                }
+                return module.getOrDefault(path.key(), fullPath);
             }
 
             return fullPath;

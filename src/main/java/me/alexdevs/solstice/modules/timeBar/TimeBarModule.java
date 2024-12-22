@@ -2,27 +2,24 @@ package me.alexdevs.solstice.modules.timeBar;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.TimeBarEvents;
-import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.timeBar.commands.TimeBarCommand;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
 public class TimeBarModule extends ModuleBase {
     public static final String ID = "timebar";
-    private static ConcurrentLinkedDeque<TimeBar> timeBars = new ConcurrentLinkedDeque<>();
+    private static final ConcurrentLinkedDeque<TimeBar> timeBars = new ConcurrentLinkedDeque<>();
 
     public TimeBarModule() {
         super(ID);
 
-        CommandRegistrationCallback.EVENT.register(TimeBarCommand::new);
+        commands.add(new TimeBarCommand(this));
 
         Solstice.scheduler.scheduleAtFixedRate(this::updateBars, 0, 1, TimeUnit.SECONDS);
     }
@@ -85,10 +82,5 @@ public class TimeBarModule extends ModuleBase {
         }
 
         return cancelTimeBar(progressBar);
-    }
-
-    @Override
-    public Collection<? extends ModCommand<?>> getCommands() {
-        return List.of();
     }
 }

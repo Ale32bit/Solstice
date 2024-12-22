@@ -2,7 +2,6 @@ package me.alexdevs.solstice.modules.customName;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.modules.customName.commands.NicknameCommand;
@@ -14,25 +13,22 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CustomNameModule extends ModuleBase {
-    public static final String ID = "customName";
+    public static final String ID = "customname";
 
     private final ConcurrentHashMap<UUID, String> namesCache = new ConcurrentHashMap<>();
-    private final List<ModCommand<CustomNameModule>> commands = List.of(
-            new NicknameCommand(this)
-    );
 
     public CustomNameModule() {
         super(ID);
 
         Solstice.configManager.registerData(ID, CustomNameConfig.class, CustomNameConfig::new);
         Solstice.playerData.registerData(ID, CustomNamePlayerData.class, CustomNamePlayerData::new);
+
+        commands.add(new NicknameCommand(this));
 
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> refreshNames());
         ServerPlayConnectionEvents.JOIN.register((handler, packetSender, server) -> refreshNames());
@@ -94,9 +90,9 @@ public class CustomNameModule extends ModuleBase {
 
         var prefix = LuckPermsIntegration.getPrefix(player);
         var suffix = LuckPermsIntegration.getSuffix(player);
-        if(prefix == null)
+        if (prefix == null)
             prefix = "";
-        if(suffix == null)
+        if (suffix == null)
             suffix = "";
 
         Map<String, String> placeholders = Map.of(
@@ -108,7 +104,7 @@ public class CustomNameModule extends ModuleBase {
         var pattern = Format.PLACEHOLDER_PATTERN;
         var output = format;
         var matcher = pattern.matcher(format);
-        while(matcher.find()) {
+        while (matcher.find()) {
             var chunk = matcher.group();
             var key = matcher.group("id");
             output = output.replace(chunk, placeholders.getOrDefault(key, ""));
@@ -128,10 +124,5 @@ public class CustomNameModule extends ModuleBase {
         var playerData = Solstice.playerData.get(player).getData(CustomNamePlayerData.class);
         playerData.nickname = null;
         refreshName(player);
-    }
-
-    @Override
-    public Collection<? extends ModCommand<?>> getCommands() {
-        return commands;
     }
 }

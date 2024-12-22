@@ -1,22 +1,19 @@
 package me.alexdevs.solstice.modules.mail.commands;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.api.PlayerMail;
-import me.alexdevs.solstice.locale.Locale;
-import me.alexdevs.solstice.modules.core.CoreModule;
-import me.alexdevs.solstice.modules.mail.MailModule;
-import me.alexdevs.solstice.modules.moderation.ModerationModule;
-import me.alexdevs.solstice.util.Components;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.PlayerMail;
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.modules.core.CoreModule;
+import me.alexdevs.solstice.modules.ignore.IgnoreModule;
+import me.alexdevs.solstice.modules.mail.MailModule;
+import me.alexdevs.solstice.util.Components;
 import me.alexdevs.solstice.util.parser.MarkdownParser;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -25,14 +22,12 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.*;
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
-public class MailCommand extends ModCommand {
-    private final Locale locale = Solstice.localeManager.getLocale(MailModule.ID);
-    private final MailModule mailModule = Solstice.modules.mail;
-
-    public MailCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+public class MailCommand extends ModCommand<MailModule> {
+    public MailCommand(MailModule module) {
+        super(module);
     }
 
     @Override
@@ -69,15 +64,15 @@ public class MailCommand extends ModCommand {
     private int listMails(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrThrow();
         var playerContext = PlaceholderContext.of(player);
-        var mails = mailModule.getMailList(player.getUuid());
+        var mails = module.getMailList(player.getUuid());
 
-        if(mails.isEmpty()) {
-            context.getSource().sendFeedback(() -> locale.get("emptyMailbox", playerContext), false);
+        if (mails.isEmpty()) {
+            context.getSource().sendFeedback(() -> module.locale().get("emptyMailbox", playerContext), false);
             return 1;
         }
 
         var output = Text.empty()
-                .append(locale.get("mailListHeader", playerContext))
+                .append(module.locale().get("mailListHeader", playerContext))
                 .append(Text.of("\n"));
 
         for (var i = 0; i < mails.size(); i++) {
@@ -88,8 +83,8 @@ public class MailCommand extends ModCommand {
             var index = i + 1;
 
             var readButton = Components.button(
-                    locale.raw("readButton"),
-                    locale.raw("hoverRead"),
+                    module.locale().raw("readButton"),
+                    module.locale().raw("hoverRead"),
                     "/mail read " + index
             );
 
@@ -101,7 +96,7 @@ public class MailCommand extends ModCommand {
                     "date", Text.of(dateFormatter.format(mail.date)),
                     "readButton", readButton
             );
-            output = output.append(locale.get("mailListEntry", playerContext, placeholders));
+            output = output.append(module.locale().get("mailListEntry", playerContext, placeholders));
         }
 
         final var finalOutput = output;
@@ -114,11 +109,11 @@ public class MailCommand extends ModCommand {
     private int readMail(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrThrow();
         var playerContext = PlaceholderContext.of(player);
-        var mails = mailModule.getMailList(player.getUuid());
+        var mails = module.getMailList(player.getUuid());
         var index = IntegerArgumentType.getInteger(context, "index") - 1;
 
         if (index < 0 || index >= mails.size()) {
-            context.getSource().sendFeedback(() -> locale.get("notFound"), false);
+            context.getSource().sendFeedback(() -> module.locale().get("notFound"), false);
             return 1;
         }
 
@@ -127,13 +122,13 @@ public class MailCommand extends ModCommand {
         var username = CoreModule.getUsername(mail.sender);
 
         var replyButton = Components.buttonSuggest(
-                locale.raw("replyButton"),
-                locale.raw("hoverReply"),
+                module.locale().raw("replyButton"),
+                module.locale().raw("hoverReply"),
                 "/mail send " + username + " "
         );
         var deleteButton = Components.button(
-                locale.raw("deleteButton"),
-                locale.raw("hoverDelete"),
+                module.locale().raw("deleteButton"),
+                module.locale().raw("hoverDelete"),
                 "/mail delete " + index + 1
         );
 
@@ -148,7 +143,7 @@ public class MailCommand extends ModCommand {
                 "deleteButton", deleteButton
         );
 
-        context.getSource().sendFeedback(() -> locale.get("mailDetails", playerContext, placeholders), false);
+        context.getSource().sendFeedback(() -> module.locale().get("mailDetails", playerContext, placeholders), false);
 
         return 1;
     }
@@ -158,10 +153,10 @@ public class MailCommand extends ModCommand {
         var playerContext = PlaceholderContext.of(player);
         var index = IntegerArgumentType.getInteger(context, "index") - 1;
 
-        if (mailModule.deleteMail(player.getUuid(), index)) {
-            context.getSource().sendFeedback(() -> locale.get("mailDeleted", playerContext), false);
+        if (module.deleteMail(player.getUuid(), index)) {
+            context.getSource().sendFeedback(() -> module.locale().get("mailDeleted", playerContext), false);
         } else {
-            context.getSource().sendFeedback(() -> locale.get("notFound"), false);
+            context.getSource().sendFeedback(() -> module.locale().get("notFound"), false);
         }
 
         return 1;
@@ -178,7 +173,7 @@ public class MailCommand extends ModCommand {
                         "recipient", Text.of(username)
                 );
 
-                context.getSource().sendFeedback(() -> locale.get("playerNotFound", playerContext, placeholders), false);
+                context.getSource().sendFeedback(() -> module.locale().get("playerNotFound", playerContext, placeholders), false);
                 return;
             }
 
@@ -187,23 +182,24 @@ public class MailCommand extends ModCommand {
             var server = context.getSource().getServer();
 
             var mail = new PlayerMail(message, sender.getUuid());
-            var actuallySent = mailModule.sendMail(recipient.getId(), mail);
+            var actuallySent = module.sendMail(recipient.getId(), mail);
 
             var senderContext = PlaceholderContext.of(sender);
 
-            context.getSource().sendFeedback(() -> locale.get("mailSent", senderContext), false);
+            context.getSource().sendFeedback(() -> module.locale().get("mailSent", senderContext), false);
 
-            if(actuallySent) {
+            if (actuallySent) {
                 var recPlayer = server.getPlayerManager().getPlayer(recipient.getId());
                 if (recPlayer == null) {
                     return;
                 }
 
-                if(ModerationModule.isIgnoring(recPlayer, sender))
+                var ignoreModule = Solstice.modules.getModule(IgnoreModule.class);
+                if (ignoreModule.isIgnoring(recPlayer, sender))
                     return;
 
                 var recContext = PlaceholderContext.of(recPlayer);
-                recPlayer.sendMessage(locale.get("mailReceived", recContext));
+                recPlayer.sendMessage(module.locale().get("mailReceived", recContext));
             }
         });
 

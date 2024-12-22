@@ -6,7 +6,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.sudo.SudoModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;
@@ -17,7 +16,8 @@ import net.minecraft.util.math.Vec2f;
 
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.*;
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
 public class SudoCommand extends ModCommand<SudoModule> {
     public SudoCommand(SudoModule module) {
@@ -42,7 +42,7 @@ public class SudoCommand extends ModCommand<SudoModule> {
         return literal(name)
                 .then(argument("command", StringArgumentType.greedyString())
                         .executes(context -> {
-                            if(!Permissions.check(context.getSource(), getPermissionNode("sudo"), 4)) {
+                            if (!Permissions.check(context.getSource(), getPermissionNode("sudo"), 4)) {
                                 context.getSource().sendError(Text.literal(String.format("%s is not in the sudoers file. This incident will be reported.", context.getSource().getName()))
                                         .setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://xkcd.com/838/"))));
                                 return 1;

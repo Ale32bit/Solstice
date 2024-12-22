@@ -1,9 +1,9 @@
 package me.alexdevs.solstice.modules.styling.formatters;
 
+import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.styling.StylingModule;
 import me.alexdevs.solstice.util.Components;
-import eu.pb4.placeholders.api.PlaceholderContext;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.registry.RegistryKeys;

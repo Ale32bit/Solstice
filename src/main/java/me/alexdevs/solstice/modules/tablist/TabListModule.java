@@ -3,7 +3,6 @@ package me.alexdevs.solstice.modules.tablist;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
-import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.tablist.data.TabListConfig;
 import me.alexdevs.solstice.util.Format;
@@ -12,8 +11,6 @@ import net.minecraft.network.packet.s2c.play.PlayerListHeaderS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -69,10 +66,5 @@ public class TabListModule extends ModuleBase {
                     Format.parse(footer, playerContext, placeholders)
             ));
         });
-    }
-
-    @Override
-    public Collection<? extends ModCommand<?>> getCommands() {
-        return List.of();
     }
 }

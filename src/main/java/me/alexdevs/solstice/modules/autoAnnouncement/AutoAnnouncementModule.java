@@ -3,15 +3,13 @@ package me.alexdevs.solstice.modules.autoAnnouncement;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
-import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.modules.autoAnnouncement.data.AutoAnnouncementConfig;
 import me.alexdevs.solstice.util.Format;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -76,10 +74,5 @@ public class AutoAnnouncementModule extends ModuleBase {
         if (config.enable) {
             scheduledFuture = Solstice.scheduler.scheduleAtFixedRate(this::announce, config.delay, config.delay, TimeUnit.SECONDS);
         }
-    }
-
-    @Override
-    public Collection<? extends ModCommand<?>> getCommands() {
-        return List.of();
     }
 }

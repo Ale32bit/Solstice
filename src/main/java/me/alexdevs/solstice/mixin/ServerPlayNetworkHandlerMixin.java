@@ -22,14 +22,14 @@ import java.util.List;
 @Mixin(ServerPlayNetworkHandler.class)
 public abstract class ServerPlayNetworkHandlerMixin {
     @Shadow
+    public ServerPlayerEntity player;
+    @Shadow
     @Final
     private MinecraftServer server;
-    @Shadow
-    public ServerPlayerEntity player;
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void solstice$updatePlayerList(CallbackInfo ci) {
-        if(Solstice.configManager.getData(TabListConfig.class).enable) {
+        if (Solstice.configManager.getData(TabListConfig.class).enable) {
             var packet = new PlayerListS2CPacket(EnumSet.of(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, PlayerListS2CPacket.Action.UPDATE_LISTED), List.of(this.player));
             this.server.getPlayerManager().sendToAll(packet);
         }

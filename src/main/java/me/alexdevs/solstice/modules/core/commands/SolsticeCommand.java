@@ -55,7 +55,7 @@ public class SolsticeCommand extends ModCommand<CoreModule> {
                         .executes(context -> {
                             try {
                                 Solstice.configManager.loadData(true);
-                                Solstice.localeManager.load();
+                                Solstice.localeManager.reload();
 
                                 Solstice.modules.getModule(CustomNameModule.class).refreshNames();
                             } catch (Exception e) {

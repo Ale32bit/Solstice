@@ -52,7 +52,7 @@ public class HelpOpCommand extends ModCommand<HelpOpModule> {
                             source.getServer().sendMessage(requestMessage);
 
                             source.getServer().getPlayerManager().getPlayerList().forEach(player -> {
-                                if (Permissions.check(player, HelpOpModule.HELPOP_RECEIVER_PERMISSION, 1)) {
+                                if (Permissions.check(player, getPermissionNode("operator"), 1)) {
                                     player.sendMessage(requestMessage);
                                 }
                             });

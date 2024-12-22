@@ -50,7 +50,7 @@ public class NicknameCommand extends ModCommand<CustomNameModule> {
     }
 
     private int execute(CommandContext<ServerCommandSource> context, String nickname, @Nullable ServerPlayerEntity player) throws CommandSyntaxException {
-        if(player == null) {
+        if (player == null) {
             player = context.getSource().getPlayerOrThrow();
         }
 
@@ -63,7 +63,7 @@ public class NicknameCommand extends ModCommand<CustomNameModule> {
     }
 
     private int executeClear(CommandContext<ServerCommandSource> context, @Nullable ServerPlayerEntity player) throws CommandSyntaxException {
-        if(player == null) {
+        if (player == null) {
             player = context.getSource().getPlayerOrThrow();
         }
 

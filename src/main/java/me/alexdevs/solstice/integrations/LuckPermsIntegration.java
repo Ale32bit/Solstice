@@ -30,7 +30,7 @@ public class LuckPermsIntegration {
     }
 
     public static @Nullable String getPrefix(ServerPlayerEntity player) {
-        if(!available) {
+        if (!available) {
             return null;
         }
         var playerMeta = luckPerms.getPlayerAdapter(ServerPlayerEntity.class).getMetaData(player);
@@ -38,7 +38,7 @@ public class LuckPermsIntegration {
     }
 
     public static @Nullable String getSuffix(ServerPlayerEntity player) {
-        if(!available) {
+        if (!available) {
             return null;
         }
         var playerMeta = luckPerms.getPlayerAdapter(ServerPlayerEntity.class).getMetaData(player);

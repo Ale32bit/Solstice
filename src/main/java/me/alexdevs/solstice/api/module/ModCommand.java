@@ -2,7 +2,6 @@ package me.alexdevs.solstice.api.module;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.alexdevs.solstice.Solstice;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
@@ -12,10 +11,10 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public abstract class ModCommand<T extends ModuleBase> {
+    protected final T module;
     protected CommandDispatcher<ServerCommandSource> dispatcher;
     protected CommandRegistryAccess commandRegistry;
     protected CommandManager.RegistrationEnvironment environment;
-    protected final T module;
 
     public ModCommand(T module) {
         this.commandRegistry = null;
@@ -23,21 +22,6 @@ public abstract class ModCommand<T extends ModuleBase> {
         this.dispatcher = null;
 
         this.module = module;
-    }
-
-    @Deprecated(forRemoval = true)
-    public ModCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        this.dispatcher = dispatcher;
-        this.commandRegistry = commandRegistry;
-        this.environment = environment;
-
-        this.module = null;
-
-        this.register();
-    }
-
-    public void register() {
-        this.register(dispatcher, commandRegistry, environment);
     }
 
     public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {

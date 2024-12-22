@@ -18,11 +18,12 @@ public abstract class SignBlockEntityMixin {
 
     @Inject(method = "getTextWithMessages", at = @At("HEAD"), cancellable = true)
     private void getTextWithMessages(PlayerEntity player, List<FilteredMessage> messages, SignText text, CallbackInfoReturnable<SignText> cir) {
-        if(FormattableSignsModule.canFormatSign(player)) {
+        var formattableSignsModule = Solstice.modules.getModule(FormattableSignsModule.class);
+        if (formattableSignsModule.canFormatSign(player)) {
             try {
                 text = FormattableSignsModule.formatSign(messages, text);
                 cir.setReturnValue(text);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 Solstice.LOGGER.error("Something went wrong while formatting a sign!", e);
             }
         }

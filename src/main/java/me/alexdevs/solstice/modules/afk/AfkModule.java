@@ -7,7 +7,6 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.events.PlayerActivityEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
-import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.afk.commands.AfkCommand;
@@ -15,7 +14,6 @@ import me.alexdevs.solstice.modules.afk.data.AfkConfig;
 import me.alexdevs.solstice.modules.afk.data.AfkLocale;
 import me.alexdevs.solstice.modules.afk.data.AfkPlayerData;
 import me.alexdevs.solstice.util.Format;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.*;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
@@ -27,20 +25,13 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AfkModule extends ModuleBase {
     public static final String ID = "afk";
-
-    private final List<ModCommand<AfkModule>> commands = List.of(
-            new AfkCommand(this)
-    );
-
-    private final ConcurrentHashMap<UUID, PlayerActivityState> playerActivityStates = new ConcurrentHashMap<>();
     public static Text afkTag;
+    private final ConcurrentHashMap<UUID, PlayerActivityState> playerActivityStates = new ConcurrentHashMap<>();
     private int absentTimeTrigger;
 
     private Locale locale;
@@ -51,6 +42,8 @@ public class AfkModule extends ModuleBase {
         Solstice.configManager.registerData(ID, AfkConfig.class, AfkConfig::new);
         Solstice.playerData.registerData(ID, AfkPlayerData.class, AfkPlayerData::new);
         Solstice.localeManager.registerModule(ID, AfkLocale.MODULE);
+
+        this.commands.add(new AfkCommand(this));
 
         SolsticeEvents.READY.register((instance, server) -> register());
     }
@@ -230,10 +223,5 @@ public class AfkModule extends ModuleBase {
     public int getActiveTime(ServerPlayerEntity player) {
         var data = Solstice.playerData.get(player).getData(AfkPlayerData.class);
         return data.activeTime;
-    }
-
-    @Override
-    public Collection<? extends ModCommand<?>> getCommands() {
-        return commands;
     }
 }

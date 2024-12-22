@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SeenLocale {
+    public static final Map<String, String> MODULE;
     private static final ArrayList<String> base = new ArrayList<>(List.of(
             "<yellow>${username}</yellow><gold>'s information:</gold>",
             " <gold>UUID:</gold> <yellow>${uuid}</yellow>",
@@ -16,8 +17,6 @@ public class SeenLocale {
             " <gold>IP Address:</gold> <yellow>${ipAddress}</yellow>",
             " <gold>Location:</gold> <yellow>${location}</yellow>"
     ));
-
-    public static final Map<String, String> MODULE;
 
     static {
         var map = new HashMap<String, String>();

@@ -20,7 +20,7 @@ public class MarkdownParser {
     public static final NodeParser defaultParser = createParser(ALL);
 
     public static NodeParser createParser(MarkdownFormat[] capabilities) {
-        var mdParser =  new MarkdownLiteParserV1(
+        var mdParser = new MarkdownLiteParserV1(
                 MarkdownComponentParser::spoilerFormatting,
                 MarkdownComponentParser::quoteFormatting,
                 MarkdownComponentParser::urlFormatting,

@@ -20,7 +20,7 @@ public class Kit {
     public List<ItemStack> getItemStacks() {
         var stacks = new ArrayList<ItemStack>();
 
-        for(var stackNbt : itemStacks) {
+        for (var stackNbt : itemStacks) {
             try {
                 stacks.add(ItemStack.fromNbt(NbtHelper.fromNbtProviderString(stackNbt)));
             } catch (CommandSyntaxException e) {

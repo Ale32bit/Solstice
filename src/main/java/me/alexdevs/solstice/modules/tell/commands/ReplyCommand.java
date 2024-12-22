@@ -1,16 +1,11 @@
 package me.alexdevs.solstice.modules.tell.commands;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.locale.Locale;
-import me.alexdevs.solstice.modules.tell.TellModule;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.modules.tell.TellModule;
 import net.minecraft.server.command.ServerCommandSource;
 
 import java.util.List;
@@ -20,8 +15,6 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 
 public class ReplyCommand extends ModCommand<TellModule> {
-    private final Locale locale = Solstice.localeManager.getLocale(TellModule.ID);
-
     public ReplyCommand(TellModule module) {
         super(module);
     }
@@ -46,7 +39,7 @@ public class ReplyCommand extends ModCommand<TellModule> {
 
         if (!module.lastSender.containsKey(senderName)) {
             var playerContext = PlaceholderContext.of(context.getSource());
-            source.sendFeedback(() -> locale.get(
+            source.sendFeedback(() -> module.locale().get(
                     "noLastSenderReply",
                     playerContext
             ), false);

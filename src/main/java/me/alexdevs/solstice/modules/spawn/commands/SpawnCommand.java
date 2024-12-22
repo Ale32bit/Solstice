@@ -3,16 +3,13 @@ package me.alexdevs.solstice.modules.spawn.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.spawn.SpawnModule;
 import me.alexdevs.solstice.modules.spawn.data.SpawnServerData;
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.ServerPosition;
-import com.mojang.brigadier.CommandDispatcher;
-import eu.pb4.placeholders.api.PlaceholderContext;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -24,12 +21,12 @@ import java.util.List;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class SpawnCommand extends ModCommand {
-    public SpawnCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+public class SpawnCommand extends ModCommand<SpawnModule> {
+    public SpawnCommand(SpawnModule module) {
+        super(module);
     }
 
-    private static int execute(CommandContext<ServerCommandSource> context, @Nullable Collection<ServerPlayerEntity> players) throws CommandSyntaxException {
+    private int execute(CommandContext<ServerCommandSource> context, @Nullable Collection<ServerPlayerEntity> players) throws CommandSyntaxException {
         if (players == null) {
             var player = context.getSource().getPlayerOrThrow();
             sendToSpawn(context, player);
@@ -43,7 +40,7 @@ public class SpawnCommand extends ModCommand {
         }
     }
 
-    private static void sendToSpawn(CommandContext<ServerCommandSource> context, ServerPlayerEntity player) {
+    private void sendToSpawn(CommandContext<ServerCommandSource> context, ServerPlayerEntity player) {
         var serverData = Solstice.serverData.getData(SpawnServerData.class);
         var playerContext = PlaceholderContext.of(player);
         var spawnPosition = serverData.spawn;
@@ -53,9 +50,7 @@ public class SpawnCommand extends ModCommand {
             spawnPosition = new ServerPosition(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), 0, 0, server.getOverworld());
         }
 
-        var locale = Solstice.localeManager.getLocale(SpawnModule.ID);
-
-        context.getSource().sendFeedback(() -> locale.get(
+        context.getSource().sendFeedback(() -> module.locale().get(
                 "teleporting",
                 playerContext
         ), false);

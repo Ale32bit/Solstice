@@ -1,26 +1,19 @@
 package me.alexdevs.solstice.modules.formattableSigns;
 
 import eu.pb4.placeholders.api.parsers.LegacyFormattingParser;
-import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.block.entity.SignText;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.filter.FilteredMessage;
 
-import java.util.Collection;
 import java.util.List;
 
 public class FormattableSignsModule extends ModuleBase {
-    public static final String ID = "formattableSigns";
-    public static final String PERMISSION = "solstice.sign.format";
+    public static final String ID = "formattablesigns";
 
     public FormattableSignsModule() {
         super(ID);
-    }
-
-    public static boolean canFormatSign(PlayerEntity player) {
-        return Permissions.check(player, PERMISSION, 2);
     }
 
     public static SignText formatSign(List<FilteredMessage> messages, SignText text) {
@@ -32,8 +25,7 @@ public class FormattableSignsModule extends ModuleBase {
         return text;
     }
 
-    @Override
-    public Collection<? extends ModCommand<?>> getCommands() {
-        return List.of();
+    public boolean canFormatSign(PlayerEntity player) {
+        return Permissions.check(player, getPermissionNode(), 2);
     }
 }

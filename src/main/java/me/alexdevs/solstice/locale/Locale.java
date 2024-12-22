@@ -5,7 +5,6 @@ import me.alexdevs.solstice.util.Format;
 import net.minecraft.text.Text;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class Locale {

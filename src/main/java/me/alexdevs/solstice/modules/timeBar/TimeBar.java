@@ -16,8 +16,8 @@ public class TimeBar {
     private final CommandBossBar bossBar;
     private final String label;
     private final int time;
-    private int elapsedSeconds = 0;
     private final boolean countdown;
+    private int elapsedSeconds = 0;
 
     public TimeBar(String label, int time, boolean countdown, BossBar.Color color, BossBar.Style style) {
         this.bossBar = new CommandBossBar(Identifier.of(Solstice.MOD_ID, uuid.toString()), Text.of(label));

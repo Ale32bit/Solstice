@@ -1,18 +1,15 @@
 package me.alexdevs.solstice.modules.teleportRequest.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.locale.Locale;
-import me.alexdevs.solstice.modules.teleportRequest.TeleportRequestModule;
-import me.alexdevs.solstice.modules.teleportRequest.TeleportRequest;
-import me.alexdevs.solstice.api.ServerPosition;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import net.minecraft.command.CommandRegistryAccess;
+import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.ServerPosition;
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.locale.Locale;
+import me.alexdevs.solstice.modules.teleportRequest.TeleportRequest;
+import me.alexdevs.solstice.modules.teleportRequest.TeleportRequestModule;
 import net.minecraft.command.argument.UuidArgumentType;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 
 import java.util.List;

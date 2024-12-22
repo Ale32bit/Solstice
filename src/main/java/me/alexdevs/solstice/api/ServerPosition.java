@@ -2,7 +2,6 @@ package me.alexdevs.solstice.api;
 
 import com.google.gson.annotations.Expose;
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.modules.afk.PlayerPosition;
 import me.alexdevs.solstice.modules.back.BackModule;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;

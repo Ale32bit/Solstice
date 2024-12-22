@@ -3,17 +3,14 @@ package me.alexdevs.solstice.modules.styling;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
-import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.styling.data.StylingConfig;
 import me.alexdevs.solstice.modules.styling.data.StylingLocale;
 
-import java.util.Collection;
-import java.util.List;
-
 public class StylingModule extends ModuleBase {
     public static final String ID = "styling";
     public static final String ADVANCED_CHAT_FORMATTING_PERMISSION = "solstice.chat.advanced";
+
     public StylingModule() {
         super(ID);
 
@@ -22,7 +19,7 @@ public class StylingModule extends ModuleBase {
 
         SolsticeEvents.WELCOME.register((player, server) -> {
             var config = Solstice.configManager.getData(StylingConfig.class);
-            if(config.welcomeNewPlayers) {
+            if (config.welcomeNewPlayers) {
                 var playerContext = PlaceholderContext.of(player);
                 var locale = Solstice.localeManager.getLocale(ID);
                 Solstice.nextTick(() -> {
@@ -30,10 +27,5 @@ public class StylingModule extends ModuleBase {
                 });
             }
         });
-    }
-
-    @Override
-    public Collection<? extends ModCommand<?>> getCommands() {
-        return List.of();
     }
 }

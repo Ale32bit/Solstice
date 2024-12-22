@@ -3,8 +3,8 @@ package me.alexdevs.solstice.modules.styling.formatters;
 import com.mojang.authlib.GameProfile;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.modules.ban.BanModule;
 import me.alexdevs.solstice.modules.core.CoreModule;
-import me.alexdevs.solstice.modules.moderation.ModerationModule;
 import me.alexdevs.solstice.util.Format;
 import net.minecraft.server.BannedPlayerEntry;
 import net.minecraft.text.Text;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class BanMessageFormatter {
     public static Text format(GameProfile profile, BannedPlayerEntry entry) {
-        var locale = Solstice.localeManager.getLocale(ModerationModule.ID);
+        var locale = Solstice.modules.getModule(BanModule.class).locale();
         var coreConfig = CoreModule.getConfig();
         var df = new SimpleDateFormat(coreConfig.dateTimeFormat);
 

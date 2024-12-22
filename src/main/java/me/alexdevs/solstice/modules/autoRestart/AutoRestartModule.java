@@ -1,16 +1,15 @@
 package me.alexdevs.solstice.modules.autoRestart;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.events.RestartEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
-import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
-import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.autoRestart.commands.RestartCommand;
 import me.alexdevs.solstice.modules.autoRestart.data.AutoRestartConfig;
 import me.alexdevs.solstice.modules.autoRestart.data.AutoRestartLocale;
 import me.alexdevs.solstice.modules.timeBar.TimeBar;
+import me.alexdevs.solstice.modules.timeBar.TimeBarModule;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sound.SoundCategory;
@@ -22,33 +21,27 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class AutoRestartModule extends ModuleBase {
     public static final String ID = "autorestart";
 
-    private static TimeBar restartBar = null;
-    private static SoundEvent sound;
-    private static ScheduledFuture<?> currentSchedule = null;
+    private TimeBar restartBar = null;
+    private SoundEvent sound;
+    private ScheduledFuture<?> currentSchedule = null;
 
-    private static AutoRestartConfig config;
-    private static Locale locale;
-
-    private final List<ModCommand<AutoRestartModule>> commands = List.of(
-            new RestartCommand(this)
-    );
+    private AutoRestartConfig config;
 
     public AutoRestartModule() {
         super(ID);
         Solstice.configManager.registerData(ID, AutoRestartConfig.class, AutoRestartConfig::new);
         Solstice.localeManager.registerModule(ID, AutoRestartLocale.MODULE);
 
+        commands.add(new RestartCommand(this));
+
         SolsticeEvents.READY.register((instance, server) -> {
             config = Solstice.configManager.getData(AutoRestartConfig.class);
-            locale = Solstice.localeManager.getLocale(ID);
             setup();
             if (config.enable) {
                 scheduleNextRestart();
@@ -80,7 +73,7 @@ public class AutoRestartModule extends ModuleBase {
     }
 
     public void restart() {
-        Solstice.server.getPlayerManager().getPlayerList().forEach(player -> player.networkHandler.disconnect(locale.get("kickMessage")));
+        Solstice.server.getPlayerManager().getPlayerList().forEach(player -> player.networkHandler.disconnect(locale().get("kickMessage")));
 
         Solstice.nextTick(() -> Solstice.server.stop(false));
     }
@@ -96,7 +89,8 @@ public class AutoRestartModule extends ModuleBase {
     }
 
     public void schedule(int seconds, String message) {
-        restartBar = Solstice.modules.timeBar.startTimeBar(
+        var timeBar = Solstice.modules.getModule(TimeBarModule.class);
+        restartBar = timeBar.startTimeBar(
                 message,
                 seconds,
                 BossBar.Color.RED,
@@ -112,8 +106,9 @@ public class AutoRestartModule extends ModuleBase {
     }
 
     public void cancel() {
+        var timeBar = Solstice.modules.getModule(TimeBarModule.class);
         if (restartBar != null) {
-            Solstice.modules.timeBar.cancelTimeBar(restartBar);
+            timeBar.cancelTimeBar(restartBar);
             RestartEvents.CANCELED.invoker().onCancel(restartBar);
             restartBar = null;
         }
@@ -126,7 +121,7 @@ public class AutoRestartModule extends ModuleBase {
 
     private void notifyRestart(MinecraftServer server, TimeBar bar) {
         var solstice = Solstice.getInstance();
-        var text = bar.parseLabel(locale.raw("chatMessage"));
+        var text = bar.parseLabel(locale().raw("chatMessage"));
         solstice.broadcast(text);
 
         var pitch = config.restartSoundPitch;
@@ -143,7 +138,7 @@ public class AutoRestartModule extends ModuleBase {
         // start bar 10 mins earlier
         var barStartTime = delay - barTime;
 
-        currentSchedule = Solstice.scheduler.schedule(() -> schedule(barTime, locale.raw("barLabel")), barStartTime, TimeUnit.SECONDS);
+        currentSchedule = Solstice.scheduler.schedule(() -> schedule(barTime, locale().raw("barLabel")), barStartTime, TimeUnit.SECONDS);
 
         Solstice.LOGGER.info("Restart scheduled for in {} seconds", delay);
         return delay;
@@ -175,10 +170,5 @@ public class AutoRestartModule extends ModuleBase {
             return shortestDelay;
         }
         return null;
-    }
-
-    @Override
-    public Collection<? extends ModCommand<?>> getCommands() {
-        return commands;
     }
 }
