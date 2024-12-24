@@ -14,6 +14,7 @@ import me.alexdevs.solstice.modules.afk.data.AfkConfig;
 import me.alexdevs.solstice.modules.afk.data.AfkLocale;
 import me.alexdevs.solstice.modules.afk.data.AfkPlayerData;
 import me.alexdevs.solstice.util.Format;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.*;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
@@ -164,6 +165,10 @@ public class AfkModule extends ModuleBase {
         if (playerState.isAfk)
             return;
 
+        if(!Permissions.check(player, getPermissionNode("base"), true)) {
+            return;
+        }
+
         if ((playerState.lastUpdate + absentTimeTrigger) <= currentTick) {
             // player is afk after 5 mins
             updatePlayerActiveTime(player, currentTick);
@@ -187,6 +192,10 @@ public class AfkModule extends ModuleBase {
     }
 
     private void resetAfkState(ServerPlayerEntity player, MinecraftServer server) {
+        if(!Permissions.check(player, getPermissionNode("base"), true)) {
+            return;
+        }
+
         if (!playerActivityStates.containsKey(player.getUuid()))
             return;
 
