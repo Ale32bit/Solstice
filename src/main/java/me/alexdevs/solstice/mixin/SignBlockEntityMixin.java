@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.mixin;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.modules.formattableSigns.FormattableSignsModule;
+import me.alexdevs.solstice.modules.sign.SignModule;
 import net.minecraft.block.entity.SignBlockEntity;
 import net.minecraft.block.entity.SignText;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,10 +18,10 @@ public abstract class SignBlockEntityMixin {
 
     @Inject(method = "getTextWithMessages", at = @At("HEAD"), cancellable = true)
     private void getTextWithMessages(PlayerEntity player, List<FilteredMessage> messages, SignText text, CallbackInfoReturnable<SignText> cir) {
-        var formattableSignsModule = Solstice.modules.getModule(FormattableSignsModule.class);
+        var formattableSignsModule = Solstice.modules.getModule(SignModule.class);
         if (formattableSignsModule.canFormatSign(player)) {
             try {
-                text = FormattableSignsModule.formatSign(messages, text);
+                text = SignModule.formatSign(messages, text);
                 cir.setReturnValue(text);
             } catch (Exception e) {
                 Solstice.LOGGER.error("Something went wrong while formatting a sign!", e);

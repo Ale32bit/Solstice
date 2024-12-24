@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.modules.formattableSigns;
+package me.alexdevs.solstice.modules.sign;
 
 import eu.pb4.placeholders.api.parsers.LegacyFormattingParser;
 import me.alexdevs.solstice.api.module.ModuleBase;
@@ -9,10 +9,10 @@ import net.minecraft.server.filter.FilteredMessage;
 
 import java.util.List;
 
-public class FormattableSignsModule extends ModuleBase {
-    public static final String ID = "formattablesigns";
+public class SignModule extends ModuleBase {
+    public static final String ID = "sign";
 
-    public FormattableSignsModule() {
+    public SignModule() {
         super(ID);
     }
 
@@ -26,6 +26,6 @@ public class FormattableSignsModule extends ModuleBase {
     }
 
     public boolean canFormatSign(PlayerEntity player) {
-        return Permissions.check(player, getPermissionNode("base"), 2);
+        return Permissions.check(player, getPermissionNode("format"), 2);
     }
 }

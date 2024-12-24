@@ -16,7 +16,7 @@ import me.alexdevs.solstice.modules.experiments.ExperimentsModule;
 import me.alexdevs.solstice.modules.extinguish.ExtinguishModule;
 import me.alexdevs.solstice.modules.feed.FeedModule;
 import me.alexdevs.solstice.modules.fly.FlyModule;
-import me.alexdevs.solstice.modules.formattableSigns.FormattableSignsModule;
+import me.alexdevs.solstice.modules.sign.SignModule;
 import me.alexdevs.solstice.modules.god.GodModule;
 import me.alexdevs.solstice.modules.hat.HatModule;
 import me.alexdevs.solstice.modules.heal.HealModule;
@@ -66,7 +66,7 @@ public class ModuleProvider {
             new ExtinguishModule(),
             new FeedModule(),
             new FlyModule(),
-            new FormattableSignsModule(),
+            new SignModule(),
             new GodModule(),
             new HatModule(),
             new HealModule(),
