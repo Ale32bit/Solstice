@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.modules.autoRestart.data;
+package me.alexdevs.solstice.modules.restart.data;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ConfigSerializable
-public class AutoRestartConfig {
+public class RestartConfig {
     @Comment("Enable auto restart functionality.")
     public boolean enable = true;
 

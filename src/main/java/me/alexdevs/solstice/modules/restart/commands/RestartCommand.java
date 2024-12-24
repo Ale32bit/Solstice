@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.modules.autoRestart.commands;
+package me.alexdevs.solstice.modules.restart.commands;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -7,7 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.modules.autoRestart.AutoRestartModule;
+import me.alexdevs.solstice.modules.restart.RestartModule;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -18,8 +18,8 @@ import java.util.List;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class RestartCommand extends ModCommand<AutoRestartModule> {
-    public RestartCommand(AutoRestartModule module) {
+public class RestartCommand extends ModCommand<RestartModule> {
+    public RestartCommand(RestartModule module) {
         super(module);
     }
 
@@ -52,7 +52,7 @@ public class RestartCommand extends ModCommand<AutoRestartModule> {
 
     private int schedule(CommandContext<ServerCommandSource> context, int seconds, @Nullable String message) {
         if (message == null) {
-            message = Solstice.localeManager.getLocale(AutoRestartModule.ID).raw("barLabel");
+            message = Solstice.localeManager.getLocale(RestartModule.ID).raw("barLabel");
         }
         module.schedule(seconds, message);
 

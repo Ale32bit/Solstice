@@ -1,13 +1,13 @@
-package me.alexdevs.solstice.modules.autoRestart;
+package me.alexdevs.solstice.modules.restart;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.RestartEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
-import me.alexdevs.solstice.modules.autoRestart.commands.RestartCommand;
-import me.alexdevs.solstice.modules.autoRestart.data.AutoRestartConfig;
-import me.alexdevs.solstice.modules.autoRestart.data.AutoRestartLocale;
+import me.alexdevs.solstice.modules.restart.commands.RestartCommand;
+import me.alexdevs.solstice.modules.restart.data.RestartConfig;
+import me.alexdevs.solstice.modules.restart.data.RestartLocale;
 import me.alexdevs.solstice.modules.timeBar.TimeBar;
 import me.alexdevs.solstice.modules.timeBar.TimeBarModule;
 import net.minecraft.entity.boss.BossBar;
@@ -24,24 +24,24 @@ import java.time.LocalTime;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class AutoRestartModule extends ModuleBase {
-    public static final String ID = "autorestart";
+public class RestartModule extends ModuleBase {
+    public static final String ID = "restart";
 
     private TimeBar restartBar = null;
     private SoundEvent sound;
     private ScheduledFuture<?> currentSchedule = null;
 
-    private AutoRestartConfig config;
+    private RestartConfig config;
 
-    public AutoRestartModule() {
+    public RestartModule() {
         super(ID);
-        Solstice.configManager.registerData(ID, AutoRestartConfig.class, AutoRestartConfig::new);
-        Solstice.localeManager.registerModule(ID, AutoRestartLocale.MODULE);
+        Solstice.configManager.registerData(ID, RestartConfig.class, RestartConfig::new);
+        Solstice.localeManager.registerModule(ID, RestartLocale.MODULE);
 
         commands.add(new RestartCommand(this));
 
         SolsticeEvents.READY.register((instance, server) -> {
-            config = Solstice.configManager.getData(AutoRestartConfig.class);
+            config = Solstice.configManager.getData(RestartConfig.class);
             setup();
             if (config.enable) {
                 scheduleNextRestart();

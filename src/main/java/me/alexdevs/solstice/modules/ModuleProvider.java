@@ -4,7 +4,7 @@ import me.alexdevs.solstice.api.events.ModuleRegistrationCallback;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.autoAnnouncement.AutoAnnouncementModule;
-import me.alexdevs.solstice.modules.autoRestart.AutoRestartModule;
+import me.alexdevs.solstice.modules.restart.RestartModule;
 import me.alexdevs.solstice.modules.back.BackModule;
 import me.alexdevs.solstice.modules.ban.BanModule;
 import me.alexdevs.solstice.modules.broadcast.BroadcastModule;
@@ -54,7 +54,7 @@ public class ModuleProvider {
     private static final List<? extends ModuleBase> modules = List.of(
             new AfkModule(),
             new AutoAnnouncementModule(),
-            new AutoRestartModule(),
+            new RestartModule(),
             new BackModule(),
             new BanModule(),
             new BroadcastModule(),
