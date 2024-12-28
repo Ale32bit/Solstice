@@ -1,35 +1,35 @@
 {
-	"schemaVersion": 1,
-	"id": "solstice",
-	"version": "${version}",
-	"name": "Solstice Essentials",
-	"description": "Server commands, custom chat formats and more",
-	"authors": [
-		{
-			"name": "AlexDevs",
-			"contact": {
-				"email": "solstice@alexdevs.me"
-			}
-		}
-	],
-	"contact": {
-		"sources": "https://github.com/Ale32bit/Solstice.git",
-		"issues": "https://github.com/Ale32bit/Solstice/issues"
-	},
-	"license": "MIT",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"me.alexdevs.solstice.Solstice"
-		]
-	},
-	"mixins": [
-		"solstice.mixins.json"
-	],
-	"depends": {
-		"fabricloader": ">=0.16.0",
-		"minecraft": "~1.20.1",
-		"java": ">=17",
-		"fabric-api": "*"
-	}
+  "schemaVersion": 1,
+  "id": "solstice",
+  "version": "${version}",
+  "name": "Solstice Essentials",
+  "description": "Server commands, custom chat formats and more",
+  "authors": [
+    {
+      "name": "AlexDevs",
+      "contact": {
+        "email": "solstice@alexdevs.me"
+      }
+    }
+  ],
+  "contact": {
+    "sources": "https://github.com/Ale32bit/Solstice.git",
+    "issues": "https://github.com/Ale32bit/Solstice/issues"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.alexdevs.solstice.Solstice"
+    ]
+  },
+  "mixins": [
+    "solstice.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.20.1",
+    "java": ">=17",
+    "fabric-api": "*"
+  }
 }

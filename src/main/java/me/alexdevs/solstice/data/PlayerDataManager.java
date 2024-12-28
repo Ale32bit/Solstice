@@ -10,12 +10,10 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public class PlayerDataManager {
-    private Path basePath;
-
     private final Map<String, Class<?>> classMap = new HashMap<>();
     private final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
-
     private final Map<UUID, PlayerData> playerData = new HashMap<>();
+    private Path basePath;
 
     public Path getDataPath() {
         return basePath;
@@ -27,10 +25,11 @@ public class PlayerDataManager {
 
     /**
      * Register data model for the player
-     * @param id Module key in the data
-     * @param clazz Class of data
+     *
+     * @param id      Module key in the data
+     * @param clazz   Class of data
      * @param creator Default values provider
-     * @param <T> Type of class of data
+     * @param <T>     Type of class of data
      */
     public <T> void registerData(String id, Class<T> clazz, Supplier<T> creator) {
         classMap.put(id, clazz);
@@ -39,11 +38,12 @@ public class PlayerDataManager {
 
     /**
      * Get data of a player. Will load if not loaded.
+     *
      * @param uuid Player UUID
      * @return player data
      */
     public PlayerData get(UUID uuid) {
-        if(!playerData.containsKey(uuid)) {
+        if (!playerData.containsKey(uuid)) {
             return load(uuid);
         }
         return playerData.get(uuid);
@@ -51,6 +51,7 @@ public class PlayerDataManager {
 
     /**
      * Get data of a player. Will load if not loaded.
+     *
      * @param player Player
      * @return player data
      */
@@ -60,6 +61,7 @@ public class PlayerDataManager {
 
     /**
      * Get data of a player. Will load if not loaded.
+     *
      * @param profile Player profile
      * @return player data
      */
@@ -69,10 +71,11 @@ public class PlayerDataManager {
 
     /**
      * Save player data and unload from memory
+     *
      * @param uuid Player UUID
      */
     public void dispose(UUID uuid) {
-        if(playerData.containsKey(uuid)) {
+        if (playerData.containsKey(uuid)) {
             var data = playerData.remove(uuid);
             data.save();
         }
@@ -89,7 +92,7 @@ public class PlayerDataManager {
      * Save all player data without disposing.
      */
     public void saveAll() {
-        if(!this.basePath.toFile().exists()) {
+        if (!this.basePath.toFile().exists()) {
             this.basePath.toFile().mkdirs();
         }
         for (var entry : playerData.entrySet()) {

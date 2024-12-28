@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.modules.styling;
 
-import me.alexdevs.solstice.modules.moderation.ModerationModule;
+import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.styling.formatters.ChatFormatter;
 import me.alexdevs.solstice.modules.styling.formatters.EmoteFormatter;
 import net.minecraft.network.message.MessageType;
@@ -34,7 +35,8 @@ public interface CustomSentMessage extends SentMessage {
 
         @Override
         public void send(ServerPlayerEntity receiver, boolean filterMaskEnabled, MessageType.Parameters params) {
-            if (ModerationModule.isIgnoring(receiver, sender)) {
+            var ignoreModule = Solstice.modules.getModule(IgnoreModule.class);
+            if (ignoreModule.isIgnoring(receiver, sender)) {
                 return;
             }
             SignedMessage signedMessage = this.message.withFilterMaskEnabled(filterMaskEnabled);

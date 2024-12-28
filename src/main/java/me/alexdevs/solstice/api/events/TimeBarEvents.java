@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.api.events;
 
-import me.alexdevs.solstice.modules.timebar.TimeBar;
+import me.alexdevs.solstice.modules.timeBar.TimeBar;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.server.MinecraftServer;

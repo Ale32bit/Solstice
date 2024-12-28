@@ -9,31 +9,27 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Supplier;
 
 public class ServerData {
-    protected Path filePath;
-
     protected final Map<String, Class<?>> classMap = new HashMap<>();
     protected final Map<Class<?>, Object> data = new HashMap<>();
     protected final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
-
-    protected JsonObject node;
-
     protected final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .disableHtmlEscaping()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
             .serializeNulls()
             .create();
-
-    public void setDataPath(Path filePath) {
-        this.filePath = filePath;
-    }
+    protected Path filePath;
+    protected JsonObject node;
 
     public Path getDataPath() {
         return this.filePath;
+    }
+
+    public void setDataPath(Path filePath) {
+        this.filePath = filePath;
     }
 
     @SuppressWarnings("unchecked")

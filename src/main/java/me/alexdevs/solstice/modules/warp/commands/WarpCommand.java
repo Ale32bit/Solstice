@@ -1,18 +1,15 @@
 package me.alexdevs.solstice.modules.warp.commands;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.modules.warp.WarpModule;
-import me.alexdevs.solstice.modules.warp.data.WarpServerData;
-import me.alexdevs.solstice.Solstice;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import net.minecraft.command.CommandRegistryAccess;
+import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.modules.warp.WarpModule;
+import me.alexdevs.solstice.modules.warp.data.WarpServerData;
 import net.minecraft.command.CommandSource;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
@@ -22,9 +19,9 @@ import java.util.Map;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class WarpCommand extends ModCommand {
-    public WarpCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+public class WarpCommand extends ModCommand<WarpModule> {
+    public WarpCommand(WarpModule module) {
+        super(module);
     }
 
     @Override

@@ -27,7 +27,7 @@ public class Raycast {
 
     public static BlockPos getBlockPos(ServerPlayerEntity player, double maxDistance) {
         var result = cast(player, maxDistance);
-        if(result.getType() == BlockHitResult.Type.BLOCK) {
+        if (result.getType() == BlockHitResult.Type.BLOCK) {
             return result.getBlockPos();
         }
         return null;
@@ -35,7 +35,7 @@ public class Raycast {
 
     public static Vec3d getEntityPos(ServerPlayerEntity player, double maxDistance) {
         var result = cast(player, maxDistance);
-        if(result.getType() == BlockHitResult.Type.ENTITY) {
+        if (result.getType() == BlockHitResult.Type.ENTITY) {
             return result.getPos();
         }
         return null;
@@ -43,7 +43,7 @@ public class Raycast {
 
     public static Vec3d getPos(ServerPlayerEntity player, double maxDistance) {
         var result = cast(player, maxDistance);
-        if(result.getType() != BlockHitResult.Type.MISS) {
+        if (result.getType() != BlockHitResult.Type.MISS) {
             return result.getPos();
         }
         return null;

@@ -4,15 +4,17 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.events.PlayerActivityEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
+import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.afk.commands.AfkCommand;
 import me.alexdevs.solstice.modules.afk.data.AfkConfig;
 import me.alexdevs.solstice.modules.afk.data.AfkLocale;
 import me.alexdevs.solstice.modules.afk.data.AfkPlayerData;
 import me.alexdevs.solstice.util.Format;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.*;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
@@ -27,23 +29,22 @@ import net.minecraft.util.TypedActionResult;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class AfkModule {
+public class AfkModule extends ModuleBase {
     public static final String ID = "afk";
-    private final ConcurrentHashMap<UUID, PlayerActivityState> playerActivityStates = new ConcurrentHashMap<>();
-
     public static Text afkTag;
+    private final ConcurrentHashMap<UUID, PlayerActivityState> playerActivityStates = new ConcurrentHashMap<>();
     private int absentTimeTrigger;
 
     private Locale locale;
     private AfkConfig config;
 
     public AfkModule() {
+        super(ID);
         Solstice.configManager.registerData(ID, AfkConfig.class, AfkConfig::new);
         Solstice.playerData.registerData(ID, AfkPlayerData.class, AfkPlayerData::new);
         Solstice.localeManager.registerModule(ID, AfkLocale.MODULE);
 
-        CommandRegistrationCallback.EVENT.register(AfkCommand::new);
-
+        this.commands.add(new AfkCommand(this));
 
         SolsticeEvents.READY.register((instance, server) -> register());
     }
@@ -154,7 +155,7 @@ public class AfkModule {
         var playerState = playerActivityStates.computeIfAbsent(player.getUuid(), uuid -> new PlayerActivityState(player, currentTick));
 
         var oldPosition = playerState.position;
-        var newPosition = new PlayerPosition(player);
+        var newPosition = new ServerPosition(player);
         if (!oldPosition.equals(newPosition)) {
             playerState.position = newPosition;
             resetAfkState(player, server);
@@ -163,6 +164,10 @@ public class AfkModule {
 
         if (playerState.isAfk)
             return;
+
+        if(!Permissions.check(player, getPermissionNode("base"), true)) {
+            return;
+        }
 
         if ((playerState.lastUpdate + absentTimeTrigger) <= currentTick) {
             // player is afk after 5 mins
@@ -187,6 +192,10 @@ public class AfkModule {
     }
 
     private void resetAfkState(ServerPlayerEntity player, MinecraftServer server) {
+        if(!Permissions.check(player, getPermissionNode("base"), true)) {
+            return;
+        }
+
         if (!playerActivityStates.containsKey(player.getUuid()))
             return;
 

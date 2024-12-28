@@ -1,17 +1,13 @@
 package me.alexdevs.solstice.modules.near.commands;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.locale.Locale;
-import me.alexdevs.solstice.modules.near.NearModule;
-import me.alexdevs.solstice.modules.near.data.NearConfig;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
+import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.modules.near.NearModule;
+import me.alexdevs.solstice.modules.near.data.NearConfig;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -24,11 +20,9 @@ import java.util.Map;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class NearCommand extends ModCommand {
-    private final Locale locale = Solstice.localeManager.getLocale(NearModule.ID);
-
-    public NearCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+public class NearCommand extends ModCommand<NearModule> {
+    public NearCommand(NearModule module) {
+        super(module);
     }
 
     @Override
@@ -59,7 +53,7 @@ public class NearCommand extends ModCommand {
         });
 
         if (list.isEmpty()) {
-            context.getSource().sendFeedback(() -> locale.get(
+            context.getSource().sendFeedback(() -> module.locale().get(
                     "noOne",
                     playerContext
             ), false);
@@ -69,7 +63,7 @@ public class NearCommand extends ModCommand {
         list.sort(Comparator.comparingDouble(ClosePlayers::distance));
 
         var listText = Text.empty();
-        var comma = locale.get("comma");
+        var comma = module.locale().get("comma");
         for (int i = 0; i < list.size(); i++) {
             var player = list.get(i);
             if (i > 0) {
@@ -82,7 +76,7 @@ public class NearCommand extends ModCommand {
 
             var targetContext = PlaceholderContext.of(sourcePlayer);
 
-            listText = listText.append(locale.get(
+            listText = listText.append(module.locale().get(
                     "format",
                     targetContext,
                     placeholders
@@ -92,7 +86,7 @@ public class NearCommand extends ModCommand {
         var placeholders = Map.of(
                 "playerList", (Text) listText
         );
-        context.getSource().sendFeedback(() -> locale.get(
+        context.getSource().sendFeedback(() -> module.locale().get(
                 "nearestPlayers",
                 playerContext,
                 placeholders

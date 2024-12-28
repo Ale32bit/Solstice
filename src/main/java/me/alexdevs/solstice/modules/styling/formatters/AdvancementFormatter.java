@@ -17,10 +17,12 @@ public class AdvancementFormatter {
         var title = advancementKey + ".title";
         var description = advancementKey + ".description";
 
+        var config = Solstice.modules.getModule(StylingModule.class).getConfig();
+
         String advancementFormat = switch (frame) {
-            case GOAL -> locale.raw("advancementGoal");
-            case CHALLENGE -> locale.raw("advancementChallenge");
-            default -> locale.raw("advancementTask");
+            case GOAL -> config.advancementGoal;
+            case CHALLENGE -> config.advancementChallenge;
+            case TASK -> config.advancementTask;
         };
 
         var playerContext = PlaceholderContext.of(player);

@@ -26,7 +26,7 @@ public abstract class PlayerAdvancementTrackerMixin {
             var advancementContent = (TranslatableTextContent) ((MutableText) translatable.getArg(1)).getContent();
             var advancementKey = ((TranslatableTextContent) ((MutableText) advancementContent.getArg(0)).getContent()).getKey().replace(".title", "");
             return AdvancementFormatter.getText(owner, advancementKey, frameId);
-        } catch(Exception e) {
+        } catch (Exception e) {
             Solstice.LOGGER.error("Exception customizing advancement message", e);
 
             return message;

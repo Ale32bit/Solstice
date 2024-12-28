@@ -4,9 +4,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.modules.Utils;
+import me.alexdevs.solstice.api.module.Utils;
 import me.alexdevs.solstice.modules.info.InfoModule;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.CommandSource;
@@ -17,23 +16,19 @@ import net.minecraft.text.Text;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.literal;
 import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
-public class InfoCommand extends ModCommand {
-    private InfoModule module;
-
-    public InfoCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
-
-        module = Solstice.modules.info;
+public class InfoCommand extends ModCommand<InfoModule> {
+    public InfoCommand(InfoModule module) {
+        super(module);
     }
 
     @Override
-    public void register() {
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
         // WorldEdit's /info -> /tool info
         Utils.removeCommands(dispatcher, "info");
-        super.register();
+        super.register(dispatcher, commandRegistry, environment);
     }
 
     @Override

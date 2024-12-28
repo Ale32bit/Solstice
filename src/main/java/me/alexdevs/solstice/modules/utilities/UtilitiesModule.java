@@ -1,21 +1,20 @@
 package me.alexdevs.solstice.modules.utilities;
 
+import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.utilities.commands.*;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
-public class UtilitiesModule {
+public class UtilitiesModule extends ModuleBase {
+    public static final String ID = "utilities";
+
     public UtilitiesModule() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            new AnvilCommand(dispatcher, registryAccess, environment);
-            new CartographyCommand(dispatcher, registryAccess, environment);
-            new EnderchestCommand(dispatcher, registryAccess, environment);
-            new GrindstoneCommand(dispatcher, registryAccess, environment);
-            new LoomCommand(dispatcher, registryAccess, environment);
-            new SmithingCommand(dispatcher, registryAccess, environment);
-            new StonecutterCommand(dispatcher, registryAccess, environment);
-            new SuicideCommand(dispatcher, registryAccess, environment);
-            new TrashCommand(dispatcher, registryAccess, environment);
-            new WorkbenchCommand(dispatcher, registryAccess, environment);
-        });
+        super(ID);
+
+        commands.add(new AnvilCommand(this));
+        commands.add(new CartographyCommand(this));
+        commands.add(new GrindstoneCommand(this));
+        commands.add(new LoomCommand(this));
+        commands.add(new SmithingCommand(this));
+        commands.add(new StonecutterCommand(this));
+        commands.add(new WorkbenchCommand(this));
     }
 }

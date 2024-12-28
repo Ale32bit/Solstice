@@ -1,9 +1,9 @@
 package me.alexdevs.solstice.mixin;
 
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.events.SolsticeEvents;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
+import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.events.SolsticeEvents;
 import net.minecraft.server.command.ServerCommandSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,9 +16,9 @@ public class CommandDispatcherMixin<S> {
     public void execute(final ParseResults<S> parse, CallbackInfoReturnable<Integer> cir) {
         var context = parse.getContext();
         if (context.getSource() instanceof ServerCommandSource source) {
-            if(source.isExecutedByPlayer()) {
+            if (source.isExecutedByPlayer()) {
                 var player = source.getPlayer();
-                if(player != null) {
+                if (player != null) {
                     var command = parse.getReader().getString();
                     Solstice.LOGGER.info("{}: /{}", player.getGameProfile().getName(), command);
                     try {

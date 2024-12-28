@@ -4,16 +4,10 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.locale.Locale;
-import me.alexdevs.solstice.util.Format;
-import com.mojang.brigadier.CommandDispatcher;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.command.CommandRegistryAccess;
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.modules.home.HomeModule;
 import net.minecraft.command.argument.GameProfileArgumentType;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
@@ -24,11 +18,9 @@ import java.util.Map;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class HomesCommand extends ModCommand {
-    private final Locale locale = Solstice.modules.home.getLocale();
-
-    public HomesCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+public class HomesCommand extends ModCommand<HomeModule> {
+    public HomesCommand(HomeModule module) {
+        super(module);
     }
 
     @Override
@@ -39,7 +31,7 @@ public class HomesCommand extends ModCommand {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
-                .requires(require(true))
+                .requires(require( true))
                 .executes(this::execute)
                 .then(argument("player", GameProfileArgumentType.gameProfile())
                         .requires(require("others", 2))
@@ -48,12 +40,12 @@ public class HomesCommand extends ModCommand {
 
     private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrThrow();
-        var data = Solstice.modules.home.getData(player.getUuid());
+        var data = module.getData(player.getUuid());
         var homeList = data.homes.keySet().stream().toList();
         var playerContext = PlaceholderContext.of(player);
 
         if (homeList.isEmpty()) {
-            context.getSource().sendFeedback(() -> locale.get(
+            context.getSource().sendFeedback(() -> module.locale().get(
                     "noHomes",
                     playerContext
             ), false);
@@ -61,7 +53,7 @@ public class HomesCommand extends ModCommand {
         }
 
         var listText = Text.empty();
-        var comma = locale.get("homesComma");
+        var comma = module.locale().get("homesComma");
         for (var i = 0; i < homeList.size(); i++) {
             if (i > 0) {
                 listText = listText.append(comma);
@@ -70,7 +62,7 @@ public class HomesCommand extends ModCommand {
                     "home", Text.of(homeList.get(i))
             );
 
-            listText = listText.append(locale.get(
+            listText = listText.append(module.locale().get(
                     "homesFormat",
                     playerContext,
                     placeholders
@@ -80,7 +72,7 @@ public class HomesCommand extends ModCommand {
         var placeholders = Map.of(
                 "homeList", (Text) listText
         );
-        context.getSource().sendFeedback(() -> locale.get(
+        context.getSource().sendFeedback(() -> module.locale().get(
                 "homeList",
                 playerContext,
                 placeholders
@@ -94,7 +86,7 @@ public class HomesCommand extends ModCommand {
         var playerContext = PlaceholderContext.of(player);
 
         if (profiles.size() > 1) {
-            context.getSource().sendFeedback(() -> locale.get(
+            context.getSource().sendFeedback(() -> module.locale().get(
                     "~tooManyTargets",
                     playerContext
             ), false);
@@ -103,14 +95,14 @@ public class HomesCommand extends ModCommand {
 
         var profile = profiles.iterator().next();
 
-        var data = Solstice.modules.home.getData(profile.getId());
+        var data = module.getData(profile.getId());
         var homeList = data.homes.keySet().stream().toList();
 
         if (homeList.isEmpty()) {
             var placeholders = Map.of(
                     "owner", Text.of(profile.getName())
             );
-            context.getSource().sendFeedback(() -> locale.get(
+            context.getSource().sendFeedback(() -> module.locale().get(
                     "noHomesOther",
                     playerContext,
                     placeholders
@@ -119,7 +111,7 @@ public class HomesCommand extends ModCommand {
         }
 
         var listText = Text.empty();
-        var comma = locale.get("homesComma");
+        var comma = module.locale().get("homesComma");
         for (var i = 0; i < homeList.size(); i++) {
             if (i > 0) {
                 listText = listText.append(comma);
@@ -129,7 +121,7 @@ public class HomesCommand extends ModCommand {
                     "owner", Text.of(profile.getName())
             );
 
-            listText = listText.append(locale.get(
+            listText = listText.append(module.locale().get(
                     "homesFormatOther",
                     playerContext,
                     placeholders
@@ -140,7 +132,7 @@ public class HomesCommand extends ModCommand {
                 "homeList", listText,
                 "owner", Text.of(profile.getName())
         );
-        context.getSource().sendFeedback(() -> locale.get(
+        context.getSource().sendFeedback(() -> module.locale().get(
                 "homeListOther",
                 playerContext,
                 placeholders

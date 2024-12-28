@@ -1,15 +1,26 @@
 package me.alexdevs.solstice.modules.experiments;
 
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.experiments.commands.TimeSpanCommand;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
-public class ExperimentsModule {
+import java.util.Collection;
+import java.util.List;
+
+public class ExperimentsModule extends ModuleBase {
     public static final boolean ENABLED = false;
-
     public static final String ID = "experiments";
-    public ExperimentsModule() {
-        if(!ENABLED) return;
 
-        CommandRegistrationCallback.EVENT.register(TimeSpanCommand::new);
+    public ExperimentsModule() {
+        super(ID);
+
+        commands.add(new TimeSpanCommand(this));
+    }
+
+    @Override
+    public Collection<? extends ModCommand<?>> getCommands() {
+        if (!ENABLED) return List.of();
+
+        return commands;
     }
 }

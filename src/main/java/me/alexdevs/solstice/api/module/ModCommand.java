@@ -2,7 +2,6 @@ package me.alexdevs.solstice.api.module;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.alexdevs.solstice.Solstice;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
@@ -11,20 +10,25 @@ import net.minecraft.server.command.ServerCommandSource;
 import java.util.List;
 import java.util.function.Predicate;
 
-public abstract class ModCommand {
-    protected final CommandDispatcher<ServerCommandSource> dispatcher;
-    protected final CommandRegistryAccess commandRegistry;
-    protected final CommandManager.RegistrationEnvironment environment;
+public abstract class ModCommand<T extends ModuleBase> {
+    protected final T module;
+    protected CommandDispatcher<ServerCommandSource> dispatcher;
+    protected CommandRegistryAccess commandRegistry;
+    protected CommandManager.RegistrationEnvironment environment;
 
-    public ModCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
+    public ModCommand(T module) {
+        this.commandRegistry = null;
+        this.environment = null;
+        this.dispatcher = null;
+
+        this.module = module;
+    }
+
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
         this.dispatcher = dispatcher;
         this.commandRegistry = commandRegistry;
         this.environment = environment;
 
-        this.register();
-    }
-
-    public void register() {
         for (var name : getNames()) {
             dispatcher.register(command(name));
         }
@@ -35,7 +39,15 @@ public abstract class ModCommand {
     }
 
     public String getPermissionNode() {
-        return Solstice.MOD_ID + ".command." + getName();
+        var node = module.getPermissionNode("base");
+        Debug.commandDebugList.add(new Debug.CommandDebug(module.id, getName(), getNames(), node));
+        return node;
+    }
+
+    public String getPermissionNode(String subNode) {
+        var node = module.getPermissionNode(subNode);
+        Debug.commandDebugList.add(new Debug.CommandDebug(module.id, getName(), getNames(), node));
+        return node;
     }
 
     public Predicate<ServerCommandSource> require() {
@@ -51,15 +63,15 @@ public abstract class ModCommand {
     }
 
     public Predicate<ServerCommandSource> require(String subNode) {
-        return Permissions.require(getPermissionNode() + "." + subNode);
+        return Permissions.require(getPermissionNode(subNode));
     }
 
     public Predicate<ServerCommandSource> require(String subNode, int defaultRequiredLevel) {
-        return Permissions.require(getPermissionNode() + "." + subNode, defaultRequiredLevel);
+        return Permissions.require(getPermissionNode(subNode), defaultRequiredLevel);
     }
 
     public Predicate<ServerCommandSource> require(String subNode, boolean defaultValue) {
-        return Permissions.require(getPermissionNode() + "." + subNode, defaultValue);
+        return Permissions.require(getPermissionNode(subNode), defaultValue);
     }
 
     /**

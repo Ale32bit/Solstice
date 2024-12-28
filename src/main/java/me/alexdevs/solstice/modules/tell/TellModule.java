@@ -2,13 +2,13 @@ package me.alexdevs.solstice.modules.tell;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.modules.moderation.ModerationModule;
+import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.tell.commands.ReplyCommand;
 import me.alexdevs.solstice.modules.tell.commands.TellCommand;
 import me.alexdevs.solstice.modules.tell.data.TellLocale;
 import me.alexdevs.solstice.util.Components;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -16,18 +16,17 @@ import net.minecraft.text.Text;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TellModule {
+public class TellModule extends ModuleBase {
     public static final String ID = "tell";
-    public static final String SOCIALSPY_PERMISSION = "solstice.socialspy";
     public final HashMap<String, String> lastSender = new HashMap<>();
 
     public TellModule() {
+        super(ID);
+
         Solstice.localeManager.registerModule(ID, TellLocale.MODULE);
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            new TellCommand(dispatcher, registryAccess, environment);
-            new ReplyCommand(dispatcher, registryAccess, environment);
-        });
+        commands.add(new TellCommand(this));
+        commands.add(new ReplyCommand(this));
     }
 
     public void sendDirectMessage(String targetName, ServerCommandSource source, String message) {
@@ -114,7 +113,8 @@ public class TellModule {
             source.sendMessage(sourceText);
         }
         if (targetPlayer != null) {
-            if (!source.isExecutedByPlayer() || !ModerationModule.isIgnoring(targetPlayer, source.getPlayer())) {
+            var ignoreModule = Solstice.modules.getModule(IgnoreModule.class);
+            if (!source.isExecutedByPlayer() || !ignoreModule.isIgnoring(targetPlayer, source.getPlayer())) {
                 targetPlayer.sendMessage(targetText);
             }
 
@@ -131,7 +131,7 @@ public class TellModule {
             if (playerName.equals(targetName) || playerName.equals(source.getName())) {
                 return;
             }
-            if (Permissions.check(player, SOCIALSPY_PERMISSION)) {
+            if (Permissions.check(player, getPermissionNode("spy"))) {
                 player.sendMessage(spyText);
             }
         });
