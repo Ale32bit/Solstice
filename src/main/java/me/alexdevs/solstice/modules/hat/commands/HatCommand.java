@@ -34,7 +34,7 @@ public class HatCommand extends ModCommand<HatModule> {
                     var handStack = player.getMainHandStack();
 
                     if (handStack.isEmpty()) {
-                        context.getSource().sendFeedback(() -> locale.get("hatEmptyStack"), false);
+                        context.getSource().sendFeedback(() -> locale.get("emptyStack"), false);
                         return 0;
                     }
 
@@ -43,7 +43,7 @@ public class HatCommand extends ModCommand<HatModule> {
                     inventory.setStack(inventory.selectedSlot, oldHeadStack.copyAndEmpty());
                     inventory.armor.set(3, handStack.copyAndEmpty());
 
-                    context.getSource().sendFeedback(() -> locale.get("hatSuccess"), false);
+                    context.getSource().sendFeedback(() -> locale.get("success"), false);
 
                     return 1;
                 });
