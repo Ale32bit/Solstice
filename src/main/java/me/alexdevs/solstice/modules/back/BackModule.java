@@ -3,9 +3,9 @@ package me.alexdevs.solstice.modules.back;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.events.PlayerTeleport;
+import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.back.commands.BackCommand;
 import me.alexdevs.solstice.modules.back.data.BackLocale;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -13,14 +13,15 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BackModule {
-    public static final ConcurrentHashMap<UUID, ServerPosition> lastPlayerPositions = new ConcurrentHashMap<>();
+public class BackModule extends ModuleBase {
     public static final String ID = "back";
+    public final ConcurrentHashMap<UUID, ServerPosition> lastPlayerPositions = new ConcurrentHashMap<>();
 
     public BackModule() {
+        super(ID);
         Solstice.localeManager.registerModule(ID, BackLocale.MODULE);
 
-        CommandRegistrationCallback.EVENT.register(BackCommand::new);
+        commands.add(new BackCommand(this));
 
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> lastPlayerPositions.remove(handler.getPlayer().getUuid()));
 

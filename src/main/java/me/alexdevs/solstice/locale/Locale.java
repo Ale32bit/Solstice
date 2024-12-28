@@ -5,21 +5,19 @@ import me.alexdevs.solstice.util.Format;
 import net.minecraft.text.Text;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class Locale {
     public final String id;
 
-    private Supplier<ConcurrentHashMap<String, String>> localeSupplier;
+    private final Supplier<LocaleManager.LocaleModel> localeSupplier;
 
-    public Locale(String id, Supplier<ConcurrentHashMap<String, String>> localeSupplier) {
+    public Locale(String id, Supplier<LocaleManager.LocaleModel> localeSupplier) {
         this.id = id;
         this.localeSupplier = localeSupplier;
     }
 
     public String raw(String path) {
-        var locale = this.localeSupplier.get();
         String fullPath;
         if (path.startsWith("~")) {
             fullPath = "shared." + path.substring(1);
@@ -29,11 +27,7 @@ public class Locale {
             fullPath = "module." + this.id + "." + path;
         }
 
-        if (locale.containsKey(fullPath)) {
-            return locale.get(fullPath);
-        }
-
-        return fullPath;
+        return localeSupplier.get().get(fullPath);
     }
 
     public Text get(String path) {

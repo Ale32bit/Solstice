@@ -14,7 +14,7 @@ public class MinecraftServerMixin {
     public void save(boolean suppressLogs, boolean flush, boolean force, CallbackInfoReturnable<Boolean> cir) {
         try {
             WorldSave.EVENT.invoker().onSave((MinecraftServer) (Object) this, suppressLogs, flush, force);
-        } catch(Exception e) {
+        } catch (Exception e) {
             Solstice.LOGGER.error("Exception emitting world save event", e);
         }
     }

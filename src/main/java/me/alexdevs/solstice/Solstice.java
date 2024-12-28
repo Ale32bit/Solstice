@@ -1,13 +1,14 @@
 package me.alexdevs.solstice;
 
-import com.mojang.brigadier.CommandDispatcher;
+import me.alexdevs.solstice.api.events.ModuleRegistrationCallback;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSave;
 import me.alexdevs.solstice.data.PlayerDataManager;
 import me.alexdevs.solstice.data.ServerData;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.locale.LocaleManager;
-import me.alexdevs.solstice.modules.Modules;
+import me.alexdevs.solstice.core.Modules;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.util.data.HoconDataManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -38,34 +39,34 @@ public class Solstice implements ModInitializer {
 
     public static final HoconDataManager configManager = new HoconDataManager(configDirectory.resolve("config.conf"));
     public static final LocaleManager localeManager = new LocaleManager(configDirectory.resolve("locale.json"));
-
+    public static final RegistryKey<MessageType> CHAT_TYPE = RegistryKey.of(RegistryKeys.MESSAGE_TYPE, Identifier.of(MOD_ID, "chat"));
+    public static final ServerData serverData = new ServerData();
+    public static final PlayerDataManager playerData = new PlayerDataManager();
+    public static final Modules modules = new Modules();
+    private static final ConcurrentLinkedQueue<Runnable> nextTickRunnables = new ConcurrentLinkedQueue<>();
+    public static MinecraftServer server;
+    public static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private static Solstice INSTANCE;
+
+    public Solstice() {
+        INSTANCE = this;
+    }
 
     public static Solstice getInstance() {
         return INSTANCE;
     }
 
-    public static MinecraftServer server;
-
-    public static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
-    public static final RegistryKey<MessageType> CHAT_TYPE = RegistryKey.of(RegistryKeys.MESSAGE_TYPE, Identifier.of(MOD_ID, "chat"));
-
-    public static final ServerData serverData = new ServerData();
-    public static final PlayerDataManager playerData = new PlayerDataManager();
-
-    public static final Modules modules = new Modules();
-
-    private static final ConcurrentLinkedQueue<Runnable> nextTickRunnables = new ConcurrentLinkedQueue<>();
-
-    public Solstice() {
-        INSTANCE = this;
+    public static void nextTick(Runnable runnable) {
+        nextTickRunnables.add(runnable);
     }
 
     @Override
     public void onInitialize() {
         var modMeta = FabricLoader.getInstance().getModContainer(MOD_ID).get().getMetadata();
         LOGGER.info("Initializing Solstice v{}...", modMeta.getVersion());
+
+        ModuleProvider.register();
+        modules.register();
 
         try {
             configManager.prepareData();
@@ -84,14 +85,14 @@ public class Solstice implements ModInitializer {
             return;
         }
 
-        if(FabricLoader.getInstance().isModLoaded("luckperms")) {
+        if (FabricLoader.getInstance().isModLoaded("luckperms")) {
             LuckPermsIntegration.register();
         }
 
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             Solstice.server = server;
             var path = server.getSavePath(WorldSavePath.ROOT).resolve("data").resolve(MOD_ID);
-            if(!path.toFile().exists()) {
+            if (!path.toFile().exists()) {
                 path.toFile().mkdirs();
             }
             serverData.setDataPath(path.resolve("server.json"));
@@ -115,9 +116,5 @@ public class Solstice implements ModInitializer {
 
     public void broadcast(Text text) {
         server.getPlayerManager().broadcast(text, false);
-    }
-
-    public static void nextTick(Runnable runnable) {
-        nextTickRunnables.add(runnable);
     }
 }

@@ -17,17 +17,15 @@ import java.util.regex.Pattern;
 
 // https://github.com/NucleusPowered/Nucleus/blob/v3/nucleus-core/src/main/java/io/github/nucleuspowered/nucleus/core/scaffold/command/parameter/TimespanParameter.java
 public class TimeSpan {
+    public static final SimpleCommandExceptionType INVALID_TIMESPAN = new SimpleCommandExceptionType(new LiteralMessage("Invalid timespan"));
     private static final Pattern minorTimeString = Pattern.compile("^\\d+$");
     private static final Pattern timeString = Pattern.compile("^((\\d+)w)?((\\d+)d)?((\\d+)h)?((\\d+)m)?((\\d+)s)?$");
     private static final Pattern timeStringNoEnd = Pattern.compile("^((\\d+)w)?((\\d+)d)?((\\d+)h)?((\\d+)m)?((\\d+)s)?");
     private static final Pattern lastDigits = Pattern.compile("\\d+$");
-
     private static final int secondsInMinute = 60;
     private static final int secondsInHour = 60 * secondsInMinute;
     private static final int secondsInDay = 24 * secondsInHour;
     private static final int secondsInWeek = 7 * secondsInDay;
-
-    public static final SimpleCommandExceptionType INVALID_TIMESPAN = new SimpleCommandExceptionType(new LiteralMessage("Invalid timespan"));
 
     private static int amount(@Nullable final String g, final int multiplier) {
         if (g != null && !g.isEmpty()) {
@@ -111,7 +109,6 @@ public class TimeSpan {
                 }
             }
         }
-
 
 
         return builder.buildFuture();

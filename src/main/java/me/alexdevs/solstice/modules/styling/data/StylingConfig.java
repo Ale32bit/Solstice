@@ -18,4 +18,34 @@ public class StylingConfig {
     public HashMap<String, String> replacements = new HashMap<>(Map.of(
             ":shrug:", "¯\\\\_(ツ)_/¯"
     ));
+
+    @Comment("Task advancement format.")
+    public String advancementTask = "<green>✔</green> %player:displayname% <gray>completed the task</gray> <hover:'${description}'><green>${title}</green></hover>";
+
+    @Comment("Challenge advancement format.")
+    public String advancementChallenge = "<light_purple>\uD83C\uDF86</light_purple> %player:displayname% <gray>completed the challenge</gray> <hover:'${description}'><light_purple>${title}</light_purple></hover>";
+
+    @Comment("Goal advancement format.")
+    public String advancementGoal = "<aqua>\uD83C\uDF96</aqua> %player:displayname% <gray>completed the goal</gray> <hover:'${description}'><aqua>${title}</aqua></hover>";
+
+    @Comment("Player chat format.")
+    public String chatFormat = "%player:displayname%<gray>:</gray> ${message}";
+
+    @Comment("Emote format (/me)")
+    public String emoteFormat = "<gray>\uD83D\uDC64 %player:displayname% <i>${message}</i></gray>";
+
+    @Comment("Player join format")
+    public String joinFormat = "<green>+</green> %player:displayname% <yellow>joined!</yellow>";
+
+    @Comment("Player joined with a new username format")
+    public String joinRenamedFormat = "<green>+</green> %player:displayname% <yellow>joined! <i>(Previously known as ${previousName})</i></yellow>";
+
+    @Comment("Player quit format")
+    public String leaveFormat = "<red>-</red> %player:displayname% <yellow>left!</yellow>";
+
+    @Comment("Player death format")
+    public String deathFormat = "<gray>\u2620 ${message}</gray>";
+
+    @Comment("New player welcome message format")
+    public String welcome = "<light_purple>Welcome %player:displayname% to the server!</light_purple>";
 }

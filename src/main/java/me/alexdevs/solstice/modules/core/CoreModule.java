@@ -3,29 +3,30 @@ package me.alexdevs.solstice.modules.core;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
+import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.core.commands.SolsticeCommand;
 import me.alexdevs.solstice.modules.core.data.CoreConfig;
 import me.alexdevs.solstice.modules.core.data.CoreLocale;
 import me.alexdevs.solstice.modules.core.data.CorePlayerData;
 import me.alexdevs.solstice.modules.core.data.CoreServerData;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 import java.util.Date;
 import java.util.UUID;
 
-public class CoreModule {
+public class CoreModule extends ModuleBase {
     public static final String ID = "core";
 
-
     public CoreModule() {
+        super(ID);
+
         Solstice.configManager.registerData(ID, CoreConfig.class, CoreConfig::new);
         Solstice.localeManager.registerShared(CoreLocale.SHARED);
 
         Solstice.playerData.registerData(ID, CorePlayerData.class, CorePlayerData::new);
         Solstice.serverData.registerData(ID, CoreServerData.class, CoreServerData::new);
 
-        CommandRegistrationCallback.EVENT.register(SolsticeCommand::new);
+        commands.add(new SolsticeCommand(this));
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             var player = handler.getPlayer();

@@ -1,13 +1,13 @@
 package me.alexdevs.solstice.mixin;
 
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.modules.styling.formatters.DeathFormatter;
-import me.alexdevs.solstice.api.ServerPosition;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
 import eu.pb4.placeholders.api.parsers.NodeParser;
 import eu.pb4.placeholders.api.parsers.TextParserV1;
+import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.modules.back.BackModule;
+import me.alexdevs.solstice.modules.styling.formatters.DeathFormatter;
 import me.alexdevs.solstice.modules.tablist.data.TabListConfig;
 import net.minecraft.entity.damage.DamageTracker;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
@@ -47,6 +47,6 @@ public class ServerPlayerEntityMixin {
     @Inject(method = "teleport(Lnet/minecraft/server/world/ServerWorld;DDDLjava/util/Set;FF)Z", at = @At("HEAD"))
     public void solstice$requestTeleport(ServerWorld world, double destX, double destY, double destZ, Set<PositionFlag> flags, float yaw, float pitch, CallbackInfoReturnable<Boolean> cir) {
         var player = (ServerPlayerEntity) (Object) this;
-        BackModule.lastPlayerPositions.put(player.getUuid(), new ServerPosition(player));
+        Solstice.modules.getModule(BackModule.class).lastPlayerPositions.put(player.getUuid(), new ServerPosition(player));
     }
 }

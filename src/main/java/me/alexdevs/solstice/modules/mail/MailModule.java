@@ -3,30 +3,27 @@ package me.alexdevs.solstice.modules.mail;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.PlayerMail;
-import me.alexdevs.solstice.locale.Locale;
+import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.mail.commands.MailCommand;
 import me.alexdevs.solstice.modules.mail.data.MailLocale;
 import me.alexdevs.solstice.modules.mail.data.MailPlayerData;
-import me.alexdevs.solstice.modules.moderation.ModerationModule;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class MailModule {
+public class MailModule extends ModuleBase {
     public static final String ID = "mail";
 
-    public final Locale locale;
-
     public MailModule() {
+        super(ID);
+
         Solstice.localeManager.registerModule(ID, MailLocale.MODULE);
         Solstice.playerData.registerData(ID, MailPlayerData.class, MailPlayerData::new);
 
-        this.locale = Solstice.localeManager.getLocale(ID);
-
-        CommandRegistrationCallback.EVENT.register(MailCommand::new);
+        commands.add(new MailCommand(this));
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             var player = handler.getPlayer();
@@ -34,14 +31,15 @@ public class MailModule {
 
             Solstice.scheduler.schedule(() -> {
                 if (!getMailData(player.getUuid()).mails.isEmpty()) {
-                    player.sendMessage(locale.get("mailPending", playerContext));
+                    player.sendMessage(locale().get("mailPending", playerContext));
                 }
             }, 1, TimeUnit.SECONDS);
         });
     }
 
     public boolean sendMail(UUID playerUuid, PlayerMail mail) {
-        var playerData = ModerationModule.getPlayerData(playerUuid);
+        var ignoreModule = Solstice.modules.getModule(IgnoreModule.class);
+        var playerData = ignoreModule.getPlayerData(playerUuid);
         if (playerData.ignoredPlayers.contains(mail.sender)) {
             return false;
         }

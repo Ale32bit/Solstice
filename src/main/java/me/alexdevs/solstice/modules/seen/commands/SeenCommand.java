@@ -1,19 +1,14 @@
 package me.alexdevs.solstice.modules.seen.commands;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.alexdevs.solstice.Solstice;
+import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.core.CoreModule;
 import me.alexdevs.solstice.modules.seen.SeenModule;
 import me.alexdevs.solstice.util.Format;
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
-import eu.pb4.placeholders.api.PlaceholderContext;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -25,11 +20,16 @@ import java.util.Map;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class SeenCommand extends ModCommand {
-    private final Locale locale = Solstice.localeManager.getLocale(SeenModule.ID);
+public class SeenCommand extends ModCommand<SeenModule> {
+    public SeenCommand(SeenModule module) {
+        super(module);
+    }
 
-    public SeenCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+    public static String getPositionAsString(@Nullable ServerPosition pos) {
+        if (pos == null)
+            return "Unknown position";
+
+        return String.format("%.01f %.01f %.01f, %s", pos.x, pos.y, pos.z, pos.world);
     }
 
     @Override
@@ -47,12 +47,12 @@ public class SeenCommand extends ModCommand {
                             var source = context.getSource();
                             source.getServer().getUserCache().findByNameAsync(targetName).thenAcceptAsync((profile) -> {
                                 if (profile.isEmpty()) {
-                                    source.sendFeedback(() -> locale.get("playerNotFound"), false);
+                                    source.sendFeedback(() -> module.locale().get("playerNotFound"), false);
                                     return;
                                 }
                                 boolean extended;
                                 if (context.getSource().isExecutedByPlayer()) {
-                                    extended = Permissions.check(context.getSource().getPlayer(), getPermissionNode() + ".extended", 2);
+                                    extended = Permissions.check(context.getSource().getPlayer(), getPermissionNode("extended"), 2);
                                 } else {
                                     extended = true;
                                 }
@@ -79,10 +79,10 @@ public class SeenCommand extends ModCommand {
                                         "location", Text.of(getPositionAsString(location))
                                 );
 
-                                var outputString = locale.raw("base");
+                                var outputString = module.locale().raw("base");
                                 if (extended) {
                                     outputString += "\n";
-                                    outputString += locale.raw("extended");
+                                    outputString += module.locale().raw("extended");
                                 }
 
                                 final var finalOutput = outputString;
@@ -95,12 +95,5 @@ public class SeenCommand extends ModCommand {
 
                             return 1;
                         }));
-    }
-
-    public static String getPositionAsString(@Nullable ServerPosition pos) {
-        if (pos == null)
-            return "Unknown position";
-
-        return String.format("%.01f %.01f %.01f, %s", pos.x, pos.y, pos.z, pos.world);
     }
 }

@@ -14,15 +14,12 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class HoconDataManager {
-    protected Path filePath;
-
-    protected HoconConfigurationLoader loader;
-    protected CommentedConfigurationNode dataNode;
-
-
     protected final Map<String, Class<?>> classMap = new HashMap<>();
     protected final Map<Class<?>, Object> data = new HashMap<>();
     protected final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
+    protected Path filePath;
+    protected HoconConfigurationLoader loader;
+    protected CommentedConfigurationNode dataNode;
 
     public HoconDataManager() {
 

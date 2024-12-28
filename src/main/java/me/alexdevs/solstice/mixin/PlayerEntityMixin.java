@@ -1,7 +1,8 @@
 package me.alexdevs.solstice.mixin;
 
-import me.alexdevs.solstice.Solstice;
 import com.mojang.authlib.GameProfile;
+import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.modules.customName.CustomNameModule;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
@@ -27,7 +28,8 @@ public abstract class PlayerEntityMixin {
 
     @Inject(method = "getDisplayName", at = @At("HEAD"), cancellable = true)
     public void getDisplayName(CallbackInfoReturnable<MutableText> cir) {
-        var name = Solstice.modules.customName.getNameForPlayer((ServerPlayerEntity) (Object) this);
+        var customNameModule = Solstice.modules.getModule(CustomNameModule.class);
+        var name = customNameModule.getNameForPlayer((ServerPlayerEntity) (Object) this);
         cir.setReturnValue(addTellClickEvent(name));
     }
 }

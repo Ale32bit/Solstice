@@ -1,11 +1,11 @@
 package me.alexdevs.solstice.util.parser;
 
-import me.alexdevs.solstice.modules.core.CoreModule;
-import me.alexdevs.solstice.util.Format;
 import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.node.parent.ClickActionNode;
 import eu.pb4.placeholders.api.node.parent.FormattingNode;
 import eu.pb4.placeholders.api.node.parent.HoverNode;
+import me.alexdevs.solstice.modules.core.CoreModule;
+import me.alexdevs.solstice.util.Format;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.util.Formatting;
 

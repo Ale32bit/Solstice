@@ -1,19 +1,13 @@
 package me.alexdevs.solstice.modules.home.commands;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.locale.Locale;
-import me.alexdevs.solstice.util.Format;
-import me.alexdevs.solstice.Solstice;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.command.CommandRegistryAccess;
+import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.modules.home.HomeModule;
 import net.minecraft.command.CommandSource;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
@@ -23,11 +17,9 @@ import java.util.Map;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class HomeCommand extends ModCommand {
-    private final Locale locale = Solstice.modules.home.getLocale();
-
-    public HomeCommand(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
-        super(dispatcher, commandRegistry, environment);
+public class HomeCommand extends ModCommand<HomeModule> {
+    public HomeCommand(HomeModule module) {
+        super(module);
     }
 
     @Override
@@ -45,7 +37,7 @@ public class HomeCommand extends ModCommand {
                             if (!context.getSource().isExecutedByPlayer())
                                 return CommandSource.suggestMatching(new String[]{}, builder);
 
-                            var data = Solstice.modules.home.getData(context.getSource().getPlayer().getUuid());
+                            var data = module.getData(context.getSource().getPlayer().getUuid());
 
                             return CommandSource.suggestMatching(data.homes.keySet().stream(), builder);
                         })
@@ -54,7 +46,7 @@ public class HomeCommand extends ModCommand {
 
     private int execute(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrThrow();
-        var data = Solstice.modules.home.getData(player.getUuid());
+        var data = module.getData(player.getUuid());
         var playerContext = PlaceholderContext.of(player);
 
         var placeholders = Map.of(
@@ -63,7 +55,7 @@ public class HomeCommand extends ModCommand {
 
         if (!data.homes.containsKey(name)) {
             context.getSource().sendFeedback(() ->
-                    locale.get(
+                    module.locale().get(
                             "homeNotFound",
                             playerContext,
                             placeholders
@@ -73,7 +65,7 @@ public class HomeCommand extends ModCommand {
         }
 
         context.getSource().sendFeedback(() ->
-                locale.get(
+                module.locale().get(
                         "teleporting",
                         playerContext,
                         placeholders

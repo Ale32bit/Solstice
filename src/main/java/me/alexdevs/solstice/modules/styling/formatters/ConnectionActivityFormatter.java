@@ -1,8 +1,9 @@
 package me.alexdevs.solstice.modules.styling.formatters;
 
-import me.alexdevs.solstice.modules.styling.StylingModule;
-import me.alexdevs.solstice.Solstice;
 import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.modules.styling.StylingModule;
+import me.alexdevs.solstice.util.Format;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
@@ -10,29 +11,29 @@ import java.util.Map;
 
 public class ConnectionActivityFormatter {
     public static Text onJoin(ServerPlayerEntity player) {
-        var locale = Solstice.localeManager.getLocale(StylingModule.ID);
+        var config = Solstice.modules.getModule(StylingModule.class).getConfig();
         var playerContext = PlaceholderContext.of(player);
-        return locale.get(
-                "joinFormat",
+        return Format.parse(
+                config.joinFormat,
                 playerContext
         );
     }
 
     public static Text onJoinRenamed(ServerPlayerEntity player, String previousName) {
-        var locale = Solstice.localeManager.getLocale(StylingModule.ID);
+        var config = Solstice.modules.getModule(StylingModule.class).getConfig();
         var playerContext = PlaceholderContext.of(player);
-        return locale.get(
-                "joinRenamedFormat",
+        return Format.parse(
+                config.joinRenamedFormat,
                 playerContext,
                 Map.of("previousName", Text.of(previousName))
         );
     }
 
     public static Text onLeave(ServerPlayerEntity player) {
-        var locale = Solstice.localeManager.getLocale(StylingModule.ID);
+        var config = Solstice.modules.getModule(StylingModule.class).getConfig();
         var playerContext = PlaceholderContext.of(player);
-        return locale.get(
-                "leaveFormat",
+        return Format.parse(
+                config.leaveFormat,
                 playerContext
         );
     }
