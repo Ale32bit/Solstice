@@ -32,7 +32,7 @@ public class TeleportAcceptCommand extends ModCommand<TeleportRequestModule> {
 
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return literal("tpaccept")
+        return literal(name)
                 .requires(require(true))
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrThrow();
