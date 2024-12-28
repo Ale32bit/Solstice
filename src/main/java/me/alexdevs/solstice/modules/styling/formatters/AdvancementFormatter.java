@@ -3,7 +3,7 @@ package me.alexdevs.solstice.modules.styling.formatters;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.styling.StylingModule;
-import me.alexdevs.solstice.util.Format;
+import me.alexdevs.solstice.api.text.Format;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;

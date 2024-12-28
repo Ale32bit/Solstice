@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.util;
+package me.alexdevs.solstice.api;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;

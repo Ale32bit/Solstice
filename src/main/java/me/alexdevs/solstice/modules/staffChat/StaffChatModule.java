@@ -5,7 +5,7 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.staffChat.commands.StaffChatCommand;
 import me.alexdevs.solstice.modules.staffChat.data.StaffChatLocale;
-import me.alexdevs.solstice.util.parser.MarkdownParser;
+import me.alexdevs.solstice.api.text.parser.MarkdownParser;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.minecraft.text.Text;
 

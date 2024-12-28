@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.util;
+package me.alexdevs.solstice.api.text;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;

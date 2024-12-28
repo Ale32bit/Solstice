@@ -11,7 +11,7 @@ import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.teleportRequest.TeleportRequest;
 import me.alexdevs.solstice.modules.teleportRequest.TeleportRequestModule;
-import me.alexdevs.solstice.util.Components;
+import me.alexdevs.solstice.api.text.Components;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;

@@ -8,7 +8,7 @@ import me.alexdevs.solstice.api.module.Debug;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.core.CoreModule;
 import me.alexdevs.solstice.modules.customName.CustomNameModule;
-import me.alexdevs.solstice.util.Format;
+import me.alexdevs.solstice.api.text.Format;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;

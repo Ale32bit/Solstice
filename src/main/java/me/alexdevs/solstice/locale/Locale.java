@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.locale;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.alexdevs.solstice.util.Format;
+import me.alexdevs.solstice.api.text.Format;
 import net.minecraft.text.Text;
 
 import java.util.Map;

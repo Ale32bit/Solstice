@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.util;
+package me.alexdevs.solstice.api.text;
 
 import eu.pb4.placeholders.api.TextParserUtils;
 import eu.pb4.placeholders.api.parsers.NodeParser;
@@ -7,7 +7,7 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.core.CoreModule;
 import me.alexdevs.solstice.modules.styling.StylingModule;
 import me.alexdevs.solstice.modules.styling.data.StylingConfig;
-import me.alexdevs.solstice.util.parser.MarkdownParser;
+import me.alexdevs.solstice.api.text.parser.MarkdownParser;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.command.ServerCommandSource;

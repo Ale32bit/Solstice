@@ -8,7 +8,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.home.HomeModule;
-import me.alexdevs.solstice.util.Components;
+import me.alexdevs.solstice.api.text.Components;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 

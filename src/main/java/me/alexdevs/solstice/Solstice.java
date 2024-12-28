@@ -1,6 +1,5 @@
 package me.alexdevs.solstice;
 
-import me.alexdevs.solstice.api.events.ModuleRegistrationCallback;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSave;
 import me.alexdevs.solstice.data.PlayerDataManager;
@@ -9,7 +8,7 @@ import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.locale.LocaleManager;
 import me.alexdevs.solstice.core.Modules;
 import me.alexdevs.solstice.modules.ModuleProvider;
-import me.alexdevs.solstice.util.data.HoconDataManager;
+import me.alexdevs.solstice.api.data.HoconDataManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;

@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.util.data.serializers;
+package me.alexdevs.solstice.api.data.serializers;
 
 import org.spongepowered.configurate.serialize.ScalarSerializer;
 
