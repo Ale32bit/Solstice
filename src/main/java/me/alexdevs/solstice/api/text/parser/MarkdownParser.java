@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.util.parser;
+package me.alexdevs.solstice.api.text.parser;
 
 import eu.pb4.placeholders.api.parsers.MarkdownLiteParserV1;
 import eu.pb4.placeholders.api.parsers.NodeParser;

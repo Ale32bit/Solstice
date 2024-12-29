@@ -7,7 +7,7 @@ import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.tell.commands.ReplyCommand;
 import me.alexdevs.solstice.modules.tell.commands.TellCommand;
 import me.alexdevs.solstice.modules.tell.data.TellLocale;
-import me.alexdevs.solstice.util.Components;
+import me.alexdevs.solstice.api.text.Components;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;

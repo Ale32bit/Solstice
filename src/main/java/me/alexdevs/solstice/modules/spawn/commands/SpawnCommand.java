@@ -41,20 +41,13 @@ public class SpawnCommand extends ModCommand<SpawnModule> {
     }
 
     private void sendToSpawn(CommandContext<ServerCommandSource> context, ServerPlayerEntity player) {
-        var serverData = Solstice.serverData.getData(SpawnServerData.class);
         var playerContext = PlaceholderContext.of(player);
-        var spawnPosition = serverData.spawn;
-        if (spawnPosition == null) {
-            var server = context.getSource().getServer();
-            var spawnPos = server.getOverworld().getSpawnPos();
-            spawnPosition = new ServerPosition(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), 0, 0, server.getOverworld());
-        }
-
         context.getSource().sendFeedback(() -> module.locale().get(
                 "teleporting",
                 playerContext
         ), false);
-        spawnPosition.teleport(player);
+
+        module.sendToSpawn(player);
     }
 
     @Override

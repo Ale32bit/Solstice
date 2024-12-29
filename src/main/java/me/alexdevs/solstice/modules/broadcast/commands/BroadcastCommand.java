@@ -7,7 +7,7 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.broadcast.BroadcastModule;
 import me.alexdevs.solstice.modules.broadcast.data.BroadcastConfig;
-import me.alexdevs.solstice.util.Format;
+import me.alexdevs.solstice.api.text.Format;
 import net.minecraft.server.command.ServerCommandSource;
 
 import java.util.List;

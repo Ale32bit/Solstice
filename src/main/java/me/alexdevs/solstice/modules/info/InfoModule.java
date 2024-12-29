@@ -9,7 +9,7 @@ import me.alexdevs.solstice.modules.info.commands.MotdCommand;
 import me.alexdevs.solstice.modules.info.commands.RulesCommand;
 import me.alexdevs.solstice.modules.info.data.InfoConfig;
 import me.alexdevs.solstice.modules.info.data.InfoLocale;
-import me.alexdevs.solstice.util.Format;
+import me.alexdevs.solstice.api.text.Format;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;

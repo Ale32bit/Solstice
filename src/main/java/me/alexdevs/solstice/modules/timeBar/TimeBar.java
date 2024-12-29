@@ -2,7 +2,7 @@ package me.alexdevs.solstice.modules.timeBar;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.util.Format;
+import me.alexdevs.solstice.api.text.Format;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.entity.boss.CommandBossBar;
 import net.minecraft.text.Text;

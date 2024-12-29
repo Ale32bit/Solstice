@@ -7,7 +7,7 @@ import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.modules.customName.commands.NicknameCommand;
 import me.alexdevs.solstice.modules.customName.data.CustomNameConfig;
 import me.alexdevs.solstice.modules.customName.data.CustomNamePlayerData;
-import me.alexdevs.solstice.util.Format;
+import me.alexdevs.solstice.api.text.Format;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.network.ServerPlayerEntity;

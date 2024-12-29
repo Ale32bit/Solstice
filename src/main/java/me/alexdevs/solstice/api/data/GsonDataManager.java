@@ -1,11 +1,11 @@
-package me.alexdevs.solstice.util.data;
+package me.alexdevs.solstice.api.data;
 
 import io.leangen.geantyref.TypeToken;
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.util.data.serializers.DateSerializer;
-import org.spongepowered.configurate.CommentedConfigurationNode;
+import me.alexdevs.solstice.api.data.serializers.DateSerializer;
+import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.nio.file.Path;
@@ -13,24 +13,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class HoconDataManager {
+public class GsonDataManager {
     protected final Map<String, Class<?>> classMap = new HashMap<>();
     protected final Map<Class<?>, Object> data = new HashMap<>();
     protected final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
     protected Path filePath;
-    protected HoconConfigurationLoader loader;
-    protected CommentedConfigurationNode dataNode;
+    protected GsonConfigurationLoader loader;
+    protected BasicConfigurationNode dataNode;
 
-    public HoconDataManager() {
-
-    }
-
-    public HoconDataManager(final Path filePath) {
-        setDataPath(filePath);
-    }
-
-    protected static HoconConfigurationLoader getLoader(Path path) {
-        return HoconConfigurationLoader
+    protected static GsonConfigurationLoader getLoader(Path path) {
+        return GsonConfigurationLoader
                 .builder()
                 .path(path)
                 .defaultOptions(opts -> opts
@@ -71,13 +63,13 @@ public class HoconDataManager {
             try {
                 dataNode.node(entry.getKey()).set(data.get(entry.getValue()));
             } catch (ConfigurateException e) {
-                Solstice.LOGGER.error("Could not save server data for {}. Skipping", entry.getKey(), e);
+                Solstice.LOGGER.error("Could not save file {} data for {}. Skipping", this.filePath, entry.getKey(), e);
             }
         }
         try {
             loader.save(dataNode);
         } catch (ConfigurateException e) {
-            Solstice.LOGGER.error("Could not save server data to file!", e);
+            Solstice.LOGGER.error("Could not save file {} data", this.filePath, e);
         }
     }
 
@@ -95,19 +87,19 @@ public class HoconDataManager {
             try {
                 data.put(entry.getValue(), get(dataNode.node(entry.getKey()), entry.getValue()));
             } catch (Exception e) {
-                Solstice.LOGGER.error("Could not load server data for {}. Using default values.", entry.getKey(), e);
+                Solstice.LOGGER.error("Could not load file {} data for {}. Using default values.", this.filePath, entry.getKey(), e);
                 this.data.put(entry.getValue(), dataNode.node(entry.getKey()));
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    protected <T> T get(final CommentedConfigurationNode node, final Class<T> clazz) throws ConfigurateException {
+    public <T> T get(final BasicConfigurationNode node, final Class<T> clazz) throws ConfigurateException {
         return node.get(TypeToken.get(clazz), (Supplier<T>) () -> (T) this.providers.get(clazz).get());
     }
 
     @SuppressWarnings("unchecked")
-    protected <T> void set(final CommentedConfigurationNode node, final Class<T> clazz) throws ConfigurateException {
+    public <T> void set(final BasicConfigurationNode node, final Class<T> clazz) throws ConfigurateException {
         node.set(TypeToken.get(clazz), (T) this.providers.get(clazz).get());
     }
 

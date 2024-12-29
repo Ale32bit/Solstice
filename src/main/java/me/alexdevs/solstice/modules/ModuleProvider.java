@@ -4,6 +4,7 @@ import me.alexdevs.solstice.api.events.ModuleRegistrationCallback;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.autoAnnouncement.AutoAnnouncementModule;
+import me.alexdevs.solstice.modules.kit.KitModule;
 import me.alexdevs.solstice.modules.restart.RestartModule;
 import me.alexdevs.solstice.modules.back.BackModule;
 import me.alexdevs.solstice.modules.ban.BanModule;
@@ -77,7 +78,7 @@ public class ModuleProvider {
             new InfoModule(),
             new InventorySeeModule(),
             new KickModule(),
-            //new KitModule(), // TODO
+            new KitModule(),
             new MailModule(),
             new MuteModule(),
             new NearModule(),

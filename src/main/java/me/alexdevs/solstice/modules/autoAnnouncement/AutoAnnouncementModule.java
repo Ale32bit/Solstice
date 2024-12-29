@@ -5,7 +5,7 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.autoAnnouncement.data.AutoAnnouncementConfig;
-import me.alexdevs.solstice.util.Format;
+import me.alexdevs.solstice.api.text.Format;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.MinecraftServer;
