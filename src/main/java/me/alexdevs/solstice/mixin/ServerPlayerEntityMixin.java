@@ -7,13 +7,17 @@ import eu.pb4.placeholders.api.parsers.TextParserV1;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.modules.back.BackModule;
+import me.alexdevs.solstice.modules.spawn.SpawnModule;
 import me.alexdevs.solstice.modules.styling.formatters.DeathFormatter;
 import me.alexdevs.solstice.modules.tablist.data.TabListConfig;
 import net.minecraft.entity.damage.DamageTracker;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -48,5 +52,27 @@ public class ServerPlayerEntityMixin {
     public void solstice$requestTeleport(ServerWorld world, double destX, double destY, double destZ, Set<PositionFlag> flags, float yaw, float pitch, CallbackInfoReturnable<Boolean> cir) {
         var player = (ServerPlayerEntity) (Object) this;
         Solstice.modules.getModule(BackModule.class).lastPlayerPositions.put(player.getUuid(), new ServerPosition(player));
+    }
+
+    @Inject(method = "getSpawnPointPosition", at = @At("RETURN"), cancellable = true)
+    public void solstice$overrideSpawnPos(CallbackInfoReturnable<BlockPos> cir) {
+        var spawnModule = Solstice.modules.getModule(SpawnModule.class);
+        if (spawnModule.forceOnDeath()) {
+            var spawnPos = spawnModule.getSpawn();
+            cir.setReturnValue(new BlockPos(
+                    (int) spawnPos.x,
+                    (int) spawnPos.y,
+                    (int) spawnPos.z
+            ));
+        }
+    }
+
+    @Inject(method = "getSpawnPointDimension", at = @At("RETURN"), cancellable = true)
+    public void solstice$overrideSpawnDimension(CallbackInfoReturnable<RegistryKey<World>> cir) {
+        var spawnModule = Solstice.modules.getModule(SpawnModule.class);
+        if (spawnModule.forceOnDeath()) {
+            var spawnPos = spawnModule.getSpawn();
+            cir.setReturnValue(spawnPos.getWorldKey());
+        }
     }
 }

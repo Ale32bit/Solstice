@@ -5,9 +5,11 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.back.BackModule;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.Objects;
@@ -67,7 +69,7 @@ public class ServerPosition {
             Solstice.modules.getModule(BackModule.class).lastPlayerPositions.put(player.getUuid(), currentPosition);
         }
 
-        var serverWorld = player.getServer().getWorld(RegistryKey.of(RegistryKeys.WORLD, new Identifier(this.world)));
+        var serverWorld = getWorld(player.getServer());
 
         player.setVelocity(player.getVelocity().multiply(1f, 0f, 1f));
         player.setOnGround(true);
@@ -81,5 +83,13 @@ public class ServerPosition {
 
     public void teleport(ServerPlayerEntity player) {
         teleport(player, true);
+    }
+
+    public RegistryKey<World> getWorldKey() {
+        return RegistryKey.of(RegistryKeys.WORLD, new Identifier(this.world));
+    }
+
+    public ServerWorld getWorld(MinecraftServer server) {
+        return server.getWorld(getWorldKey());
     }
 }
