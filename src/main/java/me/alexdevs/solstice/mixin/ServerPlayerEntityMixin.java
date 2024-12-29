@@ -1,11 +1,9 @@
 package me.alexdevs.solstice.mixin;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
-import eu.pb4.placeholders.api.Placeholders;
-import eu.pb4.placeholders.api.parsers.NodeParser;
-import eu.pb4.placeholders.api.parsers.TextParserV1;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
+import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.back.BackModule;
 import me.alexdevs.solstice.modules.spawn.SpawnModule;
 import me.alexdevs.solstice.modules.styling.formatters.DeathFormatter;
@@ -24,7 +22,6 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -37,15 +34,13 @@ public abstract class ServerPlayerEntityMixin {
     @Shadow
     @Final
     public MinecraftServer server;
-    @Unique
-    private static final NodeParser parser = NodeParser.merge(TextParserV1.DEFAULT, Placeholders.DEFAULT_PLACEHOLDER_PARSER);
 
     @Inject(method = "getPlayerListName", at = @At("HEAD"), cancellable = true)
     private void solstice$customizePlayerListName(CallbackInfoReturnable<Text> callback) {
         if (Solstice.configManager.getData(TabListConfig.class).enable) {
             var player = (ServerPlayerEntity) (Object) this;
             var playerContext = PlaceholderContext.of(player);
-            var text = Placeholders.parseText(parser.parseNode(Solstice.configManager.getData(TabListConfig.class).playerTabName), playerContext);
+            var text = Format.parse(Solstice.configManager.getData(TabListConfig.class).playerTabName, playerContext);
             callback.setReturnValue(text);
         }
     }
