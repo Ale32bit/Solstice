@@ -13,12 +13,17 @@ import me.alexdevs.solstice.modules.tablist.data.TabListConfig;
 import net.minecraft.entity.damage.DamageTracker;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -28,7 +33,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Set;
 
 @Mixin(ServerPlayerEntity.class)
-public class ServerPlayerEntityMixin {
+public abstract class ServerPlayerEntityMixin {
+    @Shadow
+    @Final
+    public MinecraftServer server;
     @Unique
     private static final NodeParser parser = NodeParser.merge(TextParserV1.DEFAULT, Placeholders.DEFAULT_PLACEHOLDER_PARSER);
 
@@ -73,6 +81,31 @@ public class ServerPlayerEntityMixin {
         if (spawnModule.forceOnDeath()) {
             var spawnPos = spawnModule.getSpawn();
             cir.setReturnValue(spawnPos.getWorldKey());
+        }
+    }
+
+    @Inject(method = "getRespawnTarget", at = @At("RETURN"), cancellable = true)
+    public void solstice$overrideRespawnTarget(boolean alive, TeleportTarget.PostDimensionTransition postDimensionTransition, CallbackInfoReturnable<TeleportTarget> cir) {
+        var spawnModule = Solstice.modules.getModule(SpawnModule.class);
+        if (spawnModule.forceOnDeath()) {
+            var spawn = spawnModule.getSpawn();
+
+            var world = spawn.getWorld(this.server);
+            var pos = new Vec3d(
+                    spawn.x,
+                    spawn.y,
+                    spawn.z
+            );
+
+            cir.setReturnValue(new TeleportTarget(
+                    world,
+                    pos,
+                    Vec3d.ZERO,
+                    spawn.yaw,
+                    spawn.pitch,
+                    false,
+                    TeleportTarget.NO_OP
+            ));
         }
     }
 }

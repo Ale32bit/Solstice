@@ -38,17 +38,4 @@ public abstract class PlayerEntityMixin {
         var name = customNameModule.getNameForPlayer((ServerPlayerEntity) (Object) this);
         cir.setReturnValue(addTellClickEvent(name));
     }
-
-    @Inject(method = "findRespawnPosition", at = @At("RETURN"), cancellable = true)
-    private static void solstice$overrideSpawn(ServerWorld world, BlockPos pos, float angle, boolean forced, boolean alive, CallbackInfoReturnable<Optional<Vec3d>> cir) {
-        var spawnModule = Solstice.modules.getModule(SpawnModule.class);
-        if (spawnModule.forceOnDeath()) {
-            var spawn = spawnModule.getSpawn();
-            cir.setReturnValue(Optional.of(new Vec3d(
-                    spawn.x,
-                    spawn.y,
-                    spawn.z
-            )));
-        }
-    }
 }
