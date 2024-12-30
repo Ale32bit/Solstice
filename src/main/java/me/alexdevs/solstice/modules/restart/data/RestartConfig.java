@@ -1,6 +1,5 @@
 package me.alexdevs.solstice.modules.restart.data;
 
-import net.minecraft.entity.boss.BossBar;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 
