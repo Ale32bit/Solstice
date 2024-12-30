@@ -27,11 +27,12 @@ import java.util.concurrent.TimeUnit;
 public class RestartModule extends ModuleBase {
     public static final String ID = "restart";
 
+    private static final BossBar.Color fallbackBarColor = BossBar.Color.RED;
+    private static final BossBar.Style fallbackBarStyle = BossBar.Style.NOTCHED_10;
+
     private TimeBar restartBar = null;
     private SoundEvent sound;
     private ScheduledFuture<?> currentSchedule = null;
-
-    private RestartConfig config;
 
     public RestartModule() {
         super(ID);
@@ -41,9 +42,8 @@ public class RestartModule extends ModuleBase {
         commands.add(new RestartCommand(this));
 
         SolsticeEvents.READY.register((instance, server) -> {
-            config = Solstice.configManager.getData(RestartConfig.class);
             setup();
-            if (config.enable) {
+            if (getConfig().enable) {
                 scheduleNextRestart();
             }
         });
@@ -52,7 +52,7 @@ public class RestartModule extends ModuleBase {
             if (restartBar == null || !timeBar.getUuid().equals(restartBar.getUuid()))
                 return;
 
-            var notificationTimes = config.restartNotifications;
+            var notificationTimes = getConfig().restartNotifications;
 
             var remainingSeconds = restartBar.getRemainingSeconds();
             if (notificationTimes.contains(remainingSeconds)) {
@@ -72,6 +72,30 @@ public class RestartModule extends ModuleBase {
         SolsticeEvents.RELOAD.register(instance -> setup());
     }
 
+    public RestartConfig getConfig() {
+        return Solstice.configManager.getData(RestartConfig.class);
+    }
+
+    public BossBar.Style getBarStyle() {
+        var styleName = getConfig().barStyle;
+        try {
+            return BossBar.Style.valueOf(styleName);
+        } catch (IllegalArgumentException e) {
+            Solstice.LOGGER.error("Invalid value in `restart -> bar-style` setting.");
+            return fallbackBarStyle;
+        }
+    }
+
+    public BossBar.Color getBarColor() {
+        var colorName = getConfig().barColor;
+        try {
+            return BossBar.Color.valueOf(colorName);
+        } catch (IllegalArgumentException e) {
+            Solstice.LOGGER.error("Invalid value in `restart -> bar-color` setting.");
+            return fallbackBarColor;
+        }
+    }
+
     public void restart() {
         Solstice.server.getPlayerManager().getPlayerList().forEach(player -> player.networkHandler.disconnect(locale().get("kickMessage")));
 
@@ -79,22 +103,28 @@ public class RestartModule extends ModuleBase {
     }
 
     private void setup() {
-        var soundName = config.restartSound;
+        var soundName = getConfig().restartSound;
         var id = Identifier.tryParse(soundName);
         if (id == null) {
             Solstice.LOGGER.error("Invalid restart notification sound name {}", soundName);
             sound = SoundEvents.BLOCK_NOTE_BLOCK_BELL.value();
+        } else {
+            sound = SoundEvent.of(id);
         }
-        sound = SoundEvent.of(id);
     }
 
     public void schedule(int seconds, String message) {
+        if(isRunning()) {
+            Solstice.LOGGER.warn("Could not start a new restart countdown because there is one already running.");
+            return;
+        }
+
         var timeBar = Solstice.modules.getModule(TimeBarModule.class);
         restartBar = timeBar.startTimeBar(
                 message,
                 seconds,
-                BossBar.Color.RED,
-                BossBar.Style.NOTCHED_20,
+                getBarColor(),
+                getBarStyle(),
                 true
         );
 
@@ -103,6 +133,10 @@ public class RestartModule extends ModuleBase {
 
     public boolean isScheduled() {
         return restartBar != null || currentSchedule != null && !currentSchedule.isCancelled();
+    }
+
+    public boolean isRunning() {
+        return restartBar != null;
     }
 
     public void cancel() {
@@ -124,7 +158,7 @@ public class RestartModule extends ModuleBase {
         var text = bar.parseLabel(locale().raw("chatMessage"));
         solstice.broadcast(text);
 
-        var pitch = config.restartSoundPitch;
+        var pitch = getConfig().restartSoundPitch;
         server.getPlayerManager().getPlayerList().forEach(player -> player.playSound(sound, SoundCategory.MASTER, 1f, pitch));
     }
 
@@ -134,8 +168,7 @@ public class RestartModule extends ModuleBase {
         if (delay == null)
             return null;
 
-        var barTime = 10 * 60;
-        // start bar 10 mins earlier
+        var barTime = getConfig().restartNotifications.stream().max(Integer::compareTo).orElse(600);
         var barStartTime = delay - barTime;
 
         currentSchedule = Solstice.scheduler.schedule(() -> schedule(barTime, locale().raw("barLabel")), barStartTime, TimeUnit.SECONDS);
@@ -146,7 +179,7 @@ public class RestartModule extends ModuleBase {
 
     @Nullable
     private Long getNextDelay() {
-        var restartTimeStrings = config.restartAt;
+        var restartTimeStrings = getConfig().restartAt;
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime nextRunTime = null;
         long shortestDelay = Long.MAX_VALUE;

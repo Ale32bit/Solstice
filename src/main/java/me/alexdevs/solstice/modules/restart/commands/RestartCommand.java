@@ -34,6 +34,7 @@ public class RestartCommand extends ModCommand<RestartModule> {
                 .requires(require(4))
                 .then(literal("now")
                         .executes(context -> {
+                            context.getSource().sendFeedback(() -> Text.of("Restarting server"), true);
                             module.restart();
                             return 1;
                         }))
@@ -51,6 +52,11 @@ public class RestartCommand extends ModCommand<RestartModule> {
     }
 
     private int schedule(CommandContext<ServerCommandSource> context, int seconds, @Nullable String message) {
+        if (module.isRunning()) {
+            context.getSource().sendError(Text.of("There is already a running restart."));
+            return 0;
+        }
+
         if (message == null) {
             message = Solstice.localeManager.getLocale(RestartModule.ID).raw("barLabel");
         }
@@ -63,14 +69,15 @@ public class RestartCommand extends ModCommand<RestartModule> {
 
     private int scheduleNext(CommandContext<ServerCommandSource> context) {
         if (module.isScheduled()) {
-            context.getSource().sendFeedback(() -> Text.literal("There is already a scheduled restart.").formatted(Formatting.RED), false);
-            return 1;
+            context.getSource().sendError(Text.of("There is already a scheduled restart."));
+            return 0;
         }
 
         var delay = module.scheduleNextRestart();
 
         if (delay == null) {
-            context.getSource().sendFeedback(() -> Text.literal("Could not schedule next automatic restart.").formatted(Formatting.RED), false);
+            context.getSource().sendError(Text.of("Could not schedule next automatic restart."));
+            return 0;
         } else {
             context.getSource().sendFeedback(() -> Text.literal("Next automatic restart scheduled in " + delay + " seconds."), true);
         }
@@ -80,8 +87,8 @@ public class RestartCommand extends ModCommand<RestartModule> {
 
     private int cancel(CommandContext<ServerCommandSource> context) {
         if (!module.isScheduled()) {
-            context.getSource().sendFeedback(() -> Text.literal("There is no scheduled restart.").formatted(Formatting.RED), false);
-            return 1;
+            context.getSource().sendError(Text.of("There is no scheduled restart."));
+            return 0;
         }
 
         module.cancel();
