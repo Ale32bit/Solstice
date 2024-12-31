@@ -38,8 +38,10 @@ public class WarpCommand extends ModCommand<WarpModule> {
                             if (!context.getSource().isExecutedByPlayer())
                                 return CommandSource.suggestMatching(new String[]{}, builder);
 
-                            var serverDate = Solstice.serverData.getData(WarpServerData.class);
-                            return CommandSource.suggestMatching(serverDate.warps.keySet().stream(), builder);
+                            var serverData = Solstice.serverData.getData(WarpServerData.class);
+                            var player = context.getSource().getPlayer();
+                            var warps = serverData.warps.keySet().stream().filter(serverPosition -> module.canUseWarp(player, serverPosition));
+                            return CommandSource.suggestMatching(warps, builder);
                         })
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name"))));
     }
@@ -50,25 +52,34 @@ public class WarpCommand extends ModCommand<WarpModule> {
         var warps = serverDate.warps;
         var playerContext = PlaceholderContext.of(player);
 
-        var locale = Solstice.localeManager.getLocale(WarpModule.ID);
+        var placeholders = Map.of(
+                "warp", Text.of(name)
+        );
 
         if (!warps.containsKey(name)) {
-            context.getSource().sendFeedback(() -> locale.get(
+            context.getSource().sendFeedback(() -> module.locale().get(
                     "warpNotFound",
                     playerContext,
-                    Map.of(
-                            "warp", Text.of(name)
-                    )
+                    placeholders
+
             ), false);
-            return 1;
+            return 0;
         }
 
-        context.getSource().sendFeedback(() -> locale.get(
+        if (!module.canUseWarp(player, name)) {
+            context.getSource().sendFeedback(() -> module.locale().get(
+                    "noPermission",
+                    playerContext,
+                    placeholders
+            ), false);
+
+            return 0;
+        }
+
+        context.getSource().sendFeedback(() -> module.locale().get(
                 "teleporting",
                 playerContext,
-                Map.of(
-                        "warp", Text.of(name)
-                )
+                placeholders
         ), false);
 
         var warpPosition = warps.get(name);

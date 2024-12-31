@@ -34,10 +34,13 @@ public class WarpsCommand extends ModCommand<WarpModule> {
                     var warpList = serverDate.warps.keySet().stream().toList();
                     var sourceContext = PlaceholderContext.of(source);
 
-                    var locale = Solstice.localeManager.getLocale(WarpModule.ID);
+                    if(source.isExecutedByPlayer()) {
+                        var player = source.getPlayer();
+                        warpList = warpList.stream().filter(warp -> module.canUseWarp(player, warp)).toList();
+                    }
 
                     if (warpList.isEmpty()) {
-                        context.getSource().sendFeedback(() -> locale.get(
+                        context.getSource().sendFeedback(() -> module.locale().get(
                                 "noWarps",
                                 sourceContext
                         ), false);
@@ -45,7 +48,7 @@ public class WarpsCommand extends ModCommand<WarpModule> {
                     }
 
                     var listText = Text.empty();
-                    var comma = locale.get("warpsComma");
+                    var comma = module.locale().get("warpsComma");
                     for (var i = 0; i < warpList.size(); i++) {
                         if (i > 0) {
                             listText = listText.append(comma);
@@ -54,7 +57,7 @@ public class WarpsCommand extends ModCommand<WarpModule> {
                                 "warp", Text.of(warpList.get(i))
                         );
 
-                        listText = listText.append(locale.get(
+                        listText = listText.append(module.locale().get(
                                 "warpsFormat",
                                 sourceContext,
                                 placeholders
@@ -64,7 +67,7 @@ public class WarpsCommand extends ModCommand<WarpModule> {
                     var placeholders = Map.of(
                             "warpList", (Text) listText
                     );
-                    context.getSource().sendFeedback(() -> locale.get(
+                    context.getSource().sendFeedback(() -> module.locale().get(
                             "warpList",
                             sourceContext,
                             placeholders
