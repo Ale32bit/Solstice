@@ -6,7 +6,6 @@ import me.alexdevs.solstice.modules.trash.TrashModule;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 
 import java.util.List;
 
