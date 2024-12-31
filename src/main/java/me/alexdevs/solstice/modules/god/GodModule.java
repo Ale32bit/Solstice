@@ -2,7 +2,6 @@ package me.alexdevs.solstice.modules.god;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
-import me.alexdevs.solstice.modules.fly.data.FlyPlayerData;
 import me.alexdevs.solstice.modules.god.commands.GodCommand;
 import me.alexdevs.solstice.modules.god.data.GodLocale;
 import me.alexdevs.solstice.modules.god.data.GodPlayerData;
