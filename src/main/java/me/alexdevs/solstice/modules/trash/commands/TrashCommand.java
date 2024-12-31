@@ -32,7 +32,7 @@ public class TrashCommand extends ModCommand<TrashModule> {
                     player.openHandledScreen(
                             new SimpleNamedScreenHandlerFactory((syncId, inventory, playerx) ->
                                     GenericContainerScreenHandler.createGeneric9x3(syncId, inventory),
-                                    Text.of("Trash")));
+                                    module.locale().get("trash")));
 
                     return 1;
                 });
