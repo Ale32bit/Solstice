@@ -10,8 +10,9 @@ import me.alexdevs.solstice.modules.spawn.commands.SpawnCommand;
 import me.alexdevs.solstice.modules.spawn.data.SpawnConfig;
 import me.alexdevs.solstice.modules.spawn.data.SpawnLocale;
 import me.alexdevs.solstice.modules.spawn.data.SpawnServerData;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import org.jetbrains.annotations.Nullable;
 
 public class SpawnModule extends ModuleBase {
     public static final String ID = "spawn";
@@ -28,20 +29,14 @@ public class SpawnModule extends ModuleBase {
         commands.add(new DeleteSpawnCommand(this));
 
         SolsticeEvents.WELCOME.register((player, server) -> {
-            var serverData = Solstice.serverData.getData(SpawnServerData.class);
-            var spawnPosition = serverData.spawn;
-            if (spawnPosition != null) {
-                spawnPosition.teleport(player, false);
-            }
-        });
-
-        ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-            if (forceOnDeath()) {
-                //sendToSpawn(newPlayer);
+            var firstSpawn = getFirstSpawn();
+            if (firstSpawn != null) {
+                firstSpawn.teleport(player);
             }
         });
     }
 
+    @Deprecated
     public ServerPosition getSpawn() {
         var serverData = Solstice.serverData.getData(SpawnServerData.class);
         var spawnPosition = serverData.spawn;
@@ -53,12 +48,27 @@ public class SpawnModule extends ModuleBase {
         return spawnPosition;
     }
 
+    public ServerPosition getWorldSpawn(ServerWorld world) {
+        var spawnPos = world.getSpawnPos();
+        var yaw = world.getSpawnAngle();
+        return new ServerPosition(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), yaw, 0, world);
+    }
+
     public boolean forceOnDeath() {
         var config = Solstice.configManager.getData(SpawnConfig.class);
         return config.forceOnDeath;
     }
 
     public void sendToSpawn(ServerPlayerEntity player) {
-        getSpawn().teleport(player);
+        sendToSpawn(player, player.getServerWorld());
+    }
+
+    public void sendToSpawn(ServerPlayerEntity player, ServerWorld world) {
+        var pos = getWorldSpawn(world);
+        pos.teleport(player);
+    }
+
+    public @Nullable ServerPosition getFirstSpawn() {
+        return Solstice.serverData.getData(SpawnServerData.class).firstSpawn;
     }
 }
