@@ -42,13 +42,10 @@ public abstract class PlayerEntityMixin {
     @Inject(method = "findRespawnPosition", at = @At("RETURN"), cancellable = true)
     private static void solstice$overrideSpawn(ServerWorld world, BlockPos pos, float angle, boolean forced, boolean alive, CallbackInfoReturnable<Optional<Vec3d>> cir) {
         var spawnModule = Solstice.modules.getModule(SpawnModule.class);
-        if (spawnModule.forceOnDeath()) {
-            var spawn = spawnModule.getSpawn();
-            cir.setReturnValue(Optional.of(new Vec3d(
-                    spawn.x,
-                    spawn.y,
-                    spawn.z
-            )));
+        var config = spawnModule.getConfig();
+        if (config.globalSpawn.onRespawn) {
+            pos = spawnModule.getGlobalSpawnPosition().getBlockPos();
+            cir.setReturnValue(Optional.of(pos.toCenterPos()));
         }
     }
 }

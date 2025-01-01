@@ -33,9 +33,6 @@ public class SetSpawnCommand extends ModCommand<SpawnModule> {
                     var player = context.getSource().getPlayerOrThrow();
                     var spawnPosition = new ServerPosition(player);
 
-                    var serverData = Solstice.serverData.getData(SpawnServerData.class);
-                    serverData.spawn = spawnPosition;
-
                     player.getServerWorld().setSpawnPos(
                             new BlockPos(
                                     (int) spawnPosition.x,
@@ -45,7 +42,7 @@ public class SetSpawnCommand extends ModCommand<SpawnModule> {
                             spawnPosition.yaw
                     );
 
-                    context.getSource().sendFeedback(() -> Text.literal("Server spawn set to ")
+                    context.getSource().sendFeedback(() -> Text.literal("World spawn set to ")
                             .append(Text.literal(String.format("%.1f %.1f %.1f", spawnPosition.x, spawnPosition.y, spawnPosition.z))
                                     .formatted(Formatting.GOLD))
                             .formatted(Formatting.GREEN), true);

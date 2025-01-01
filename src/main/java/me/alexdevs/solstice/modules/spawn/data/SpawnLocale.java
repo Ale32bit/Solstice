@@ -5,6 +5,7 @@ import java.util.Map;
 public class SpawnLocale {
     public static final Map<String, String> MODULE = Map.ofEntries(
             Map.entry("teleporting", "<gold>Teleporting to spawn...</gold>"),
-            Map.entry("noWorldPermission", "<gold>You do not have permission to teleport to this world spawn.</gold>")
+            Map.entry("noWorldPermission", "<gold>You do not have permission to teleport to this world spawn.</gold>"),
+            Map.entry("noFirstSpawn", "<gold>There is no first spawn yet.</gold>")
     );
 }

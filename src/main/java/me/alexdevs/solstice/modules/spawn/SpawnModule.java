@@ -4,14 +4,20 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
-import me.alexdevs.solstice.modules.spawn.commands.DeleteSpawnCommand;
+import me.alexdevs.solstice.modules.spawn.commands.FirstSpawnCommand;
 import me.alexdevs.solstice.modules.spawn.commands.SetSpawnCommand;
 import me.alexdevs.solstice.modules.spawn.commands.SpawnCommand;
 import me.alexdevs.solstice.modules.spawn.data.SpawnConfig;
 import me.alexdevs.solstice.modules.spawn.data.SpawnLocale;
 import me.alexdevs.solstice.modules.spawn.data.SpawnServerData;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 public class SpawnModule extends ModuleBase {
@@ -26,12 +32,33 @@ public class SpawnModule extends ModuleBase {
 
         commands.add(new SpawnCommand(this));
         commands.add(new SetSpawnCommand(this));
-        commands.add(new DeleteSpawnCommand(this));
+        commands.add(new FirstSpawnCommand(this));
+
+        SolsticeEvents.RELOAD.register(instance -> {
+
+        });
 
         SolsticeEvents.WELCOME.register((player, server) -> {
             var firstSpawn = getFirstSpawn();
             if (firstSpawn != null) {
                 firstSpawn.teleport(player);
+            }
+        });
+
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            var config = getConfig();
+            if (config.globalSpawn.onLogin) {
+                getGlobalSpawnPosition().teleport(handler.getPlayer(), false);
+            }
+        });
+
+        SolsticeEvents.READY.register((instance, server) -> {
+            var spawnData = Solstice.serverData.getData(SpawnServerData.class);
+            if(spawnData.spawn != null) {
+                var legacy = spawnData.spawn;
+                var world = legacy.getWorld(server);
+                world.setSpawnPos(new BlockPos((int)legacy.x, (int)legacy.y, (int)legacy.z), legacy.yaw);
+                spawnData.spawn = null;
             }
         });
     }
@@ -48,15 +75,29 @@ public class SpawnModule extends ModuleBase {
         return spawnPosition;
     }
 
+    public ServerWorld getGlobalSpawnWorld() {
+        var targetWorld = getConfig().globalSpawn.targetSpawnWorld;
+
+        var key = RegistryKey.of(RegistryKeys.WORLD, new Identifier(targetWorld));
+        return Solstice.server.getWorld(key);
+    }
+
+    public ServerPosition getGlobalSpawnPosition() {
+        var world = getGlobalSpawnWorld();
+        var worldSpawnPos = world.getSpawnPos();
+        var worldSpawnRot = world.getSpawnAngle();
+        return new ServerPosition(
+                worldSpawnPos.getX(), worldSpawnPos.getY(), worldSpawnPos.getZ(), worldSpawnRot, 0, world
+        );
+    }
+
     public ServerPosition getWorldSpawn(ServerWorld world) {
         var spawnPos = world.getSpawnPos();
         var yaw = world.getSpawnAngle();
         return new ServerPosition(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), yaw, 0, world);
     }
-
-    public boolean forceOnDeath() {
-        var config = Solstice.configManager.getData(SpawnConfig.class);
-        return config.forceOnDeath;
+    public SpawnConfig getConfig() {
+        return Solstice.configManager.getData(SpawnConfig.class);
     }
 
     public void sendToSpawn(ServerPlayerEntity player) {

@@ -28,6 +28,7 @@ public class SpawnCommand extends ModCommand<SpawnModule> {
     }
 
     private int execute(CommandContext<ServerCommandSource> context, @Nullable ServerWorld world, @Nullable Collection<ServerPlayerEntity> players) throws CommandSyntaxException {
+        var config = module.getConfig();
         if (world != null) {
             var worldName = world.getRegistryKey().getValue().toString();
             if (!Permissions.check(context.getSource(), getPermissionNode("world." + worldName), true)) {
@@ -35,7 +36,11 @@ public class SpawnCommand extends ModCommand<SpawnModule> {
                 return 0;
             }
         } else {
-            world = context.getSource().getWorld();
+            if (config.globalSpawn.onSpawnCommand) {
+                world = module.getGlobalSpawnWorld();
+            } else {
+                world = context.getSource().getWorld();
+            }
         }
 
         var worldName = world.getRegistryKey().getValue().toString();

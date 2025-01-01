@@ -5,7 +5,21 @@ import org.spongepowered.configurate.objectmapping.meta.Comment;
 
 @ConfigSerializable
 public class SpawnConfig {
+    @Comment("This setting defines whether `/spawn` and respawning work on a per world or global server basis.")
+    public GlobalSpawn globalSpawn = new GlobalSpawn();
 
-    @Comment("Send the player to spawn after respawning from death. This setting ignores other spawnpoints such as beds and respawn anchors.")
-    public boolean forceOnDeath = true;
+    @ConfigSerializable
+    public static class GlobalSpawn {
+        @Comment("Send the player to the global spawn instead of the world spawn when using the /spawn command..")
+        public boolean onSpawnCommand = false;
+
+        @Comment("Send the player to the global spawn instead of their bed or anchor when respawning.")
+        public boolean onRespawn = false;
+
+        @Comment("Send the player to the global spawn when logging in.")
+        public boolean onLogin = false;
+
+        @Comment("ID of the world to use as global spawn. Minecraft dimensions: 'minecraft:overworld', 'minecraft:the_nether', 'minecraft:the_end'")
+        public String targetSpawnWorld = "minecraft:overworld";
+    }
 }
