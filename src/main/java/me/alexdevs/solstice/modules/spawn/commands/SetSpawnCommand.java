@@ -5,13 +5,12 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.spawn.SpawnModule;
-import me.alexdevs.solstice.modules.spawn.data.SpawnServerData;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
+import java.util.Map;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -32,8 +31,9 @@ public class SetSpawnCommand extends ModCommand<SpawnModule> {
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrThrow();
                     var spawnPosition = new ServerPosition(player);
+                    var world = player.getServerWorld();
 
-                    player.getServerWorld().setSpawnPos(
+                    world.setSpawnPos(
                             new BlockPos(
                                     (int) spawnPosition.x,
                                     (int) spawnPosition.y,
@@ -42,10 +42,10 @@ public class SetSpawnCommand extends ModCommand<SpawnModule> {
                             spawnPosition.yaw
                     );
 
-                    context.getSource().sendFeedback(() -> Text.literal("World spawn set to ")
-                            .append(Text.literal(String.format("%.1f %.1f %.1f", spawnPosition.x, spawnPosition.y, spawnPosition.z))
-                                    .formatted(Formatting.GOLD))
-                            .formatted(Formatting.GREEN), true);
+                    context.getSource().sendFeedback(() -> module.locale().get("worldSpawnSet", Map.of(
+                            "world", Text.of(world.getRegistryKey().getValue().toString()),
+                            "coordinates", Text.of(String.format("%.1f %.1f %.1f", spawnPosition.x, spawnPosition.y, spawnPosition.z))
+                    )), true);
 
                     return 1;
                 });

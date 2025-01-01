@@ -5,12 +5,12 @@ import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.spawn.commands.FirstSpawnCommand;
+import me.alexdevs.solstice.modules.spawn.commands.SetFirstSpawnCommand;
 import me.alexdevs.solstice.modules.spawn.commands.SetSpawnCommand;
 import me.alexdevs.solstice.modules.spawn.commands.SpawnCommand;
 import me.alexdevs.solstice.modules.spawn.data.SpawnConfig;
 import me.alexdevs.solstice.modules.spawn.data.SpawnLocale;
 import me.alexdevs.solstice.modules.spawn.data.SpawnServerData;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -33,15 +33,13 @@ public class SpawnModule extends ModuleBase {
         commands.add(new SpawnCommand(this));
         commands.add(new SetSpawnCommand(this));
         commands.add(new FirstSpawnCommand(this));
-
-        SolsticeEvents.RELOAD.register(instance -> {
-
-        });
+        commands.add(new SetFirstSpawnCommand(this));
 
         SolsticeEvents.WELCOME.register((player, server) -> {
             var firstSpawn = getFirstSpawn();
             if (firstSpawn != null) {
-                firstSpawn.teleport(player);
+                // Send next tick so it does not conflict with "on-login" spawn setting.
+                Solstice.nextTick(() -> firstSpawn.teleport(player));
             }
         });
 
@@ -53,7 +51,7 @@ public class SpawnModule extends ModuleBase {
         });
 
         SolsticeEvents.READY.register((instance, server) -> {
-            var spawnData = Solstice.serverData.getData(SpawnServerData.class);
+            var spawnData = getServerData();
             if(spawnData.spawn != null) {
                 var legacy = spawnData.spawn;
                 var world = legacy.getWorld(server);
@@ -65,7 +63,7 @@ public class SpawnModule extends ModuleBase {
 
     @Deprecated
     public ServerPosition getSpawn() {
-        var serverData = Solstice.serverData.getData(SpawnServerData.class);
+        var serverData = getServerData();
         var spawnPosition = serverData.spawn;
         if (spawnPosition == null) {
             var server = Solstice.server;
@@ -98,6 +96,10 @@ public class SpawnModule extends ModuleBase {
     }
     public SpawnConfig getConfig() {
         return Solstice.configManager.getData(SpawnConfig.class);
+    }
+
+    public SpawnServerData getServerData() {
+        return Solstice.serverData.getData(SpawnServerData.class);
     }
 
     public void sendToSpawn(ServerPlayerEntity player) {

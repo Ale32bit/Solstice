@@ -31,7 +31,7 @@ public class SpawnCommand extends ModCommand<SpawnModule> {
         var config = module.getConfig();
         if (world != null) {
             var worldName = world.getRegistryKey().getValue().toString();
-            if (!Permissions.check(context.getSource(), getPermissionNode("world." + worldName), true)) {
+            if (!Permissions.check(context.getSource(), getPermissionNode("worlds." + worldName), config.requireWorldPermission)) {
                 context.getSource().sendFeedback(() -> module.locale().get("noWorldPermission", Map.of("world", Text.of(worldName))), false);
                 return 0;
             }
@@ -79,7 +79,7 @@ public class SpawnCommand extends ModCommand<SpawnModule> {
                 .requires(require(true))
                 .executes(context -> execute(context, null, null))
                 .then(argument("world", DimensionArgumentType.dimension())
-                        .requires(require("world", true))
+                        .requires(require("worlds.base", true))
                         .executes(context -> execute(context, DimensionArgumentType.getDimensionArgument(context, "world"), null))
                         .then(argument("players", EntityArgumentType.players())
                                 .requires(require("others", 2))
