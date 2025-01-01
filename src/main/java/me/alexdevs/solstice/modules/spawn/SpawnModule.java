@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 public class SpawnModule extends ModuleBase {
     public static final String ID = "spawn";
 
+    @SuppressWarnings("deprecation")
     public SpawnModule() {
         super(ID);
 

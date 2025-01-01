@@ -1,7 +1,6 @@
 package me.alexdevs.solstice.modules.spawn.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.spawn.SpawnModule;
