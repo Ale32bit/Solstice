@@ -17,6 +17,7 @@ import me.alexdevs.solstice.modules.experiments.ExperimentsModule;
 import me.alexdevs.solstice.modules.extinguish.ExtinguishModule;
 import me.alexdevs.solstice.modules.feed.FeedModule;
 import me.alexdevs.solstice.modules.fly.FlyModule;
+import me.alexdevs.solstice.modules.rtp.RTPModule;
 import me.alexdevs.solstice.modules.sign.SignModule;
 import me.alexdevs.solstice.modules.god.GodModule;
 import me.alexdevs.solstice.modules.hat.HatModule;
@@ -82,6 +83,7 @@ public class ModuleProvider {
             new MailModule(),
             new MuteModule(),
             new NearModule(),
+            new RTPModule(),
             new SeenModule(),
             new SmiteModule(),
             new SpawnModule(),

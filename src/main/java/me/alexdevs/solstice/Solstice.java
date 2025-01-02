@@ -2,6 +2,8 @@ package me.alexdevs.solstice;
 
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSave;
+import me.alexdevs.solstice.core.CooldownManager;
+import me.alexdevs.solstice.core.WarmUpManager;
 import me.alexdevs.solstice.data.PlayerDataManager;
 import me.alexdevs.solstice.data.ServerData;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
@@ -45,6 +47,8 @@ public class Solstice implements ModInitializer {
     private static final ConcurrentLinkedQueue<Runnable> nextTickRunnables = new ConcurrentLinkedQueue<>();
     public static MinecraftServer server;
     public static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    public static final CooldownManager cooldown = new CooldownManager();
+    public static final WarmUpManager warmUp = new WarmUpManager();
     private static Solstice INSTANCE;
 
     public Solstice() {
