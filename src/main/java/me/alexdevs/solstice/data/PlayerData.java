@@ -1,12 +1,15 @@
 package me.alexdevs.solstice.data;
 
 import com.google.gson.*;
+import me.alexdevs.solstice.Solstice;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +18,7 @@ import java.util.function.Supplier;
 public class PlayerData {
     protected final UUID uuid;
     protected final Path filePath;
+    protected final Path basePath;
 
     protected final Map<String, Class<?>> classMap = new HashMap<>();
     protected final Map<Class<?>, Object> data = new HashMap<>();
@@ -31,6 +35,7 @@ public class PlayerData {
         this.uuid = uuid;
         this.classMap.putAll(classMap);
         this.providers.putAll(providers);
+        this.basePath = basePath;
         this.filePath = basePath.resolve(uuid + ".json");
 
         loadData(false);
@@ -63,7 +68,7 @@ public class PlayerData {
         try (var fw = new FileWriter(this.filePath.toFile())) {
             gson.toJson(node, fw);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Solstice.LOGGER.error("Could not save {}. This will lead to data loss!", filePath, e);
         }
     }
 
@@ -90,7 +95,20 @@ public class PlayerData {
             var reader = gson.newJsonReader(fr);
             return JsonParser.parseReader(reader).getAsJsonObject();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Solstice.LOGGER.error("Could not load player data of UUID {}!", uuid, e);
+            safeMove();
+            return new JsonObject();
+        }
+    }
+
+    protected void safeMove() {
+        var df = new SimpleDateFormat("yyyyMMddHHmmss");
+        var date = df.format(new Date());
+        var newPath = basePath.resolve(String.format("%s.%s.json", uuid, date));
+        if (filePath.toFile().renameTo(newPath.toFile())) {
+            Solstice.LOGGER.warn("{} has been renamed to {}!", filePath, newPath);
+        } else {
+            Solstice.LOGGER.error("Could not move file {}. Solstice cannot safely manage player data.", filePath);
         }
     }
 
