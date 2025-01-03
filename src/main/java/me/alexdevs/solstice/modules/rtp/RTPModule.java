@@ -8,7 +8,6 @@ import me.alexdevs.solstice.modules.rtp.data.RTPConfig;
 import me.alexdevs.solstice.modules.rtp.data.RTPLocale;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.profiling.jfr.event.ServerTickTimeEvent;
 
 import java.util.ArrayList;
 

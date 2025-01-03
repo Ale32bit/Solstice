@@ -7,7 +7,6 @@ import net.minecraft.world.biome.Biome;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 
-import java.util.Arrays;
 import java.util.List;
 
 @ConfigSerializable
