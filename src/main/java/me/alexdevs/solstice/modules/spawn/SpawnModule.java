@@ -85,7 +85,7 @@ public class SpawnModule extends ModuleBase {
 
     public ServerPosition getGlobalSpawnPosition() {
         var world = getGlobalSpawnWorld();
-        var worldSpawnPos = world.getSpawnPos();
+        var worldSpawnPos = world.getSpawnPos().toCenterPos();
         var worldSpawnRot = world.getSpawnAngle();
         return new ServerPosition(
                 worldSpawnPos.getX(), worldSpawnPos.getY(), worldSpawnPos.getZ(), worldSpawnRot, 0, world
@@ -93,7 +93,7 @@ public class SpawnModule extends ModuleBase {
     }
 
     public ServerPosition getWorldSpawn(ServerWorld world) {
-        var spawnPos = world.getSpawnPos();
+        var spawnPos = world.getSpawnPos().toCenterPos();
         var yaw = world.getSpawnAngle();
         return new ServerPosition(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), yaw, 0, world);
     }

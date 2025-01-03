@@ -32,12 +32,9 @@ public class SetSpawnCommand extends ModCommand<SpawnModule> {
                     var spawnPosition = new ServerPosition(player);
                     var world = player.getServerWorld();
 
+
                     world.setSpawnPos(
-                            new BlockPos(
-                                    (int) spawnPosition.x,
-                                    (int) spawnPosition.y,
-                                    (int) spawnPosition.z
-                            ),
+                            player.getBlockPos(),
                             spawnPosition.yaw
                     );
 
