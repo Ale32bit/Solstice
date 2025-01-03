@@ -39,24 +39,26 @@ public class SpawnModule extends ModuleBase {
         SolsticeEvents.WELCOME.register((player, server) -> {
             var firstSpawn = getFirstSpawn();
             if (firstSpawn != null) {
-                // Send next tick so it does not conflict with "on-login" spawn setting.
-                Solstice.nextTick(() -> firstSpawn.teleport(player));
+                // Send next tick, twice, so it does not conflict with "on-login" spawn setting.
+                Solstice.nextTick(() -> Solstice.nextTick(() -> firstSpawn.teleport(player)));
             }
         });
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             var config = getConfig();
             if (config.globalSpawn.onLogin) {
-                getGlobalSpawnPosition().teleport(handler.getPlayer(), false);
+                Solstice.nextTick(() -> {
+                    getGlobalSpawnPosition().teleport(handler.getPlayer(), false);
+                });
             }
         });
 
         SolsticeEvents.READY.register((instance, server) -> {
             var spawnData = getServerData();
-            if(spawnData.spawn != null) {
+            if (spawnData.spawn != null) {
                 var legacy = spawnData.spawn;
                 var world = legacy.getWorld(server);
-                world.setSpawnPos(new BlockPos((int)legacy.x, (int)legacy.y, (int)legacy.z), legacy.yaw);
+                world.setSpawnPos(new BlockPos((int) legacy.x, (int) legacy.y, (int) legacy.z), legacy.yaw);
                 spawnData.spawn = null;
             }
         });
@@ -95,6 +97,7 @@ public class SpawnModule extends ModuleBase {
         var yaw = world.getSpawnAngle();
         return new ServerPosition(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), yaw, 0, world);
     }
+
     public SpawnConfig getConfig() {
         return Solstice.configManager.getData(SpawnConfig.class);
     }
