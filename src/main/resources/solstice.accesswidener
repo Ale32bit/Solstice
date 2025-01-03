@@ -1,0 +1,2 @@
+accessWidener v2 named
+accessible method net/minecraft/server/world/ServerChunkManager getChunkHolder (J)Lnet/minecraft/server/world/ChunkHolder;
