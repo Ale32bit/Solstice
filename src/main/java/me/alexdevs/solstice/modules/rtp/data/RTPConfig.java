@@ -23,6 +23,9 @@ public class RTPConfig {
     @Comment("Maximum radius from the center of the world border. It caps to world border size.")
     public int maxRadius = 30000;
 
+    @Comment("Use player as the center of the radius instead of the world border.")
+    public boolean aroundPlayer = false;
+
     @Comment("List of biomes an attempt should fail at.")
     public List<String> prohibitedBiomes = List.of(
             "minecraft:ocean",

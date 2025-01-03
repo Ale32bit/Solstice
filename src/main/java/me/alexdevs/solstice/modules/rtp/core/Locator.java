@@ -7,6 +7,7 @@ import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.modules.rtp.data.RTPConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ChunkHolder;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
@@ -26,6 +27,7 @@ public class Locator {
 
     public static final ChunkTicketType<BlockPos> RTP_TICKET = ChunkTicketType.create("rtp", Comparator.comparingLong(ChunkPos::toLong), 300);
 
+    public final ServerPlayerEntity player;
     public final ServerWorld world;
     public final RTPConfig config;
 
@@ -60,7 +62,8 @@ public class Locator {
             Blocks.WATER
     );
 
-    public Locator(ServerWorld world, RTPConfig config) {
+    public Locator(ServerPlayerEntity player, ServerWorld world, RTPConfig config) {
+        this.player = player;
         this.world = world;
         this.config = config;
     }
@@ -69,6 +72,23 @@ public class Locator {
         this.callback = callback;
         stopwatch.start();
         Solstice.scheduler.schedule(() -> this.attempt(config.attempts), 0, TimeUnit.MILLISECONDS);
+    }
+
+    private void attempt(int remainingAttempts) {
+        if (remainingAttempts == 0) {
+            failed = true;
+            callback.accept(new Result(Result.Type.TOO_MANY_ATTEMPTS, Optional.empty()));
+            return;
+        }
+
+        var pos = getRandomPos();
+
+        if (isValid(pos)) {
+            attemptPos = pos;
+            load();
+        } else {
+            attempt(remainingAttempts - 1);
+        }
     }
 
     public boolean tick() {
@@ -143,23 +163,6 @@ public class Locator {
         ))));
     }
 
-    private void attempt(int remainingAttempts) {
-        if (remainingAttempts == 0) {
-            failed = true;
-            callback.accept(new Result(Result.Type.TOO_MANY_ATTEMPTS, Optional.empty()));
-            return;
-        }
-
-        var pos = getRandomPos();
-
-        if (isValid(pos)) {
-            attemptPos = pos;
-            load();
-        } else {
-            attempt(remainingAttempts - 1);
-        }
-    }
-
     private void load() {
         world.getChunkManager().addTicket(RTP_TICKET, new ChunkPos(attemptPos), 0, attemptPos);
     }
@@ -181,14 +184,24 @@ public class Locator {
     public BlockPos getRandomPos() {
         var worldBorder = world.getWorldBorder();
         var size = worldBorder.getSize();
-        var centerX = worldBorder.getCenterX();
-        var centerZ = worldBorder.getCenterZ();
+
+        double centerX, centerZ;
+        if(config.aroundPlayer) {
+            centerX = player.getX();
+            centerZ = player.getZ();
+        } else {
+            centerX = worldBorder.getCenterX();
+            centerZ = worldBorder.getCenterZ();
+        }
 
         var max = Math.min((int) size, config.maxRadius);
         var min = Math.max(0, config.minRadius);
 
-        var x = (int) (world.getRandom().nextBetween(min, max) + centerX);
-        var z = (int) (world.getRandom().nextBetween(min, max) + centerZ);
+        int x, z;
+        do {
+            x = (int) (world.getRandom().nextBetween(min, max) + centerX);
+            z = (int) (world.getRandom().nextBetween(min, max) + centerZ);
+        } while(config.aroundPlayer && !worldBorder.contains(x, z));
 
         return new BlockPos(x, world.getLogicalHeight(), z);
     }

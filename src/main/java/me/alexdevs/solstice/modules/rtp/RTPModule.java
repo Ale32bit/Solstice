@@ -34,7 +34,7 @@ public class RTPModule extends ModuleBase {
     }
 
     public Locator createLocator(ServerPlayerEntity player) {
-        var locator = new Locator(player.getServerWorld(), getConfig());
+        var locator = new Locator(player, player.getServerWorld(), getConfig());
         locators.add(locator);
         return locator;
     }
