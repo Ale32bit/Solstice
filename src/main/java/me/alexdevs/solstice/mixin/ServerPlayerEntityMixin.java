@@ -60,30 +60,28 @@ public abstract class ServerPlayerEntityMixin {
     @Inject(method = "getSpawnPointPosition", at = @At("RETURN"), cancellable = true)
     public void solstice$overrideSpawnPos(CallbackInfoReturnable<BlockPos> cir) {
         var spawnModule = Solstice.modules.getModule(SpawnModule.class);
-        if (spawnModule.forceOnDeath()) {
-            var spawnPos = spawnModule.getSpawn();
-            cir.setReturnValue(new BlockPos(
-                    (int) spawnPos.x,
-                    (int) spawnPos.y,
-                    (int) spawnPos.z
-            ));
+        var config = spawnModule.getConfig();
+        if (config.globalSpawn.onRespawn) {
+            var pos = spawnModule.getGlobalSpawnPosition().getBlockPos();
+            cir.setReturnValue(pos);
         }
     }
 
     @Inject(method = "getSpawnPointDimension", at = @At("RETURN"), cancellable = true)
     public void solstice$overrideSpawnDimension(CallbackInfoReturnable<RegistryKey<World>> cir) {
         var spawnModule = Solstice.modules.getModule(SpawnModule.class);
-        if (spawnModule.forceOnDeath()) {
-            var spawnPos = spawnModule.getSpawn();
-            cir.setReturnValue(spawnPos.getWorldKey());
+        var config = spawnModule.getConfig();
+        if (config.globalSpawn.onRespawn) {
+            cir.setReturnValue(spawnModule.getGlobalSpawnWorld().getRegistryKey());
         }
     }
 
     @Inject(method = "getRespawnTarget", at = @At("RETURN"), cancellable = true)
     public void solstice$overrideRespawnTarget(boolean alive, TeleportTarget.PostDimensionTransition postDimensionTransition, CallbackInfoReturnable<TeleportTarget> cir) {
         var spawnModule = Solstice.modules.getModule(SpawnModule.class);
-        if (spawnModule.forceOnDeath()) {
-            var spawn = spawnModule.getSpawn();
+        var config = spawnModule.getConfig();
+        if (config.globalSpawn.onRespawn) {
+            var spawn = spawnModule.getGlobalSpawnPosition();
 
             var world = spawn.getWorld(this.server);
             var pos = new Vec3d(

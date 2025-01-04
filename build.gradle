@@ -24,14 +24,15 @@ repositories {
 }
 
 loom {
-	splitEnvironmentSourceSets()
-
-	mods {
-		"solstice" {
-			sourceSet sourceSets.main
-			sourceSet sourceSets.client
-		}
-	}
+	accessWidenerPath = file("src/main/resources/solstice.accesswidener")
+//	splitEnvironmentSourceSets()
+//
+//	mods {
+//		"solstice" {
+//			sourceSet sourceSets.main
+//			sourceSet sourceSets.client
+//		}
+//	}
 }
 
 dependencies {

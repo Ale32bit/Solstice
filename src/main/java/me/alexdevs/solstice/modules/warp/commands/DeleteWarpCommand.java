@@ -10,9 +10,9 @@ import me.alexdevs.solstice.modules.warp.data.WarpServerData;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 import java.util.List;
+import java.util.Map;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -47,20 +47,23 @@ public class DeleteWarpCommand extends ModCommand<WarpModule> {
         var warps = serverData.warps;
 
         if (!warps.containsKey(name)) {
-            context.getSource().sendFeedback(() -> Text.literal("The warp ")
-                    .append(Text.literal(name).formatted(Formatting.GOLD))
-                    .append(" does not exist!")
-                    .formatted(Formatting.RED), false);
-            return 1;
+            context.getSource().sendFeedback(() -> module.locale().get(
+                    "warpNotFound",
+                    Map.of(
+                            "warp", Text.of(name)
+                    )
+            ), true);
+            return 0;
         }
 
         warps.remove(name);
 
-        context.getSource().sendFeedback(() -> Text
-                .literal("Warp ")
-                .append(Text.literal(name).formatted(Formatting.GOLD))
-                .append(" deleted!")
-                .formatted(Formatting.GREEN), false);
+        context.getSource().sendFeedback(() -> module.locale().get(
+                "deleted",
+                Map.of(
+                        "warp", Text.of(name)
+                )
+        ), true);
 
         return 1;
     }

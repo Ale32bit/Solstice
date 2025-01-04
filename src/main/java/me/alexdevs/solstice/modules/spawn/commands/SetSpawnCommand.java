@@ -1,17 +1,14 @@
 package me.alexdevs.solstice.modules.spawn.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.spawn.SpawnModule;
-import me.alexdevs.solstice.modules.spawn.data.SpawnServerData;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
+import java.util.Map;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -32,23 +29,18 @@ public class SetSpawnCommand extends ModCommand<SpawnModule> {
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrThrow();
                     var spawnPosition = new ServerPosition(player);
+                    var world = player.getServerWorld();
 
-                    var serverData = Solstice.serverData.getData(SpawnServerData.class);
-                    serverData.spawn = spawnPosition;
 
-                    player.getServerWorld().setSpawnPos(
-                            new BlockPos(
-                                    (int) spawnPosition.x,
-                                    (int) spawnPosition.y,
-                                    (int) spawnPosition.z
-                            ),
+                    world.setSpawnPos(
+                            player.getBlockPos(),
                             spawnPosition.yaw
                     );
 
-                    context.getSource().sendFeedback(() -> Text.literal("Server spawn set to ")
-                            .append(Text.literal(String.format("%.1f %.1f %.1f", spawnPosition.x, spawnPosition.y, spawnPosition.z))
-                                    .formatted(Formatting.GOLD))
-                            .formatted(Formatting.GREEN), true);
+                    context.getSource().sendFeedback(() -> module.locale().get("worldSpawnSet", Map.of(
+                            "world", Text.of(world.getRegistryKey().getValue().toString()),
+                            "coordinates", Text.of(String.format("%.1f %.1f %.1f", spawnPosition.x, spawnPosition.y, spawnPosition.z))
+                    )), true);
 
                     return 1;
                 });

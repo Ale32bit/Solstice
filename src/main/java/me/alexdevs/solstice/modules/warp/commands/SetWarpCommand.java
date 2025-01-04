@@ -11,9 +11,9 @@ import me.alexdevs.solstice.modules.warp.WarpModule;
 import me.alexdevs.solstice.modules.warp.data.WarpServerData;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 import java.util.List;
+import java.util.Map;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -46,10 +46,12 @@ public class SetWarpCommand extends ModCommand<WarpModule> {
         var warpPosition = new ServerPosition(player);
         warps.put(name, warpPosition);
 
-        context.getSource().sendFeedback(() -> Text.literal("New warp ")
-                .append(Text.literal(name).formatted(Formatting.GOLD))
-                .append(" set!")
-                .formatted(Formatting.GREEN), false);
+        context.getSource().sendFeedback(() -> module.locale().get(
+                "created",
+                Map.of(
+                        "warp", Text.of(name)
+                )
+        ), true);
 
         return 1;
     }

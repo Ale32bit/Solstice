@@ -9,6 +9,9 @@ public class WarpLocale {
             Map.entry("warpList", "<gold>Server warps: ${warpList}</gold>"),
             Map.entry("warpsFormat", "<run_cmd:'/warp ${warp}'><hover:'Click to teleport'><yellow>${warp}</yellow></hover></run_cmd>"),
             Map.entry("warpsComma", "<gold>, </gold>"),
-            Map.entry("noWarps", "<gold>There are no warps so far.</gold>")
+            Map.entry("noWarps", "<gold>There are no warps so far.</gold>"),
+            Map.entry("noPermission", "<gold>You do not have permission to warp to <yellow>${warp}</yellow>.</gold>"),
+            Map.entry("deleted", "<gold>Warp <yellow>${warp}</yellow> deleted!</gold>"),
+            Map.entry("created", "<green>New warp <yellow>${warp}</yellow> created!<green>")
     );
 }

@@ -1,12 +1,15 @@
 package me.alexdevs.solstice.data;
 
 import com.google.gson.*;
+import me.alexdevs.solstice.Solstice;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -55,7 +58,7 @@ public class ServerData {
         try (var fw = new FileWriter(this.filePath.toFile())) {
             gson.toJson(node, fw);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Solstice.LOGGER.error("Could not save {}. This will lead to data loss!", filePath, e);
         }
     }
 
@@ -82,7 +85,21 @@ public class ServerData {
             var reader = gson.newJsonReader(fr);
             return JsonParser.parseReader(reader).getAsJsonObject();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Solstice.LOGGER.error("Could not load server data!", e);
+            safeMove();
+            return new JsonObject();
+        }
+    }
+
+    protected void safeMove() {
+        var df = new SimpleDateFormat("yyyyMMddHHmmss");
+        var date = df.format(new Date());
+        var basePath = filePath.getParent();
+        var newPath = basePath.resolve(String.format("server.%s.json", date));
+        if (filePath.toFile().renameTo(newPath.toFile())) {
+            Solstice.LOGGER.warn("{} has been renamed to {}!", filePath, newPath);
+        } else {
+            Solstice.LOGGER.error("Could not move file {}. Solstice cannot safely manage server data.", filePath);
         }
     }
 

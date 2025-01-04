@@ -27,7 +27,7 @@ public class EnderChestCommand extends ModCommand<EnderChestModule> {
 
     @Override
     public List<String> getNames() {
-        return List.of("enderchest");
+        return List.of("enderchest", "ec");
     }
 
     @Override

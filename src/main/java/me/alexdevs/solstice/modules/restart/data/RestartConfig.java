@@ -23,6 +23,12 @@ public class RestartConfig {
     @Comment("Pitch of the sound.")
     public float restartSoundPitch = 0.9f;
 
+    @Comment("Style of the restart bar.")
+    public String barStyle = "NOTCHED_10";
+
+    @Comment("Color of the restart bar.")
+    public String barColor = "RED";
+
     @Comment("Milestones of the restart notifications in seconds.")
     public ArrayList<Integer> restartNotifications = new ArrayList<>(List.of(
             600,

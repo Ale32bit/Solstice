@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
@@ -91,5 +92,9 @@ public class ServerPosition {
 
     public ServerWorld getWorld(MinecraftServer server) {
         return server.getWorld(getWorldKey());
+    }
+
+    public BlockPos getBlockPos() {
+        return BlockPos.ofFloored(this.x, this.y, this.z);
     }
 }

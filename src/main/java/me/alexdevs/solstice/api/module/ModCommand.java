@@ -2,6 +2,7 @@ package me.alexdevs.solstice.api.module;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
@@ -30,8 +31,12 @@ public abstract class ModCommand<T extends ModuleBase> {
         this.environment = environment;
 
         for (var name : getNames()) {
-            dispatcher.register(command(name));
+            registerCommand(command(name));
         }
+    }
+
+    public LiteralCommandNode<ServerCommandSource> registerCommand(LiteralArgumentBuilder<ServerCommandSource> command) {
+        return dispatcher.register(command);
     }
 
     public String getName() {

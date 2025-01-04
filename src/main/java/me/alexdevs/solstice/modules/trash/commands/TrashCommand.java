@@ -6,7 +6,6 @@ import me.alexdevs.solstice.modules.trash.TrashModule;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class TrashCommand extends ModCommand<TrashModule> {
                     player.openHandledScreen(
                             new SimpleNamedScreenHandlerFactory((syncId, inventory, playerx) ->
                                     GenericContainerScreenHandler.createGeneric9x3(syncId, inventory),
-                                    Text.of("Trash")));
+                                    module.locale().get("trash")));
 
                     return 1;
                 });

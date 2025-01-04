@@ -12,8 +12,6 @@ import java.util.List;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class HatCommand extends ModCommand<HatModule> {
-    private final Locale locale = Solstice.localeManager.getLocale(HatModule.ID);
-
     public HatCommand(HatModule module) {
         super(module);
     }
@@ -34,7 +32,7 @@ public class HatCommand extends ModCommand<HatModule> {
                     var handStack = player.getMainHandStack();
 
                     if (handStack.isEmpty()) {
-                        context.getSource().sendFeedback(() -> locale.get("emptyStack"), false);
+                        context.getSource().sendFeedback(() -> module.locale().get("emptyStack"), false);
                         return 0;
                     }
 
@@ -43,7 +41,7 @@ public class HatCommand extends ModCommand<HatModule> {
                     inventory.setStack(inventory.selectedSlot, oldHeadStack.copyAndEmpty());
                     inventory.armor.set(3, handStack.copyAndEmpty());
 
-                    context.getSource().sendFeedback(() -> locale.get("success"), false);
+                    context.getSource().sendFeedback(() -> module.locale().get("success"), false);
 
                     return 1;
                 });
