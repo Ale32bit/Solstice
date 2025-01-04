@@ -1,3 +1,7 @@
+# 1.3.1
+
+* Improve how world permission checks are done in `/spawn` and `/rtp`
+
 # 1.3.0
 
 * Improved spawn module mechanisms.
