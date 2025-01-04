@@ -58,7 +58,10 @@ public class Locator {
             Blocks.CAMPFIRE,
             Blocks.LAVA_CAULDRON,
             Blocks.SWEET_BERRY_BUSH,
-            Blocks.POWDER_SNOW,
+            Blocks.POWDER_SNOW
+    );
+
+    private static final ImmutableList<Block> nonIdealBlocks = ImmutableList.of(
             Blocks.WATER
     );
 
@@ -148,7 +151,7 @@ public class Locator {
 
             var dx = i % 16;
             var dz = i / 16;
-            pos = new BlockPos(dx, 0, dz);
+            pos = chunk.getPos().getBlockPos(dx, chunk.getBottomY(), dz);
         }
 
         if (pos.getY() <= chunk.getBottomY()) {
@@ -177,6 +180,9 @@ public class Locator {
     }
 
     public boolean isValid(BlockPos pos) {
+        if(pos == null)
+            return false;
+
         var biome = world.getBiome(pos);
         return !config.parseBiomes().contains(biome.getKey().orElse(null));
     }
@@ -186,7 +192,7 @@ public class Locator {
         var size = worldBorder.getSize();
 
         double centerX, centerZ;
-        if(config.aroundPlayer) {
+        if (config.aroundPlayer) {
             centerX = player.getX();
             centerZ = player.getZ();
         } else {
@@ -194,14 +200,28 @@ public class Locator {
             centerZ = worldBorder.getCenterZ();
         }
 
-        var max = Math.min((int) size, config.maxRadius);
-        var min = Math.max(0, config.minRadius);
+        var maxDiameter = config.maxRadius * 2;
+        var minDiameter = config.minRadius * 2;
 
-        int x, z;
-        do {
-            x = (int) (world.getRandom().nextBetween(min, max) + centerX);
-            z = (int) (world.getRandom().nextBetween(min, max) + centerZ);
-        } while(config.aroundPlayer && !worldBorder.contains(x, z));
+        var max = Math.min((int) size, maxDiameter);
+        var min = Math.max(0, minDiameter);
+
+        int x = 0;
+        int z = 0;
+        var limit = 256;
+        for(var i = 0; i <= limit; i++) {
+            var dist = world.getRandom().nextDouble() * (max - min) + min;
+            var angle = world.getRandom().nextDouble() * Math.PI * 2d;
+            x = (int) (Math.cos(angle) * dist + centerX);
+            z = (int) (Math.sin(angle) * dist + centerZ);
+
+            if(worldBorder.contains(x, z))
+                break;
+
+            if(i == limit) {
+                return null;
+            }
+        }
 
         return new BlockPos(x, world.getLogicalHeight(), z);
     }
