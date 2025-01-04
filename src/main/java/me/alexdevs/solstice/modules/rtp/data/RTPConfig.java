@@ -38,7 +38,8 @@ public class RTPConfig {
             "minecraft:lukewarm_ocean",
             "minecraft:warm_ocean",
             "minecraft:river",
-            "minecraft:frozen_river"
+            "minecraft:frozen_river",
+            "minecraft:small_end_islands"
     );
 
     @Comment("Require that the player has the permission of the world 'solstice.rtp.worlds.<worldName>' to initiate the random teleport in the world.")
