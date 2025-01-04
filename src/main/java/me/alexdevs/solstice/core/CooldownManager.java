@@ -1,9 +1,12 @@
 package me.alexdevs.solstice.core;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.command.TimeSpan;
+import me.alexdevs.solstice.modules.core.CoreModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 
 import java.util.Map;
 import java.util.UUID;
@@ -45,6 +48,16 @@ public class CooldownManager {
         var uuid = player.getUuid();
         var cooldown = cooldowns.computeIfAbsent(uuid, k -> new ConcurrentHashMap<>());
         return cooldown.getOrDefault(node, 0) > 0;
+    }
+
+    public Text getMessage(ServerPlayerEntity player, String node) {
+        var uuid = player.getUuid();
+        var cooldown = cooldowns.computeIfAbsent(uuid, k -> new ConcurrentHashMap<>());
+        var value = cooldown.getOrDefault(node, 0);
+        var locale = Solstice.localeManager.getLocale(CoreModule.ID);
+        return locale.get("~cooldown", Map.of(
+                "timespan", Text.of(TimeSpan.serialize(value))
+        ));
     }
 
     /**

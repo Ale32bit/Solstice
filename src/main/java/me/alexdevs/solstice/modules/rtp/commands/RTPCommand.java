@@ -2,6 +2,7 @@ package me.alexdevs.solstice.modules.rtp.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.rtp.RTPModule;
 import me.alexdevs.solstice.modules.rtp.core.Locator;
@@ -42,7 +43,7 @@ public class RTPCommand extends ModCommand<RTPModule> {
 
                     if (config.cooldown.enable) {
                         if (!Solstice.cooldown.trigger(player, module.getPermissionNode(), config.cooldown.cooldown)) {
-                            context.getSource().sendFeedback(() -> module.locale().get("~cooldown"), false);
+                            context.getSource().sendFeedback(() -> Solstice.cooldown.getMessage(player, module.getPermissionNode()), false);
                             return 0;
                         }
                     }

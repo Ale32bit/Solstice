@@ -35,6 +35,40 @@ public class TimeSpan {
         return 0;
     }
 
+    public static String serialize(int total) {
+        var builder = new StringBuilder();
+
+        if(total >= secondsInWeek) {
+            builder.append(total / secondsInWeek);
+            builder.append("w");
+            total %= secondsInWeek;
+        }
+
+        if(total >= secondsInDay) {
+            builder.append(total / secondsInDay);
+            builder.append("d");
+            total %= secondsInDay;
+        }
+
+        if(total >= secondsInHour) {
+            builder.append(total / secondsInHour);
+            builder.append("h");
+            total %= secondsInHour;
+        }
+
+        if(total >= secondsInMinute) {
+            builder.append(total / secondsInMinute);
+            builder.append("m");
+            total %= secondsInMinute;
+        }
+
+        if(total > 0) {
+            builder.append(total);
+            builder.append("s");
+        }
+
+        return builder.toString();
+    }
 
     public static Optional<? extends Integer> parse(String s) {
         // First, if just digits, return the number in seconds.

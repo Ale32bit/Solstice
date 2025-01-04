@@ -9,6 +9,6 @@ public class CoreLocale {
             Map.entry("accept", "<green>Accept</green>"),
             Map.entry("refuse", "<red>Refuse</red>"),
             Map.entry("tooManyTargets", "<red>The provided selector contains too many targets.</red>"),
-            Map.entry("cooldown", "<gold>You are on cooldown.</gold>") // TODO: add time remaining
+            Map.entry("cooldown", "<gold>You are on cooldown for <yellow>${timespan}</yellow>.</gold>")
     );
 }

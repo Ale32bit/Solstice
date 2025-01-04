@@ -3,10 +3,12 @@ package me.alexdevs.solstice.modules.experiments.commands;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.experiments.ExperimentsModule;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Text;
 
 import java.util.List;
 
@@ -33,7 +35,9 @@ public class TimeSpanCommand extends ModCommand<ExperimentsModule> {
                         .executes(this::execute));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context) {
+    private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        var timespan = TimeSpan.getTimeSpan(context, "timespan");
+        context.getSource().sendFeedback(() -> Text.of(String.format("Got %s (%d)", TimeSpan.serialize(timespan), timespan)), false);
         return 1;
     }
 }
