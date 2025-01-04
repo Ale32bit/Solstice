@@ -29,17 +29,18 @@ public class SpawnCommand extends ModCommand<SpawnModule> {
 
     private int execute(CommandContext<ServerCommandSource> context, @Nullable ServerWorld world, @Nullable Collection<ServerPlayerEntity> players) throws CommandSyntaxException {
         var config = module.getConfig();
-        if (world != null) {
-            var worldName = world.getRegistryKey().getValue().toString();
-            if (!Permissions.check(context.getSource(), getPermissionNode("worlds." + worldName), config.requireWorldPermission)) {
-                context.getSource().sendFeedback(() -> module.locale().get("noWorldPermission", Map.of("world", Text.of(worldName))), false);
-                return 0;
-            }
-        } else {
+        if (world == null) {
             if (config.globalSpawn.onSpawnCommand) {
                 world = module.getGlobalSpawnWorld();
             } else {
                 world = context.getSource().getWorld();
+                if(config.requireWorldPermission) {
+                    var worldName = world.getRegistryKey().getValue().toString();
+                    if (!Permissions.check(context.getSource(), getPermissionNode("worlds." + worldName), 2)) {
+                        context.getSource().sendFeedback(() -> module.locale().get("noWorldPermission", Map.of("world", Text.of(worldName))), false);
+                        return 0;
+                    }
+                }
             }
         }
 

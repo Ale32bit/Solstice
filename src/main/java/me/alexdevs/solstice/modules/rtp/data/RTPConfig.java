@@ -41,6 +41,9 @@ public class RTPConfig {
             "minecraft:frozen_river"
     );
 
+    @Comment("Require that the player has the permission of the world 'solstice.rtp.worlds.<worldName>' to initiate the random teleport in the world.")
+    public boolean requireWorldPermission = true;
+
     @Comment("Cooldown configuration")
     public Cooldown cooldown = new Cooldown();
 

@@ -5,10 +5,12 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.rtp.RTPModule;
 import me.alexdevs.solstice.modules.rtp.core.Locator;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
 import java.util.List;
+import java.util.Map;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -29,6 +31,15 @@ public class RTPCommand extends ModCommand<RTPModule> {
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrThrow();
                     var config = module.getConfig();
+
+                    if(config.requireWorldPermission) {
+                        var worldName = player.getServerWorld().getRegistryKey().getValue().toString();
+                        if (!Permissions.check(context.getSource(), getPermissionNode("worlds." + worldName), 2)) {
+                            context.getSource().sendFeedback(() -> module.locale().get("noWorldPermission", Map.of("world", Text.of(worldName))), false);
+                            return 0;
+                        }
+                    }
+
                     if (config.cooldown.enable) {
                         if (!Solstice.cooldown.trigger(player, module.getPermissionNode(), config.cooldown.cooldown)) {
                             context.getSource().sendFeedback(() -> module.locale().get("~cooldown"), false);

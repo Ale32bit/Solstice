@@ -6,7 +6,7 @@ import org.spongepowered.configurate.objectmapping.meta.Comment;
 @ConfigSerializable
 public class SpawnConfig {
 
-    @Comment("Require that the player has the permission of the world 'solstice.spawn.worlds.<worldName>' to warp to its spawn from another world.\nMind that 'solstice.spawn.worlds.base' is required to warp in other worlds in the first place.")
+    @Comment("Require that the player has the permission of the world 'solstice.spawn.worlds.<worldName>' to warp to its spawn.\nMind that 'solstice.spawn.worlds.base' is required to be able to use the `world` argument.")
     public boolean requireWorldPermission = true;
 
     @Comment("This setting defines whether `/spawn` and respawning work on a per world or global server basis.")
@@ -14,7 +14,7 @@ public class SpawnConfig {
 
     @ConfigSerializable
     public static class GlobalSpawn {
-        @Comment("Send the player to the global spawn instead of the world spawn when using the /spawn command..")
+        @Comment("Send the player to the global spawn instead of the world spawn when using the /spawn command.")
         public boolean onSpawnCommand = false;
 
         @Comment("Send the player to the global spawn instead of their bed or anchor when respawning.")
