@@ -1,8 +1,7 @@
-# 1.2.0
+# 1.3.0
 
-**This update radically changes the permission nodes.**
-
-**The styling locale has been moved to its configuration section.**
-
-- Refactored modules system
-- Refactored permissions
+* Improved spawn module mechanisms.
+  * Added first spawn for new players.
+  * Added support for multiworld spawn points.
+* Add `/rtp` to teleport to a random location.
+* Invulnerability and flight (`/god` and `/fly`) now persist state.
