@@ -242,7 +242,6 @@ public class KitCommand extends ModCommand<KitModule> {
     }
 
     private int setFirstJoin(CommandContext<ServerCommandSource> context) {
-        var source = context.getSource();
         var name = StringArgumentType.getString(context, "name");
         var enable = BoolArgumentType.getBool(context, "enable");
 
@@ -264,7 +263,6 @@ public class KitCommand extends ModCommand<KitModule> {
     }
 
     private int setCooldown(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var source = context.getSource();
         var name = StringArgumentType.getString(context, "name");
         var timespan = TimeSpan.getTimeSpan(context, "timespan");
 
@@ -286,7 +284,6 @@ public class KitCommand extends ModCommand<KitModule> {
     }
 
     private int setOneTime(CommandContext<ServerCommandSource> context) {
-        var source = context.getSource();
         var name = StringArgumentType.getString(context, "name");
         var enable = BoolArgumentType.getBool(context, "enable");
 

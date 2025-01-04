@@ -24,7 +24,7 @@ public class KitModule extends ModuleBase {
         Solstice.playerData.registerData(ID, KitPlayerData.class, KitPlayerData::new);
         Solstice.serverData.registerData(ID, KitServerData.class, KitServerData::new);
 
-        commands.add(new KitCommand(this)); // TODO: work in progress
+        commands.add(new KitCommand(this));
 
         SolsticeEvents.WELCOME.register((player, server) -> {
             for (var kit : getKits().entrySet()) {

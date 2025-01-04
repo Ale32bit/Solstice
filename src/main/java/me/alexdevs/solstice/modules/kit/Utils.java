@@ -4,7 +4,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.sgui.api.gui.SimpleGui;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.screen.slot.Slot;
 
@@ -12,21 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Utils {
-    public static List<ItemStack> getItems(SimpleGui container) {
-        var items = new ArrayList<ItemStack>();
-
-        for (var i = 0; i < container.getSize(); i++) {
-            var slot = container.getSlot(i);
-            if (slot == null)
-                continue;
-
-            var itemStack = slot.getItemStack();
-            items.add(itemStack);
-        }
-
-        return items;
-    }
-
     public static String serializeItemStack(ItemStack itemStack) {
         var nbt = new NbtCompound();
         itemStack.writeNbt(nbt);
