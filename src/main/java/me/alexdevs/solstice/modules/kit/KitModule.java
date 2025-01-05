@@ -8,7 +8,6 @@ import me.alexdevs.solstice.modules.kit.data.*;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.registry.RegistryWrapper;
 
 import java.util.Date;
 import java.util.List;
@@ -54,8 +53,9 @@ public class KitModule extends ModuleBase {
     /**
      * Claim a kit regardless if the player could claim it.
      * Also flag the player as having it claimed.
+     *
      * @param player Player
-     * @param name Kit name
+     * @param name   Kit name
      */
     public void claimKit(ServerPlayerEntity player, String name) {
         var playerData = Solstice.playerData.get(player).getData(KitPlayerData.class);
@@ -70,8 +70,9 @@ public class KitModule extends ModuleBase {
 
     /**
      * Check if a player has permission to claim a kit.
+     *
      * @param player Player
-     * @param name Kit name
+     * @param name   Kit name
      * @return Whether the player has permission to claim the kit.
      */
     public boolean hasKitPermission(ServerPlayerEntity player, String name) {
@@ -86,8 +87,9 @@ public class KitModule extends ModuleBase {
     /**
      * Check if a player could technically claim the kit regardless of permission.
      * This method checks the oneTime flag and cooldown.
+     *
      * @param player Player
-     * @param name Kit name
+     * @param name   Kit name
      * @return Whether the player could claim the kit.
      */
     public boolean couldClaimKit(ServerPlayerEntity player, String name) {
