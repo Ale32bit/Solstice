@@ -42,7 +42,7 @@ public class RTPCommand extends ModCommand<RTPModule> {
 
                     if (config.cooldown.enable) {
                         if (!Solstice.cooldown.trigger(player, module.getPermissionNode(), config.cooldown.cooldown)) {
-                            context.getSource().sendFeedback(() -> module.locale().get("~cooldown"), false);
+                            context.getSource().sendFeedback(() -> Solstice.cooldown.getMessage(player, module.getPermissionNode()), false);
                             return 0;
                         }
                     }

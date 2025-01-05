@@ -93,7 +93,12 @@ public class PlayerData {
             return new JsonObject();
         try (var fr = new FileReader(this.filePath.toFile())) {
             var reader = gson.newJsonReader(fr);
-            return JsonParser.parseReader(reader).getAsJsonObject();
+            var parser= JsonParser.parseReader(reader);
+            var jsonObject = parser.getAsJsonObject();
+            return jsonObject;
+        } catch(IllegalStateException e) {
+            Solstice.LOGGER.error("Could not load JSON node?", e);
+            return null;
         } catch (IOException e) {
             Solstice.LOGGER.error("Could not load player data of UUID {}!", uuid, e);
             safeMove();

@@ -2,12 +2,8 @@ package me.alexdevs.solstice.modules.kit.data;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.modules.kit.Utils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtHelper;
-import net.minecraft.nbt.NbtIo;
-import net.minecraft.registry.RegistryEntryLookup;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +22,7 @@ public class Kit {
 
         for (var stackNbt : itemStacks) {
             try {
-                var registry = Solstice.server.getRegistryManager();
-                var nbtCompound = NbtHelper.fromNbtProviderString(stackNbt);
-                stacks.add(ItemStack.fromNbtOrEmpty(registry, nbtCompound));
+                stacks.add(Utils.deserializeItemStack(stackNbt));
             } catch (CommandSyntaxException e) {
                 Solstice.LOGGER.error("Could not load item from kit", e);
             }
