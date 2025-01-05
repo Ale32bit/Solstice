@@ -2,7 +2,6 @@ package me.alexdevs.solstice.modules.rtp.core;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableList;
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.modules.rtp.data.RTPConfig;
 import net.minecraft.block.Block;
@@ -10,7 +9,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ChunkHolder;
 import net.minecraft.server.world.ChunkTicketType;
-import net.minecraft.server.world.OptionalChunk;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
