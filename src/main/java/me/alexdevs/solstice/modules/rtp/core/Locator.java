@@ -74,7 +74,7 @@ public class Locator {
     public void locate(Consumer<Result> callback) {
         this.callback = callback;
         stopwatch.start();
-        Solstice.scheduler.schedule(() -> this.attempt(config.attempts), 0, TimeUnit.MILLISECONDS);
+        attempt(config.attempts);
     }
 
     private void attempt(int remainingAttempts) {
