@@ -17,8 +17,6 @@ import java.util.Map;
 public class KitModule extends ModuleBase {
     public static final String ID = "kit";
 
-    public static RegistryWrapper.WrapperLookup wrapperLookup;
-
     public KitModule() {
         super(ID);
 
