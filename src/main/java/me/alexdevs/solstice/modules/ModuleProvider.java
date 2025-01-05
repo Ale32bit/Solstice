@@ -33,6 +33,7 @@ import me.alexdevs.solstice.modules.mail.MailModule;
 import me.alexdevs.solstice.modules.mute.MuteModule;
 import me.alexdevs.solstice.modules.near.NearModule;
 import me.alexdevs.solstice.modules.seen.SeenModule;
+import me.alexdevs.solstice.modules.skull.SkullModule;
 import me.alexdevs.solstice.modules.smite.SmiteModule;
 import me.alexdevs.solstice.modules.spawn.SpawnModule;
 import me.alexdevs.solstice.modules.staffChat.StaffChatModule;
@@ -85,6 +86,7 @@ public class ModuleProvider {
             new NearModule(),
             new RTPModule(),
             new SeenModule(),
+            new SkullModule(),
             new SmiteModule(),
             new SpawnModule(),
             new StaffChatModule(),
