@@ -5,10 +5,7 @@ import me.alexdevs.solstice.modules.skull.commands.SkullCommand;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.SkullItem;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtString;
-
-import java.util.UUID;
 
 public class SkullModule extends ModuleBase {
     public static final String ID = "skull";

@@ -13,7 +13,6 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class ItemLoreCommand extends ModCommand<ItemModule> {
