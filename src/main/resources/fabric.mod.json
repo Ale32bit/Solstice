@@ -8,13 +8,16 @@
     {
       "name": "AlexDevs",
       "contact": {
-        "email": "solstice@alexdevs.me"
+        "email": "solstice@alexdevs.me",
+        "homepage": "https://alexdevs.me"
       }
     }
   ],
   "contact": {
     "sources": "https://github.com/Ale32bit/Solstice.git",
-    "issues": "https://github.com/Ale32bit/Solstice/issues"
+    "issues": "https://github.com/Ale32bit/Solstice/issues",
+    "homepage": "https://solstice.alexdevs.me",
+    "email": "solstice@alexdevs.me"
   },
   "license": "MIT",
   "environment": "*",
@@ -31,6 +34,9 @@
     "minecraft": "~1.20.1",
     "java": ">=17",
     "fabric-api": "*"
+  },
+  "recommends": {
+    "luckperms": "*"
   },
   "accessWidener": "solstice.accesswidener"
 }
