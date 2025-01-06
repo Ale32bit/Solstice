@@ -29,9 +29,11 @@ public class SpawnCommand extends ModCommand<SpawnModule> {
 
     private int execute(CommandContext<ServerCommandSource> context, @Nullable ServerWorld world, @Nullable Collection<ServerPlayerEntity> players) throws CommandSyntaxException {
         var config = module.getConfig();
+        var skipPermCheck = false;
         if (world == null) {
             if (config.globalSpawn.onSpawnCommand) {
                 world = module.getGlobalSpawnWorld();
+                skipPermCheck = true;
             } else {
                 world = context.getSource().getWorld();
             }
@@ -39,7 +41,7 @@ public class SpawnCommand extends ModCommand<SpawnModule> {
 
         var worldName = world.getRegistryKey().getValue().toString();
 
-        if(config.requireWorldPermission) {
+        if(config.requireWorldPermission && !skipPermCheck) {
             if (!Permissions.check(context.getSource(), getPermissionNode("worlds." + worldName), 2)) {
                 context.getSource().sendFeedback(() -> module.locale().get("noWorldPermission", Map.of("world", Text.of(worldName))), false);
                 return 0;
