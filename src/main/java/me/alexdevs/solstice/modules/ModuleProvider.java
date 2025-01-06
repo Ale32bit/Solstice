@@ -6,6 +6,7 @@ import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.autoAnnouncement.AutoAnnouncementModule;
 import me.alexdevs.solstice.modules.item.ItemModule;
 import me.alexdevs.solstice.modules.kit.KitModule;
+import me.alexdevs.solstice.modules.note.NoteModule;
 import me.alexdevs.solstice.modules.restart.RestartModule;
 import me.alexdevs.solstice.modules.back.BackModule;
 import me.alexdevs.solstice.modules.ban.BanModule;
@@ -86,6 +87,7 @@ public class ModuleProvider {
             new MailModule(),
             new MuteModule(),
             new NearModule(),
+            new NoteModule(),
             new RTPModule(),
             new SeenModule(),
             new SkullModule(),
