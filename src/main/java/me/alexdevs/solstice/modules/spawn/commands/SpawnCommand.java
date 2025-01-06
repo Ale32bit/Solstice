@@ -34,17 +34,17 @@ public class SpawnCommand extends ModCommand<SpawnModule> {
                 world = module.getGlobalSpawnWorld();
             } else {
                 world = context.getSource().getWorld();
-                if(config.requireWorldPermission) {
-                    var worldName = world.getRegistryKey().getValue().toString();
-                    if (!Permissions.check(context.getSource(), getPermissionNode("worlds." + worldName), 2)) {
-                        context.getSource().sendFeedback(() -> module.locale().get("noWorldPermission", Map.of("world", Text.of(worldName))), false);
-                        return 0;
-                    }
-                }
             }
         }
 
         var worldName = world.getRegistryKey().getValue().toString();
+
+        if(config.requireWorldPermission) {
+            if (!Permissions.check(context.getSource(), getPermissionNode("worlds." + worldName), 2)) {
+                context.getSource().sendFeedback(() -> module.locale().get("noWorldPermission", Map.of("world", Text.of(worldName))), false);
+                return 0;
+            }
+        }
 
         if (players == null) {
             var player = context.getSource().getPlayerOrThrow();
