@@ -1,3 +1,8 @@
+# 1.4.1
+
+* Bugfix spawn not respecting world permissions.
+* Bugfix message for empty kit list not being used.
+
 # 1.4.0
 
 * Added kits!
