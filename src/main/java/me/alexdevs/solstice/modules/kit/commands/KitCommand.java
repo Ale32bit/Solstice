@@ -92,6 +92,10 @@ public class KitCommand extends ModCommand<KitModule> {
         var player = context.getSource().getPlayerOrThrow();
         var kits = getPlayerKitNames(player);
 
+        if(kits.isEmpty()) {
+            context.getSource().sendFeedback(() -> module.locale().get("listNoKits"), false);
+            return 0;
+        }
 
         var comma = module.locale().get("listComma");
         var items = Text.empty();
