@@ -24,6 +24,9 @@
   "entrypoints": {
     "main": [
       "me.alexdevs.solstice.Solstice"
+    ],
+    "solstice": [
+      "me.alexdevs.solstice.modules.ModuleProvider"
     ]
   },
   "mixins": [

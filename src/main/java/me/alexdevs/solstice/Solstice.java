@@ -68,7 +68,6 @@ public class Solstice implements ModInitializer {
         var modMeta = FabricLoader.getInstance().getModContainer(MOD_ID).get().getMetadata();
         LOGGER.info("Initializing Solstice v{}...", modMeta.getVersion());
 
-        ModuleProvider.register();
         modules.register();
 
         try {
@@ -84,8 +83,7 @@ public class Solstice implements ModInitializer {
             localeManager.load();
             localeManager.save();
         } catch (Exception e) {
-            LOGGER.error("Error while loading Solstice locale! Refusing to continue!", e);
-            return;
+            LOGGER.error("Error while loading Solstice locale!", e);
         }
 
         if (FabricLoader.getInstance().isModLoaded("luckperms")) {

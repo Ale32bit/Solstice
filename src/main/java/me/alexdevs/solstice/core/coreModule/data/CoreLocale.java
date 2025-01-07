@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.modules.core.data;
+package me.alexdevs.solstice.core.coreModule.data;
 
 import java.util.Map;
 

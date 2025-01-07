@@ -1,14 +1,14 @@
-package me.alexdevs.solstice.modules.core;
+package me.alexdevs.solstice.core.coreModule;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
-import me.alexdevs.solstice.modules.core.commands.ServerStatCommand;
-import me.alexdevs.solstice.modules.core.commands.SolsticeCommand;
-import me.alexdevs.solstice.modules.core.data.CoreConfig;
-import me.alexdevs.solstice.modules.core.data.CoreLocale;
-import me.alexdevs.solstice.modules.core.data.CorePlayerData;
+import me.alexdevs.solstice.core.coreModule.commands.ServerStatCommand;
+import me.alexdevs.solstice.core.coreModule.commands.SolsticeCommand;
+import me.alexdevs.solstice.core.coreModule.data.CoreConfig;
+import me.alexdevs.solstice.core.coreModule.data.CoreLocale;
+import me.alexdevs.solstice.core.coreModule.data.CorePlayerData;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 import java.util.Date;

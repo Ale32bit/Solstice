@@ -4,7 +4,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.modules.core.data.CorePlayerData;
+import me.alexdevs.solstice.core.coreModule.data.CorePlayerData;
 import me.alexdevs.solstice.modules.teleportOffline.TeleportOfflineModule;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;

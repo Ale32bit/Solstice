@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.modules.core.commands;
+package me.alexdevs.solstice.core.coreModule.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -6,7 +6,7 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.Debug;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.modules.core.CoreModule;
+import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.customName.CustomNameModule;
 import me.alexdevs.solstice.api.text.Format;
 import net.fabricmc.loader.api.FabricLoader;

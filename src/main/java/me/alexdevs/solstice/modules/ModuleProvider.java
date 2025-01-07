@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.modules;
 
-import me.alexdevs.solstice.api.events.ModuleRegistrationCallback;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleEntrypoint;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.autoAnnouncement.AutoAnnouncementModule;
 import me.alexdevs.solstice.modules.item.ItemModule;
@@ -12,7 +12,6 @@ import me.alexdevs.solstice.modules.back.BackModule;
 import me.alexdevs.solstice.modules.ban.BanModule;
 import me.alexdevs.solstice.modules.broadcast.BroadcastModule;
 import me.alexdevs.solstice.modules.commandSpy.CommandSpyModule;
-import me.alexdevs.solstice.modules.core.CoreModule;
 import me.alexdevs.solstice.modules.customName.CustomNameModule;
 import me.alexdevs.solstice.modules.enderchest.EnderChestModule;
 import me.alexdevs.solstice.modules.experiments.ExperimentsModule;
@@ -55,7 +54,7 @@ import me.alexdevs.solstice.modules.warp.WarpModule;
 import java.util.HashSet;
 import java.util.List;
 
-public class ModuleProvider {
+public class ModuleProvider implements ModuleEntrypoint {
     private static final List<? extends ModuleBase> modules = List.of(
             new AfkModule(),
             new AutoAnnouncementModule(),
@@ -64,7 +63,6 @@ public class ModuleProvider {
             new BanModule(),
             new BroadcastModule(),
             new CommandSpyModule(),
-            new CoreModule(),
             new CustomNameModule(),
             new EnderChestModule(),
             new ExperimentsModule(),
@@ -108,8 +106,8 @@ public class ModuleProvider {
             new WarpModule()
     );
 
-    public static void register() {
-
-        ModuleRegistrationCallback.EVENT.register(() -> new HashSet<ModuleBase>(modules));
+    @Override
+    public HashSet<ModuleBase> register() {
+        return new HashSet<>(modules);
     }
 }
