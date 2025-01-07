@@ -9,7 +9,6 @@ import me.alexdevs.solstice.data.ServerData;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.locale.LocaleManager;
 import me.alexdevs.solstice.core.Modules;
-import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.api.data.HoconDataManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
