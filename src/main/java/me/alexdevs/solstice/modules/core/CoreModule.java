@@ -4,6 +4,7 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.modules.core.commands.ServerStatCommand;
 import me.alexdevs.solstice.modules.core.commands.SolsticeCommand;
 import me.alexdevs.solstice.modules.core.data.CoreConfig;
 import me.alexdevs.solstice.modules.core.data.CoreLocale;
@@ -21,10 +22,12 @@ public class CoreModule extends ModuleBase {
 
         Solstice.configManager.registerData(ID, CoreConfig.class, CoreConfig::new);
         Solstice.localeManager.registerShared(CoreLocale.SHARED);
+        Solstice.localeManager.registerModule(ID, CoreLocale.MODULE);
 
         Solstice.playerData.registerData(ID, CorePlayerData.class, CorePlayerData::new);
 
         commands.add(new SolsticeCommand(this));
+        commands.add(new ServerStatCommand(this));
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             var player = handler.getPlayer();
