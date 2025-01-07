@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.modules.commandSpy;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.events.CommandEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.commandSpy.data.CommandSpyConfig;
@@ -19,26 +20,33 @@ public class CommandSpyModule extends ModuleBase {
         Solstice.configManager.registerData(ID, CommandSpyConfig.class, CommandSpyConfig::new);
         Solstice.localeManager.registerModule(ID, CommandSpyLocale.MODULE);
 
-        SolsticeEvents.PLAYER_COMMAND.register((source, command) -> {
+        CommandEvents.ALLOW_COMMAND.register((source, command) -> {
+            if(!source.isExecutedByPlayer())
+                return true;
+
             var parts = command.split("\\s");
             if (parts.length >= 1) {
                 var cmd = parts[0];
                 if (isIgnored(cmd)) {
-                    return;
+                    return true;
                 }
             }
+
+            var player = source.getPlayer();
 
             var players = source.getServer().getPlayerManager().getPlayerList();
-            var placeholders = Map.of("player", Text.of(source.getGameProfile().getName()), "command", Text.of(command));
+            var placeholders = Map.of("player", Text.of(player.getGameProfile().getName()), "command", Text.of(command));
             var message = locale().get("spyFormat", placeholders);
-            for (var player : players) {
-                var commandSpyEnabled = Permissions.check(player, this.getPermissionNode("base"));
+            for (var pl : players) {
+                var commandSpyEnabled = Permissions.check(pl, this.getPermissionNode("base"));
 
-                if (commandSpyEnabled && !player.getUuid().equals(source.getUuid())) {
-                    player.sendMessage(message, false);
+                if (commandSpyEnabled && !pl.getUuid().equals(player.getUuid())) {
+                    pl.sendMessage(message, false);
                 }
             }
+            return true;
         });
+
     }
 
     public boolean isIgnored(String command) {
