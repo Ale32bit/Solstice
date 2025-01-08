@@ -15,6 +15,7 @@ import net.minecraft.entity.Entity;
 
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class CoreModule extends ModuleBase {
     public static final String ID = "core";
@@ -54,7 +55,14 @@ public class CoreModule extends ModuleBase {
             var playerData = Solstice.playerData.get(handler.getPlayer()).getData(CorePlayerData.class);
             playerData.lastSeenDate = new Date();
             playerData.logoffPosition = new ServerPosition(handler.getPlayer());
-            Solstice.playerData.dispose(handler.getPlayer().getUuid());
+            Solstice.scheduler.schedule(() -> {
+                Solstice.playerData.dispose(handler.getPlayer().getUuid());
+            }, 1, TimeUnit.SECONDS);
+        });
+
+        WorldSaveCallback.EVENT.register((server, suppressLogs, flush, force) -> {
+            var uuids = server.getPlayerManager().getPlayerList().stream().map(Entity::getUuid).toList();
+            Solstice.playerData.disposeMissing(uuids);
         });
     }
 
