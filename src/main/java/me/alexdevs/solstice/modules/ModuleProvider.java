@@ -5,6 +5,7 @@ import me.alexdevs.solstice.api.module.ModuleEntrypoint;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.autoAnnouncement.AutoAnnouncementModule;
 import me.alexdevs.solstice.modules.item.ItemModule;
+import me.alexdevs.solstice.modules.jail.JailModule;
 import me.alexdevs.solstice.modules.kit.KitModule;
 import me.alexdevs.solstice.modules.note.NoteModule;
 import me.alexdevs.solstice.modules.restart.RestartModule;
@@ -80,6 +81,7 @@ public class ModuleProvider implements ModuleEntrypoint {
             new InfoModule(),
             new InventorySeeModule(),
             new ItemModule(),
+            new JailModule(),
             new KickModule(),
             new KitModule(),
             new MailModule(),
