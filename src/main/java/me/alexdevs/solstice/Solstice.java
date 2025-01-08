@@ -1,7 +1,7 @@
 package me.alexdevs.solstice;
 
 import me.alexdevs.solstice.api.events.SolsticeEvents;
-import me.alexdevs.solstice.api.events.WorldSave;
+import me.alexdevs.solstice.api.events.WorldSaveCallback;
 import me.alexdevs.solstice.core.CooldownManager;
 import me.alexdevs.solstice.core.WarmUpManager;
 import me.alexdevs.solstice.data.PlayerDataManager;
@@ -103,7 +103,7 @@ public class Solstice implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> SolsticeEvents.READY.invoker().onReady(INSTANCE, server));
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> scheduler.shutdown());
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> scheduler.shutdownNow());
-        WorldSave.EVENT.register((server1, suppressLogs, flush, force) -> {
+        WorldSaveCallback.EVENT.register((server1, suppressLogs, flush, force) -> {
             serverData.save();
             playerData.saveAll();
         });

@@ -4,10 +4,10 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.server.MinecraftServer;
 
-public interface WorldSave {
-    Event<WorldSave> EVENT = EventFactory.createArrayBacked(WorldSave.class, (callbacks) ->
+public interface WorldSaveCallback {
+    Event<WorldSaveCallback> EVENT = EventFactory.createArrayBacked(WorldSaveCallback.class, (callbacks) ->
             (server, suppressLogs, flush, force) -> {
-                for (WorldSave callback : callbacks) {
+                for (WorldSaveCallback callback : callbacks) {
                     callback.onSave(server, suppressLogs, flush, force);
                 }
 

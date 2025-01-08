@@ -2,7 +2,7 @@ package me.alexdevs.solstice.modules.back;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerPosition;
-import me.alexdevs.solstice.api.events.PlayerTeleport;
+import me.alexdevs.solstice.api.events.PlayerTeleportCallback;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.back.commands.BackCommand;
 import me.alexdevs.solstice.modules.back.data.BackLocale;
@@ -25,7 +25,7 @@ public class BackModule extends ModuleBase {
 
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> lastPlayerPositions.remove(handler.getPlayer().getUuid()));
 
-        PlayerTeleport.EVENT.register((player, origin, destination) -> lastPlayerPositions.put(player.getUuid(), origin));
+        PlayerTeleportCallback.EVENT.register((player, origin, destination) -> lastPlayerPositions.put(player.getUuid(), origin));
 
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
             if (entity.isPlayer()) {
