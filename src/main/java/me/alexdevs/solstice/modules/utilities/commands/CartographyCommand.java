@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules.utilities.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.utilities.UtilitiesModule;
+import me.alexdevs.solstice.modules.utilities.virtualScreenHandlers.VirtualCartographyTableScreenHandler;
 import net.minecraft.screen.CartographyTableScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
@@ -32,7 +33,7 @@ public class CartographyCommand extends ModCommand<UtilitiesModule> {
                     var player = context.getSource().getPlayerOrThrow();
                     var screen = new SimpleNamedScreenHandlerFactory(
                             (syncId, inventory, p) ->
-                                    new CartographyTableScreenHandler(syncId, inventory, ScreenHandlerContext.EMPTY),
+                                    new VirtualCartographyTableScreenHandler(syncId, inventory, ScreenHandlerContext.create(player.getWorld(), player.getBlockPos())),
                             Text.translatable("container.cartography_table"));
                     player.openHandledScreen(screen);
                     player.incrementStat(Stats.INTERACT_WITH_CARTOGRAPHY_TABLE);

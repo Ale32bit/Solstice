@@ -3,7 +3,7 @@ package me.alexdevs.solstice.modules.utilities.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.utilities.UtilitiesModule;
-import net.minecraft.screen.CraftingScreenHandler;
+import me.alexdevs.solstice.modules.utilities.virtualScreenHandlers.VirtualCraftingScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.command.ServerCommandSource;
@@ -32,7 +32,7 @@ public class WorkbenchCommand extends ModCommand<UtilitiesModule> {
                     var player = context.getSource().getPlayerOrThrow();
                     var screen = new SimpleNamedScreenHandlerFactory(
                             (syncId, inventory, p) ->
-                                    new CraftingScreenHandler(syncId, inventory, ScreenHandlerContext.EMPTY),
+                                    new VirtualCraftingScreenHandler(syncId, inventory, ScreenHandlerContext.create(player.getWorld(), player.getBlockPos())),
                             Text.translatable("container.crafting"));
                     player.openHandledScreen(screen);
                     player.incrementStat(Stats.INTERACT_WITH_CRAFTING_TABLE);

@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules.utilities.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.utilities.UtilitiesModule;
+import me.alexdevs.solstice.modules.utilities.virtualScreenHandlers.VirtualGrindstoneScreenHandler;
 import net.minecraft.screen.GrindstoneScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
@@ -32,7 +33,7 @@ public class GrindstoneCommand extends ModCommand<UtilitiesModule> {
                     var player = context.getSource().getPlayerOrThrow();
                     var screen = new SimpleNamedScreenHandlerFactory(
                             (syncId, inventory, p) ->
-                                    new GrindstoneScreenHandler(syncId, inventory, ScreenHandlerContext.EMPTY),
+                                    new VirtualGrindstoneScreenHandler(syncId, inventory, ScreenHandlerContext.create(player.getWorld(), player.getBlockPos())),
                             Text.translatable("container.grindstone_title"));
                     player.openHandledScreen(screen);
                     player.incrementStat(Stats.INTERACT_WITH_GRINDSTONE);

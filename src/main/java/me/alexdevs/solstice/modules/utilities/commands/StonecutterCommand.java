@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules.utilities.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.utilities.UtilitiesModule;
+import me.alexdevs.solstice.modules.utilities.virtualScreenHandlers.VirtualStonecutterScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.screen.StonecutterScreenHandler;
@@ -32,7 +33,7 @@ public class StonecutterCommand extends ModCommand<UtilitiesModule> {
                     var player = context.getSource().getPlayerOrThrow();
                     var screen = new SimpleNamedScreenHandlerFactory(
                             (syncId, inventory, p) ->
-                                    new StonecutterScreenHandler(syncId, inventory, ScreenHandlerContext.EMPTY),
+                                    new VirtualStonecutterScreenHandler(syncId, inventory, ScreenHandlerContext.create(player.getWorld(), player.getBlockPos())),
                             Text.translatable("container.stonecutter"));
                     player.openHandledScreen(screen);
                     player.incrementStat(Stats.INTERACT_WITH_STONECUTTER);
