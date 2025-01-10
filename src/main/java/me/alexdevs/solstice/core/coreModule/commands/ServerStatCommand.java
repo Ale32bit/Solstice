@@ -38,7 +38,7 @@ public class ServerStatCommand extends ModCommand<CoreModule> {
                     messages.add(locale.get("stat.tps", placeholderContext));
 
                     var uptime = Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime());
-                    var uptimeFormatted = TimeSpan.serialize((int)uptime.getSeconds());
+                    var uptimeFormatted = TimeSpan.toShortString((int)uptime.getSeconds());
                     messages.add(locale.get("stat.uptime", placeholderContext, Map.of(
                             "uptime", Text.of(uptimeFormatted)
                     )));

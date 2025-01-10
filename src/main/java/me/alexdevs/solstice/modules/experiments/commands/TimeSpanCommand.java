@@ -37,7 +37,7 @@ public class TimeSpanCommand extends ModCommand<ExperimentsModule> {
 
     private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         var timespan = TimeSpan.getTimeSpan(context, "timespan");
-        context.getSource().sendFeedback(() -> Text.of(String.format("Got %s (%d)", TimeSpan.serialize(timespan), timespan)), false);
+        context.getSource().sendFeedback(() -> Text.of(String.format("Got %s (%d)", TimeSpan.toShortString(timespan), timespan)), false);
         return 1;
     }
 }

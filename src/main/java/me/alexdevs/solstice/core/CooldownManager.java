@@ -56,7 +56,7 @@ public class CooldownManager {
         var value = cooldown.getOrDefault(node, 0);
         var locale = Solstice.localeManager.getLocale(CoreModule.ID);
         return locale.get("~cooldown", Map.of(
-                "timespan", Text.of(TimeSpan.serialize(value))
+                "timespan", Text.of(TimeSpan.toShortString(value))
         ));
     }
 

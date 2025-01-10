@@ -158,7 +158,7 @@ public class KitCommand extends ModCommand<KitModule> {
                 if (delta < kit.cooldownSeconds) {
                     var remaining = kit.cooldownSeconds - delta;
 
-                    var timespan = TimeSpan.serialize((int) remaining);
+                    var timespan = TimeSpan.toShortString((int) remaining);
                     source.sendFeedback(() -> module.locale().get("onCooldown", Map.of(
                             "kit", Text.of(name),
                             "timespan", Text.of(timespan)
@@ -281,7 +281,7 @@ public class KitCommand extends ModCommand<KitModule> {
 
         context.getSource().sendFeedback(() -> module.locale().get("setFirstJoin", Map.of(
                 "kit", Text.of(name),
-                "value", Text.of(TimeSpan.serialize(timespan))
+                "value", Text.of(TimeSpan.toShortString(timespan))
         )), true);
 
         return 1;

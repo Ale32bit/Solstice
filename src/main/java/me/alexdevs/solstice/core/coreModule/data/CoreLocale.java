@@ -9,7 +9,17 @@ public class CoreLocale {
             Map.entry("accept", "<green>Accept</green>"),
             Map.entry("refuse", "<red>Refuse</red>"),
             Map.entry("tooManyTargets", "<red>The provided selector contains too many targets.</red>"),
-            Map.entry("cooldown", "<gold>You are on cooldown for <yellow>${timespan}</yellow>.</gold>")
+            Map.entry("cooldown", "<gold>You are on cooldown for <yellow>${timespan}</yellow>.</gold>"),
+            Map.entry("unit.second", "${n} second"),
+            Map.entry("unit.seconds", "${n} seconds"),
+            Map.entry("unit.minute", "${n} minute"),
+            Map.entry("unit.minutes", "${n} minutes"),
+            Map.entry("unit.hour", "${n} hour"),
+            Map.entry("unit.hours", "${n} hours"),
+            Map.entry("unit.day", "${n} day"),
+            Map.entry("unit.days", "${n} days"),
+            Map.entry("unit.week", "${n} week"),
+            Map.entry("unit.weeks", "${n} weeks")
     );
 
     public static final Map<String, String> MODULE = Map.ofEntries(
