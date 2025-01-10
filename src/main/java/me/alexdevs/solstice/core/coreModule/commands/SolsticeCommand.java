@@ -11,6 +11,9 @@ import me.alexdevs.solstice.modules.customName.CustomNameModule;
 import me.alexdevs.solstice.api.text.Format;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 
 import java.io.FileWriter;
@@ -102,6 +105,35 @@ public class SolsticeCommand extends ModCommand<CoreModule> {
                                     }
 
                                     context.getSource().sendFeedback(() -> Text.of("Generated 'solstice-commands.md'"), true);
+
+                                    return 1;
+                                }))
+                        .then(literal("tags")
+                                .executes(context -> {
+                                    var player = context.getSource().getPlayerOrThrow();
+
+                                    var hand = player.getActiveHand();
+                                    var itemStack = player.getStackInHand(hand);
+
+                                    var entry = itemStack.getRegistryEntry().getKey().get();
+                                    var entryString = String.format("Tags for [%s / %s]:", entry.getRegistry().toString(), entry.getValue().toString());
+
+                                    var text = Text.empty();
+                                    text.append(Text.of(entryString));
+                                    var tags = itemStack.streamTags().iterator();
+                                    while(tags.hasNext()) {
+                                        var tag = tags.next();
+                                        text.append(Text.of("\n"));
+                                        text.append(
+                                                Text.literal(" #" + tag.id().toString())
+                                                        .setStyle(Style.EMPTY
+                                                                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("Click to copy")))
+                                                                .withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, "#" + tag.id().toString()))
+                                                        )
+                                        );
+                                    }
+
+                                    context.getSource().sendFeedback(() -> text, false);
 
                                     return 1;
                                 }))
