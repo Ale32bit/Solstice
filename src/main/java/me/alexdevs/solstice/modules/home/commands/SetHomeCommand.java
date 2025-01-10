@@ -57,7 +57,7 @@ public class SetHomeCommand extends ModCommand<HomeModule> {
                 "forceSetButton", Components.button(
                         module.locale().raw("forceSetLabel"),
                         module.locale().raw("forceSetHover"),
-                        "/sethome " + name + " true"
+                        "/sethome " + name + " force"
                 )
         );
 
