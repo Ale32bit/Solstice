@@ -58,7 +58,7 @@ public class SpawnModule extends ModuleBase {
             if (spawnData.spawn != null) {
                 var legacy = spawnData.spawn;
                 var world = legacy.getWorld(server);
-                world.setSpawnPos(new BlockPos((int) legacy.x, (int) legacy.y, (int) legacy.z), legacy.yaw);
+                world.setSpawnPos(new BlockPos((int) legacy.getX(), (int) legacy.getY(), (int) legacy.getZ()), legacy.getYaw());
                 spawnData.spawn = null;
             }
         });

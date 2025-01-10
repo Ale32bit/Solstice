@@ -29,7 +29,7 @@ public class SeenCommand extends ModCommand<SeenModule> {
         if (pos == null)
             return "Unknown position";
 
-        return String.format("%.01f %.01f %.01f, %s", pos.x, pos.y, pos.z, pos.world);
+        return String.format("%.01f %.01f %.01f, %s", pos.getX(), pos.getY(), pos.getZ(), pos.getWorld());
     }
 
     @Override

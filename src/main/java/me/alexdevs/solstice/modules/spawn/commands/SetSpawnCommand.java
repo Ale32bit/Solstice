@@ -34,12 +34,12 @@ public class SetSpawnCommand extends ModCommand<SpawnModule> {
 
                     world.setSpawnPos(
                             player.getBlockPos(),
-                            spawnPosition.yaw
+                            spawnPosition.getYaw()
                     );
 
                     context.getSource().sendFeedback(() -> module.locale().get("worldSpawnSet", Map.of(
                             "world", Text.of(world.getRegistryKey().getValue().toString()),
-                            "coordinates", Text.of(String.format("%.1f %.1f %.1f", spawnPosition.x, spawnPosition.y, spawnPosition.z))
+                            "coordinates", Text.of(String.format("%.1f %.1f %.1f", spawnPosition.getX(), spawnPosition.getY(), spawnPosition.getZ()))
                     )), true);
 
                     return 1;

@@ -1,6 +1,5 @@
 package me.alexdevs.solstice.api;
 
-import com.google.gson.annotations.Expose;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.back.BackModule;
 import net.minecraft.registry.RegistryKey;
@@ -11,28 +10,16 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.Objects;
 
-@ConfigSerializable
 public class ServerPosition {
-    @Expose
-    public double x;
-    @Expose
-    public double y;
-    @Expose
-    public double z;
-    @Expose
-    public float yaw;
-    @Expose
-    public float pitch;
-    @Expose
-    public String world;
-
-    public ServerPosition() {
-
-    }
+    protected double x;
+    protected double y;
+    protected double z;
+    protected float yaw;
+    protected float pitch;
+    protected String world;
 
     public ServerPosition(double x, double y, double z, float yaw, float pitch, ServerWorld world) {
         this.x = x;
@@ -52,16 +39,25 @@ public class ServerPosition {
         this.world = player.getServerWorld().getRegistryKey().getValue().toString();
     }
 
+    public ServerPosition(double x, double y, double z, float yaw, float pitch, String worldKey) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
+        this.world = worldKey;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         ServerPosition that = (ServerPosition) o;
-        return Double.compare(x, that.x) == 0 && Double.compare(y, that.y) == 0 && Double.compare(z, that.z) == 0 && Float.compare(yaw, that.yaw) == 0 && Float.compare(pitch, that.pitch) == 0 && Objects.equals(world, that.world);
+        return Double.compare(getX(), that.getX()) == 0 && Double.compare(getY(), that.getY()) == 0 && Double.compare(getZ(), that.getZ()) == 0 && Float.compare(getYaw(), that.getYaw()) == 0 && Float.compare(getPitch(), that.getPitch()) == 0 && Objects.equals(getWorld(), that.getWorld());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, y, z, yaw, pitch, world);
+        return Objects.hash(getX(), getY(), getZ(), getYaw(), getPitch(), getWorld());
     }
 
     public void teleport(ServerPlayerEntity player, boolean setBackPosition) {
@@ -75,7 +71,7 @@ public class ServerPosition {
         player.setVelocity(player.getVelocity().multiply(1f, 0f, 1f));
         player.setOnGround(true);
 
-        player.teleport(serverWorld, this.x, this.y, this.z, this.yaw, this.pitch);
+        player.teleport(serverWorld, this.getX(), this.getY(), this.getZ(), this.getYaw(), this.getPitch());
 
         // There is a bug (presumably in Fabric's api) that causes experience level to be set to 0 when teleporting between dimensions/worlds.
         // Therefore, this will update the experience client side as a temporary solution.
@@ -87,7 +83,7 @@ public class ServerPosition {
     }
 
     public RegistryKey<World> getWorldKey() {
-        return RegistryKey.of(RegistryKeys.WORLD, new Identifier(this.world));
+        return RegistryKey.of(RegistryKeys.WORLD, new Identifier(this.getWorld()));
     }
 
     public ServerWorld getWorld(MinecraftServer server) {
@@ -95,6 +91,30 @@ public class ServerPosition {
     }
 
     public BlockPos getBlockPos() {
-        return BlockPos.ofFloored(this.x, this.y, this.z);
+        return BlockPos.ofFloored(this.getX(), this.getY(), this.getZ());
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getZ() {
+        return z;
+    }
+
+    public float getYaw() {
+        return yaw;
+    }
+
+    public float getPitch() {
+        return pitch;
+    }
+
+    public String getWorld() {
+        return world;
     }
 }
