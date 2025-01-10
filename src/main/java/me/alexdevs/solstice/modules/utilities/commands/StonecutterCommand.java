@@ -6,7 +6,6 @@ import me.alexdevs.solstice.modules.utilities.UtilitiesModule;
 import me.alexdevs.solstice.modules.utilities.virtualScreenHandlers.VirtualStonecutterScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
-import net.minecraft.screen.StonecutterScreenHandler;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
