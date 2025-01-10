@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.alexdevs.solstice.api.ServerPosition;
+import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.home.HomeModule;
 import me.alexdevs.solstice.api.text.Components;
@@ -85,7 +85,7 @@ public class SetHomeCommand extends ModCommand<HomeModule> {
             return 1;
         }
 
-        var homePosition = new ServerPosition(player);
+        var homePosition = new ServerLocation(player);
         homes.put(name, homePosition);
 
         context.getSource().sendFeedback(() -> module.locale().get(

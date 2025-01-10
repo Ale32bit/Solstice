@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.api.events;
 
-import me.alexdevs.solstice.api.ServerPosition;
+import me.alexdevs.solstice.api.ServerLocation;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -13,5 +13,5 @@ public interface PlayerTeleportCallback {
                 }
             });
 
-    void teleport(ServerPlayerEntity player, ServerPosition origin, ServerPosition destination);
+    void teleport(ServerPlayerEntity player, ServerLocation origin, ServerLocation destination);
 }

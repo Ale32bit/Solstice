@@ -3,7 +3,7 @@ package me.alexdevs.solstice.modules.seen.commands;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.alexdevs.solstice.api.ServerPosition;
+import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.seen.SeenModule;
@@ -25,7 +25,7 @@ public class SeenCommand extends ModCommand<SeenModule> {
         super(module);
     }
 
-    public static String getPositionAsString(@Nullable ServerPosition pos) {
+    public static String getPositionAsString(@Nullable ServerLocation pos) {
         if (pos == null)
             return "Unknown position";
 
@@ -63,11 +63,11 @@ public class SeenCommand extends ModCommand<SeenModule> {
                                 var player = source.getServer().getPlayerManager().getPlayer(profile.get().getId());
                                 var playerData = CoreModule.getPlayerData(profile.get().getId());
 
-                                ServerPosition location;
+                                ServerLocation location;
                                 if (player == null) {
                                     location = playerData.logoffPosition;
                                 } else {
-                                    location = new ServerPosition(player);
+                                    location = new ServerLocation(player);
                                 }
 
                                 Map<String, Text> map = Map.of(

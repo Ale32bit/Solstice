@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.ServerPosition;
+import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.warp.WarpModule;
 import me.alexdevs.solstice.modules.warp.data.WarpServerData;
@@ -43,7 +43,7 @@ public class SetWarpCommand extends ModCommand<WarpModule> {
 
         var warps = serverData.warps;
 
-        var warpPosition = new ServerPosition(player);
+        var warpPosition = new ServerLocation(player);
         warps.put(name, warpPosition);
 
         context.getSource().sendFeedback(() -> module.locale().get(

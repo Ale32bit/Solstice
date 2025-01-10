@@ -4,7 +4,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.ServerPosition;
+import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.events.PlayerActivityEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
@@ -155,7 +155,7 @@ public class AfkModule extends ModuleBase {
         var playerState = playerActivityStates.computeIfAbsent(player.getUuid(), uuid -> new PlayerActivityState(player, currentTick));
 
         var oldPosition = playerState.position;
-        var newPosition = new ServerPosition(player);
+        var newPosition = new ServerLocation(player);
         if (!oldPosition.equals(newPosition)) {
             playerState.position = newPosition;
             resetAfkState(player, server);

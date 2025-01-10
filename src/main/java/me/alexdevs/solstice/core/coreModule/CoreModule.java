@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.core.coreModule;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.ServerPosition;
+import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSaveCallback;
 import me.alexdevs.solstice.api.module.ModuleBase;
@@ -54,7 +54,7 @@ public class CoreModule extends ModuleBase {
         ServerPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             var playerData = Solstice.playerData.get(handler.getPlayer()).getData(CorePlayerData.class);
             playerData.lastSeenDate = new Date();
-            playerData.logoffPosition = new ServerPosition(handler.getPlayer());
+            playerData.logoffPosition = new ServerLocation(handler.getPlayer());
             Solstice.scheduler.schedule(() -> {
                 Solstice.playerData.dispose(handler.getPlayer().getUuid());
             }, 1, TimeUnit.SECONDS);

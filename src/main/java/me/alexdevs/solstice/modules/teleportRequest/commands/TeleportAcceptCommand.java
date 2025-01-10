@@ -4,7 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.ServerPosition;
+import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.teleportRequest.TeleportRequest;
@@ -124,7 +124,7 @@ public class TeleportAcceptCommand extends ModCommand<TeleportRequestModule> {
             ), false);
         }
 
-        var targetPosition = new ServerPosition(targetPlayer);
+        var targetPosition = new ServerLocation(targetPlayer);
         targetPosition.teleport(sourcePlayer);
     }
 }

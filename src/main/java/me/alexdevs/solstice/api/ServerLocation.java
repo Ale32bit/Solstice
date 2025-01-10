@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 
 import java.util.Objects;
 
-public class ServerPosition {
+public class ServerLocation {
     protected double x;
     protected double y;
     protected double z;
@@ -21,7 +21,7 @@ public class ServerPosition {
     protected float pitch;
     protected String world;
 
-    public ServerPosition(double x, double y, double z, float yaw, float pitch, ServerWorld world) {
+    public ServerLocation(double x, double y, double z, float yaw, float pitch, ServerWorld world) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -30,7 +30,7 @@ public class ServerPosition {
         this.world = world.getRegistryKey().getValue().toString();
     }
 
-    public ServerPosition(ServerPlayerEntity player) {
+    public ServerLocation(ServerPlayerEntity player) {
         this.x = player.getX();
         this.y = player.getY();
         this.z = player.getZ();
@@ -39,7 +39,7 @@ public class ServerPosition {
         this.world = player.getServerWorld().getRegistryKey().getValue().toString();
     }
 
-    public ServerPosition(double x, double y, double z, float yaw, float pitch, String worldKey) {
+    public ServerLocation(double x, double y, double z, float yaw, float pitch, String worldKey) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -51,7 +51,7 @@ public class ServerPosition {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        ServerPosition that = (ServerPosition) o;
+        ServerLocation that = (ServerLocation) o;
         return Double.compare(getX(), that.getX()) == 0 && Double.compare(getY(), that.getY()) == 0 && Double.compare(getZ(), that.getZ()) == 0 && Float.compare(getYaw(), that.getYaw()) == 0 && Float.compare(getPitch(), that.getPitch()) == 0 && Objects.equals(getWorld(), that.getWorld());
     }
 
@@ -62,7 +62,7 @@ public class ServerPosition {
 
     public void teleport(ServerPlayerEntity player, boolean setBackPosition) {
         if (setBackPosition) {
-            var currentPosition = new ServerPosition(player);
+            var currentPosition = new ServerLocation(player);
             Solstice.modules.getModule(BackModule.class).lastPlayerPositions.put(player.getUuid(), currentPosition);
         }
 
