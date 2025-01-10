@@ -43,7 +43,7 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                                 return 0;
                             }
 
-                            var targetInventory = player.getInventory();
+                            var targetInventory = target.getInventory();
 
                             var container = new SimpleGui(ScreenHandlerType.GENERIC_9X5, player, false);
 
