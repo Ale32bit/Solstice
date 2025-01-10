@@ -1,5 +1,6 @@
 package me.alexdevs.solstice.modules.jail.data;
 
+import me.alexdevs.solstice.api.ServerLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
@@ -12,4 +13,6 @@ public class JailPlayerData {
     public @Nullable Date jailedOn = null;
     public int jailTime = 0;
     public @Nullable String jailReason = null;
+    public @Nullable ServerLocation previousLocation = null;
+    public boolean teleportToPreviousLocation = false;
 }
