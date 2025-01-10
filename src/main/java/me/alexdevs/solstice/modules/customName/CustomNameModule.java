@@ -93,8 +93,8 @@ public class CustomNameModule extends ModuleBase {
         try {
             prefix = LuckPermsIntegration.getPrefix(player);
             suffix = LuckPermsIntegration.getSuffix(player);
-        } catch (IllegalArgumentException e) {
-            Solstice.LOGGER.error("-- IGNORE THIS ERROR --\nLuckPerms gave up on getting user... Falling back to default values", e);
+        } catch (IllegalStateException e) {
+            // we do nothing, LP does NOT like fake players
         }
         if (prefix == null)
             prefix = "";
