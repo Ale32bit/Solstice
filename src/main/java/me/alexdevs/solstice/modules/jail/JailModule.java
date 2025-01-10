@@ -73,7 +73,7 @@ public class JailModule extends ModuleBase {
                 var cmd = command.split(" ")[0];
                 var canRun = config.allowedCommands.contains(cmd);
                 if (!canRun) {
-                    source.sendFeedback(() -> locale().get("commandNotAllowed"), false);
+                    source.sendFeedback(() -> locale().get("cannotRunCommands"), false);
                 }
                 return canRun;
             }
@@ -138,7 +138,7 @@ public class JailModule extends ModuleBase {
             var players = Solstice.server.getPlayerManager().getPlayerList();
             for (var player : players) {
                 var data = getPlayer(player.getUuid());
-                if(isPlayerJailed(player.getUuid())) {
+                if(isPlayerJailed(player.getUuid()) && data.jailTime > 0) {
                     if(data.jailedOn != null && data.jailedOn.getTime() + (data.jailTime * 1000L) < System.currentTimeMillis()) {
                         unjailPlayer(player.getUuid());
                     }
