@@ -18,7 +18,6 @@ import me.alexdevs.solstice.modules.kit.data.KitPlayerData;
 import net.minecraft.command.CommandSource;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import java.util.Date;

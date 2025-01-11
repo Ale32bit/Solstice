@@ -16,7 +16,6 @@ import net.minecraft.text.Text;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class KitsCommand extends ModCommand<KitModule> {
     public KitsCommand(KitModule module) {
