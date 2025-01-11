@@ -17,6 +17,7 @@ import me.alexdevs.solstice.modules.spawn.SpawnModule;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.*;
+import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -130,6 +131,17 @@ public class JailModule extends ModuleBase {
             }
             return TypedActionResult.pass(stack);
         });
+
+        ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((signedMessage, player, parameters) -> {
+            if (isPlayerJailed(player.getUuid())) {
+                var config = getConfig();
+                if(config.mute) {
+                    player.sendMessage(locale().get("cannotSpeak"));
+                    return false;
+                }
+            }
+            return true;
+        });
     }
 
     private void checkJailedPlayers() {
@@ -138,8 +150,8 @@ public class JailModule extends ModuleBase {
             var players = Solstice.server.getPlayerManager().getPlayerList();
             for (var player : players) {
                 var data = getPlayer(player.getUuid());
-                if(isPlayerJailed(player.getUuid()) && data.jailTime > 0) {
-                    if(data.jailedOn != null && data.jailedOn.getTime() + (data.jailTime * 1000L) < System.currentTimeMillis()) {
+                if (isPlayerJailed(player.getUuid()) && data.jailTime > 0) {
+                    if (data.jailedOn != null && data.jailedOn.getTime() + (data.jailTime * 1000L) < System.currentTimeMillis()) {
                         unjailPlayer(player.getUuid());
                     }
                 }

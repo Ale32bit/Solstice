@@ -11,8 +11,11 @@ public class JailConfig {
     public List<String> allowedCommands = List.of(
             "afk",
             "ignore",
-            "msg", "tell", "w", "dm",
+            "msg", "tell", "w", "dm", "r", "reply",
             "mail",
             "info", "motd", "rules"
     );
+
+    @Comment("Mute jailed players. They will not be able to send chat messages.")
+    public boolean mute = false;
 }
