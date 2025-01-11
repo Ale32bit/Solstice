@@ -60,6 +60,11 @@ public class JailsCommand extends ModCommand<JailModule> {
     private int listJails(CommandContext<ServerCommandSource> context) {
         var jails = module.getJails().keySet().stream().toList();
 
+        if(jails.isEmpty()) {
+            context.getSource().sendFeedback(() -> module.locale().get("noJails"), false);
+            return 0;
+        }
+
         var comma = module.locale().get("comma");
         var list = Text.empty();
 
