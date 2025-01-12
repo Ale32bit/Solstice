@@ -14,6 +14,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
 import java.util.List;
+import java.util.Map;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -39,7 +40,7 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                             var target = EntityArgumentType.getPlayer(context, "player");
 
                             if (Permissions.check(target, getPermissionNode() + ".exempt", 3)) {
-                                source.sendError(Text.of("You cannot open this inventory because the player is exempt."));
+                                source.sendFeedback(() -> module.locale().get("exempt"), false);
                                 return 0;
                             }
 
@@ -60,6 +61,11 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                             container.setTitle(target.getDisplayName());
 
                             container.open();
+
+                            var map = Map.of(
+                                    "user", Text.of(target.getGameProfile().getName())
+                            );
+                            source.sendFeedback(() -> module.locale().get("openedInventory", map), true);
 
                             return 1;
                         }));
