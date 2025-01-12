@@ -24,6 +24,8 @@ public class CommandSpyModule extends ModuleBase {
             if(!source.isExecutedByPlayer())
                 return true;
 
+            Solstice.LOGGER.info("{}: /{}", source.getName(), command);
+
             var parts = command.split("\\s");
             if (parts.length >= 1) {
                 var cmd = parts[0];
