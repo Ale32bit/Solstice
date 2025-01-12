@@ -1,6 +1,5 @@
 package me.alexdevs.solstice.modules.jail.commands;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -9,13 +8,13 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
+import me.alexdevs.solstice.api.command.SingleGameProfile;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.core.coreModule.data.CorePlayerData;
 import me.alexdevs.solstice.modules.jail.JailModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -59,7 +58,7 @@ public class JailCommand extends ModCommand<JailModule> {
 
     private int execute(CommandContext<ServerCommandSource> context, int seconds, @Nullable String reason) throws CommandSyntaxException {
         var source = context.getSource();
-        var profile = getUser(context);
+        var profile = SingleGameProfile.getProfile(context, "user");
 
         var data = module.getPlayer(profile.getId());
         var coreData = Solstice.playerData.get(profile.getId()).getData(CorePlayerData.class);
@@ -78,7 +77,7 @@ public class JailCommand extends ModCommand<JailModule> {
         }
 
         Permissions.check(profile, getPermissionNode("exempt")).thenAccept(granted -> {
-            if(granted) {
+            if (granted) {
                 source.sendFeedback(() -> module.locale().get("playerExempt"), false);
                 return;
             }
@@ -92,7 +91,7 @@ public class JailCommand extends ModCommand<JailModule> {
             data.jailTime = seconds;
             data.jailReason = reason;
 
-            if(player != null) {
+            if (player != null) {
                 data.previousLocation = new ServerLocation(player);
             } else {
                 data.previousLocation = coreData.logoffPosition;
@@ -124,15 +123,6 @@ public class JailCommand extends ModCommand<JailModule> {
         });
 
         return 1;
-    }
-
-    private static GameProfile getUser(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var profiles = GameProfileArgumentType.getProfileArgument(context, "user");
-        if (profiles.size() > 1) {
-            throw EntityArgumentType.TOO_MANY_PLAYERS_EXCEPTION.create();
-        }
-
-        return profiles.iterator().next();
     }
 
     private CompletableFuture<Suggestions> suggestJails(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {

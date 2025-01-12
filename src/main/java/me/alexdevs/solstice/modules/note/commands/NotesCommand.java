@@ -1,11 +1,11 @@
 package me.alexdevs.solstice.modules.note.commands;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import me.alexdevs.solstice.api.command.SingleGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.text.Components;
 import me.alexdevs.solstice.api.text.Format;
@@ -13,7 +13,6 @@ import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.note.NoteModule;
 import me.alexdevs.solstice.modules.note.data.Note;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -62,7 +61,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
     }
 
     private int listNotes(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var user = getUser(context);
+        var user = SingleGameProfile.getProfile(context, "user");
         var notes = module.getNotes(user.getId());
 
         if (notes.isEmpty()) {
@@ -108,7 +107,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
     }
 
     private int checkNote(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var user = getUser(context);
+        var user = SingleGameProfile.getProfile(context, "user");
         var notes = module.getNotes(user.getId());
         var index = IntegerArgumentType.getInteger(context, "index");
 
@@ -140,7 +139,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
     }
 
     private int deleteNote(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var user = getUser(context);
+        var user = SingleGameProfile.getProfile(context, "user");
         var notes = module.getNotes(user.getId());
         var index = IntegerArgumentType.getInteger(context, "index");
 
@@ -156,10 +155,10 @@ public class NotesCommand extends ModCommand<NoteModule> {
     }
 
     private int addNote(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var user = getUser(context);
+        var user = SingleGameProfile.getProfile(context, "user");
 
         UUID operatorId = new UUID(0, 0);
-        if(context.getSource().isExecutedByPlayer())
+        if (context.getSource().isExecutedByPlayer())
             operatorId = context.getSource().getPlayer().getUuid();
 
         var message = StringArgumentType.getString(context, "message");
@@ -193,7 +192,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
     }
 
     private int clearNotes(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var user = getUser(context);
+        var user = SingleGameProfile.getProfile(context, "user");
 
         var notes = module.getNotes(user.getId());
         notes.clear();
@@ -203,14 +202,5 @@ public class NotesCommand extends ModCommand<NoteModule> {
         )), true);
 
         return 1;
-    }
-
-    private GameProfile getUser(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var profiles = GameProfileArgumentType.getProfileArgument(context, "user");
-        if (profiles.size() > 1) {
-            throw EntityArgumentType.TOO_MANY_PLAYERS_EXCEPTION.create();
-        }
-
-        return profiles.iterator().next();
     }
 }

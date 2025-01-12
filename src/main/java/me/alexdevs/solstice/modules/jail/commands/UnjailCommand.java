@@ -1,12 +1,9 @@
 package me.alexdevs.solstice.modules.jail.commands;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import me.alexdevs.solstice.api.command.SingleGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.jail.JailModule;
-import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -31,7 +28,7 @@ public class UnjailCommand extends ModCommand<JailModule> {
                 .requires(require("unjail", 2))
                 .then(CommandManager.argument("user", GameProfileArgumentType.gameProfile())
                         .executes(context -> {
-                            var profile = getUser(context);
+                            var profile = SingleGameProfile.getProfile(context, "user");
 
                             var data = module.getPlayer(profile.getId());
 
@@ -50,14 +47,5 @@ public class UnjailCommand extends ModCommand<JailModule> {
                             return 1;
                         })
                 );
-    }
-
-    private static GameProfile getUser(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var profiles = GameProfileArgumentType.getProfileArgument(context, "user");
-        if (profiles.size() > 1) {
-            throw EntityArgumentType.TOO_MANY_PLAYERS_EXCEPTION.create();
-        }
-
-        return profiles.iterator().next();
     }
 }
