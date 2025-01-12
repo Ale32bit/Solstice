@@ -81,18 +81,17 @@ public class NotesCommand extends ModCommand<NoteModule> {
                 output = output.append(Text.of("\n"));
 
             var note = notes.get(i);
-            var index = i + 1;
 
             var checkButton = Components.button(
                     module.locale().raw("checkButton"),
                     module.locale().raw("hoverCheck"),
-                    "/notes " + user.getName() + " check " + index
+                    "/notes " + user.getName() + " check " + i
             );
 
             var senderName = CoreModule.getUsername(note.createdBy);
             var dateFormatter = new SimpleDateFormat(CoreModule.getConfig().dateTimeFormat);
             var placeholders = Map.of(
-                    "index", Text.of(String.valueOf(index)),
+                    "index", Text.of(String.valueOf(i)),
                     "operator", Text.of(senderName),
                     "date", Text.of(dateFormatter.format(note.creationDate)),
                     "message", Format.parse(note.note),
@@ -111,7 +110,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
     private int checkNote(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         var user = getUser(context);
         var notes = module.getNotes(user.getId());
-        var index = IntegerArgumentType.getInteger(context, "index") - 1;
+        var index = IntegerArgumentType.getInteger(context, "index");
 
         if (index < 0 || index >= notes.size()) {
             context.getSource().sendFeedback(() -> module.locale().get("notFound"), false);
@@ -123,7 +122,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
         var deleteButton = Components.button(
                 module.locale().raw("deleteButton"),
                 module.locale().raw("hoverDelete"),
-                "/note " + user.getName() + " delete " + index + 1
+                "/note " + user.getName() + " delete " + index
         );
 
         var operator = CoreModule.getUsername(note.createdBy);
@@ -143,7 +142,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
     private int deleteNote(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         var user = getUser(context);
         var notes = module.getNotes(user.getId());
-        var index = IntegerArgumentType.getInteger(context, "index") - 1;
+        var index = IntegerArgumentType.getInteger(context, "index");
 
         if (index < notes.size()) {
             notes.remove(index);
@@ -176,7 +175,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
         var checkButton = Components.button(
                 module.locale().raw("checkButton"),
                 module.locale().raw("hoverCheck"),
-                "/notes " + user.getName() + "check " + index
+                "/notes " + user.getName() + " check " + index
         );
         final var text = module.locale().get("addedNotification", Map.of(
                 "operator", context.getSource().getDisplayName(),
