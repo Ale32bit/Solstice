@@ -9,12 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class PlayerDataManager {
     private final Map<String, Class<?>> classMap = new HashMap<>();
     private final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
-    private final Map<UUID, PlayerData> playerData = new HashMap<>();
+    private final Map<UUID, PlayerData> playerData = new ConcurrentHashMap<>();
     private Path basePath;
 
     public Path getDataPath() {
