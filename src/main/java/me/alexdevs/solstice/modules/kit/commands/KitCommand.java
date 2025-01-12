@@ -280,7 +280,7 @@ public class KitCommand extends ModCommand<KitModule> {
         var kit = kits.get(name);
         kit.cooldownSeconds = timespan;
 
-        context.getSource().sendFeedback(() -> module.locale().get("setFirstJoin", Map.of(
+        context.getSource().sendFeedback(() -> module.locale().get("setCooldown", Map.of(
                 "kit", Text.of(name),
                 "value", Text.of(TimeSpan.toShortString(timespan))
         )), true);
