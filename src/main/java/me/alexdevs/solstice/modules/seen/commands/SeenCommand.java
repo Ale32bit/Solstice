@@ -63,6 +63,11 @@ public class SeenCommand extends ModCommand<SeenModule> {
                                 var player = source.getServer().getPlayerManager().getPlayer(profile.get().getId());
                                 var playerData = CoreModule.getPlayerData(profile.get().getId());
 
+                                if(playerData.firstJoinedDate == null) {
+                                    source.sendFeedback(() -> module.locale().get("playerNotFound"), false);
+                                    return;
+                                }
+
                                 ServerLocation location;
                                 if (player == null) {
                                     location = playerData.logoffPosition;
@@ -70,12 +75,16 @@ public class SeenCommand extends ModCommand<SeenModule> {
                                     location = new ServerLocation(player);
                                 }
 
+                                var firstSeenDate = playerData.firstJoinedDate != null ? dateFormatter.format(playerData.firstJoinedDate) : module.locale().raw("neverJoined");
+                                var lastSeenDate = playerData.lastSeenDate != null ? dateFormatter.format(playerData.lastSeenDate) : module.locale().raw("unknown");
+                                var ipAddress = playerData.ipAddress != null ? playerData.ipAddress : module.locale().raw("unknown");
+
                                 Map<String, Text> map = Map.of(
                                         "username", Text.of(profile.get().getName()),
                                         "uuid", Text.of(profile.get().getId().toString()),
-                                        "firstSeenDate", Text.of(dateFormatter.format(playerData.firstJoinedDate)),
-                                        "lastSeenDate", player != null ? Text.of("online") : Text.of(dateFormatter.format(playerData.lastSeenDate)),
-                                        "ipAddress", Text.of(playerData.ipAddress),
+                                        "firstSeenDate", Text.of(firstSeenDate),
+                                        "lastSeenDate", Text.of(player != null ? module.locale().raw("online") : lastSeenDate),
+                                        "ipAddress", Text.of(ipAddress),
                                         "location", Text.of(getPositionAsString(location))
                                 );
 

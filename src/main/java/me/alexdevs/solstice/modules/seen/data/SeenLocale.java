@@ -23,6 +23,9 @@ public class SeenLocale {
         map.put("playerNotFound", "<red>Could not find this player</red>");
         map.put("base", String.join("\n", base));
         map.put("extended", String.join("\n", extended));
+        map.put("online", "online");
+        map.put("neverJoined", "Never joined");
+        map.put("unknown", "unknown");
 
         MODULE = Map.copyOf(map);
     }

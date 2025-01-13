@@ -7,8 +7,8 @@ import java.util.Date;
 
 public class CorePlayerData {
     public String username;
-    public Date firstJoinedDate;
-    public Date lastSeenDate;
-    public String ipAddress;
+    public @Nullable Date firstJoinedDate;
+    public @Nullable Date lastSeenDate;
+    public @Nullable String ipAddress;
     public @Nullable ServerLocation logoffPosition = null;
 }
