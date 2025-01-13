@@ -3,7 +3,7 @@ package me.alexdevs.solstice.modules.spawn.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import me.alexdevs.solstice.api.ServerPosition;
+import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.spawn.SpawnModule;
 import net.minecraft.server.command.ServerCommandSource;
@@ -43,7 +43,7 @@ public class SetFirstSpawnCommand extends ModCommand<SpawnModule> {
     private int executeSet(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrThrow();
         var data = module.getServerData();
-        data.firstSpawn = new ServerPosition(player);
+        data.firstSpawn = new ServerLocation(player);
 
         context.getSource().sendFeedback(() -> module.locale().get("firstSpawnSet"), true);
 

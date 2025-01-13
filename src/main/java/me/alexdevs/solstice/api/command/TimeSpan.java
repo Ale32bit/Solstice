@@ -1,11 +1,14 @@
 package me.alexdevs.solstice.api.command;
 
 import com.mojang.brigadier.LiteralMessage;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.coreModule.CoreModule;
 import net.minecraft.server.command.ServerCommandSource;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,7 +38,7 @@ public class TimeSpan {
         return 0;
     }
 
-    public static String serialize(int total) {
+    public static String toShortString(int total) {
         var builder = new StringBuilder();
 
         if(total >= secondsInWeek) {
@@ -65,6 +68,84 @@ public class TimeSpan {
         if(total > 0) {
             builder.append(total);
             builder.append("s");
+        }
+
+        return builder.toString();
+    }
+
+    private static String fill(String locale, int unit) {
+        return locale.replaceAll("\\$\\{n}", String.valueOf(unit));
+    }
+
+    public static String toLongString(int total) {
+        var builder = new StringBuilder();
+        var locale = Solstice.localeManager.getLocale(CoreModule.ID);
+
+        var prependSpace = false;
+
+        if(total >= secondsInWeek) {
+            var value = total / secondsInWeek;
+            if(value == 1) {
+                builder.append(fill(locale.raw("~unit.week"), value));
+            } else {
+                builder.append(fill(locale.raw("~unit.weeks"), value));
+            }
+
+            total %= secondsInWeek;
+            prependSpace = true;
+        }
+
+        if(total >= secondsInDay) {
+            if(prependSpace) {
+                builder.append(" ");
+            }
+            var value = total / secondsInDay;
+            if(value == 1) {
+                builder.append(fill(locale.raw("~unit.day"), value));
+            } else {
+                builder.append(fill(locale.raw("~unit.days"), value));
+            }
+            total %= secondsInDay;
+            prependSpace = true;
+        }
+
+        if(total >= secondsInHour) {
+            if(prependSpace) {
+                builder.append(" ");
+            }
+            var value = total / secondsInHour;
+            if(value == 1) {
+                builder.append(fill(locale.raw("~unit.hour"), value));
+            } else {
+                builder.append(fill(locale.raw("~unit.hours"), value));
+            }
+            total %= secondsInHour;
+            prependSpace = true;
+        }
+
+        if(total >= secondsInMinute) {
+            if(prependSpace) {
+                builder.append(" ");
+            }
+            var value = total / secondsInMinute;
+            if(value == 1) {
+                builder.append(fill(locale.raw("~unit.minute"), value));
+            } else {
+                builder.append(fill(locale.raw("~unit.minutes"), value));
+            }
+            total %= secondsInMinute;
+            prependSpace = true;
+        }
+
+        if(total > 0) {
+            if(prependSpace) {
+                builder.append(" ");
+            }
+            if(total == 1) {
+                builder.append(fill(locale.raw("~unit.second"), total));
+            } else {
+                builder.append(fill(locale.raw("~unit.seconds"), total));
+            }
         }
 
         return builder.toString();
@@ -146,6 +227,10 @@ public class TimeSpan {
 
 
         return builder.buildFuture();
+    }
+
+    public static StringArgumentType timeSpan() {
+        return StringArgumentType.word();
     }
 
     private record Unit(String unit, String tooltip) {

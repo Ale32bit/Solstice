@@ -4,6 +4,7 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.kit.commands.KitCommand;
+import me.alexdevs.solstice.modules.kit.commands.KitsCommand;
 import me.alexdevs.solstice.modules.kit.data.*;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.item.ItemStack;
@@ -25,6 +26,7 @@ public class KitModule extends ModuleBase {
         Solstice.serverData.registerData(ID, KitServerData.class, KitServerData::new);
 
         commands.add(new KitCommand(this));
+        commands.add(new KitsCommand(this));
 
         SolsticeEvents.WELCOME.register((player, server) -> {
             for (var kit : getKits().entrySet()) {
@@ -110,5 +112,9 @@ public class KitModule extends ModuleBase {
         }
 
         return true;
+    }
+
+    public List<String> getPlayerKitNames(ServerPlayerEntity player) {
+        return getKits().keySet().stream().filter(kit -> hasKitPermission(player, kit)).toList();
     }
 }

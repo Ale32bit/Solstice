@@ -2,7 +2,7 @@ package me.alexdevs.solstice.mixin;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.ServerPosition;
+import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.back.BackModule;
 import me.alexdevs.solstice.modules.spawn.SpawnModule;
@@ -54,7 +54,7 @@ public abstract class ServerPlayerEntityMixin {
     @Inject(method = "teleport(Lnet/minecraft/server/world/ServerWorld;DDDLjava/util/Set;FF)Z", at = @At("HEAD"))
     public void solstice$requestTeleport(ServerWorld world, double destX, double destY, double destZ, Set<PositionFlag> flags, float yaw, float pitch, CallbackInfoReturnable<Boolean> cir) {
         var player = (ServerPlayerEntity) (Object) this;
-        Solstice.modules.getModule(BackModule.class).lastPlayerPositions.put(player.getUuid(), new ServerPosition(player));
+        Solstice.modules.getModule(BackModule.class).lastPlayerPositions.put(player.getUuid(), new ServerLocation(player));
     }
 
     @Inject(method = "getSpawnPointPosition", at = @At("RETURN"), cancellable = true)
@@ -85,17 +85,17 @@ public abstract class ServerPlayerEntityMixin {
 
             var world = spawn.getWorld(this.server);
             var pos = new Vec3d(
-                    spawn.x,
-                    spawn.y,
-                    spawn.z
+                    spawn.getX(),
+                    spawn.getY(),
+                    spawn.getZ()
             );
 
             cir.setReturnValue(new TeleportTarget(
                     world,
                     pos,
                     Vec3d.ZERO,
-                    spawn.yaw,
-                    spawn.pitch,
+                    spawn.getYaw(),
+                    spawn.getPitch(),
                     false,
                     TeleportTarget.NO_OP
             ));

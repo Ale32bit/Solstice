@@ -1,8 +1,8 @@
 package me.alexdevs.solstice.modules.back;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.ServerPosition;
-import me.alexdevs.solstice.api.events.PlayerTeleport;
+import me.alexdevs.solstice.api.ServerLocation;
+import me.alexdevs.solstice.api.events.PlayerTeleportCallback;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.back.commands.BackCommand;
 import me.alexdevs.solstice.modules.back.data.BackLocale;
@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class BackModule extends ModuleBase {
     public static final String ID = "back";
-    public final ConcurrentHashMap<UUID, ServerPosition> lastPlayerPositions = new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<UUID, ServerLocation> lastPlayerPositions = new ConcurrentHashMap<>();
 
     public BackModule() {
         super(ID);
@@ -25,12 +25,12 @@ public class BackModule extends ModuleBase {
 
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> lastPlayerPositions.remove(handler.getPlayer().getUuid()));
 
-        PlayerTeleport.EVENT.register((player, origin, destination) -> lastPlayerPositions.put(player.getUuid(), origin));
+        PlayerTeleportCallback.EVENT.register((player, origin, destination) -> lastPlayerPositions.put(player.getUuid(), origin));
 
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
             if (entity.isPlayer()) {
                 var player = (ServerPlayerEntity) entity;
-                lastPlayerPositions.put(entity.getUuid(), new ServerPosition(player));
+                lastPlayerPositions.put(entity.getUuid(), new ServerLocation(player));
             }
         });
     }

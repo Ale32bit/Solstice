@@ -1,18 +1,21 @@
 package me.alexdevs.solstice.data;
 
 import com.mojang.authlib.GameProfile;
+import me.alexdevs.solstice.Solstice;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class PlayerDataManager {
     private final Map<String, Class<?>> classMap = new HashMap<>();
     private final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
-    private final Map<UUID, PlayerData> playerData = new HashMap<>();
+    private final Map<UUID, PlayerData> playerData = new ConcurrentHashMap<>();
     private Path basePath;
 
     public Path getDataPath() {
@@ -76,13 +79,22 @@ public class PlayerDataManager {
      */
     public void dispose(UUID uuid) {
         if (playerData.containsKey(uuid)) {
+            Solstice.LOGGER.info("Unloading player data {}", uuid);
             var data = playerData.remove(uuid);
             data.save();
         }
     }
 
+    public void disposeMissing(List<UUID> uuids) {
+        for(var entry : playerData.entrySet()) {
+            if(!uuids.contains(entry.getKey())) {
+                dispose(entry.getKey());
+            }
+        }
+    }
 
     private PlayerData load(UUID uuid) {
+        Solstice.LOGGER.info("Loading player data {}", uuid);
         var data = new PlayerData(this.basePath, uuid, classMap, providers);
         playerData.put(uuid, data);
         return data;

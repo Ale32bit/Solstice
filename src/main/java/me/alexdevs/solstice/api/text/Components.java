@@ -4,7 +4,7 @@ import eu.pb4.placeholders.api.TextParserUtils;
 import eu.pb4.placeholders.api.parsers.NodeParser;
 import eu.pb4.placeholders.api.parsers.TextParserV1;
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.modules.core.CoreModule;
+import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.styling.StylingModule;
 import me.alexdevs.solstice.modules.styling.data.StylingConfig;
 import me.alexdevs.solstice.api.text.parser.MarkdownParser;

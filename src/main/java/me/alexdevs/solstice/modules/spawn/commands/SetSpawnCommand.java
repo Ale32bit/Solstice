@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.modules.spawn.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.alexdevs.solstice.api.ServerPosition;
+import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.spawn.SpawnModule;
 import net.minecraft.server.command.ServerCommandSource;
@@ -28,18 +28,18 @@ public class SetSpawnCommand extends ModCommand<SpawnModule> {
                 .requires(require("set", 3))
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrThrow();
-                    var spawnPosition = new ServerPosition(player);
+                    var spawnPosition = new ServerLocation(player);
                     var world = player.getServerWorld();
 
 
                     world.setSpawnPos(
                             player.getBlockPos(),
-                            spawnPosition.yaw
+                            spawnPosition.getYaw()
                     );
 
                     context.getSource().sendFeedback(() -> module.locale().get("worldSpawnSet", Map.of(
                             "world", Text.of(world.getRegistryKey().getValue().toString()),
-                            "coordinates", Text.of(String.format("%.1f %.1f %.1f", spawnPosition.x, spawnPosition.y, spawnPosition.z))
+                            "coordinates", Text.of(String.format("%.1f %.1f %.1f", spawnPosition.getX(), spawnPosition.getY(), spawnPosition.getZ()))
                     )), true);
 
                     return 1;

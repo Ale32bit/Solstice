@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.modules.spawn;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.ServerPosition;
+import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.spawn.commands.FirstSpawnCommand;
@@ -58,20 +58,20 @@ public class SpawnModule extends ModuleBase {
             if (spawnData.spawn != null) {
                 var legacy = spawnData.spawn;
                 var world = legacy.getWorld(server);
-                world.setSpawnPos(new BlockPos((int) legacy.x, (int) legacy.y, (int) legacy.z), legacy.yaw);
+                world.setSpawnPos(new BlockPos((int) legacy.getX(), (int) legacy.getY(), (int) legacy.getZ()), legacy.getYaw());
                 spawnData.spawn = null;
             }
         });
     }
 
     @Deprecated
-    public ServerPosition getSpawn() {
+    public ServerLocation getSpawn() {
         var serverData = getServerData();
         var spawnPosition = serverData.spawn;
         if (spawnPosition == null) {
             var server = Solstice.server;
             var spawnPos = server.getOverworld().getSpawnPos();
-            spawnPosition = new ServerPosition(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), 0, 0, server.getOverworld());
+            spawnPosition = new ServerLocation(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), 0, 0, server.getOverworld());
         }
         return spawnPosition;
     }
@@ -83,19 +83,19 @@ public class SpawnModule extends ModuleBase {
         return Solstice.server.getWorld(key);
     }
 
-    public ServerPosition getGlobalSpawnPosition() {
+    public ServerLocation getGlobalSpawnPosition() {
         var world = getGlobalSpawnWorld();
         var worldSpawnPos = world.getSpawnPos().toCenterPos();
         var worldSpawnRot = world.getSpawnAngle();
-        return new ServerPosition(
+        return new ServerLocation(
                 worldSpawnPos.getX(), worldSpawnPos.getY(), worldSpawnPos.getZ(), worldSpawnRot, 0, world
         );
     }
 
-    public ServerPosition getWorldSpawn(ServerWorld world) {
+    public ServerLocation getWorldSpawn(ServerWorld world) {
         var spawnPos = world.getSpawnPos().toCenterPos();
         var yaw = world.getSpawnAngle();
-        return new ServerPosition(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), yaw, 0, world);
+        return new ServerLocation(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), yaw, 0, world);
     }
 
     public SpawnConfig getConfig() {
@@ -115,7 +115,7 @@ public class SpawnModule extends ModuleBase {
         pos.teleport(player);
     }
 
-    public @Nullable ServerPosition getFirstSpawn() {
+    public @Nullable ServerLocation getFirstSpawn() {
         return Solstice.serverData.getData(SpawnServerData.class).firstSpawn;
     }
 }

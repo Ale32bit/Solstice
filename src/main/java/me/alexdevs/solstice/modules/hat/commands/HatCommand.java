@@ -1,9 +1,7 @@
 package me.alexdevs.solstice.modules.hat.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.hat.HatModule;
 import net.minecraft.server.command.ServerCommandSource;
 
@@ -28,13 +26,30 @@ public class HatCommand extends ModCommand<HatModule> {
                 .requires(require(2))
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrThrow();
-
                     var handStack = player.getMainHandStack();
 
                     if (handStack.isEmpty()) {
                         context.getSource().sendFeedback(() -> module.locale().get("emptyStack"), false);
                         return 0;
                     }
+
+                    var config = module.getConfig();
+
+                    var itemId = handStack.getRegistryEntry().getKey().get().getValue().toString();
+                    var tags = handStack.streamTags();
+                    if (config.whitelistFilter) {
+                        if(!module.isInFilter(itemId) && !module.isInFilter(tags)) {
+                            context.getSource().sendFeedback(() -> module.locale().get("notAllowed"), false);
+                            return 0;
+                        }
+                    } else {
+                        if(module.isInFilter(itemId) || module.isInFilter(tags)) {
+                            context.getSource().sendFeedback(() -> module.locale().get("notAllowed"), false);
+                            return 0;
+                        }
+                    }
+
+                    //handStack.streamTags().toList().get(0).id().toString();
 
                     var inventory = player.getInventory();
                     var oldHeadStack = inventory.armor.get(3); // head slot

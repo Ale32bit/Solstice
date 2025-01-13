@@ -9,7 +9,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.PlayerMail;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.modules.core.CoreModule;
+import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.mail.MailModule;
 import me.alexdevs.solstice.api.text.Components;

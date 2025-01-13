@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.modules.core.data;
+package me.alexdevs.solstice.core.coreModule.data;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;

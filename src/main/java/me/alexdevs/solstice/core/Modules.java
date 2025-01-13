@@ -1,9 +1,12 @@
 package me.alexdevs.solstice.core;
 
 import com.mojang.brigadier.CommandDispatcher;
-import me.alexdevs.solstice.api.events.ModuleRegistrationCallback;
+import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleEntrypoint;
+import me.alexdevs.solstice.core.coreModule.CoreModule;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -14,10 +17,37 @@ import java.util.HashSet;
 
 public class Modules {
 
-    private HashSet<? extends ModuleBase> modules = new HashSet<>();
+    private final HashSet<ModuleBase> modules = new HashSet<>();
 
     public Modules() {
         CommandRegistrationCallback.EVENT.register(this::registerCommands);
+    }
+
+    public void register() {
+        modules.add(new CoreModule());
+
+        var fabric = FabricLoader.getInstance();
+        var moduleContainers = fabric.getEntrypointContainers("solstice", ModuleEntrypoint.class);
+        for (var container : moduleContainers) {
+            var mod = container.getProvider();
+            var modMeta = mod.getMetadata();
+            Solstice.LOGGER.info("Registering module provider '{}' ({}) v{}", modMeta.getName(), modMeta.getId(), modMeta.getVersion());
+            try {
+                var provider = container.getEntrypoint();
+                var providerModules = provider.register();
+                for(var entry : providerModules) {
+                    var moduleId = entry.getId();
+                    if(modules.stream().anyMatch(m -> m.getId().equals(moduleId))) {
+                        Solstice.LOGGER.warn("Module ID conflict: {}", entry.getId());
+                        continue;
+                    }
+
+                    modules.add(entry);
+                }
+            } catch (Exception e) {
+                Solstice.LOGGER.error("Error registering a module from {}", modMeta.getId(), e);
+            }
+        }
     }
 
     public Collection<? extends ModuleBase> getModules() {
@@ -31,10 +61,6 @@ public class Modules {
             }
         }
         return null;
-    }
-
-    public void register() {
-        modules = ModuleRegistrationCallback.EVENT.invoker().register();
     }
 
     private void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {

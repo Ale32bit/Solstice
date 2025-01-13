@@ -22,6 +22,10 @@ public class KitLocale {
             Map.entry("listAvailableKit", "<run_cmd:'/kit claim ${kit}'><hover:'Click to claim'><yellow>${kit}</yellow></hover></run_cmd>"),
             Map.entry("listUnavailableKit", "<hover:'This kit is unavailable'><gray><st>${kit}</st></gray></hover>"),
             Map.entry("listComma", ", "),
-            Map.entry("listNoKits", "<gold>There are no kits available.</gold>")
+            Map.entry("listNoKits", "<gold>There are no kits available.</gold>"),
+            Map.entry("kits", "Kits"),
+            Map.entry("claimKit", "<green>Click to claim this kit!</green>"),
+            Map.entry("noStackInHand", "<gold>You need to hold an item to set a kit icon!</gold>"),
+            Map.entry("setIcon", "<gold>Set icon for kit <yellow>${kit}</yellow>.</gold>")
     );
 }

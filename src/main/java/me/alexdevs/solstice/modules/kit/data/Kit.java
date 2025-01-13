@@ -4,6 +4,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.kit.Utils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,7 @@ public class Kit {
     public boolean oneTime = false;
     public int cooldownSeconds = 0;
     public boolean firstJoin = false;
+    public @Nullable String icon;
 
     public List<ItemStack> getItemStacks() {
         var stacks = new ArrayList<ItemStack>();
@@ -29,5 +32,17 @@ public class Kit {
         }
 
         return stacks;
+    }
+
+    public ItemStack getIcon() {
+        var defaultStack = Items.DIRT.getDefaultStack();
+        if (icon == null) {
+            return defaultStack;
+        }
+        try {
+            return Utils.deserializeItemStack(icon);
+        } catch (CommandSyntaxException e) {
+            return defaultStack;
+        }
     }
 }

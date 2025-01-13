@@ -3,11 +3,11 @@ package me.alexdevs.solstice.modules.customName;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.modules.customName.commands.NicknameCommand;
 import me.alexdevs.solstice.modules.customName.data.CustomNameConfig;
 import me.alexdevs.solstice.modules.customName.data.CustomNamePlayerData;
-import me.alexdevs.solstice.api.text.Format;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -91,8 +91,14 @@ public class CustomNameModule extends ModuleBase {
 
         var name = playerData.nickname == null ? player.getGameProfile().getName() : playerData.nickname;
 
-        var prefix = LuckPermsIntegration.getPrefix(player);
-        var suffix = LuckPermsIntegration.getSuffix(player);
+        String prefix = null;
+        String suffix = null;
+        try {
+            prefix = LuckPermsIntegration.getPrefix(player);
+            suffix = LuckPermsIntegration.getSuffix(player);
+        } catch (IllegalStateException e) {
+            // we do nothing, LP does NOT like fake players
+        }
         if (prefix == null)
             prefix = "";
         if (suffix == null)

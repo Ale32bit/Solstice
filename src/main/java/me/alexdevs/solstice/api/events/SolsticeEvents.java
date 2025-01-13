@@ -35,6 +35,10 @@ public final class SolsticeEvents {
                 }
             });
 
+    /**
+     * @deprecated Superseded by {@link me.alexdevs.solstice.api.events.CommandEvents}
+     */
+    @Deprecated
     public static final Event<PlayerCommand> PLAYER_COMMAND = EventFactory.createArrayBacked(PlayerCommand.class, callbacks ->
             (player, command) -> {
                 for (PlayerCommand callback : callbacks) {

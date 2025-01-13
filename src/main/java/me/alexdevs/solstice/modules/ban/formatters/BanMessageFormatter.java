@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.ban.BanModule;
-import me.alexdevs.solstice.modules.core.CoreModule;
+import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.api.text.Format;
 import net.minecraft.server.BannedPlayerEntry;
 import net.minecraft.text.Text;

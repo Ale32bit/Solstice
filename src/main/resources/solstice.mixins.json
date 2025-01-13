@@ -7,7 +7,7 @@
   ],
   "client": [],
   "server": [
-    "CommandDispatcherMixin",
+    "CommandManagerMixin",
     "MinecraftServerMixin",
     "PlayerEntityMixin",
     "PlayerManagerMixin",
@@ -16,7 +16,6 @@
     "ServerPlayerEntityMixin",
     "ServerPlayNetworkHandlerMixin",
     "PlayerManagerMixin",
-    "CommandDispatcherMixin",
     "MinecraftServerMixin",
     "AdvancementFrameMixin",
     "SignBlockEntityMixin"

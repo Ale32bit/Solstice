@@ -18,7 +18,6 @@ import me.alexdevs.solstice.modules.kit.data.KitPlayerData;
 import net.minecraft.command.CommandSource;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import java.util.Date;
@@ -84,13 +83,15 @@ public class KitCommand extends ModCommand<KitModule> {
                                         .then(argument("enable", BoolArgumentType.bool())
                                                 .executes(this::setOneTime)
                                         ))
+                                .then(literal("icon")
+                                        .executes(this::setIcon))
                         )
                 );
     }
 
     private int listKits(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrThrow();
-        var kits = getPlayerKitNames(player);
+        var kits = module.getPlayerKitNames(player);
 
         if(kits.isEmpty()) {
             context.getSource().sendFeedback(() -> module.locale().get("listNoKits"), false);
@@ -158,7 +159,7 @@ public class KitCommand extends ModCommand<KitModule> {
                 if (delta < kit.cooldownSeconds) {
                     var remaining = kit.cooldownSeconds - delta;
 
-                    var timespan = TimeSpan.serialize((int) remaining);
+                    var timespan = TimeSpan.toShortString((int) remaining);
                     source.sendFeedback(() -> module.locale().get("onCooldown", Map.of(
                             "kit", Text.of(name),
                             "timespan", Text.of(timespan)
@@ -279,9 +280,9 @@ public class KitCommand extends ModCommand<KitModule> {
         var kit = kits.get(name);
         kit.cooldownSeconds = timespan;
 
-        context.getSource().sendFeedback(() -> module.locale().get("setFirstJoin", Map.of(
+        context.getSource().sendFeedback(() -> module.locale().get("setCooldown", Map.of(
                 "kit", Text.of(name),
-                "value", Text.of(TimeSpan.serialize(timespan))
+                "value", Text.of(TimeSpan.toShortString(timespan))
         )), true);
 
         return 1;
@@ -308,6 +309,33 @@ public class KitCommand extends ModCommand<KitModule> {
         return 1;
     }
 
+    private int setIcon(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        var name = StringArgumentType.getString(context, "name");
+        var player = context.getSource().getPlayerOrThrow();
+
+        var kits = module.getKits();
+        if (!kits.containsKey(name)) {
+            context.getSource().sendFeedback(() -> module.locale().get("notFound", Map.of("kit", Text.of(name))), false);
+            return 0;
+        }
+
+        var hand = player.getActiveHand();
+        var stack = player.getStackInHand(hand).copy();
+        if(stack.isEmpty()) {
+            context.getSource().sendFeedback(() -> module.locale().get("noStackInHand"), false);
+            return 0;
+        }
+
+        var kit = kits.get(name);
+        kit.icon = Utils.serializeItemStack(stack);
+
+        context.getSource().sendFeedback(() -> module.locale().get("setIcon", Map.of(
+                "kit", Text.of(name)
+        )), true);
+
+        return 1;
+    }
+
     private CompletableFuture<Suggestions> suggestAllKits(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
         var kits = module.getKits().keySet();
         return CommandSource.suggestMatching(kits, builder);
@@ -315,10 +343,6 @@ public class KitCommand extends ModCommand<KitModule> {
 
     private CompletableFuture<Suggestions> suggestKitList(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrThrow();
-        return CommandSource.suggestMatching(getPlayerKitNames(player), builder);
-    }
-
-    private List<String> getPlayerKitNames(ServerPlayerEntity player) {
-        return module.getKits().keySet().stream().filter(kit -> module.hasKitPermission(player, kit)).toList();
+        return CommandSource.suggestMatching(module.getPlayerKitNames(player), builder);
     }
 }

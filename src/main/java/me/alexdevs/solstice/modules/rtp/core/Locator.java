@@ -2,7 +2,7 @@ package me.alexdevs.solstice.modules.rtp.core;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableList;
-import me.alexdevs.solstice.api.ServerPosition;
+import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.modules.rtp.data.RTPConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -160,7 +160,7 @@ public class Locator {
 
         var vec = pos.toCenterPos();
 
-        callback.accept(new Result(Result.Type.SUCCESS, Optional.of(new ServerPosition(
+        callback.accept(new Result(Result.Type.SUCCESS, Optional.of(new ServerLocation(
                 vec.getX(), vec.getY(), vec.getZ(), 0, 0, world
         ))));
     }
@@ -229,7 +229,7 @@ public class Locator {
         return new BlockPos(x, world.getLogicalHeight(), z);
     }
 
-    public record Result(Type type, Optional<ServerPosition> position) {
+    public record Result(Type type, Optional<ServerLocation> position) {
         public enum Type {
             SUCCESS,
             TOO_MANY_ATTEMPTS,

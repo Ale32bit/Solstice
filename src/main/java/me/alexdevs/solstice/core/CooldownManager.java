@@ -2,7 +2,7 @@ package me.alexdevs.solstice.core;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.command.TimeSpan;
-import me.alexdevs.solstice.modules.core.CoreModule;
+import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -56,7 +56,7 @@ public class CooldownManager {
         var value = cooldown.getOrDefault(node, 0);
         var locale = Solstice.localeManager.getLocale(CoreModule.ID);
         return locale.get("~cooldown", Map.of(
-                "timespan", Text.of(TimeSpan.serialize(value))
+                "timespan", Text.of(TimeSpan.toShortString(value))
         ));
     }
 

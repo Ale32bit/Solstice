@@ -1,7 +1,7 @@
 package me.alexdevs.solstice;
 
 import me.alexdevs.solstice.api.events.SolsticeEvents;
-import me.alexdevs.solstice.api.events.WorldSave;
+import me.alexdevs.solstice.api.events.WorldSaveCallback;
 import me.alexdevs.solstice.core.CooldownManager;
 import me.alexdevs.solstice.core.WarmUpManager;
 import me.alexdevs.solstice.data.PlayerDataManager;
@@ -9,7 +9,6 @@ import me.alexdevs.solstice.data.ServerData;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.locale.LocaleManager;
 import me.alexdevs.solstice.core.Modules;
-import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.api.data.HoconDataManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -68,7 +67,6 @@ public class Solstice implements ModInitializer {
         var modMeta = FabricLoader.getInstance().getModContainer(MOD_ID).get().getMetadata();
         LOGGER.info("Initializing Solstice v{}...", modMeta.getVersion());
 
-        ModuleProvider.register();
         modules.register();
 
         try {
@@ -84,8 +82,7 @@ public class Solstice implements ModInitializer {
             localeManager.load();
             localeManager.save();
         } catch (Exception e) {
-            LOGGER.error("Error while loading Solstice locale! Refusing to continue!", e);
-            return;
+            LOGGER.error("Error while loading Solstice locale!", e);
         }
 
         if (FabricLoader.getInstance().isModLoaded("luckperms")) {
@@ -106,7 +103,7 @@ public class Solstice implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> SolsticeEvents.READY.invoker().onReady(INSTANCE, server));
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> scheduler.shutdown());
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> scheduler.shutdownNow());
-        WorldSave.EVENT.register((server1, suppressLogs, flush, force) -> {
+        WorldSaveCallback.EVENT.register((server1, suppressLogs, flush, force) -> {
             serverData.save();
             playerData.saveAll();
         });

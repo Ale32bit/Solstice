@@ -3,9 +3,9 @@ package me.alexdevs.solstice.modules.seen.commands;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.alexdevs.solstice.api.ServerPosition;
+import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.modules.core.CoreModule;
+import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.seen.SeenModule;
 import me.alexdevs.solstice.api.text.Format;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -25,11 +25,11 @@ public class SeenCommand extends ModCommand<SeenModule> {
         super(module);
     }
 
-    public static String getPositionAsString(@Nullable ServerPosition pos) {
+    public static String getPositionAsString(@Nullable ServerLocation pos) {
         if (pos == null)
             return "Unknown position";
 
-        return String.format("%.01f %.01f %.01f, %s", pos.x, pos.y, pos.z, pos.world);
+        return String.format("%.01f %.01f %.01f, %s", pos.getX(), pos.getY(), pos.getZ(), pos.getWorld());
     }
 
     @Override
@@ -63,19 +63,28 @@ public class SeenCommand extends ModCommand<SeenModule> {
                                 var player = source.getServer().getPlayerManager().getPlayer(profile.get().getId());
                                 var playerData = CoreModule.getPlayerData(profile.get().getId());
 
-                                ServerPosition location;
+                                if(playerData.firstJoinedDate == null) {
+                                    source.sendFeedback(() -> module.locale().get("playerNotFound"), false);
+                                    return;
+                                }
+
+                                ServerLocation location;
                                 if (player == null) {
                                     location = playerData.logoffPosition;
                                 } else {
-                                    location = new ServerPosition(player);
+                                    location = new ServerLocation(player);
                                 }
+
+                                var firstSeenDate = playerData.firstJoinedDate != null ? dateFormatter.format(playerData.firstJoinedDate) : module.locale().raw("neverJoined");
+                                var lastSeenDate = playerData.lastSeenDate != null ? dateFormatter.format(playerData.lastSeenDate) : module.locale().raw("unknown");
+                                var ipAddress = playerData.ipAddress != null ? playerData.ipAddress : module.locale().raw("unknown");
 
                                 Map<String, Text> map = Map.of(
                                         "username", Text.of(profile.get().getName()),
                                         "uuid", Text.of(profile.get().getId().toString()),
-                                        "firstSeenDate", Text.of(dateFormatter.format(playerData.firstJoinedDate)),
-                                        "lastSeenDate", player != null ? Text.of("online") : Text.of(dateFormatter.format(playerData.lastSeenDate)),
-                                        "ipAddress", Text.of(playerData.ipAddress),
+                                        "firstSeenDate", Text.of(firstSeenDate),
+                                        "lastSeenDate", Text.of(player != null ? module.locale().raw("online") : lastSeenDate),
+                                        "ipAddress", Text.of(ipAddress),
                                         "location", Text.of(getPositionAsString(location))
                                 );
 
