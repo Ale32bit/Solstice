@@ -8,8 +8,6 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.kit.KitModule;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.command.CommandManager;
@@ -30,6 +28,7 @@ public class KitsCommand extends ModCommand<KitModule> {
     }
 
     private static final LinkedHashMap<Integer, ScreenHandlerType<GenericContainerScreenHandler>> invSizes = new LinkedHashMap<>();
+
     static {
         invSizes.put(9, ScreenHandlerType.GENERIC_9X1);
         invSizes.put(18, ScreenHandlerType.GENERIC_9X2);

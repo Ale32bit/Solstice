@@ -2,7 +2,6 @@ package me.alexdevs.solstice.modules.commandSpy;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.CommandEvents;
-import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.commandSpy.data.CommandSpyConfig;
 import me.alexdevs.solstice.modules.commandSpy.data.CommandSpyLocale;
@@ -21,7 +20,7 @@ public class CommandSpyModule extends ModuleBase {
         Solstice.localeManager.registerModule(ID, CommandSpyLocale.MODULE);
 
         CommandEvents.ALLOW_COMMAND.register((source, command) -> {
-            if(!source.isExecutedByPlayer())
+            if (!source.isExecutedByPlayer())
                 return true;
 
             Solstice.LOGGER.info("{}: /{}", source.getName(), command);
