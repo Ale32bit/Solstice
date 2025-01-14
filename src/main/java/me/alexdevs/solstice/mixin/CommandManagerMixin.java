@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class CommandManagerMixin {
     // Lnet/minecraft/server/command/CommandManager;execute(Lcom/mojang/brigadier/ParseResults;Ljava/lang/String;)V
 
-    @Inject(method = "execute", at = @At("HEAD"), remap = false, cancellable = true)
+    @Inject(method = "execute", at = @At("HEAD"), cancellable = true)
     public void execute(ParseResults<ServerCommandSource> parseResults, String command, CallbackInfo ci) throws CommandSyntaxException {
         var context = parseResults.getContext();
         if (context.getSource() instanceof ServerCommandSource source) {
