@@ -5,6 +5,7 @@ import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
+import me.alexdevs.solstice.api.events.CommandEvents;
 import me.alexdevs.solstice.api.events.PlayerActivityEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
@@ -40,6 +41,7 @@ public class AfkModule extends ModuleBase {
 
     public AfkModule() {
         super(ID);
+
         Solstice.configManager.registerData(ID, AfkConfig.class, AfkConfig::new);
         Solstice.playerData.registerData(ID, AfkPlayerData.class, AfkPlayerData::new);
         Solstice.localeManager.registerModule(ID, AfkLocale.MODULE);
@@ -137,9 +139,10 @@ public class AfkModule extends ModuleBase {
             return true;
         });
 
-        ServerMessageEvents.ALLOW_COMMAND_MESSAGE.register((message, source, params) -> {
+        CommandEvents.ALLOW_COMMAND.register((source, command) -> {
             if (!source.isExecutedByPlayer())
                 return true;
+
             resetAfkState(source.getPlayer(), source.getServer());
             return true;
         });
@@ -156,7 +159,9 @@ public class AfkModule extends ModuleBase {
 
         var oldPosition = playerState.position;
         var newPosition = new ServerLocation(player);
-        if (!oldPosition.equals(newPosition)) {
+        if (newPosition.getYaw() != oldPosition.getYaw()
+                || newPosition.getPitch() != oldPosition.getPitch()
+                || !newPosition.getWorld().equals(oldPosition.getWorld())) {
             playerState.position = newPosition;
             resetAfkState(player, server);
             return;
