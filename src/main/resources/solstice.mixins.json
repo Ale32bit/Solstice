@@ -3,10 +3,9 @@
   "minVersion": "0.8",
   "package": "me.alexdevs.solstice.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [
-  ],
   "client": [],
   "server": [
+    "dedicatedPlayerManager.ConnectionBypassMixin",
     "CommandDispatcherMixin",
     "MinecraftServerMixin",
     "PlayerAdvancementTrackerMixin",
