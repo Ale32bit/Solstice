@@ -8,6 +8,7 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 
 import java.util.List;
+import java.util.Map;
 
 @ConfigSerializable
 public class RTPConfig {
@@ -45,6 +46,26 @@ public class RTPConfig {
     @Comment("Require that the player has the permission of the world 'solstice.rtp.worlds.<worldName>' to initiate the random teleport in the world.")
     public boolean requireWorldPermission = true;
 
+    @Comment("Groups of biomes the player is allowed to RTP to.\nUse 'solstice.rtp.biomes.<world>.<groupName>' to assign.\nRequires 'solstice.rtp.biome.base'.")
+    public Map<String, Map<String, List<String>>> biomeGroups = Map.of(
+            "minecraft:overworld", Map.of(
+                    "forests", List.of(
+                            "minecraft:forest",
+                            "minecraft:flower_forest",
+                            "minecraft:taiga",
+                            "minecraft:old_growth_spruce_taiga",
+                            "minecraft:snowy_taiga",
+                            "minecraft:birch_forest",
+                            "minecraft:old_growth_birch_forest",
+                            "minecraft:dark_forest",
+                            "minecraft:pale_garden",
+                            "minecraft:jungle",
+                            "minecraft:sparse_jungle",
+                            "minecraft:bamboo_jungle"
+                    )
+            )
+    );
+
     @Comment("Cooldown configuration")
     public Cooldown cooldown = new Cooldown();
 
@@ -59,7 +80,6 @@ public class RTPConfig {
         @Comment("Cancel the cooldown if /rtp fails.")
         public boolean cancelOnFail = true;
     }
-
 
 
     public List<RegistryKey<Biome>> parseBiomes() {

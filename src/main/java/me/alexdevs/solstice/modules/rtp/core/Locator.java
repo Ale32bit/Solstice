@@ -2,20 +2,27 @@ package me.alexdevs.solstice.modules.rtp.core;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.ImmutableList;
+import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.modules.rtp.data.RTPConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ChunkHolder;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.WorldChunk;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
 import java.util.Optional;
@@ -29,6 +36,8 @@ public class Locator {
     public final ServerPlayerEntity player;
     public final ServerWorld world;
     public final RTPConfig config;
+    public @Nullable
+    final RegistryKey<Biome> biome;
 
     private Consumer<Result> callback;
     private final Stopwatch stopwatch = Stopwatch.createUnstarted();
@@ -65,9 +74,14 @@ public class Locator {
     );
 
     public Locator(ServerPlayerEntity player, ServerWorld world, RTPConfig config) {
+        this(player, world, config, null);
+    }
+
+    public Locator(ServerPlayerEntity player, ServerWorld world, RTPConfig config, @Nullable RegistryKey<Biome> biome) {
         this.player = player;
         this.world = world;
         this.config = config;
+        this.biome = biome;
     }
 
     public void locate(Consumer<Result> callback) {
@@ -86,6 +100,7 @@ public class Locator {
         var pos = getRandomPos();
 
         if (isValid(pos)) {
+            Solstice.LOGGER.info("RTP spot found at attempt {} for {}", config.attempts - remainingAttempts, player.getName());
             attemptPos = pos;
             load();
         } else {
@@ -179,11 +194,20 @@ public class Locator {
     }
 
     public boolean isValid(BlockPos pos) {
-        if(pos == null)
+        if (pos == null)
             return false;
+
+        if(this.biome != null) {
+            return isInBiome(pos, this.biome);
+        }
 
         var biome = world.getBiome(pos);
         return !config.parseBiomes().contains(biome.getKey().orElse(null));
+    }
+
+    public boolean isInBiome(BlockPos pos, RegistryKey<Biome> biome) {
+        var biomeAtPos = world.getBiome(pos);
+        return biomeAtPos.getKey().get().equals(biome);
     }
 
     public BlockPos getRandomPos() {
@@ -208,16 +232,16 @@ public class Locator {
         int x = 0;
         int z = 0;
         var limit = 256;
-        for(var i = 0; i <= limit; i++) {
+        for (var i = 0; i <= limit; i++) {
             var dist = world.getRandom().nextDouble() * (max - min) + min;
             var angle = world.getRandom().nextDouble() * Math.PI * 2d;
             x = (int) (Math.cos(angle) * dist + centerX);
             z = (int) (Math.sin(angle) * dist + centerZ);
 
-            if(worldBorder.contains(x, z))
+            if (worldBorder.contains(x, z))
                 break;
 
-            if(i == limit) {
+            if (i == limit) {
                 return null;
             }
         }

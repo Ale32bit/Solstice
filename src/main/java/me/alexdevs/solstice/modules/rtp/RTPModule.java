@@ -7,7 +7,9 @@ import me.alexdevs.solstice.modules.rtp.core.Locator;
 import me.alexdevs.solstice.modules.rtp.data.RTPConfig;
 import me.alexdevs.solstice.modules.rtp.data.RTPLocale;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.biome.Biome;
 
 import java.util.ArrayList;
 
@@ -35,6 +37,12 @@ public class RTPModule extends ModuleBase {
 
     public Locator createLocator(ServerPlayerEntity player) {
         var locator = new Locator(player, player.getServerWorld(), getConfig());
+        locators.add(locator);
+        return locator;
+    }
+
+    public Locator createLocatorWithBiome(ServerPlayerEntity player, RegistryKey<Biome> biome) {
+        var locator = new Locator(player, player.getServerWorld(), getConfig(), biome);
         locators.add(locator);
         return locator;
     }
