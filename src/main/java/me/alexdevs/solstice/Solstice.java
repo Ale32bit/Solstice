@@ -3,6 +3,7 @@ package me.alexdevs.solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSaveCallback;
 import me.alexdevs.solstice.core.CooldownManager;
+import me.alexdevs.solstice.core.UserCache;
 import me.alexdevs.solstice.core.WarmUpManager;
 import me.alexdevs.solstice.data.PlayerDataManager;
 import me.alexdevs.solstice.data.ServerData;
@@ -49,6 +50,7 @@ public class Solstice implements ModInitializer {
     public static final CooldownManager cooldown = new CooldownManager();
     public static final WarmUpManager warmUp = new WarmUpManager();
     private static Solstice INSTANCE;
+    private static final UserCache userCache = new UserCache(FabricLoader.getInstance().getGameDir().resolve("usercache.json").toFile());
 
     public Solstice() {
         INSTANCE = this;
@@ -60,6 +62,10 @@ public class Solstice implements ModInitializer {
 
     public static void nextTick(Runnable runnable) {
         nextTickRunnables.add(runnable);
+    }
+
+    public static UserCache getUserCache() {
+        return userCache;
     }
 
     @Override
