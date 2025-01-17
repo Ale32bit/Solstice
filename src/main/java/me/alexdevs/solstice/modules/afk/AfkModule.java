@@ -1,43 +1,33 @@
 package me.alexdevs.solstice.modules.afk;
 
-import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
-import me.alexdevs.solstice.api.events.CommandEvents;
 import me.alexdevs.solstice.api.events.PlayerActivityEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
-import me.alexdevs.solstice.locale.Locale;
+import me.alexdevs.solstice.api.text.Format;
+import me.alexdevs.solstice.modules.afk.commands.ActiveTimeCommand;
 import me.alexdevs.solstice.modules.afk.commands.AfkCommand;
 import me.alexdevs.solstice.modules.afk.data.AfkConfig;
 import me.alexdevs.solstice.modules.afk.data.AfkLocale;
 import me.alexdevs.solstice.modules.afk.data.AfkPlayerData;
-import me.alexdevs.solstice.api.text.Format;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.player.*;
-import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.TypedActionResult;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class AfkModule extends ModuleBase {
     public static final String ID = "afk";
-    public static Text afkTag;
-    private final ConcurrentHashMap<UUID, PlayerActivityState> playerActivityStates = new ConcurrentHashMap<>();
-    private int absentTimeTrigger;
 
-    private Locale locale;
-    private AfkConfig config;
+    private final Map<UUID, PlayerActivityState> activities = new ConcurrentHashMap<>();
 
     public AfkModule() {
         super(ID);
@@ -47,195 +37,103 @@ public class AfkModule extends ModuleBase {
         Solstice.localeManager.registerModule(ID, AfkLocale.MODULE);
 
         this.commands.add(new AfkCommand(this));
+        this.commands.add(new ActiveTimeCommand(this));
 
-        SolsticeEvents.READY.register((instance, server) -> register());
-    }
-
-    private void load() {
-        loadConfig();
-    }
-
-    private void register() {
-        locale = Solstice.localeManager.getLocale(ID);
-        config = Solstice.configManager.getData(AfkConfig.class);
-
-        load();
-
-        Placeholders.register(new Identifier(Solstice.MOD_ID, "afk"), (context, argument) -> {
+        Placeholders.register(new Identifier(Solstice.MOD_ID, "afk"), (context, arg) -> {
             if (!context.hasPlayer())
                 return PlaceholderResult.invalid("No player!");
+
             var player = context.player();
-            if (isPlayerAfk(player.getUuid())) {
-                return PlaceholderResult.value(afkTag);
-            } else {
+
+            if (isPlayerAfk(player))
+                return PlaceholderResult.value(Format.parse(getConfig().tag));
+            else
                 return PlaceholderResult.value("");
-            }
         });
 
-        if (!config.enable)
-            return;
-
-        PlayerActivityEvents.AFK.register((player, server) -> {
-            Solstice.LOGGER.info("{} is AFK. Active time: {} seconds.", player.getGameProfile().getName(), getActiveTime(player));
-            if (!config.announce)
-                return;
-
-            var playerContext = PlaceholderContext.of(player);
-
-            Solstice.getInstance().broadcast(locale.get("goneAfk", playerContext));
+        SolsticeEvents.READY.register((instance, server) -> {
+            Solstice.scheduler.scheduleAtFixedRate(this::updateActiveTime, 0, 1, TimeUnit.SECONDS);
         });
-
-        PlayerActivityEvents.AFK_RETURN.register((player, server) -> {
-            Solstice.LOGGER.info("{} is no longer AFK. Active time: {} seconds.", player.getGameProfile().getName(), getActiveTime(player));
-            if (!config.announce)
-                return;
-
-            var playerContext = PlaceholderContext.of(player);
-
-            Solstice.getInstance().broadcast(locale.get("returnAfk", playerContext));
-        });
-
-        SolsticeEvents.RELOAD.register(inst -> load());
-
-        ServerTickEvents.END_SERVER_TICK.register(this::updatePlayers);
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            final var player = handler.getPlayer();
-            playerActivityStates.put(player.getUuid(), new PlayerActivityState(player, server.getTicks()));
+            activities.put(handler.getPlayer().getUuid(), new PlayerActivityState(handler.getPlayer(), server.getTicks()));
         });
 
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            updatePlayerActiveTime(handler.getPlayer(), server.getTicks());
-            playerActivityStates.remove(handler.getPlayer().getUuid());
+            activities.remove(handler.getPlayer().getUuid());
         });
 
-        AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-            resetAfkState((ServerPlayerEntity) player, world.getServer());
-            return ActionResult.PASS;
-        });
+        ServerTickEvents.END_SERVER_TICK.register(this::tick);
 
-        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            resetAfkState((ServerPlayerEntity) player, world.getServer());
-            return ActionResult.PASS;
-        });
+        registerTriggers();
+    }
 
-        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-            resetAfkState((ServerPlayerEntity) player, world.getServer());
-            return ActionResult.PASS;
-        });
+    private void updateActiveTime() {
+        var activePlayers = Solstice.server.getPlayerManager().getPlayerList()
+                .stream().filter(player -> !isPlayerAfk(player));
 
-        UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            resetAfkState((ServerPlayerEntity) player, world.getServer());
-            return ActionResult.PASS;
-        });
-
-        UseItemCallback.EVENT.register((player, world, hand) -> {
-            resetAfkState((ServerPlayerEntity) player, world.getServer());
-            return TypedActionResult.pass(player.getStackInHand(hand));
-        });
-
-        ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> {
-            resetAfkState(sender, sender.getServer());
-            return true;
-        });
-
-        CommandEvents.ALLOW_COMMAND.register((source, command) -> {
-            if (!source.isExecutedByPlayer())
-                return true;
-
-            resetAfkState(source.getPlayer(), source.getServer());
-            return true;
+        activePlayers.forEach(player -> {
+            getPlayerData(player.getUuid()).activeTime++;
         });
     }
 
-    private void loadConfig() {
-        afkTag = Format.parse(config.tag);
-        absentTimeTrigger = config.timeTrigger * 20;
-    }
-
-    private void updatePlayer(ServerPlayerEntity player, MinecraftServer server) {
+    private void tick(MinecraftServer server) {
         var currentTick = server.getTicks();
-        var playerState = playerActivityStates.computeIfAbsent(player.getUuid(), uuid -> new PlayerActivityState(player, currentTick));
+        var config = getConfig();
+        server.getPlayerManager().getPlayerList().forEach(player -> {
+            var activity = activities.get(player.getUuid());
 
-        var oldPosition = playerState.position;
-        var newPosition = new ServerLocation(player);
-        if (newPosition.getYaw() != oldPosition.getYaw()
-                || newPosition.getPitch() != oldPosition.getPitch()
-                || !newPosition.getWorld().equals(oldPosition.getWorld())) {
-            playerState.position = newPosition;
-            resetAfkState(player, server);
-            return;
-        }
+            var curLocation = new ServerLocation(player);
 
-        if (playerState.isAfk)
-            return;
 
-        if(!Permissions.check(player, getPermissionNode("base"), true)) {
-            return;
-        }
-
-        if ((playerState.lastUpdate + absentTimeTrigger) <= currentTick) {
-            // player is afk after 5 mins
-            updatePlayerActiveTime(player, currentTick);
-            playerState.isAfk = true;
-            PlayerActivityEvents.AFK.invoker().onAfk(player, server);
-        }
+            if(activity.lastUpdate > config.timeTrigger * 20) {
+                if(!activity.isAfk) {
+                    activity.isAfk = true;
+                    PlayerActivityEvents.AFK.invoker().onAfk(player, server);
+                }
+            }
+        });
     }
 
-    private void updatePlayerActiveTime(ServerPlayerEntity player, int currentTick) {
-        var playerActivityState = playerActivityStates.get(player.getUuid());
-        if (!playerActivityState.isAfk) {
-            var data = Solstice.playerData.get(player).getData(AfkPlayerData.class);
-            var interval = currentTick - playerActivityState.activeStart;
-            data.activeTime += interval / 20;
-        }
+    public AfkConfig getConfig() {
+        return Solstice.configManager.getData(AfkConfig.class);
     }
 
-    private void updatePlayers(MinecraftServer server) {
-        var players = server.getPlayerManager().getPlayerList();
-        players.forEach(player -> updatePlayer(player, server));
+    public AfkPlayerData getPlayerData(UUID playerUuid) {
+        return Solstice.playerData.get(playerUuid).getData(AfkPlayerData.class);
     }
 
-    private void resetAfkState(ServerPlayerEntity player, MinecraftServer server) {
-        if(!Permissions.check(player, getPermissionNode("base"), true)) {
-            return;
-        }
+    public boolean isPlayerAfk(ServerPlayerEntity player) {
+        return activities.get(player.getUuid()) != null && activities.get(player.getUuid()).isAfk;
+    }
 
-        if (!playerActivityStates.containsKey(player.getUuid()))
+    public void setPlayerAfk(ServerPlayerEntity player, boolean isAfk) {
+        if (!activities.containsKey(player.getUuid()))
             return;
 
-        var playerState = playerActivityStates.get(player.getUuid());
-        playerState.lastUpdate = server.getTicks();
-        if (playerState.isAfk) {
-            playerState.isAfk = false;
-            playerState.activeStart = server.getTicks();
-            PlayerActivityEvents.AFK_RETURN.invoker().onAfkReturn(player, server);
-        }
+        var activity = activities.get(player.getUuid());
+        activity.isAfk = isAfk;
     }
 
-    public boolean isPlayerAfk(UUID playerUuid) {
-        if (!playerActivityStates.containsKey(playerUuid)) {
-            return false;
-        }
-        return playerActivityStates.get(playerUuid).isAfk;
+    public int getActiveTime(UUID playerUuid) {
+        return getPlayerData(playerUuid).activeTime;
     }
 
-    public void setPlayerAfk(ServerPlayerEntity player, boolean afk) {
-        if (!playerActivityStates.containsKey(player.getUuid())) {
+    private void clearAfk(ServerPlayerEntity player) {
+        var activity = activities.get(player.getUuid());
+        activity.lastUpdate = Solstice.server.getTicks();
+
+        if (!activity.afkEnabled)
             return;
+
+        if (activity.isAfk) {
+            activity.isAfk = false;
+            PlayerActivityEvents.AFK_RETURN.invoker().onAfkReturn(player, Solstice.server);
         }
 
-        if (afk) {
-            playerActivityStates.get(player.getUuid()).lastUpdate = -absentTimeTrigger - 20; // just to be sure
-        } else {
-            resetAfkState(player, Solstice.server);
-        }
-
-        updatePlayer(player, Solstice.server);
     }
 
-    public int getActiveTime(ServerPlayerEntity player) {
-        var data = Solstice.playerData.get(player).getData(AfkPlayerData.class);
-        return data.activeTime;
+    private void registerTriggers() {
+
     }
 }

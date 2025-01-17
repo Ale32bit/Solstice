@@ -1,18 +1,20 @@
 package me.alexdevs.solstice.modules.afk;
 
+import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public class PlayerActivityState {
-    public ServerLocation position;
+    public ServerLocation location;
     public int lastUpdate;
     public boolean isAfk;
-    public int activeStart;
+    public boolean afkEnabled;
 
     public PlayerActivityState(ServerPlayerEntity player, int lastUpdate) {
-        this.position = new ServerLocation(player);
+        this.location = new ServerLocation(player);
         this.lastUpdate = lastUpdate;
         this.isAfk = false;
-        this.activeStart = lastUpdate;
+        this.afkEnabled = Permissions.check(player, Solstice.MOD_ID + "." + AfkModule.ID + ".base", true);
     }
 }
