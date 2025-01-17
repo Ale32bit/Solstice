@@ -3,7 +3,6 @@ package me.alexdevs.solstice.modules.afk.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.afk.AfkModule;
-import me.alexdevs.solstice.modules.afk.AfkModuleOld;
 import net.minecraft.server.command.ServerCommandSource;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class AfkCommand extends ModCommand<AfkModule> {
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrThrow();
 
-                    module.setPlayerAfk(player, true);
+                    module.setPlayerAfk(player, !module.isPlayerAfk(player));
 
                     return 1;
                 });

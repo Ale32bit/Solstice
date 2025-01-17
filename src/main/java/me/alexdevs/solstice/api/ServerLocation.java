@@ -129,4 +129,8 @@ public class ServerLocation {
 
         return thisVec.distanceTo(otherVec);
     }
+
+    public Vec3d getDelta(ServerLocation other) {
+        return new Vec3d(this.getX() - other.getX(), this.getY() - other.getY(), this.getZ() - other.getZ());
+    }
 }

@@ -3,7 +3,7 @@ package me.alexdevs.solstice.modules;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.module.ModuleEntrypoint;
 import me.alexdevs.solstice.modules.admin.AdminModule;
-import me.alexdevs.solstice.modules.afk.AfkModuleOld;
+import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.autoAnnouncement.AutoAnnouncementModule;
 import me.alexdevs.solstice.modules.item.ItemModule;
 import me.alexdevs.solstice.modules.jail.JailModule;
@@ -61,7 +61,7 @@ import java.util.List;
 public class ModuleProvider implements ModuleEntrypoint {
     private static final List<? extends ModuleBase> modules = List.of(
             new AdminModule(),
-            new AfkModuleOld(),
+            new AfkModule(),
             new AutoAnnouncementModule(),
             new RestartModule(),
             new BackModule(),

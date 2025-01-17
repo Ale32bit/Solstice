@@ -1,9 +1,11 @@
 package me.alexdevs.solstice.modules.afk;
 
+import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
+import me.alexdevs.solstice.api.events.CommandEvents;
 import me.alexdevs.solstice.api.events.PlayerActivityEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
@@ -14,10 +16,15 @@ import me.alexdevs.solstice.modules.afk.data.AfkConfig;
 import me.alexdevs.solstice.modules.afk.data.AfkLocale;
 import me.alexdevs.solstice.modules.afk.data.AfkPlayerData;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.*;
+import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.Map;
 import java.util.UUID;
@@ -26,6 +33,10 @@ import java.util.concurrent.TimeUnit;
 
 public class AfkModule extends ModuleBase {
     public static final String ID = "afk";
+
+    public static final double sprintSpeed = 0.280617;
+    public static final double walkSpeed = 0.215859;
+    public static final double sneakSpeed = 0.0841;
 
     private final Map<UUID, PlayerActivityState> activities = new ConcurrentHashMap<>();
 
@@ -65,6 +76,29 @@ public class AfkModule extends ModuleBase {
 
         ServerTickEvents.END_SERVER_TICK.register(this::tick);
 
+        PlayerActivityEvents.AFK.register((player, server) -> {
+            var config = getConfig();
+
+            Solstice.LOGGER.info("{} is AFK. Active time: {} seconds.", player.getGameProfile().getName(), getActiveTime(player.getUuid()));
+            if (!config.announce)
+                return;
+
+            var playerContext = PlaceholderContext.of(player);
+
+            Solstice.getInstance().broadcast(locale().get("goneAfk", playerContext));
+        });
+
+        PlayerActivityEvents.AFK_RETURN.register((player, server) -> {
+            var config = getConfig();
+            Solstice.LOGGER.info("{} is no longer AFK. Active time: {} seconds.", player.getGameProfile().getName(), getActiveTime(player.getUuid()));
+            if (!config.announce)
+                return;
+
+            var playerContext = PlaceholderContext.of(player);
+
+            Solstice.getInstance().broadcast(locale().get("returnAfk", playerContext));
+        });
+
         registerTriggers();
     }
 
@@ -78,15 +112,37 @@ public class AfkModule extends ModuleBase {
     }
 
     private void tick(MinecraftServer server) {
-        var currentTick = server.getTicks();
         var config = getConfig();
+        if(!config.enable)
+            return;
+
         server.getPlayerManager().getPlayerList().forEach(player -> {
             var activity = activities.get(player.getUuid());
 
             var curLocation = new ServerLocation(player);
+            var oldLocation = activity.location;
+            activity.location = curLocation;
 
+            var delta = curLocation.getDelta(oldLocation);
+            var horizontalDelta = new Vec3d(delta.getX(), 0, delta.getZ());
 
-            if(activity.lastUpdate > config.timeTrigger * 20) {
+            var speed = horizontalDelta.length();
+
+            // Suppose the player in a vehicle will look around, so we only check for movement when not in a vehicle.
+            if(player.getVehicle() == null) {
+                // Defeats some anti-afk stuff, like pools. Works best when no lag.
+                if((player.isSneaking() && speed >= sneakSpeed) || (player.isSprinting() && speed >= sprintSpeed) || (speed >= walkSpeed)) {
+                    clearAfk(player);
+                }
+            }
+
+            // Looking around requires player input
+            if(curLocation.getPitch() != oldLocation.getPitch() || curLocation.getYaw() != oldLocation.getYaw()) {
+                clearAfk(player);
+            }
+
+            var ticks = server.getTicks();
+            if(activity.lastUpdate < ticks - config.timeTrigger * 20) {
                 if(!activity.isAfk) {
                     activity.isAfk = true;
                     PlayerActivityEvents.AFK.invoker().onAfk(player, server);
@@ -111,8 +167,13 @@ public class AfkModule extends ModuleBase {
         if (!activities.containsKey(player.getUuid()))
             return;
 
+        var config =getConfig();
         var activity = activities.get(player.getUuid());
-        activity.isAfk = isAfk;
+        if(isAfk) {
+            activity.lastUpdate = activity.lastUpdate - (config.timeTrigger * 20);
+        } else {
+            clearAfk(player);
+        }
     }
 
     public int getActiveTime(UUID playerUuid) {
@@ -134,6 +195,42 @@ public class AfkModule extends ModuleBase {
     }
 
     private void registerTriggers() {
+        AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+            clearAfk((ServerPlayerEntity) player);
+            return ActionResult.PASS;
+        });
 
+        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            clearAfk((ServerPlayerEntity) player);
+            return ActionResult.PASS;
+        });
+
+        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+            clearAfk((ServerPlayerEntity) player);
+            return ActionResult.PASS;
+        });
+
+        UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            clearAfk((ServerPlayerEntity) player);
+            return ActionResult.PASS;
+        });
+
+        UseItemCallback.EVENT.register((player, world, hand) -> {
+            clearAfk((ServerPlayerEntity) player);
+            return TypedActionResult.pass(player.getStackInHand(hand));
+        });
+
+        ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> {
+            clearAfk(sender);
+            return true;
+        });
+
+        CommandEvents.ALLOW_COMMAND.register((source, command) -> {
+            if (!source.isExecutedByPlayer())
+                return true;
+
+            clearAfk(source.getPlayer());
+            return true;
+        });
     }
 }
