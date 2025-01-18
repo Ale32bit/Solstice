@@ -16,6 +16,10 @@ public class LuckPermsIntegration {
     private static boolean available = false;
 
     public static void register() {
+        if (!isAvailable()) {
+            Solstice.LOGGER.warn("LuckPerms not available! It is recommended to install LuckPerms to configure permissions and groups.");
+            return;
+        }
 
         var container = FabricLoader.getInstance().getModContainer(Solstice.MOD_ID).get();
 
@@ -26,7 +30,10 @@ public class LuckPermsIntegration {
 
             eventBus.subscribe(container, UserDataRecalculateEvent.class, Listeners::onDataRecalculate);
         });
+    }
 
+    public static boolean isAvailable() {
+        return FabricLoader.getInstance().isModLoaded("luckperms");
     }
 
     public static @Nullable String getPrefix(ServerPlayerEntity player) {

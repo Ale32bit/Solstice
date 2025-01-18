@@ -1,16 +1,16 @@
 package me.alexdevs.solstice;
 
+import me.alexdevs.solstice.api.data.HoconDataManager;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSaveCallback;
 import me.alexdevs.solstice.core.CooldownManager;
+import me.alexdevs.solstice.core.Modules;
 import me.alexdevs.solstice.core.UserCache;
 import me.alexdevs.solstice.core.WarmUpManager;
 import me.alexdevs.solstice.data.PlayerDataManager;
 import me.alexdevs.solstice.data.ServerData;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.locale.LocaleManager;
-import me.alexdevs.solstice.core.Modules;
-import me.alexdevs.solstice.api.data.HoconDataManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -73,6 +73,8 @@ public class Solstice implements ModInitializer {
         var modMeta = FabricLoader.getInstance().getModContainer(MOD_ID).get().getMetadata();
         LOGGER.info("Initializing Solstice v{}...", modMeta.getVersion());
 
+        LuckPermsIntegration.register();
+
         modules.register();
 
         try {
@@ -89,10 +91,6 @@ public class Solstice implements ModInitializer {
             localeManager.save();
         } catch (Exception e) {
             LOGGER.error("Error while loading Solstice locale!", e);
-        }
-
-        if (FabricLoader.getInstance().isModLoaded("luckperms")) {
-            LuckPermsIntegration.register();
         }
 
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
