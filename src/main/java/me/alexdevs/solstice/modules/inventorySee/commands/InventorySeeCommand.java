@@ -5,6 +5,7 @@ import dev.emi.trinkets.api.TrinketsApi;
 import eu.pb4.sgui.api.gui.SimpleGui;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.integrations.TrinketsIntegration;
+import me.alexdevs.solstice.modules.inventorySee.ImmutableSlot;
 import me.alexdevs.solstice.modules.inventorySee.InventorySeeModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -35,6 +36,7 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
     }
 
     private static final LinkedHashMap<Integer, ScreenHandlerType<GenericContainerScreenHandler>> invSizes = new LinkedHashMap<>();
+
     static {
         invSizes.put(9, ScreenHandlerType.GENERIC_9X1);
         invSizes.put(18, ScreenHandlerType.GENERIC_9X2);
@@ -59,12 +61,20 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                                 return 0;
                             }
 
+                            var canEdit = Permissions.check(player, getPermissionNode("edit"), 3);
+
                             var targetInventory = target.getInventory();
 
                             var container = new SimpleGui(ScreenHandlerType.GENERIC_9X5, player, false);
 
                             for (var i = 0; i < targetInventory.size(); i++) {
-                                container.setSlotRedirect(i, new Slot(targetInventory, i, 0, 0));
+                                Slot slot;
+                                if(canEdit) {
+                                    slot = new Slot(targetInventory, i, 0, 0);
+                                } else {
+                                    slot = new ImmutableSlot(targetInventory, i, 0, 0);
+                                }
+                                container.setSlotRedirect(i, slot);
                             }
 
                             var barrier = new ItemStack(Items.BLACK_STAINED_GLASS_PANE);
@@ -95,17 +105,25 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                                         return 0;
                                     }
 
-                                    if(!TrinketsIntegration.isAvailable()) {
+                                    if (!TrinketsIntegration.isAvailable()) {
                                         source.sendFeedback(() -> module.locale().get("trinketsNotInstalled"), false);
                                         return 0;
                                     }
 
+                                    var canEdit = Permissions.check(player, getPermissionNode("edit"), 3);
+
                                     var trinkets = TrinketsApi.getTrinketComponent(target).orElse(null);
                                     var slots = new ArrayList<Slot>();
-                                    for(var group : trinkets.getInventory().values()) {
-                                        for(var inventory : group.values()) {
-                                            for(var i = 0; i < inventory.size(); i++) {
-                                                slots.add(new Slot(inventory, i, 0, 0));
+                                    for (var group : trinkets.getInventory().values()) {
+                                        for (var inventory : group.values()) {
+                                            for (var i = 0; i < inventory.size(); i++) {
+                                                Slot slot;
+                                                if(canEdit) {
+                                                    slot = new Slot(inventory, i, 0, 0);
+                                                } else {
+                                                    slot = new ImmutableSlot(inventory, i, 0, 0);
+                                                }
+                                                slots.add(slot);
                                             }
                                         }
                                     }
