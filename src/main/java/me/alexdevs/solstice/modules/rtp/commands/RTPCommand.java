@@ -10,10 +10,12 @@ import me.alexdevs.solstice.modules.rtp.core.Locator;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.RegistryEntryArgumentType;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.world.biome.Biome;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +38,7 @@ public class RTPCommand extends ModCommand<RTPModule> {
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
                 .requires(require(2))
-                .executes(this::execute)
+                .executes(context -> execute(context, false))
                 .then(argument("biome", RegistryEntryArgumentType.registryEntry(commandRegistry, RegistryKeys.BIOME))
                         .requires(require("biome.base", 2))
                         .suggests((context, builder) -> {
@@ -47,11 +49,11 @@ public class RTPCommand extends ModCommand<RTPModule> {
                             var biomes = getAllowedBiomes(context.getSource(), context.getSource().getWorld());
                             return CommandSource.suggestMatching(biomes, builder);
                         })
-                        .executes(this::execute)
+                        .executes(context -> execute(context, true))
                 );
     }
 
-    private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private int execute(CommandContext<ServerCommandSource> context, boolean withBiome) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrThrow();
         var config = module.getConfig();
 
@@ -63,16 +65,19 @@ public class RTPCommand extends ModCommand<RTPModule> {
             }
         }
 
-        var biomeEntry = RegistryEntryArgumentType.getRegistryEntry(context, "biome", RegistryKeys.BIOME);
-        var biome = biomeEntry.getKey().orElse(null);
+        RegistryKey<Biome> biome = null;
+        if (withBiome) {
+            var biomeEntry = RegistryEntryArgumentType.getRegistryEntry(context, "biome", RegistryKeys.BIOME);
+            biome = biomeEntry.getKey().orElse(null);
 
-        if(biomeEntry.getKey().isPresent()) {
-            if (!Permissions.check(context.getSource(), getPermissionNode("exempt.biome"), 2)) {
-                var biomeId = biome.getValue().toString();
-                var allowedBiomes = getAllowedBiomes(context.getSource(), context.getSource().getWorld());
-                if (!allowedBiomes.contains(biomeId)) {
-                    context.getSource().sendFeedback(() -> module.locale().get("noBiomePermission"), false);
-                    return 0;
+            if (biomeEntry.getKey().isPresent()) {
+                if (!Permissions.check(context.getSource(), getPermissionNode("exempt.biome"), 2)) {
+                    var biomeId = biome.getValue().toString();
+                    var allowedBiomes = getAllowedBiomes(context.getSource(), context.getSource().getWorld());
+                    if (!allowedBiomes.contains(biomeId)) {
+                        context.getSource().sendFeedback(() -> module.locale().get("noBiomePermission"), false);
+                        return 0;
+                    }
                 }
             }
         }
@@ -88,8 +93,7 @@ public class RTPCommand extends ModCommand<RTPModule> {
         final var uuid = player.getUuid();
 
         Locator locator;
-
-        if (biomeEntry.getKey().isEmpty()) {
+        if (!withBiome) {
             locator = module.createLocator(player);
         } else {
             locator = module.createLocatorWithBiome(player, biome);
