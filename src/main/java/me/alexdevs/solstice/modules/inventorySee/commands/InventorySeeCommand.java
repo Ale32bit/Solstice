@@ -1,20 +1,23 @@
 package me.alexdevs.solstice.modules.inventorySee.commands;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dev.emi.trinkets.api.TrinketsApi;
 import eu.pb4.sgui.api.gui.SimpleGui;
+import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.integrations.TrinketsIntegration;
 import me.alexdevs.solstice.modules.inventorySee.ImmutableSlot;
 import me.alexdevs.solstice.modules.inventorySee.InventorySeeModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.command.CommandSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -50,11 +53,31 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
                 .requires(require(2))
-                .then(argument("player", EntityArgumentType.player())
+                .then(argument("player", StringArgumentType.word())
+                        .suggests((context, builder) -> CommandSource.suggestMatching(context.getSource().getPlayerNames(), builder))
                         .executes(context -> {
                             var source = context.getSource();
                             var player = source.getPlayerOrThrow();
-                            var target = EntityArgumentType.getPlayer(context, "player");
+                            var targetName = StringArgumentType.getString(context, "player");
+                            var targetProfile = Solstice.getUserCache().getByName(targetName).orElse(null);
+                            if (targetProfile == null) {
+                                source.sendFeedback(() -> module.locale().get("playerNotFound"), false);
+                                return 0;
+                            }
+
+                            var targetOnline = module.isOnline(targetProfile.getId());
+
+                            if (!targetOnline && !Permissions.check(player, getPermissionNode("offline"), 3)) {
+                                source.sendFeedback(() -> module.locale().get("offlineNotAllowed"), false);
+                                return 0;
+                            }
+
+                            ServerPlayerEntity target;
+                            if (targetOnline) {
+                                target = context.getSource().getServer().getPlayerManager().getPlayer(targetProfile.getId());
+                            } else {
+                                target = module.loadOfflinePlayer(targetProfile);
+                            }
 
                             if (Permissions.check(target, getPermissionNode("exempt"), 3)) {
                                 source.sendFeedback(() -> module.locale().get("exempt"), false);
@@ -65,11 +88,18 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
 
                             var targetInventory = target.getInventory();
 
-                            var container = new SimpleGui(ScreenHandlerType.GENERIC_9X5, player, false);
+                            var container = new SimpleGui(ScreenHandlerType.GENERIC_9X5, player, false) {
+                                @Override
+                                public void onClose() {
+                                    if (!targetOnline) {
+                                        module.saveOfflinePlayer(target);
+                                    }
+                                }
+                            };
 
                             for (var i = 0; i < targetInventory.size(); i++) {
                                 Slot slot;
-                                if(canEdit) {
+                                if (canEdit) {
                                     slot = new Slot(targetInventory, i, 0, 0);
                                 } else {
                                     slot = new ImmutableSlot(targetInventory, i, 0, 0);
@@ -98,7 +128,25 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                                 .executes(context -> {
                                     var source = context.getSource();
                                     var player = source.getPlayerOrThrow();
-                                    var target = EntityArgumentType.getPlayer(context, "player");
+                                    var targetName = StringArgumentType.getString(context, "player");
+                                    var targetProfile = Solstice.getUserCache().getByName(targetName).orElse(null);
+                                    if (targetProfile == null) {
+                                        source.sendFeedback(() -> module.locale().get("playerNotFound"), false);
+                                        return 0;
+                                    }
+                                    var targetOnline = module.isOnline(targetProfile.getId());
+
+                                    if (!targetOnline && !Permissions.check(player, getPermissionNode("offline"), 3)) {
+                                        source.sendFeedback(() -> module.locale().get("offlineNotAllowed"), false);
+                                        return 0;
+                                    }
+
+                                    ServerPlayerEntity target;
+                                    if (targetOnline) {
+                                        target = context.getSource().getServer().getPlayerManager().getPlayer(targetProfile.getId());
+                                    } else {
+                                        target = module.loadOfflinePlayer(targetProfile);
+                                    }
 
                                     if (Permissions.check(target, getPermissionNode() + ".exempt", 3)) {
                                         source.sendFeedback(() -> module.locale().get("exempt"), false);
@@ -118,7 +166,7 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                                         for (var inventory : group.values()) {
                                             for (var i = 0; i < inventory.size(); i++) {
                                                 Slot slot;
-                                                if(canEdit) {
+                                                if (canEdit) {
                                                     slot = new Slot(inventory, i, 0, 0);
                                                 } else {
                                                     slot = new ImmutableSlot(inventory, i, 0, 0);
@@ -137,7 +185,15 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                                         }
                                     }
 
-                                    var container = new SimpleGui(handlerType, player, false);
+                                    var container = new SimpleGui(handlerType, player, false) {
+                                        @Override
+                                        public void onClose() {
+                                            if (!targetOnline) {
+                                                module.saveOfflinePlayer(target);
+                                            }
+                                        }
+                                    };
+
                                     for (var i = 0; i < slots.size(); i++) {
                                         var slot = slots.get(i);
                                         container.setSlotRedirect(i, slot);
