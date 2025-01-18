@@ -9,6 +9,7 @@ import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.home.HomeModule;
 import me.alexdevs.solstice.api.text.Components;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
@@ -74,9 +75,17 @@ public class SetHomeCommand extends ModCommand<HomeModule> {
             return 1;
         }
 
+        var groups = module.getConfig().homes;
+        var maxHomes = Integer.MIN_VALUE;
+        for(var entry : groups.entrySet()) {
+            var group = entry.getKey();
+            if(Permissions.check(player, "group." + group)) {
+                maxHomes = Math.max(maxHomes, entry.getValue());
+            }
+        }
 
-        var maxHomes = module.getConfig().maxHomes;
-        if (maxHomes >= 0 && homes.size() >= maxHomes && !exists) {
+        var allowUnlimited = Permissions.check(player, getPermissionNode("unlimited"), 3);
+        if (!allowUnlimited && homes.size() >= maxHomes && !exists) {
             context.getSource().sendFeedback(() -> module.locale().get(
                     "maxHomesReached",
                     playerContext,
