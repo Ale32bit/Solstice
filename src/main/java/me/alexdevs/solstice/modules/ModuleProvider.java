@@ -8,6 +8,7 @@ import me.alexdevs.solstice.modules.autoAnnouncement.AutoAnnouncementModule;
 import me.alexdevs.solstice.modules.item.ItemModule;
 import me.alexdevs.solstice.modules.jail.JailModule;
 import me.alexdevs.solstice.modules.kit.KitModule;
+import me.alexdevs.solstice.modules.miscellaneous.MiscellaneousModule;
 import me.alexdevs.solstice.modules.note.NoteModule;
 import me.alexdevs.solstice.modules.placeholders.PlaceholdersModule;
 import me.alexdevs.solstice.modules.powertool.PowerToolModule;
@@ -89,6 +90,7 @@ public class ModuleProvider implements ModuleEntrypoint {
             new KickModule(),
             new KitModule(),
             new MailModule(),
+            new MiscellaneousModule(),
             new MuteModule(),
             new NearModule(),
             new NoteModule(),
