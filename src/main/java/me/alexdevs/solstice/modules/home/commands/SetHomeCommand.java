@@ -72,7 +72,7 @@ public class SetHomeCommand extends ModCommand<HomeModule> {
 
             context.getSource().sendFeedback(() -> text, false);
 
-            return 1;
+            return 0;
         }
 
         var groups = module.getConfig().homes;
@@ -91,7 +91,7 @@ public class SetHomeCommand extends ModCommand<HomeModule> {
                     playerContext,
                     placeholders
             ), false);
-            return 1;
+            return 0;
         }
 
         var homePosition = new ServerLocation(player);
