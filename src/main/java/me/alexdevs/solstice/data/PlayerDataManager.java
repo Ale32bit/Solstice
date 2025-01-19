@@ -79,7 +79,7 @@ public class PlayerDataManager {
      */
     public void dispose(UUID uuid) {
         if (playerData.containsKey(uuid)) {
-            Solstice.LOGGER.info("Unloading player data {}", uuid);
+            Solstice.LOGGER.debug("Unloading player data {}", uuid);
             var data = playerData.remove(uuid);
             data.save();
         }
@@ -94,7 +94,7 @@ public class PlayerDataManager {
     }
 
     private PlayerData load(UUID uuid) {
-        Solstice.LOGGER.info("Loading player data {}", uuid);
+        Solstice.LOGGER.debug("Loading player data {}", uuid);
         var data = new PlayerData(this.basePath, uuid, classMap, providers);
         playerData.put(uuid, data);
         return data;

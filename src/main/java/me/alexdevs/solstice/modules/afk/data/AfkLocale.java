@@ -9,6 +9,8 @@ public class AfkLocale {
             Map.entry("yourActiveTime", "<gold>Your active time is <yellow>${activeTime}</yellow>.</gold>"),
             Map.entry("playerActiveTime", "<gold><yellow>${player}</yellow>'s active time is <yellow>${activeTime}</yellow>.</gold>"),
             Map.entry("neverPlayed", "<gold>This player never played.</gold>"),
-            Map.entry("notFound", "<gold>Player not found.</gold>")
+            Map.entry("notFound", "<gold>Player not found.</gold>"),
+            Map.entry("leaderboardHeader", "<gold>Active Time Leaderboard:</gold>"),
+            Map.entry("leaderboardEntry", "<gold> <gold>${index}.</gold> <yellow>${player}</yellow>: <gray>${time}</gray></gold>")
     );
 }

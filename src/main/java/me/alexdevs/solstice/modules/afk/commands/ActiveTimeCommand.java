@@ -50,7 +50,7 @@ public class ActiveTimeCommand extends ModCommand<AfkModule> {
                                     var profile = LocalGameProfile.getProfile(context, "player");
                                     var activeTime = module.getActiveTime(profile.getId());
 
-                                    if(activeTime == 0) {
+                                    if (activeTime == 0) {
                                         context.getSource().sendFeedback(() -> module.locale().get("neverPlayed"), false);
                                         return 0;
                                     }
@@ -66,6 +66,35 @@ public class ActiveTimeCommand extends ModCommand<AfkModule> {
 
                                     return 1;
                                 })
-                        ));
+                        ))
+                .then(CommandManager.literal("leaderboard")
+                        .requires(require("leaderboard", true))
+                        .executes(context -> {
+                            var leaderboard = module.getActiveTimeLeaderboard();
+
+                            var text = Text.empty();
+
+                            text.append(module.locale().get("leaderboardHeader"));
+
+                            var index = 0;
+                            for (var entry : leaderboard) {
+                                text.append("\n");
+                                index++;
+                                var map = Map.of(
+                                        "index", Text.of(String.valueOf(index)),
+                                        "player", Text.of(entry.name()),
+                                        "uuid", Text.of(entry.uuid().toString()),
+                                        "time", Text.of(TimeSpan.toLongString(entry.activeTime())),
+                                        "shortTime", Text.of(TimeSpan.toShortString(entry.activeTime())),
+                                        "seconds", Text.of(String.valueOf(entry.activeTime()))
+                                );
+                                text.append(module.locale().get("leaderboardEntry", map));
+                            }
+
+                            context.getSource().sendFeedback(() -> text, false);
+
+                            return 1;
+                        })
+                );
     }
 }

@@ -1,7 +1,8 @@
-package me.alexdevs.solstice.modules.afk;
+package me.alexdevs.solstice.modules.afk.data;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
+import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.network.ServerPlayerEntity;
 
