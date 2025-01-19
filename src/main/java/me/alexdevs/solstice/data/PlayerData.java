@@ -70,6 +70,10 @@ public class PlayerData {
         var parentDir = filePath.getParent();
         var fileName = filePath.getFileName().toString();
 
+        if(parentDir.toFile().mkdirs()) {
+            Solstice.LOGGER.debug("Players data directory created.");
+        }
+
         try {
             var temp = File.createTempFile(uuid.toString() + "-", ".json", parentDir.toFile());
             var tempWriter = new FileWriter(temp);
