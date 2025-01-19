@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dev.emi.trinkets.api.TrinketsApi;
 import eu.pb4.sgui.api.gui.SimpleGui;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.integrations.TrinketsIntegration;
 import me.alexdevs.solstice.modules.inventorySee.ImmutableSlot;
@@ -55,17 +56,11 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
         return literal(name)
                 .requires(require(2))
                 .then(argument("player", StringArgumentType.word())
-                        .suggests((context, builder) -> CommandSource.suggestMatching(context.getSource().getPlayerNames(), builder))
+                        .suggests(LocalGameProfile::suggest)
                         .executes(context -> {
                             var source = context.getSource();
                             var player = source.getPlayerOrThrow();
-                            var targetName = StringArgumentType.getString(context, "player");
-                            var targetProfile = Solstice.getUserCache().getByName(targetName).orElse(null);
-                            if (targetProfile == null) {
-                                source.sendFeedback(() -> module.locale().get("playerNotFound"), false);
-                                return 0;
-                            }
-
+                            var targetProfile = LocalGameProfile.getProfile(context, "player");
                             var targetOnline = module.isOnline(targetProfile.getId());
 
                             if (!targetOnline && !Permissions.check(player, getPermissionNode("offline"), 3)) {
@@ -129,12 +124,7 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                                 .executes(context -> {
                                     var source = context.getSource();
                                     var player = source.getPlayerOrThrow();
-                                    var targetName = StringArgumentType.getString(context, "player");
-                                    var targetProfile = Solstice.getUserCache().getByName(targetName).orElse(null);
-                                    if (targetProfile == null) {
-                                        source.sendFeedback(() -> module.locale().get("playerNotFound"), false);
-                                        return 0;
-                                    }
+                                    var targetProfile = LocalGameProfile.getProfile(context, "player");
                                     var targetOnline = module.isOnline(targetProfile.getId());
 
                                     if (!targetOnline && !Permissions.check(player, getPermissionNode("offline"), 3)) {
