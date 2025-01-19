@@ -9,11 +9,9 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.home.HomeModule;
-import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +31,7 @@ public class HomesCommand extends ModCommand<HomeModule> {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
-                .requires(require( true))
+                .requires(require(true))
                 .executes(this::execute)
                 .then(argument("player", StringArgumentType.word())
                         .requires(require("others", 2))
