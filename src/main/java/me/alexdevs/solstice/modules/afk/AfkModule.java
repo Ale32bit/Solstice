@@ -125,7 +125,7 @@ public class AfkModule extends ModuleBase {
 
         // if in list, update
         var entry = leaderboard.stream().filter(e -> e.uuid().equals(player.getUuid())).findFirst();
-        if(entry.isPresent()) {
+        if (entry.isPresent()) {
             entry.get().activeTime(activeTime);
             entry.get().name(player.getGameProfile().getName());
             leaderboard.sort((o1, o2) -> Integer.compare(o2.activeTime(), o1.activeTime()));
@@ -134,10 +134,14 @@ public class AfkModule extends ModuleBase {
 
         // if not in list, insert
         var smallest = leaderboard.stream().min(Comparator.comparingInt(LeaderboardEntry::activeTime));
-        if(smallest.isPresent() && smallest.get().activeTime() < activeTime) {
-            leaderboard.remove(smallest.get());
+        if (smallest.isPresent()) {
+            if (smallest.get().activeTime() < activeTime) {
+                leaderboard.remove(smallest.get());
+                leaderboard.add(new LeaderboardEntry(player.getGameProfile().getName(), player.getUuid(), activeTime));
+                leaderboard.sort((o1, o2) -> Integer.compare(o2.activeTime(), o1.activeTime()));
+            }
+        } else {
             leaderboard.add(new LeaderboardEntry(player.getGameProfile().getName(), player.getUuid(), activeTime));
-            leaderboard.sort((o1, o2) -> Integer.compare(o2.activeTime(), o1.activeTime()));
         }
     }
 
@@ -212,7 +216,7 @@ public class AfkModule extends ModuleBase {
 
     private void calculateLeaderboard() {
         var serverData = getServerData();
-        if(!serverData.forceCalculateLeaderboard)
+        if (!serverData.forceCalculateLeaderboard)
             return;
 
         serverData.forceCalculateLeaderboard = false;
