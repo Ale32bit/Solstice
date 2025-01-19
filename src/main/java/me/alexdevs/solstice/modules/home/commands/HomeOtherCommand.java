@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.home.HomeModule;
 import net.minecraft.command.argument.GameProfileArgumentType;
@@ -31,7 +32,8 @@ public class HomeOtherCommand extends ModCommand<HomeModule> {
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
                 .requires(require("others", 2))
-                .then(argument("player", GameProfileArgumentType.gameProfile())
+                .then(argument("player", StringArgumentType.word())
+                        .suggests(LocalGameProfile::suggest)
                         .executes(context -> execute(context, "home"))
                         .then(argument("name", StringArgumentType.word())
                                 .executes(context -> execute(context, StringArgumentType.getString(context, "name")))));
@@ -39,18 +41,9 @@ public class HomeOtherCommand extends ModCommand<HomeModule> {
 
     private int execute(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
         var sourcePlayer = context.getSource().getPlayerOrThrow();
-        var profiles = GameProfileArgumentType.getProfileArgument(context, "player");
+        var profile = LocalGameProfile.getProfile(context, "player");
         var playerContext = PlaceholderContext.of(context.getSource().getPlayer());
 
-        if (profiles.size() > 1) {
-            context.getSource().sendFeedback(() -> module.locale().get(
-                    "~tooManyTargets",
-                    playerContext
-            ), false);
-            return 0;
-        }
-
-        var profile = profiles.iterator().next();
 
         var data = module.getData(profile.getId());
 

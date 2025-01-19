@@ -1,13 +1,13 @@
 package me.alexdevs.solstice.modules.jail.commands;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.command.SingleGameProfile;
+import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.core.coreModule.data.CoreConfig;
 import me.alexdevs.solstice.modules.jail.JailModule;
-import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -32,9 +32,10 @@ public class CheckJailCommand extends ModCommand<JailModule> {
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return CommandManager.literal(name)
                 .requires(require(2))
-                .then(CommandManager.argument("user", GameProfileArgumentType.gameProfile())
+                .then(CommandManager.argument("user", StringArgumentType.word())
+                        .suggests(LocalGameProfile::suggest)
                         .executes(context -> {
-                            var user = SingleGameProfile.getProfile(context, "user");
+                            var user = LocalGameProfile.getProfile(context, "user");
                             var data = module.getPlayer(user.getId());
 
                             if (!data.jailed) {

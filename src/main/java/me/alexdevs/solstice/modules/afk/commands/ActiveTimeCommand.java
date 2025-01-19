@@ -1,10 +1,11 @@
 package me.alexdevs.solstice.modules.afk.commands;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.afk.AfkModule;
-import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -41,16 +42,28 @@ public class ActiveTimeCommand extends ModCommand<AfkModule> {
 
                     return 1;
                 })
-                .then(CommandManager.literal("leaderboard")
-                        .requires(require("leaderboard", true))
-                        .executes(context -> {
-                            return 1;
-                        })
-                )
                 .then(CommandManager.literal("player")
-                        .then(CommandManager.argument("player", GameProfileArgumentType.gameProfile())
+                        .then(CommandManager.argument("player", StringArgumentType.word())
                                 .requires(require("others", 1))
+                                .suggests(LocalGameProfile::suggest)
                                 .executes(context -> {
+                                    var profile = LocalGameProfile.getProfile(context, "player");
+                                    var activeTime = module.getActiveTime(profile.getId());
+
+                                    if(activeTime == 0) {
+                                        context.getSource().sendFeedback(() -> module.locale().get("neverPlayed"), false);
+                                        return 0;
+                                    }
+
+                                    var longSpan = TimeSpan.toLongString(activeTime);
+
+                                    var map = Map.of(
+                                            "activeTime", Text.of(longSpan),
+                                            "player", Text.of(profile.getName())
+                                    );
+
+                                    context.getSource().sendFeedback(() -> module.locale().get("playerActiveTime", map), false);
+
                                     return 1;
                                 })
                         ));

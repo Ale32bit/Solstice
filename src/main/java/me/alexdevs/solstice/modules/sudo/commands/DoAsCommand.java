@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.sudo.SudoModule;
+import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandOutput;
@@ -59,10 +60,10 @@ public class DoAsCommand extends ModCommand<SudoModule> {
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
                 .requires(require("doas", 4))
-                .then(argument("player", GameProfileArgumentType.gameProfile())
+                .then(argument("player", EntityArgumentType.players())
                         .then(argument("command", StringArgumentType.greedyString())
                                 .executes(context -> {
-                                    var profiles = GameProfileArgumentType.getProfileArgument(context, "player");
+                                    var players = EntityArgumentType.getPlayers(context, "player");
                                     var profileArgRange = context.getNodes().get(1).getRange();
                                     var stringProfiles = context.getInput().substring(
                                             profileArgRange.getStart(),
@@ -81,9 +82,7 @@ public class DoAsCommand extends ModCommand<SudoModule> {
                                     }
 
                                     var server = context.getSource().getServer();
-                                    var playerManager = server.getPlayerManager();
-                                    for (var profile : profiles) {
-                                        var player = playerManager.getPlayer(profile.getId());
+                                    for (var player : players) {
                                         var source = buildPlayerSource(commandOutput, server, player);
                                         execute(dispatcher, command, source, context.getSource());
                                     }

@@ -74,6 +74,10 @@ public class UserCache {
         }
     }
 
+    public List<String> getAllNames() {
+        return ImmutableList.copyOf(this.byName.keySet());
+    }
+
     public void add(GameProfile profile) {
         var calendar = Calendar.getInstance();
         calendar.setTime(new Date());

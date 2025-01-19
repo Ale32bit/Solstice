@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
+import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.seen.SeenModule;
@@ -43,15 +44,12 @@ public class SeenCommand extends ModCommand<SeenModule> {
         return literal(name)
                 .requires(require(true))
                 .then(argument("player", StringArgumentType.word())
+                        .suggests(LocalGameProfile::suggest)
                         .executes(context -> {
-                            var targetName = StringArgumentType.getString(context, "player");
                             var source = context.getSource();
 
-                            var profile = Solstice.getUserCache().getByName(targetName);
-                            if (profile.isEmpty()) {
-                                source.sendFeedback(() -> module.locale().get("playerNotFound"), false);
-                                return 0;
-                            }
+                            var profile = LocalGameProfile.getProfile(context, "player");
+
                             boolean extended;
                             if (context.getSource().isExecutedByPlayer()) {
                                 extended = Permissions.check(context.getSource().getPlayer(), getPermissionNode("extended"), 2);
@@ -62,8 +60,8 @@ public class SeenCommand extends ModCommand<SeenModule> {
                             var config = CoreModule.getConfig();
 
                             var dateFormatter = new SimpleDateFormat(config.dateTimeFormat);
-                            var player = source.getServer().getPlayerManager().getPlayer(profile.get().getId());
-                            var playerData = CoreModule.getPlayerData(profile.get().getId());
+                            var player = source.getServer().getPlayerManager().getPlayer(profile.getId());
+                            var playerData = CoreModule.getPlayerData(profile.getId());
 
                             if(playerData.firstJoinedDate == null) {
                                 source.sendFeedback(() -> module.locale().get("playerNotFound"), false);
@@ -82,8 +80,8 @@ public class SeenCommand extends ModCommand<SeenModule> {
                             var ipAddress = playerData.ipAddress != null ? playerData.ipAddress : module.locale().raw("unknown");
 
                             Map<String, Text> map = Map.of(
-                                    "username", Text.of(profile.get().getName()),
-                                    "uuid", Text.of(profile.get().getId().toString()),
+                                    "username", Text.of(profile.getName()),
+                                    "uuid", Text.of(profile.getId().toString()),
                                     "firstSeenDate", Text.of(firstSeenDate),
                                     "lastSeenDate", Text.of(player != null ? module.locale().raw("online") : lastSeenDate),
                                     "ipAddress", Text.of(ipAddress),

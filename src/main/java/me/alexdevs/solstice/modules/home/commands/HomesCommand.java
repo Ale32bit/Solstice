@@ -1,10 +1,12 @@
 package me.alexdevs.solstice.modules.home.commands;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.home.HomeModule;
 import net.minecraft.command.argument.GameProfileArgumentType;
@@ -33,9 +35,10 @@ public class HomesCommand extends ModCommand<HomeModule> {
         return literal(name)
                 .requires(require( true))
                 .executes(this::execute)
-                .then(argument("player", GameProfileArgumentType.gameProfile())
+                .then(argument("player", StringArgumentType.word())
                         .requires(require("others", 2))
-                        .executes(context -> executeOthers(context, GameProfileArgumentType.getProfileArgument(context, "player"))));
+                        .suggests(LocalGameProfile::suggest)
+                        .executes(context -> executeOthers(context, LocalGameProfile.getProfile(context, "player"))));
     }
 
     private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
@@ -81,19 +84,9 @@ public class HomesCommand extends ModCommand<HomeModule> {
         return homeList.size();
     }
 
-    private int executeOthers(CommandContext<ServerCommandSource> context, Collection<GameProfile> profiles) throws CommandSyntaxException {
+    private int executeOthers(CommandContext<ServerCommandSource> context, GameProfile profile) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrThrow();
         var playerContext = PlaceholderContext.of(player);
-
-        if (profiles.size() > 1) {
-            context.getSource().sendFeedback(() -> module.locale().get(
-                    "~tooManyTargets",
-                    playerContext
-            ), false);
-            return 0;
-        }
-
-        var profile = profiles.iterator().next();
 
         var data = module.getData(profile.getId());
         var homeList = data.homes.keySet().stream().toList();
