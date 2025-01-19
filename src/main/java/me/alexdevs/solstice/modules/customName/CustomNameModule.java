@@ -43,7 +43,8 @@ public class CustomNameModule extends ModuleBase {
     }
 
     public void refreshName(ServerPlayerEntity player) {
-        namesCache.put(player.getUuid(), fetchUsernameFormat(player));
+        namesCache.remove(player.getUuid());
+        namesCache.put(player.getUuid(), getResolvedUsername(player));
     }
 
     public String fetchUsernameFormat(ServerPlayerEntity player) {
@@ -74,7 +75,7 @@ public class CustomNameModule extends ModuleBase {
         return format;
     }
 
-    public MutableText getNameForPlayer(ServerPlayerEntity player) {
+    public String getResolvedUsername(ServerPlayerEntity player) {
         var format = namesCache.get(player.getUuid());
         if (format == null) {
             // to avoid stack overflow we push the plain text version of the player
@@ -82,42 +83,50 @@ public class CustomNameModule extends ModuleBase {
 
             format = fetchUsernameFormat(player);
             namesCache.put(player.getUuid(), format);
+
+            var playerData = Solstice.playerData.get(player).getData(CustomNamePlayerData.class);
+
+            var name = playerData.nickname == null ? player.getGameProfile().getName() : playerData.nickname;
+
+            String prefix = null;
+            String suffix = null;
+            try {
+                prefix = LuckPermsIntegration.getPrefix(player);
+                suffix = LuckPermsIntegration.getSuffix(player);
+            } catch (IllegalStateException e) {
+                // we do nothing, LP does NOT like fake players
+            }
+            if (prefix == null)
+                prefix = "";
+            if (suffix == null)
+                suffix = "";
+
+            Map<String, String> placeholders = Map.of(
+                    "name", name,
+                    "prefix", prefix,
+                    "suffix", suffix
+            );
+
+            var pattern = Format.PLACEHOLDER_PATTERN;
+            var output = format;
+            var matcher = pattern.matcher(format);
+            while (matcher.find()) {
+                var chunk = matcher.group();
+                var key = matcher.group("id");
+                output = output.replace(chunk, placeholders.getOrDefault(key, ""));
+            }
+
+            namesCache.put(player.getUuid(), output);
+
+            return output;
         }
+        return format;
+    }
 
-        var playerData = Solstice.playerData.get(player).getData(CustomNamePlayerData.class);
-
-        var name = playerData.nickname == null ? player.getGameProfile().getName() : playerData.nickname;
-
-        String prefix = null;
-        String suffix = null;
-        try {
-            prefix = LuckPermsIntegration.getPrefix(player);
-            suffix = LuckPermsIntegration.getSuffix(player);
-        } catch (IllegalStateException e) {
-            // we do nothing, LP does NOT like fake players
-        }
-        if (prefix == null)
-            prefix = "";
-        if (suffix == null)
-            suffix = "";
-
-        Map<String, String> placeholders = Map.of(
-                "name", name,
-                "prefix", prefix,
-                "suffix", suffix
-        );
-
-        var pattern = Format.PLACEHOLDER_PATTERN;
-        var output = format;
-        var matcher = pattern.matcher(format);
-        while (matcher.find()) {
-            var chunk = matcher.group();
-            var key = matcher.group("id");
-            output = output.replace(chunk, placeholders.getOrDefault(key, ""));
-        }
-
+    public MutableText getNameForPlayer(ServerPlayerEntity player) {
+        var name = getResolvedUsername(player);
         var playerContext = PlaceholderContext.of(player);
-        return Format.parse(output, playerContext).copy();
+        return Format.parse(name, playerContext).copy();
     }
 
     public void setCustomName(ServerPlayerEntity player, String name) {
