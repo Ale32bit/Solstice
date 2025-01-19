@@ -9,6 +9,7 @@ public class RTPLocale {
             Map.entry("tooManyAttempts", "<gold>Too many failed attempts at locating a valid spot.</gold>"),
             Map.entry("unsafe", "<gold>Could not place you in a safe spot.</gold>"),
             Map.entry("success", "<green>Teleporting to a random location...</green>"),
-            Map.entry("noWorldPermission", "<gold>You do not have permission to run this command in this world.</gold>")
+            Map.entry("noWorldPermission", "<gold>You do not have permission to run this command in this world.</gold>"),
+            Map.entry("noBiomePermission", "<gold>You do not have permission to use this biome.</gold>")
     );
 }

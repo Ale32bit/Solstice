@@ -19,7 +19,11 @@ public class CoreLocale {
             Map.entry("unit.day", "${n} day"),
             Map.entry("unit.days", "${n} days"),
             Map.entry("unit.week", "${n} week"),
-            Map.entry("unit.weeks", "${n} weeks")
+            Map.entry("unit.weeks", "${n} weeks"),
+            Map.entry("unit.month", "${n} month"),
+            Map.entry("unit.months", "${n} months"),
+            Map.entry("unit.year", "${n} year"),
+            Map.entry("unit.years", "${n} years")
     );
 
     public static final Map<String, String> MODULE = Map.ofEntries(

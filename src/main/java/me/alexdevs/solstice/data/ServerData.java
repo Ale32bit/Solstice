@@ -2,8 +2,10 @@ package me.alexdevs.solstice.data;
 
 import com.google.gson.*;
 import me.alexdevs.solstice.Solstice;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -55,9 +57,19 @@ public class ServerData {
             node.add(entry.getKey(), gson.toJsonTree(obj));
         }
 
-        try (var fw = new FileWriter(this.filePath.toFile())) {
-            gson.toJson(node, fw);
-        } catch (IOException e) {
+        var parentDir = filePath.getParent();
+        var fileName = filePath.getFileName().toString();
+
+        try {
+            var temp = File.createTempFile("server-", ".json", parentDir.toFile());
+            var tempWriter = new FileWriter(temp);
+            gson.toJson(node, tempWriter);
+            tempWriter.close();
+
+            var target = filePath;
+            var backup = parentDir.resolve(fileName + "_old");
+            Util.backupAndReplace(target, temp.toPath(), backup);
+        } catch (Exception e) {
             Solstice.LOGGER.error("Could not save {}. This will lead to data loss!", filePath, e);
         }
     }

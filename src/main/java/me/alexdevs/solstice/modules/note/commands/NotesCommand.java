@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import me.alexdevs.solstice.api.command.SingleGameProfile;
+import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.text.Components;
 import me.alexdevs.solstice.api.text.Format;
@@ -13,7 +13,6 @@ import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.note.NoteModule;
 import me.alexdevs.solstice.modules.note.data.Note;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
@@ -39,7 +38,8 @@ public class NotesCommand extends ModCommand<NoteModule> {
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
                 .requires(require(2))
-                .then(argument("user", GameProfileArgumentType.gameProfile())
+                .then(argument("user", StringArgumentType.word())
+                        .suggests(LocalGameProfile::suggest)
                         .executes(this::listNotes)
                         .then(literal("add")
                                 .requires(require("add", 2))
@@ -61,7 +61,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
     }
 
     private int listNotes(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var user = SingleGameProfile.getProfile(context, "user");
+        var user = LocalGameProfile.getProfile(context, "user");
         var notes = module.getNotes(user.getId());
 
         if (notes.isEmpty()) {
@@ -107,7 +107,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
     }
 
     private int checkNote(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var user = SingleGameProfile.getProfile(context, "user");
+        var user = LocalGameProfile.getProfile(context, "user");
         var notes = module.getNotes(user.getId());
         var index = IntegerArgumentType.getInteger(context, "index");
 
@@ -139,7 +139,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
     }
 
     private int deleteNote(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var user = SingleGameProfile.getProfile(context, "user");
+        var user = LocalGameProfile.getProfile(context, "user");
         var notes = module.getNotes(user.getId());
         var index = IntegerArgumentType.getInteger(context, "index");
 
@@ -155,7 +155,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
     }
 
     private int addNote(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var user = SingleGameProfile.getProfile(context, "user");
+        var user = LocalGameProfile.getProfile(context, "user");
 
         UUID operatorId = new UUID(0, 0);
         if (context.getSource().isExecutedByPlayer())
@@ -192,7 +192,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
     }
 
     private int clearNotes(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var user = SingleGameProfile.getProfile(context, "user");
+        var user = LocalGameProfile.getProfile(context, "user");
 
         var notes = module.getNotes(user.getId());
         notes.clear();

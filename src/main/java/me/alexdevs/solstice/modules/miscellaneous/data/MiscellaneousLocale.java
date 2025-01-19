@@ -1,0 +1,12 @@
+package me.alexdevs.solstice.modules.miscellaneous.data;
+
+import java.util.Map;
+
+public class MiscellaneousLocale {
+    public static final Map<String, String> MODULE = Map.ofEntries(
+            Map.entry("noEffects", "<gold>This player has no active effects.</gold>"),
+            Map.entry("effectHeader", "<gold>Active effects:</gold>"),
+            Map.entry("effect", "<gold><yellow>${effect}</yellow>: <yellow>x${amplifier}</yellow> for <yellow>${duration}</yellow></gold>"),
+            Map.entry("infinite", "infinite")
+    );
+}

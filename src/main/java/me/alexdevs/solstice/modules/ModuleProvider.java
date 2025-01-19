@@ -2,11 +2,13 @@ package me.alexdevs.solstice.modules;
 
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.module.ModuleEntrypoint;
+import me.alexdevs.solstice.modules.admin.AdminModule;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.autoAnnouncement.AutoAnnouncementModule;
 import me.alexdevs.solstice.modules.item.ItemModule;
 import me.alexdevs.solstice.modules.jail.JailModule;
 import me.alexdevs.solstice.modules.kit.KitModule;
+import me.alexdevs.solstice.modules.miscellaneous.MiscellaneousModule;
 import me.alexdevs.solstice.modules.note.NoteModule;
 import me.alexdevs.solstice.modules.placeholders.PlaceholdersModule;
 import me.alexdevs.solstice.modules.powertool.PowerToolModule;
@@ -59,6 +61,7 @@ import java.util.List;
 
 public class ModuleProvider implements ModuleEntrypoint {
     private static final List<? extends ModuleBase> modules = List.of(
+            new AdminModule(),
             new AfkModule(),
             new AutoAnnouncementModule(),
             new RestartModule(),
@@ -87,6 +90,7 @@ public class ModuleProvider implements ModuleEntrypoint {
             new KickModule(),
             new KitModule(),
             new MailModule(),
+            new MiscellaneousModule(),
             new MuteModule(),
             new NearModule(),
             new NoteModule(),

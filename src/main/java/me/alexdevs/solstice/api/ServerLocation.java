@@ -9,17 +9,18 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.Objects;
 
 public class ServerLocation {
-    protected double x;
-    protected double y;
-    protected double z;
-    protected float yaw;
-    protected float pitch;
-    protected String world;
+    protected final double x;
+    protected final double y;
+    protected final double z;
+    protected final float yaw;
+    protected final float pitch;
+    protected final String world;
 
     public ServerLocation(double x, double y, double z, float yaw, float pitch, ServerWorld world) {
         this.x = x;
@@ -116,5 +117,20 @@ public class ServerLocation {
 
     public String getWorld() {
         return world;
+    }
+
+    public double getDistance(ServerLocation other) {
+        if(!other.getWorld().equals(this.getWorld())) {
+            return Double.POSITIVE_INFINITY;
+        }
+
+        var thisVec = new Vec3d(this.getX(), this.getY(), this.getZ());
+        var otherVec = new Vec3d(other.getX(), other.getY(), other.getZ());
+
+        return thisVec.distanceTo(otherVec);
+    }
+
+    public Vec3d getDelta(ServerLocation other) {
+        return new Vec3d(this.getX() - other.getX(), this.getY() - other.getY(), this.getZ() - other.getZ());
     }
 }

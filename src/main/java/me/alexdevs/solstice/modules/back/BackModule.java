@@ -29,8 +29,12 @@ public class BackModule extends ModuleBase {
 
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
             if (entity.isPlayer()) {
-                var player = (ServerPlayerEntity) entity;
-                lastPlayerPositions.put(entity.getUuid(), new ServerLocation(player));
+                try {
+                    var player = (ServerPlayerEntity) entity;
+                    lastPlayerPositions.put(entity.getUuid(), new ServerLocation(player));
+                } catch(ClassCastException e) {
+                    // They were, in fact, not a player.
+                }
             }
         });
     }

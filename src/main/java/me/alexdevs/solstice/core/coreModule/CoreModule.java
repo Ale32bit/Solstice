@@ -33,6 +33,7 @@ public class CoreModule extends ModuleBase {
         commands.add(new ServerStatCommand(this));
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            Solstice.getUserCache().add(handler.getPlayer().getGameProfile());
             var player = handler.getPlayer();
             var playerData = Solstice.playerData.get(player).getData(CorePlayerData.class);
             playerData.username = player.getGameProfile().getName();

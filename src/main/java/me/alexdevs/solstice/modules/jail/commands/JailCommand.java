@@ -8,14 +8,13 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
-import me.alexdevs.solstice.api.command.SingleGameProfile;
+import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.core.coreModule.data.CorePlayerData;
 import me.alexdevs.solstice.modules.jail.JailModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -41,7 +40,8 @@ public class JailCommand extends ModCommand<JailModule> {
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return CommandManager.literal(name)
                 .requires(require("jail", 2))
-                .then(CommandManager.argument("user", GameProfileArgumentType.gameProfile())
+                .then(CommandManager.argument("user", StringArgumentType.word())
+                        .suggests(LocalGameProfile::suggest)
                         .then(CommandManager.argument("jail", StringArgumentType.word())
                                 .suggests(this::suggestJails)
                                 .executes(context -> execute(context, 0, null))
@@ -58,7 +58,7 @@ public class JailCommand extends ModCommand<JailModule> {
 
     private int execute(CommandContext<ServerCommandSource> context, int seconds, @Nullable String reason) throws CommandSyntaxException {
         var source = context.getSource();
-        var profile = SingleGameProfile.getProfile(context, "user");
+        var profile = LocalGameProfile.getProfile(context, "user");
 
         var data = module.getPlayer(profile.getId());
         var coreData = Solstice.playerData.get(profile.getId()).getData(CorePlayerData.class);

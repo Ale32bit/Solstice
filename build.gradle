@@ -13,26 +13,22 @@ base {
 }
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
+	mavenLocal()
 
 	maven { url 'https://maven.nucleoid.xyz' }
-	mavenLocal()
+
+	maven {
+		name = "TerraformersMC"
+		url = "https://maven.terraformersmc.com/"
+	}
+	maven {
+		name = "Ladysnake Libs"
+		url = 'https://maven.ladysnake.org/releases'
+	}
 }
 
 loom {
 	accessWidenerPath = file("src/main/resources/solstice.accesswidener")
-//	splitEnvironmentSourceSets()
-//
-//	mods {
-//		"solstice" {
-//			sourceSet sourceSets.main
-//			sourceSet sourceSets.client
-//		}
-//	}
 }
 
 dependencies {
@@ -54,8 +50,11 @@ dependencies {
 	include modImplementation("eu.pb4:placeholder-api:${project.placeholderapi_version}")
 	include modImplementation("eu.pb4:sgui:${project.sgui_version}")
 
-	modCompileOnly "net.luckperms:api:5.4"
+	modCompileOnly "dev.emi:trinkets:${project.trinkets_version}"
+	modRuntimeOnly "dev.emi:trinkets:${project.trinkets_version}"
 
+	modCompileOnly "net.luckperms:api:5.4"
+	modRuntimeOnly "net.luckperms:api:5.4"
 }
 
 processResources {

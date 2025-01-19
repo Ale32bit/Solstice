@@ -26,7 +26,7 @@ public class AfkCommand extends ModCommand<AfkModule> {
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrThrow();
 
-                    module.setPlayerAfk(player, true);
+                    module.setPlayerAfk(player, !module.isPlayerAfk(player));
 
                     return 1;
                 });

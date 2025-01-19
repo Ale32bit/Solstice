@@ -301,7 +301,7 @@ public class KitCommand extends ModCommand<KitModule> {
         var kit = kits.get(name);
         kit.oneTime = enable;
 
-        context.getSource().sendFeedback(() -> module.locale().get("setFirstJoin", Map.of(
+        context.getSource().sendFeedback(() -> module.locale().get("setOneTime", Map.of(
                 "kit", Text.of(name),
                 "value", Text.of(String.valueOf(enable))
         )), true);

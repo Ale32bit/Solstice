@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.ServerLocation;
+import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.seen.SeenModule;
@@ -42,65 +43,62 @@ public class SeenCommand extends ModCommand<SeenModule> {
         return literal(name)
                 .requires(require(true))
                 .then(argument("player", StringArgumentType.word())
+                        .suggests(LocalGameProfile::suggest)
                         .executes(context -> {
-                            var targetName = StringArgumentType.getString(context, "player");
                             var source = context.getSource();
-                            source.getServer().getUserCache().findByNameAsync(targetName).thenAcceptAsync((profile) -> {
-                                if (profile.isEmpty()) {
-                                    source.sendFeedback(() -> module.locale().get("playerNotFound"), false);
-                                    return;
-                                }
-                                boolean extended;
-                                if (context.getSource().isExecutedByPlayer()) {
-                                    extended = Permissions.check(context.getSource().getPlayer(), getPermissionNode("extended"), 2);
-                                } else {
-                                    extended = true;
-                                }
 
-                                var config = CoreModule.getConfig();
+                            var profile = LocalGameProfile.getProfile(context, "player");
 
-                                var dateFormatter = new SimpleDateFormat(config.dateTimeFormat);
-                                var player = source.getServer().getPlayerManager().getPlayer(profile.get().getId());
-                                var playerData = CoreModule.getPlayerData(profile.get().getId());
+                            boolean extended;
+                            if (context.getSource().isExecutedByPlayer()) {
+                                extended = Permissions.check(context.getSource().getPlayer(), getPermissionNode("extended"), 2);
+                            } else {
+                                extended = true;
+                            }
 
-                                if(playerData.firstJoinedDate == null) {
-                                    source.sendFeedback(() -> module.locale().get("playerNotFound"), false);
-                                    return;
-                                }
+                            var config = CoreModule.getConfig();
 
-                                ServerLocation location;
-                                if (player == null) {
-                                    location = playerData.logoffPosition;
-                                } else {
-                                    location = new ServerLocation(player);
-                                }
+                            var dateFormatter = new SimpleDateFormat(config.dateTimeFormat);
+                            var player = source.getServer().getPlayerManager().getPlayer(profile.getId());
+                            var playerData = CoreModule.getPlayerData(profile.getId());
 
-                                var firstSeenDate = playerData.firstJoinedDate != null ? dateFormatter.format(playerData.firstJoinedDate) : module.locale().raw("neverJoined");
-                                var lastSeenDate = playerData.lastSeenDate != null ? dateFormatter.format(playerData.lastSeenDate) : module.locale().raw("unknown");
-                                var ipAddress = playerData.ipAddress != null ? playerData.ipAddress : module.locale().raw("unknown");
+                            if(playerData.firstJoinedDate == null) {
+                                source.sendFeedback(() -> module.locale().get("playerNotFound"), false);
+                                return 0;
+                            }
 
-                                Map<String, Text> map = Map.of(
-                                        "username", Text.of(profile.get().getName()),
-                                        "uuid", Text.of(profile.get().getId().toString()),
-                                        "firstSeenDate", Text.of(firstSeenDate),
-                                        "lastSeenDate", Text.of(player != null ? module.locale().raw("online") : lastSeenDate),
-                                        "ipAddress", Text.of(ipAddress),
-                                        "location", Text.of(getPositionAsString(location))
-                                );
+                            ServerLocation location;
+                            if (player == null) {
+                                location = playerData.logoffPosition;
+                            } else {
+                                location = new ServerLocation(player);
+                            }
 
-                                var outputString = module.locale().raw("base");
-                                if (extended) {
-                                    outputString += "\n";
-                                    outputString += module.locale().raw("extended");
-                                }
+                            var firstSeenDate = playerData.firstJoinedDate != null ? dateFormatter.format(playerData.firstJoinedDate) : module.locale().raw("neverJoined");
+                            var lastSeenDate = playerData.lastSeenDate != null ? dateFormatter.format(playerData.lastSeenDate) : module.locale().raw("unknown");
+                            var ipAddress = playerData.ipAddress != null ? playerData.ipAddress : module.locale().raw("unknown");
 
-                                final var finalOutput = outputString;
-                                if (player != null) {
-                                    source.sendFeedback(() -> Format.parse(finalOutput, PlaceholderContext.of(player), map), false);
-                                } else {
-                                    source.sendFeedback(() -> Format.parse(finalOutput, PlaceholderContext.of(source.getServer()), map), false);
-                                }
-                            });
+                            Map<String, Text> map = Map.of(
+                                    "username", Text.of(profile.getName()),
+                                    "uuid", Text.of(profile.getId().toString()),
+                                    "firstSeenDate", Text.of(firstSeenDate),
+                                    "lastSeenDate", Text.of(player != null ? module.locale().raw("online") : lastSeenDate),
+                                    "ipAddress", Text.of(ipAddress),
+                                    "location", Text.of(getPositionAsString(location))
+                            );
+
+                            var outputString = module.locale().raw("base");
+                            if (extended) {
+                                outputString += "\n";
+                                outputString += module.locale().raw("extended");
+                            }
+
+                            final var finalOutput = outputString;
+                            if (player != null) {
+                                source.sendFeedback(() -> Format.parse(finalOutput, PlaceholderContext.of(player), map), false);
+                            } else {
+                                source.sendFeedback(() -> Format.parse(finalOutput, PlaceholderContext.of(source.getServer()), map), false);
+                            }
 
                             return 1;
                         }));

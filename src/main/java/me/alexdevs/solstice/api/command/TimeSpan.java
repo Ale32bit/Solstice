@@ -29,6 +29,8 @@ public class TimeSpan {
     private static final int secondsInHour = 60 * secondsInMinute;
     private static final int secondsInDay = 24 * secondsInHour;
     private static final int secondsInWeek = 7 * secondsInDay;
+    private static final int secondsInMonth = 30 * secondsInDay;
+    private static final int secondsInYear = 365 * secondsInDay;
 
     private static int amount(@Nullable final String g, final int multiplier) {
         if (g != null && !g.isEmpty()) {
@@ -83,14 +85,41 @@ public class TimeSpan {
 
         var prependSpace = false;
 
+        if(total >= secondsInYear) {
+            var value = total / secondsInYear;
+            if(value == 1) {
+                builder.append(fill(locale.raw("~unit.year"), value));
+            } else {
+                builder.append(fill(locale.raw("~unit.years"), value));
+            }
+            total %= secondsInYear;
+            prependSpace = true;
+        }
+
+        if(total >= secondsInMonth) {
+            if(prependSpace) {
+                builder.append(" ");
+            }
+            var value = total / secondsInMonth;
+            if(value == 1) {
+                builder.append(fill(locale.raw("~unit.month"), value));
+            } else {
+                builder.append(fill(locale.raw("~unit.months"), value));
+            }
+            total %= secondsInMonth;
+            prependSpace = true;
+        }
+
         if(total >= secondsInWeek) {
+            if(prependSpace) {
+                builder.append(" ");
+            }
             var value = total / secondsInWeek;
             if(value == 1) {
                 builder.append(fill(locale.raw("~unit.week"), value));
             } else {
                 builder.append(fill(locale.raw("~unit.weeks"), value));
             }
-
             total %= secondsInWeek;
             prependSpace = true;
         }

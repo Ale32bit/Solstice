@@ -3,8 +3,14 @@ package me.alexdevs.solstice.modules.home.data;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 
+import java.util.Map;
+
 @ConfigSerializable
 public class HomeConfig {
-    @Comment("Limit how many homes a player can set. -1 means unlimited homes. Defaults to -1.")
-    public int maxHomes = -1;
+
+    @Comment("The amount of homes a player can set based on their permission group. <group> = <max homes>.\nUse the permission 'solstice.home.unlimited' to bypass this limit.")
+    public Map<String, Integer> homes = Map.of(
+            "default", 5,
+            "vip", 10
+    );
 }
