@@ -194,7 +194,7 @@ public class AfkModule extends ModuleBase {
     }
 
     public boolean isPlayerAfk(ServerPlayerEntity player) {
-        return activities.get(player.getUuid()) != null && activities.get(player.getUuid()).isAfk;
+        return activities.containsKey(player.getUuid()) && activities.get(player.getUuid()).isAfk;
     }
 
     public void setPlayerAfk(ServerPlayerEntity player, boolean isAfk) {
@@ -253,6 +253,9 @@ public class AfkModule extends ModuleBase {
     }
 
     private void clearAfk(ServerPlayerEntity player) {
+        if (!activities.containsKey(player.getUuid()))
+            return;
+
         var activity = activities.get(player.getUuid());
         activity.lastUpdate = Solstice.server.getTicks();
 
