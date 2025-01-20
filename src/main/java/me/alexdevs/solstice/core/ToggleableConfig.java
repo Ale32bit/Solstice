@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.core;
 
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.Paths;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,7 +19,7 @@ public class ToggleableConfig {
 
     public static ToggleableConfig get() {
         if (instance == null) {
-            instance = new ToggleableConfig(Solstice.configDirectory.resolve("modules.conf"));
+            instance = new ToggleableConfig(Paths.configDirectory.resolve("modules.conf"));
         }
         return instance;
     }
@@ -52,7 +52,7 @@ public class ToggleableConfig {
                 modules.put(key, enabled);
             }
         } catch (Exception e) {
-            Solstice.LOGGER.error("Error loading toggleable state of modules. Assuming all enabled.", e);
+            System.out.println("Error loading toggleable state of modules. Assuming all enabled. " + e.getMessage());
         }
     }
 
@@ -64,7 +64,7 @@ public class ToggleableConfig {
                 bw.newLine();
             }
         } catch (Exception e) {
-            Solstice.LOGGER.error("Error saving toggleable state of modules. Assuming all enabled in the next load.", e);
+            System.out.println("Error saving toggleable state of modules. Assuming all enabled in the next load." + e.getMessage());
         }
     }
 

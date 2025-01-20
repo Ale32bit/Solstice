@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.mixin.dedicatedPlayerManager;
+package me.alexdevs.solstice.mixin.modules.admin;
 
 import com.mojang.authlib.GameProfile;
 import me.alexdevs.solstice.Solstice;

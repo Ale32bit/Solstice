@@ -12,18 +12,13 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.network.message.MessageType;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.ConfigurateException;
 
-import java.nio.file.Path;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -33,11 +28,8 @@ public class Solstice implements ModInitializer {
     public static final String MOD_ID = "solstice";
     public static final Logger LOGGER = LoggerFactory.getLogger(Solstice.class);
 
-    public static final Path configDirectory = FabricLoader.getInstance().getConfigDir().resolve(MOD_ID);
-
-    public static final HoconDataManager configManager = new HoconDataManager(configDirectory.resolve("config.conf"));
-    public static final LocaleManager localeManager = new LocaleManager(configDirectory.resolve("locale.json"));
-    public static final RegistryKey<MessageType> CHAT_TYPE = RegistryKey.of(RegistryKeys.MESSAGE_TYPE, new Identifier(MOD_ID, "chat"));
+    public static final HoconDataManager configManager = new HoconDataManager(Paths.configDirectory.resolve("config.conf"));
+    public static final LocaleManager localeManager = new LocaleManager(Paths.configDirectory.resolve("locale.json"));
     public static final ServerData serverData = new ServerData();
     public static final PlayerDataManager playerData = new PlayerDataManager();
     public static final Modules modules = new Modules();

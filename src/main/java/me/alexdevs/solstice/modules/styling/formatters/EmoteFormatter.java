@@ -28,7 +28,7 @@ public class EmoteFormatter {
                 )
         );
 
-        var msgType = Solstice.server.getRegistryManager().get(RegistryKeys.MESSAGE_TYPE).getOrThrow(Solstice.CHAT_TYPE);
+        var msgType = Solstice.server.getRegistryManager().get(RegistryKeys.MESSAGE_TYPE).getOrThrow(StylingModule.CHAT_TYPE);
         var newParams = new MessageType.Parameters(msgType, text, null);
 
         receiver.networkHandler.sendProfilelessChatMessage(message.getContent(), newParams);

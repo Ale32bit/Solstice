@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.mixin;
+package me.alexdevs.solstice.mixin.modules.styling;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.styling.formatters.ConnectionActivityFormatter;
@@ -20,20 +20,9 @@ import java.util.EnumSet;
 import java.util.List;
 
 @Mixin(ServerPlayNetworkHandler.class)
-public abstract class ServerPlayNetworkHandlerMixin {
+public abstract class PlayerDisconnectMixin {
     @Shadow
     public ServerPlayerEntity player;
-    @Shadow
-    @Final
-    private MinecraftServer server;
-
-    @Inject(method = "tick", at = @At("TAIL"))
-    private void solstice$updatePlayerList(CallbackInfo ci) {
-        if (Solstice.configManager.getData(TabListConfig.class).enable) {
-            var packet = new PlayerListS2CPacket(EnumSet.of(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, PlayerListS2CPacket.Action.UPDATE_LISTED), List.of(this.player));
-            this.server.getPlayerManager().sendToAll(packet);
-        }
-    }
 
     @ModifyArg(method = "onDisconnected", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Z)V"))
     private Text solstice$getPlayerLeaveMessage(Text message) {

@@ -1,7 +1,7 @@
-package me.alexdevs.solstice.mixin;
+package me.alexdevs.solstice.mixin.modules.styling;
 
 import com.mojang.datafixers.util.Pair;
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.modules.styling.StylingModule;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.registry.*;
 import net.minecraft.resource.ResourceManager;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Mixin(RegistryLoader.class)
-public class RegistryLoaderMixin {
+public class InjectCustomChatMessageMixin {
 
     @SuppressWarnings("unchecked")
     @Inject(method = "load(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;", at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V", ordinal = 0, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
@@ -25,7 +25,7 @@ public class RegistryLoaderMixin {
         for (var pair : list) {
             var registry = pair.getFirst();
             if (registry.getKey().equals(RegistryKeys.MESSAGE_TYPE)) {
-                Registry.register((Registry<MessageType>) registry, Solstice.CHAT_TYPE,
+                Registry.register((Registry<MessageType>) registry, StylingModule.CHAT_TYPE,
                         new MessageType(
                                 Decoration.ofChat("%s"),
                                 Decoration.ofChat("%s")

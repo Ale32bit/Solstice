@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.modules.info;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.Paths;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.text.Format;
@@ -34,7 +35,7 @@ public class InfoModule extends ModuleBase.Toggleable {
 
     public InfoModule() {
         super(ID);
-        infoDir = Solstice.configDirectory.resolve("info");
+        infoDir = Paths.configDirectory.resolve("info");
     }
 
     @Override
