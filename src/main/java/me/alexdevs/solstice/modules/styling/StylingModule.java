@@ -7,13 +7,16 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.styling.data.StylingConfig;
 import me.alexdevs.solstice.api.text.Format;
 
-public class StylingModule extends ModuleBase {
+public class StylingModule extends ModuleBase.Toggleable {
     public static final String ID = "styling";
     public static final String ADVANCED_CHAT_FORMATTING_PERMISSION = "solstice.chat.advanced";
 
     public StylingModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.configManager.registerData(ID, StylingConfig.class, StylingConfig::new);
 
         SolsticeEvents.WELCOME.register((player, server) -> {

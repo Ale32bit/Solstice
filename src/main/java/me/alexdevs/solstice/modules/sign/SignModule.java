@@ -9,11 +9,15 @@ import net.minecraft.server.filter.FilteredMessage;
 
 import java.util.List;
 
-public class SignModule extends ModuleBase {
+public class SignModule extends ModuleBase.Toggleable {
     public static final String ID = "sign";
 
     public SignModule() {
         super(ID);
+    }
+
+    @Override
+    public void init() {
     }
 
     public static SignText formatSign(List<FilteredMessage> messages, SignText text) {

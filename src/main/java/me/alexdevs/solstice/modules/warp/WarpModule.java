@@ -11,12 +11,15 @@ import me.alexdevs.solstice.modules.warp.data.WarpServerData;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public class WarpModule extends ModuleBase {
+public class WarpModule extends ModuleBase.Toggleable {
     public static final String ID = "warp";
 
     public WarpModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.localeManager.registerModule(ID, WarpLocale.MODULE);
         Solstice.serverData.registerData(ID, WarpServerData.class, WarpServerData::new);
 

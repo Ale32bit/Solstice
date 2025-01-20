@@ -6,12 +6,15 @@ import me.alexdevs.solstice.modules.broadcast.commands.BroadcastCommand;
 import me.alexdevs.solstice.modules.broadcast.commands.PlainBroadcastCommand;
 import me.alexdevs.solstice.modules.broadcast.data.BroadcastConfig;
 
-public class BroadcastModule extends ModuleBase {
+public class BroadcastModule extends ModuleBase.Toggleable {
     public static final String ID = "broadcast";
 
     public BroadcastModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.configManager.registerData(ID, BroadcastConfig.class, BroadcastConfig::new);
 
         commands.add(new BroadcastCommand(this));

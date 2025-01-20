@@ -9,12 +9,15 @@ import me.alexdevs.solstice.modules.home.data.HomePlayerData;
 
 import java.util.UUID;
 
-public class HomeModule extends ModuleBase {
+public class HomeModule extends ModuleBase.Toggleable {
     public static final String ID = "home";
 
     public HomeModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.configManager.registerData(ID, HomeConfig.class, HomeConfig::new);
         Solstice.playerData.registerData(ID, HomePlayerData.class, HomePlayerData::new);
         Solstice.localeManager.registerModule(ID, HomeLocale.MODULE);

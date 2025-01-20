@@ -11,12 +11,15 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.UUID;
 
-public class IgnoreModule extends ModuleBase {
+public class IgnoreModule extends ModuleBase.Toggleable {
     public static final String ID = "ignore";
 
     public IgnoreModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.localeManager.registerModule(ID, IgnoreLocale.MODULE);
         Solstice.playerData.registerData(ID, IgnorePlayerData.class, IgnorePlayerData::new);
 

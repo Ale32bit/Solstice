@@ -3,10 +3,7 @@ package me.alexdevs.solstice;
 import me.alexdevs.solstice.api.data.HoconDataManager;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSaveCallback;
-import me.alexdevs.solstice.core.CooldownManager;
-import me.alexdevs.solstice.core.Modules;
-import me.alexdevs.solstice.core.UserCache;
-import me.alexdevs.solstice.core.WarmUpManager;
+import me.alexdevs.solstice.core.*;
 import me.alexdevs.solstice.data.PlayerDataManager;
 import me.alexdevs.solstice.data.ServerData;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
@@ -76,6 +73,9 @@ public class Solstice implements ModInitializer {
         LuckPermsIntegration.register();
 
         modules.register();
+        modules.initModules();
+
+        ToggleableConfig.get().save();
 
         try {
             configManager.prepareData();

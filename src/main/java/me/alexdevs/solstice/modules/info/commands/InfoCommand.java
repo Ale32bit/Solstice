@@ -47,7 +47,7 @@ public class InfoCommand extends ModCommand<InfoModule> {
                     var sourceContext = PlaceholderContext.of(source);
 
                     if (pageList.isEmpty()) {
-                        context.getSource().sendFeedback(() -> module.locale.get(
+                        context.getSource().sendFeedback(() -> module.locale().get(
                                 "noPages",
                                 sourceContext
                         ), false);
@@ -55,7 +55,7 @@ public class InfoCommand extends ModCommand<InfoModule> {
                     }
 
                     var listText = Text.empty();
-                    var comma = module.locale.get("pagesComma");
+                    var comma = module.locale().get("pagesComma");
                     var list = pageList.stream().toList();
                     for (var i = 0; i < list.size(); i++) {
                         if (i > 0) {
@@ -65,7 +65,7 @@ public class InfoCommand extends ModCommand<InfoModule> {
                                 "page", Text.of(list.get(i))
                         );
 
-                        listText = listText.append(module.locale.get(
+                        listText = listText.append(module.locale().get(
                                 "pagesFormat",
                                 sourceContext,
                                 placeholders
@@ -75,7 +75,7 @@ public class InfoCommand extends ModCommand<InfoModule> {
                     var placeholders = Map.of(
                             "pageList", (Text) listText
                     );
-                    context.getSource().sendFeedback(() -> module.locale.get(
+                    context.getSource().sendFeedback(() -> module.locale().get(
                             "pageList",
                             sourceContext,
                             placeholders

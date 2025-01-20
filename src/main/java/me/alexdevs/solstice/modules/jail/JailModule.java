@@ -28,12 +28,15 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class JailModule extends ModuleBase {
+public class JailModule extends ModuleBase.Toggleable {
     public static final String ID = "jail";
 
     public JailModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.configManager.registerData(ID, JailConfig.class, JailConfig::new);
         Solstice.localeManager.registerModule(ID, JailLocale.MODULE);
         Solstice.playerData.registerData(ID, JailPlayerData.class, JailPlayerData::new);

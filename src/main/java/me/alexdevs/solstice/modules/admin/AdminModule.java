@@ -10,7 +10,10 @@ public class AdminModule extends ModuleBase {
 
     public AdminModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         PlayerConnectionEvents.WHITELIST_BYPASS.register(profile -> {
             try {
                 return Permissions.check(profile, getWhitelistBypassPermission(), false).get();

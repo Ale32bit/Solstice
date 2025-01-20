@@ -11,12 +11,15 @@ import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 
 import java.util.UUID;
 
-public class MuteModule extends ModuleBase {
+public class MuteModule extends ModuleBase.Toggleable {
     public static final String ID = "mute";
 
     public MuteModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.localeManager.registerModule(ID, MuteLocale.MODULE);
         Solstice.playerData.registerData(ID, MutePlayerData.class, MutePlayerData::new);
 

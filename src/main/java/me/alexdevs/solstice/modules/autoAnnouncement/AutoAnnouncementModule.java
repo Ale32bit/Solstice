@@ -4,8 +4,8 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
-import me.alexdevs.solstice.modules.autoAnnouncement.data.AutoAnnouncementConfig;
 import me.alexdevs.solstice.api.text.Format;
+import me.alexdevs.solstice.modules.autoAnnouncement.data.AutoAnnouncementConfig;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.MinecraftServer;
@@ -14,18 +14,23 @@ import java.util.Random;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class AutoAnnouncementModule extends ModuleBase {
+public class AutoAnnouncementModule extends ModuleBase.Toggleable {
     public static final String ID = "autoannouncement";
 
     private ScheduledFuture<?> scheduledFuture = null;
     private int currentLine = 0;
-    private MinecraftServer server;
-
-    private AutoAnnouncementConfig config;
 
     public AutoAnnouncementModule() {
         super(ID);
+    }
+
+    @Override
+    public void init() {
         Solstice.configManager.registerData(ID, AutoAnnouncementConfig.class, AutoAnnouncementConfig::new);
+
+        SolsticeEvents.READY.register((instance, server) -> {
+            setup();
+        });
 
         SolsticeEvents.RELOAD.register(instance -> {
             if (scheduledFuture != null) {
@@ -33,19 +38,25 @@ public class AutoAnnouncementModule extends ModuleBase {
             }
             setup();
         });
+    }
 
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            this.server = server;
-            setup();
-        });
+    private void setup() {
+        currentLine = 0;
+        if (getConfig().enable) {
+            scheduledFuture = Solstice.scheduler.scheduleAtFixedRate(this::announce, getConfig().delay, getConfig().delay, TimeUnit.SECONDS);
+        }
+    }
+
+    public AutoAnnouncementConfig getConfig() {
+        return Solstice.configManager.getData(AutoAnnouncementConfig.class);
     }
 
     public void announce() {
-        var lines = config.announcements;
+        var lines = getConfig().announcements;
         if (lines.isEmpty())
             return;
 
-        if (config.pickRandomly) {
+        if (getConfig().pickRandomly) {
             currentLine = new Random().nextInt(lines.size());
         }
 
@@ -53,7 +64,7 @@ public class AutoAnnouncementModule extends ModuleBase {
         var line = lines.get(currentLine);
         currentLine++;
 
-        server.getPlayerManager().getPlayerList().forEach(player -> {
+        Solstice.server.getPlayerManager().getPlayerList().forEach(player -> {
             if (line.permission() != null) {
                 var result = line.result();
                 if (result == null)
@@ -66,13 +77,5 @@ public class AutoAnnouncementModule extends ModuleBase {
             player.sendMessage(Format.parse(line.text(), playerContext));
         });
 
-    }
-
-    private void setup() {
-        this.config = Solstice.configManager.getData(AutoAnnouncementConfig.class);
-        currentLine = 0;
-        if (config.enable) {
-            scheduledFuture = Solstice.scheduler.scheduleAtFixedRate(this::announce, config.delay, config.delay, TimeUnit.SECONDS);
-        }
     }
 }

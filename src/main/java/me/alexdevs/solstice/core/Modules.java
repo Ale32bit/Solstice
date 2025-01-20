@@ -63,6 +63,25 @@ public class Modules {
         return null;
     }
 
+    public Collection<? extends ModuleBase> getEnabledModules() {
+        var set = new HashSet<ModuleBase>();
+        getModules().forEach(module -> {
+            if(module instanceof ModuleBase.Toggleable toggleable) {
+                if(toggleable.isEnabled()) {
+                    set.add(module);
+                }
+            } else {
+                set.add(module);
+            }
+        });
+        return Collections.unmodifiableSet(set);
+    }
+
+    public void initModules() {
+        var enabledModules = getEnabledModules();
+        enabledModules.forEach(ModuleBase::init);
+    }
+
     private void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
         for (var module : modules) {
             for (var command : module.getCommands()) {

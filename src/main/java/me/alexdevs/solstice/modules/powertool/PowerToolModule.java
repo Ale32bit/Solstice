@@ -19,14 +19,17 @@ import net.minecraft.util.TypedActionResult;
 
 import java.util.UUID;
 
-public class PowerToolModule extends ModuleBase {
+public class PowerToolModule extends ModuleBase.Toggleable {
     public static final String ID = "powertool";
 
     private CommandDispatcher<ServerCommandSource> dispatcher;
 
     public PowerToolModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.localeManager.registerModule(ID, PowerToolLocale.MODULE);
         Solstice.playerData.registerData(ID, PowerToolPlayerData.class, PowerToolPlayerData::new);
 

@@ -16,13 +16,16 @@ import net.minecraft.text.Text;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TellModule extends ModuleBase {
+public class TellModule extends ModuleBase.Toggleable {
     public static final String ID = "tell";
     public final HashMap<String, String> lastSender = new HashMap<>();
 
     public TellModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.localeManager.registerModule(ID, TellLocale.MODULE);
 
         commands.add(new TellCommand(this));
