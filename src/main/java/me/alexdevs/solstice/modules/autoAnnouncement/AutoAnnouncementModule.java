@@ -7,8 +7,6 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.autoAnnouncement.data.AutoAnnouncementConfig;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.server.MinecraftServer;
 
 import java.util.Random;
 import java.util.concurrent.ScheduledFuture;

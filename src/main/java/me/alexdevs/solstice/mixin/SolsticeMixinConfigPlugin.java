@@ -1,14 +1,6 @@
 package me.alexdevs.solstice.mixin;
 
 import me.alexdevs.solstice.core.ToggleableConfig;
-import me.alexdevs.solstice.modules.admin.AdminModule;
-import me.alexdevs.solstice.modules.back.BackModule;
-import me.alexdevs.solstice.modules.ban.BanModule;
-import me.alexdevs.solstice.modules.customName.CustomNameModule;
-import me.alexdevs.solstice.modules.sign.SignModule;
-import me.alexdevs.solstice.modules.spawn.SpawnModule;
-import me.alexdevs.solstice.modules.styling.StylingModule;
-import me.alexdevs.solstice.modules.tablist.TabListModule;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -26,12 +18,12 @@ public class SolsticeMixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if(mixinClassName.startsWith(packageBase)) {
+        if (mixinClassName.startsWith(packageBase)) {
             var moduleMixin = mixinClassName.replace(packageBase, "");
             var parts = moduleMixin.split("\\.");
             var module = parts[0].toLowerCase();
             String mixin = mixinClassName;
-            if(parts.length > 1)
+            if (parts.length > 1)
                 mixin = parts[1];
 
             var enabled = config.isEnabled(module);

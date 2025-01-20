@@ -1,25 +1,17 @@
 package me.alexdevs.solstice.mixin.modules.styling;
 
-import me.alexdevs.solstice.modules.styling.CustomSentMessage;
 import me.alexdevs.solstice.modules.styling.formatters.ConnectionActivityFormatter;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.message.MessageType;
-import net.minecraft.network.message.SentMessage;
-import net.minecraft.network.message.SignedMessage;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.function.Predicate;
 
 @Mixin(PlayerManager.class)
 public abstract class CustomConnectionMessagesMixin {
