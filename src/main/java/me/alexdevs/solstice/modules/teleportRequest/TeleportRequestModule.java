@@ -15,14 +15,17 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-public class TeleportRequestModule extends ModuleBase {
+public class TeleportRequestModule extends ModuleBase.Toggleable {
     public static final String ID = "teleportrequest";
 
     public final ConcurrentHashMap<UUID, ConcurrentLinkedDeque<TeleportRequest>> teleportRequests = new ConcurrentHashMap<>();
 
     public TeleportRequestModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.configManager.registerData(ID, TeleportConfig.class, TeleportConfig::new);
         Solstice.localeManager.registerModule(ID, TeleportLocale.MODULE);
 

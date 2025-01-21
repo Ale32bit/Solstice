@@ -7,12 +7,15 @@ import net.minecraft.item.Items;
 import net.minecraft.item.SkullItem;
 import net.minecraft.nbt.NbtString;
 
-public class SkullModule extends ModuleBase {
+public class SkullModule extends ModuleBase.Toggleable {
     public static final String ID = "skull";
 
     public SkullModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         commands.add(new SkullCommand(this));
     }
 

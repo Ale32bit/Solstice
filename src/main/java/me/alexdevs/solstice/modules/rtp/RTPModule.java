@@ -13,14 +13,17 @@ import net.minecraft.world.biome.Biome;
 
 import java.util.ArrayList;
 
-public class RTPModule extends ModuleBase {
+public class RTPModule extends ModuleBase.Toggleable {
     public static final String ID = "rtp";
 
     private final ArrayList<Locator> locators = new ArrayList<>();
 
     public RTPModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.localeManager.registerModule(ID, RTPLocale.MODULE);
         Solstice.configManager.registerData(ID, RTPConfig.class, RTPConfig::new);
 

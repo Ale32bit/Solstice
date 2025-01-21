@@ -20,13 +20,16 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
-public class SpawnModule extends ModuleBase {
+public class SpawnModule extends ModuleBase.Toggleable {
     public static final String ID = "spawn";
 
-    @SuppressWarnings("deprecation")
     public SpawnModule() {
         super(ID);
+    }
 
+    @SuppressWarnings("deprecation")
+    @Override
+    public void init() {
         Solstice.localeManager.registerModule(ID, SpawnLocale.MODULE);
         Solstice.serverData.registerData(ID, SpawnServerData.class, SpawnServerData::new);
         Solstice.configManager.registerData(ID, SpawnConfig.class, SpawnConfig::new);

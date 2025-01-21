@@ -35,9 +35,9 @@ public class Modules {
             try {
                 var provider = container.getEntrypoint();
                 var providerModules = provider.register();
-                for(var entry : providerModules) {
+                for (var entry : providerModules) {
                     var moduleId = entry.getId();
-                    if(modules.stream().anyMatch(m -> m.getId().equals(moduleId))) {
+                    if (modules.stream().anyMatch(m -> m.getId().equals(moduleId))) {
                         Solstice.LOGGER.warn("Module ID conflict: {}", entry.getId());
                         continue;
                     }
@@ -61,6 +61,33 @@ public class Modules {
             }
         }
         return null;
+    }
+
+    public Collection<? extends ModuleBase> getEnabledModules() {
+        var set = new HashSet<ModuleBase>();
+        getModules().forEach(module -> {
+            if (module instanceof ModuleBase.Toggleable toggleable) {
+                if (toggleable.isEnabled()) {
+                    set.add(module);
+                }
+            } else {
+                set.add(module);
+            }
+        });
+        return Collections.unmodifiableSet(set);
+    }
+
+    public void initModules() {
+        var enabledModules = getEnabledModules();
+        for (var module : enabledModules) {
+            try {
+                module.init();
+            } catch (NoSuchMethodError e) {
+                Solstice.LOGGER.error("Legacy module {} does not contain the init method. UPDATE!", module.getId(), e);
+            } catch (Exception e) {
+                Solstice.LOGGER.error("Error initializing module {}", module.getId(), e);
+            }
+        }
     }
 
     private void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {

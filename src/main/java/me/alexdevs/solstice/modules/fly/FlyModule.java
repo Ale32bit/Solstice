@@ -7,12 +7,15 @@ import me.alexdevs.solstice.modules.fly.data.FlyLocale;
 import me.alexdevs.solstice.modules.fly.data.FlyPlayerData;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
-public class FlyModule extends ModuleBase {
+public class FlyModule extends ModuleBase.Toggleable {
     public static final String ID = "fly";
 
     public FlyModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.localeManager.registerModule(ID, FlyLocale.MODULE);
         Solstice.playerData.registerData(ID, FlyPlayerData.class, FlyPlayerData::new);
 

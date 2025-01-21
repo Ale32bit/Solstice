@@ -2,7 +2,6 @@ package me.alexdevs.solstice.modules.commandSpy;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.CommandEvents;
-import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.commandSpy.data.CommandSpyConfig;
 import me.alexdevs.solstice.modules.commandSpy.data.CommandSpyLocale;
@@ -11,17 +10,20 @@ import net.minecraft.text.Text;
 
 import java.util.Map;
 
-public class CommandSpyModule extends ModuleBase {
+public class CommandSpyModule extends ModuleBase.Toggleable {
     public static final String ID = "commandspy";
 
     public CommandSpyModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.configManager.registerData(ID, CommandSpyConfig.class, CommandSpyConfig::new);
         Solstice.localeManager.registerModule(ID, CommandSpyLocale.MODULE);
 
         CommandEvents.ALLOW_COMMAND.register((source, command) -> {
-            if(!source.isExecutedByPlayer())
+            if (!source.isExecutedByPlayer())
                 return true;
 
             Solstice.LOGGER.info("{}: /{}", source.getName(), command);
@@ -52,6 +54,9 @@ public class CommandSpyModule extends ModuleBase {
     }
 
     public boolean isIgnored(String command) {
+        if(!isEnabled())
+            return false;
+
         return Solstice.configManager.getData(CommandSpyConfig.class).ignoredCommands.contains(command);
     }
 }

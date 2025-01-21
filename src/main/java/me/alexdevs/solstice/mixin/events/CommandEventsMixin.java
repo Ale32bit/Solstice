@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.mixin;
+package me.alexdevs.solstice.mixin.events;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(CommandDispatcher.class)
-public class CommandDispatcherMixin<S> {
+public class CommandEventsMixin<S> {
     @Inject(method = "execute(Lcom/mojang/brigadier/ParseResults;)I", at = @At("HEAD"), remap = false, cancellable = true)
     public void execute(final ParseResults<S> parse, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {
         var context = parse.getContext();

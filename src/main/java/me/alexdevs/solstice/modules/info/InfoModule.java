@@ -1,15 +1,15 @@
 package me.alexdevs.solstice.modules.info;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.Paths;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
-import me.alexdevs.solstice.locale.Locale;
+import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.info.commands.InfoCommand;
 import me.alexdevs.solstice.modules.info.commands.MotdCommand;
 import me.alexdevs.solstice.modules.info.commands.RulesCommand;
 import me.alexdevs.solstice.modules.info.data.InfoConfig;
 import me.alexdevs.solstice.modules.info.data.InfoLocale;
-import me.alexdevs.solstice.api.text.Format;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
-public class InfoModule extends ModuleBase {
+public class InfoModule extends ModuleBase.Toggleable {
     public static final String ID = "info";
 
     private static final String[] startingPages = new String[]{
@@ -31,24 +31,22 @@ public class InfoModule extends ModuleBase {
             "formatting.txt"
     };
     public final String nameFilterRegex = "[^a-z0-9-]";
-    public final Locale locale;
     private final Path infoDir;
-    private final InfoConfig config;
 
     public InfoModule() {
         super(ID);
+        infoDir = Paths.configDirectory.resolve("info");
+    }
 
+    @Override
+    public void init() {
         Solstice.configManager.registerData(ID, InfoConfig.class, InfoConfig::new);
         Solstice.localeManager.registerModule(ID, InfoLocale.MODULE);
-
-        config = Solstice.configManager.getData(InfoConfig.class);
-        locale = Solstice.localeManager.getLocale(ID);
 
         commands.add(new InfoCommand(this));
         commands.add(new MotdCommand(this));
         commands.add(new RulesCommand(this));
 
-        infoDir = Solstice.configDirectory.resolve("info");
         if (!infoDir.toFile().isDirectory()) {
             if (!infoDir.toFile().mkdirs()) {
                 Solstice.LOGGER.error("Couldn't create info directory");
@@ -73,7 +71,7 @@ public class InfoModule extends ModuleBase {
         }
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            if (config.enableMotd) {
+            if (getConfig().enableMotd) {
                 if (!exists("motd")) {
                     Solstice.LOGGER.warn("Could not send MOTD because info/motd.txt does not exist!");
                     return;
@@ -86,10 +84,13 @@ public class InfoModule extends ModuleBase {
         });
     }
 
+    public InfoConfig getConfig() {
+        return Solstice.configManager.getData(InfoConfig.class);
+    }
+
     public Text buildMotd(PlaceholderContext context) {
         return getPage("motd", context);
     }
-
 
     private String sanitize(String name) {
         return name.toLowerCase().replaceAll(nameFilterRegex, "");
@@ -109,7 +110,7 @@ public class InfoModule extends ModuleBase {
     public Text getPage(String name, @Nullable PlaceholderContext context) {
         name = sanitize(name);
         if (!exists(name)) {
-            return locale.get("pageNotFound");
+            return locale().get("pageNotFound");
         }
 
         var infoFile = infoDir.resolve(name + ".txt");
@@ -128,7 +129,7 @@ public class InfoModule extends ModuleBase {
                 return Text.of(output);
         } catch (IOException e) {
             Solstice.LOGGER.error("Could not read info file", e);
-            return locale.get("pageError");
+            return locale().get("pageError");
         }
     }
 }

@@ -8,11 +8,14 @@ import me.alexdevs.solstice.modules.item.commands.MoreCommand;
 import me.alexdevs.solstice.modules.item.commands.RepairCommand;
 import me.alexdevs.solstice.modules.item.data.ItemLocale;
 
-public class ItemModule extends ModuleBase {
+public class ItemModule extends ModuleBase.Toggleable {
     public static final String ID = "item";
     public ItemModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.localeManager.registerModule(ID, ItemLocale.MODULE);
 
         commands.add(new ItemLoreCommand(this));

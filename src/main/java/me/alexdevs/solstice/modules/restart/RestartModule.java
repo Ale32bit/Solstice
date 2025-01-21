@@ -24,7 +24,7 @@ import java.time.LocalTime;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class RestartModule extends ModuleBase {
+public class RestartModule extends ModuleBase.Toggleable {
     public static final String ID = "restart";
 
     private static final BossBar.Color fallbackBarColor = BossBar.Color.RED;
@@ -36,6 +36,10 @@ public class RestartModule extends ModuleBase {
 
     public RestartModule() {
         super(ID);
+    }
+
+    @Override
+    public void init() {
         Solstice.configManager.registerData(ID, RestartConfig.class, RestartConfig::new);
         Solstice.localeManager.registerModule(ID, RestartLocale.MODULE);
 
@@ -70,6 +74,14 @@ public class RestartModule extends ModuleBase {
         });
 
         SolsticeEvents.RELOAD.register(instance -> setup());
+    }
+
+    @Override
+    public boolean isEnabled() {
+        if(!Solstice.modules.getModule(TimeBarModule.class).isEnabled())
+            return false;
+
+        return super.isEnabled();
     }
 
     public RestartConfig getConfig() {

@@ -17,14 +17,17 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CustomNameModule extends ModuleBase {
+public class CustomNameModule extends ModuleBase.Toggleable {
     public static final String ID = "customname";
 
     private final ConcurrentHashMap<UUID, String> namesCache = new ConcurrentHashMap<>();
 
     public CustomNameModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.configManager.registerData(ID, CustomNameConfig.class, CustomNameConfig::new);
         Solstice.playerData.registerData(ID, CustomNamePlayerData.class, CustomNamePlayerData::new);
 

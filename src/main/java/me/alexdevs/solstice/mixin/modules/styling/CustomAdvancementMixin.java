@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.mixin;
+package me.alexdevs.solstice.mixin.modules.styling;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.styling.formatters.AdvancementFormatter;
@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(PlayerAdvancementTracker.class)
-public abstract class PlayerAdvancementTrackerMixin {
+public abstract class CustomAdvancementMixin {
     @Shadow
     private ServerPlayerEntity owner;
 

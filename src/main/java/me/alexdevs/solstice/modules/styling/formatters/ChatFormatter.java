@@ -17,7 +17,7 @@ public class ChatFormatter {
     public static void sendChatMessage(ServerPlayerEntity receiver, SignedMessage message, MessageType.Parameters params, ServerPlayerEntity sender) {
         var text = getFormattedMessage(message, sender);
 
-        var msgType = Solstice.server.getRegistryManager().get(RegistryKeys.MESSAGE_TYPE).getOrThrow(Solstice.CHAT_TYPE);
+        var msgType = Solstice.server.getRegistryManager().get(RegistryKeys.MESSAGE_TYPE).getOrThrow(StylingModule.CHAT_TYPE);
         var newParams = new MessageType.Parameters(msgType, text, null);
 
         receiver.networkHandler.sendProfilelessChatMessage(message.getContent(), newParams);
