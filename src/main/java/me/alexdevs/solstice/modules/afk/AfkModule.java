@@ -151,7 +151,7 @@ public class AfkModule extends ModuleBase {
             return;
 
         server.getPlayerManager().getPlayerList().forEach(player -> {
-            var activity = activities.get(player.getUuid());
+            var activity = activities.computeIfAbsent(player.getUuid(), uuid -> new PlayerActivityState(player, server.getTicks()));
 
             var curLocation = new ServerLocation(player);
             var oldLocation = activity.location;
