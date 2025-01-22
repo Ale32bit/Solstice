@@ -43,7 +43,9 @@ public class RTPCommand extends ModCommand<RTPModule> {
                         .requires(require("biome.base", 2))
                         .suggests((context, builder) -> {
                             if (Permissions.check(context.getSource(), getPermissionNode("exempt.biome"), 2)) {
-                                return builder.buildFuture();
+                                var biomeRegistry = this.commandRegistry.createWrapper(RegistryKeys.BIOME);
+                                var biomes = biomeRegistry.streamEntries().map(r -> r.getKey().get().getValue().toString()).toList();
+                                return CommandSource.suggestMatching(biomes, builder);
                             }
 
                             var biomes = getAllowedBiomes(context.getSource(), context.getSource().getWorld());
