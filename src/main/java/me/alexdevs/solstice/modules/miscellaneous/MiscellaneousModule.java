@@ -30,13 +30,8 @@ public class MiscellaneousModule extends ModuleBase.Toggleable {
         commands.add(new EffectsCommand(this));
         commands.add(new SleepCommand(this));
 
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            commandSleeping.remove(handler.getPlayer().getUuid());
-        });
-
-        EntitySleepEvents.STOP_SLEEPING.register((entity, pos) -> {
-            commandSleeping.remove(entity.getUuid());
-        });
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> commandSleeping.remove(handler.getPlayer().getUuid()));
+        EntitySleepEvents.STOP_SLEEPING.register((entity, pos) -> commandSleeping.remove(entity.getUuid()));
     }
 
     public boolean isCommandSleep(LivingEntity entity) {

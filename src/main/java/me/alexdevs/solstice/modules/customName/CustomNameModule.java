@@ -35,9 +35,7 @@ public class CustomNameModule extends ModuleBase.Toggleable {
         commands.add(new NicknameCommand(this));
 
         ServerPlayConnectionEvents.JOIN.register((handler, packetSender, server) -> refreshNames());
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            Solstice.scheduler.schedule(this::refreshNames, 1, TimeUnit.SECONDS);
-        });
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> Solstice.scheduler.schedule(this::refreshNames, 1, TimeUnit.SECONDS));
     }
 
     public void refreshNames() {
@@ -56,7 +54,7 @@ public class CustomNameModule extends ModuleBase.Toggleable {
     public String fetchUsernameFormat(ServerPlayerEntity player) {
         var formats = Solstice.configManager.getData(CustomNameConfig.class).nameFormats;
 
-        String format = null;
+        String format;
         for (var f : formats) {
             if (Permissions.check(player, "group." + f.group())) {
                 return f.format();
