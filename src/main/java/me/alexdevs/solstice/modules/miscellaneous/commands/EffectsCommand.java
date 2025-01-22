@@ -27,10 +27,10 @@ public class EffectsCommand extends ModCommand<MiscellaneousModule> {
     @Override
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return CommandManager.literal(name)
-                .requires(require(1))
+                .requires(require("effects.base", 1))
                 .executes(context -> execute(context, context.getSource().getPlayerOrThrow()))
                 .then(CommandManager.argument("player", EntityArgumentType.player())
-                        .requires(require("others", 2))
+                        .requires(require("effects.others", 2))
                         .executes(context -> execute(context, EntityArgumentType.getPlayer(context, "player")))
                 );
     }
