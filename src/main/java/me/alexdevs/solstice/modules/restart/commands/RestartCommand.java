@@ -42,7 +42,7 @@ public class RestartCommand extends ModCommand<RestartModule> {
                                 .suggests(TimeSpan::suggest)
                                 .executes(context -> schedule(context, TimeSpan.getTimeSpan(context, "timespan"), null))
                                 .then(argument("message", StringArgumentType.greedyString())
-                                        .executes(context -> schedule(context, IntegerArgumentType.getInteger(context, "seconds"), StringArgumentType.getString(context, "message")))))
+                                        .executes(context -> schedule(context, TimeSpan.getTimeSpan(context, "timespan"), StringArgumentType.getString(context, "message")))))
                         .then(literal("next")
                                 .executes(this::scheduleNext))
                 )
