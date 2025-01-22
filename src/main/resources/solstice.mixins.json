@@ -16,6 +16,7 @@
     "modules.back.PreTeleportMixin",
     "modules.ban.CustomBanMessageMixin",
     "modules.customname.CustomDisplayNameMixin",
+    "modules.miscellaneous.BypassSleepingInBedCheckMixin",
     "modules.sign.FormatSignMixin",
     "modules.spawn.OverridePlayerSpawnMixin",
     "modules.spawn.OverrideSpawnPointMixin",
