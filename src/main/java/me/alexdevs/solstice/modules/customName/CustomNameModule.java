@@ -16,6 +16,7 @@ import net.minecraft.text.MutableText;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class CustomNameModule extends ModuleBase.Toggleable {
     public static final String ID = "customname";
@@ -33,8 +34,10 @@ public class CustomNameModule extends ModuleBase.Toggleable {
 
         commands.add(new NicknameCommand(this));
 
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> refreshNames());
         ServerPlayConnectionEvents.JOIN.register((handler, packetSender, server) -> refreshNames());
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+            Solstice.scheduler.schedule(this::refreshNames, 1, TimeUnit.SECONDS);
+        });
     }
 
     public void refreshNames() {
