@@ -6,6 +6,7 @@ import me.alexdevs.solstice.modules.ignore.commands.IgnoreCommand;
 import me.alexdevs.solstice.modules.ignore.commands.IgnoreListCommand;
 import me.alexdevs.solstice.modules.ignore.data.IgnoreLocale;
 import me.alexdevs.solstice.modules.ignore.data.IgnorePlayerData;
+import me.alexdevs.solstice.modules.styling.StylingModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -25,6 +26,11 @@ public class IgnoreModule extends ModuleBase.Toggleable {
 
         commands.add(new IgnoreCommand(this));
         commands.add(new IgnoreListCommand(this));
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return super.isEnabled() && Solstice.modules.getModule(StylingModule.class).isEnabled();
     }
 
     public IgnorePlayerData getPlayerData(UUID playerUuid) {

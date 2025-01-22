@@ -36,7 +36,7 @@ public interface CustomSentMessage extends SentMessage {
         @Override
         public void send(ServerPlayerEntity receiver, boolean filterMaskEnabled, MessageType.Parameters params) {
             var ignoreModule = Solstice.modules.getModule(IgnoreModule.class);
-            if (ignoreModule.isIgnoring(receiver, sender)) {
+            if (ignoreModule.isEnabled() && ignoreModule.isIgnoring(receiver, sender)) {
                 return;
             }
             SignedMessage signedMessage = this.message.withFilterMaskEnabled(filterMaskEnabled);
