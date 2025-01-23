@@ -3,10 +3,12 @@ package me.alexdevs.solstice.modules.staffChat;
 import eu.pb4.placeholders.api.node.TextNode;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.text.parser.MarkdownParser;
 import me.alexdevs.solstice.modules.staffChat.commands.StaffChatCommand;
 import me.alexdevs.solstice.modules.staffChat.data.StaffChatLocale;
-import me.alexdevs.solstice.api.text.parser.MarkdownParser;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import java.util.Map;
@@ -16,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class StaffChatModule extends ModuleBase.Toggleable {
     public static final String ID = "staffchat";
     private final ConcurrentHashMap<UUID, Boolean> stickyStaffChat = new ConcurrentHashMap<>();
-    private StaffChatCommand scCommand;
 
     public StaffChatModule() {
         super(ID);
@@ -30,7 +31,7 @@ public class StaffChatModule extends ModuleBase.Toggleable {
 
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, player, pars) -> {
             if (stickyStaffChat.getOrDefault(player.getUuid(), false)
-                    && scCommand.require(1).test(player.getCommandSource())) {
+                    && canUseStaffChat(player)) {
 
                 sendStaffChatMessage(player.getDisplayName(), message.getContent());
 
@@ -38,6 +39,10 @@ public class StaffChatModule extends ModuleBase.Toggleable {
             }
             return true;
         });
+    }
+
+    public boolean canUseStaffChat(ServerPlayerEntity player) {
+        return Permissions.check(player, getPermissionNode("base"), 1);
     }
 
     public void sendStaffChatMessage(Text sourceName, final Text message) {
@@ -51,7 +56,7 @@ public class StaffChatModule extends ModuleBase.Toggleable {
 
         Solstice.server.sendMessage(text);
         Solstice.server.getPlayerManager().getPlayerList().forEach(player -> {
-            if (scCommand.require(1).test(player.getCommandSource())) {
+            if (canUseStaffChat(player)) {
                 player.sendMessage(text, false);
             }
         });
