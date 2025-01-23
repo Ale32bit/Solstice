@@ -2,25 +2,19 @@ package me.alexdevs.solstice.modules.teleportRequest.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import eu.pb4.placeholders.api.PlaceholderContext;
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.ServerLocation;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.locale.Locale;
-import me.alexdevs.solstice.modules.teleportRequest.TeleportRequest;
 import me.alexdevs.solstice.modules.teleportRequest.TeleportRequestModule;
-import net.minecraft.command.argument.UuidArgumentType;
+import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.List;
-import java.util.Map;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class TeleportAcceptCommand extends ModCommand<TeleportRequestModule> {
-    private final Locale locale = Solstice.localeManager.getLocale(TeleportRequestModule.ID);
-
     public TeleportAcceptCommand(TeleportRequestModule module) {
         super(module);
     }
@@ -34,97 +28,35 @@ public class TeleportAcceptCommand extends ModCommand<TeleportRequestModule> {
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
                 .requires(require(true))
-                .executes(context -> {
-                    var player = context.getSource().getPlayerOrThrow();
-                    var playerUuid = player.getUuid();
-                    var playerRequests = module.teleportRequests.get(playerUuid);
-                    var playerContext = PlaceholderContext.of(player);
-
-                    var request = playerRequests.pollLast();
-
-                    if (request == null) {
-                        context.getSource().sendFeedback(() -> locale.get(
-                                "noPending",
-                                playerContext
-                        ), false);
-                        return 1;
-                    }
-
-                    execute(context, request);
-
-                    return 1;
-                })
-                .then(argument("uuid", UuidArgumentType.uuid())
-                        .executes(context -> {
-                            var player = context.getSource().getPlayerOrThrow();
-                            var uuid = UuidArgumentType.getUuid(context, "uuid");
-                            var playerUuid = player.getUuid();
-                            var playerRequests = module.teleportRequests.get(playerUuid);
-                            var playerContext = PlaceholderContext.of(player);
-
-                            var request = playerRequests.stream().filter(req -> req.requestId.equals(uuid)).findFirst().orElse(null);
-                            if (request == null) {
-                                context.getSource().sendFeedback(() -> locale.get(
-                                        "unavailable",
-                                        playerContext
-                                ), false);
-                                return 1;
-                            }
-
-                            execute(context, request);
-
-                            return 1;
-                        }));
+                .executes(this::execute)
+                .then(argument("player", EntityArgumentType.player())
+                        .executes(context -> this.execute(context, EntityArgumentType.getPlayer(context, "player")))
+                );
     }
 
-    private void execute(CommandContext<ServerCommandSource> context, TeleportRequest request) {
-        var source = context.getSource();
-        request.expire();
+    private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrThrow();
 
-        var player = source.getPlayer();
-
-        var playerManager = context.getSource().getServer().getPlayerManager();
-
-        var sourcePlayer = playerManager.getPlayer(request.player);
-        var targetPlayer = playerManager.getPlayer(request.target);
-
-        var playerContext = PlaceholderContext.of(player);
-
-        if (sourcePlayer == null || targetPlayer == null) {
-            context.getSource().sendFeedback(() -> locale.get(
-                    "playerUnavailable",
-                    playerContext
-            ), false);
-            return;
+        var request = module.getLatestRequest(player);
+        if (request == null) {
+            context.getSource().sendFeedback(() -> module.locale().get("noPending"), false);
+            return 0;
         }
+        module.acceptRequest(player, request);
 
-        if (player.getUuid().equals(request.target)) {
-            var sourceContext = PlaceholderContext.of(sourcePlayer);
-            // accepted a tpa from other to self
-            context.getSource().sendFeedback(() -> locale.get(
-                    "requestAcceptedResult",
-                    playerContext
-            ), false);
-            sourcePlayer.sendMessage(locale.get(
-                    "teleporting",
-                    sourceContext
-            ), false);
-        } else {
-            var targetContext = PlaceholderContext.of(targetPlayer);
-            // accepted a tpa from self to other
-            context.getSource().sendFeedback(() -> locale.get(
-                    "teleporting",
-                    playerContext
-            ), false);
+        return 1;
+    }
 
-            targetPlayer.sendMessage(locale.get(
-                    "requestAccepted",
-                    targetContext,
-                    Map.of("player", sourcePlayer.getDisplayName())
-            ), false);
+    private int execute(CommandContext<ServerCommandSource> context, ServerPlayerEntity source) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrThrow();
+
+        var request = module.getRequestFromSource(player, source);
+        if (request == null) {
+            context.getSource().sendFeedback(() -> module.locale().get("unavailable"), false);
+            return 0;
         }
+        module.acceptRequest(player, request);
 
-        var targetPosition = new ServerLocation(targetPlayer);
-        targetPosition.teleport(sourcePlayer);
+        return 1;
     }
 }

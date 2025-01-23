@@ -8,6 +8,8 @@ public class CoreLocale {
             Map.entry("buttonSuggest", "<click:suggest_command:'${command}'><hover:show_text:'${hoverText}'><aqua>[</aqua>${label}<aqua>]</aqua></hover></click>"),
             Map.entry("accept", "<green>Accept</green>"),
             Map.entry("refuse", "<red>Refuse</red>"),
+            Map.entry("accept.hover", "Click to accept"),
+            Map.entry("refuse.hover", "Click to refuse"),
             Map.entry("tooManyTargets", "<red>The provided selector contains too many targets.</red>"),
             Map.entry("cooldown", "<gold>You are on cooldown for <yellow>${timespan}</yellow>.</gold>"),
             Map.entry("unit.second", "${n} second"),
