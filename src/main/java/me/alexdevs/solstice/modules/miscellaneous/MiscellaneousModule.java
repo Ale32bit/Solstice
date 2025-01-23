@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.ActionResult;
 
 import java.util.Map;
 import java.util.UUID;
@@ -32,6 +33,22 @@ public class MiscellaneousModule extends ModuleBase.Toggleable {
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> commandSleeping.remove(handler.getPlayer().getUuid()));
         EntitySleepEvents.STOP_SLEEPING.register((entity, pos) -> commandSleeping.remove(entity.getUuid()));
+
+        EntitySleepEvents.ALLOW_SLEEP_TIME.register((player, pos, vanillaResult) -> {
+            if (commandSleeping.getOrDefault(player.getUuid(), false)) {
+                return ActionResult.SUCCESS;
+            }
+
+            return ActionResult.PASS;
+        });
+
+        EntitySleepEvents.ALLOW_RESETTING_TIME.register(player -> {
+            if (commandSleeping.getOrDefault(player.getUuid(), false)) {
+                return !player.getWorld().isDay();
+            }
+
+            return true;
+        });
     }
 
     public boolean isCommandSleep(LivingEntity entity) {
@@ -42,6 +59,7 @@ public class MiscellaneousModule extends ModuleBase.Toggleable {
      * Make the entity sleep regardless of the bed check.
      * <p>
      * No, this does not euthanize the entity.
+     *
      * @param entity The entity to make sleep
      */
     public void putToSleep(LivingEntity entity) {
