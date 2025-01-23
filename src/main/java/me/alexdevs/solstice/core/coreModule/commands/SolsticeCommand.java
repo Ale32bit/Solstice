@@ -65,8 +65,6 @@ public class SolsticeCommand extends ModCommand<CoreModule> {
                             try {
                                 Solstice.configManager.loadData(true);
                                 Solstice.localeManager.reload();
-
-                                Solstice.modules.getModule(CustomNameModule.class).refreshNames();
                             } catch (Exception e) {
                                 Solstice.LOGGER.error("Failed to reload Solstice", e);
                                 context.getSource().sendFeedback(() -> Text.of("Failed to load Solstice config. Check console for more info."), true);

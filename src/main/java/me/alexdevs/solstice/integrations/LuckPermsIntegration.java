@@ -1,7 +1,6 @@
 package me.alexdevs.solstice.integrations;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.modules.customName.CustomNameModule;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.luckperms.api.LuckPerms;
@@ -10,10 +9,18 @@ import net.luckperms.api.event.user.UserDataRecalculateEvent;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class LuckPermsIntegration {
 
     private static LuckPerms luckPerms;
     private static boolean available = false;
+
+    private static final Map<UUID, Optional<String>> prefixMap = new ConcurrentHashMap<>();
+    private static final Map<UUID, Optional<String>> suffixMap = new ConcurrentHashMap<>();
 
     public static void register() {
         if (!isAvailable()) {
@@ -40,22 +47,39 @@ public class LuckPermsIntegration {
         if (!available) {
             return null;
         }
-        var playerMeta = luckPerms.getPlayerAdapter(ServerPlayerEntity.class).getMetaData(player);
-        return playerMeta.getPrefix();
+
+        return prefixMap.computeIfAbsent(player.getUuid(), uuid -> {
+            var playerMeta = luckPerms.getPlayerAdapter(ServerPlayerEntity.class).getMetaData(player);
+            return Optional.ofNullable(playerMeta.getPrefix());
+        }).orElse(null);
     }
 
     public static @Nullable String getSuffix(ServerPlayerEntity player) {
         if (!available) {
             return null;
         }
-        var playerMeta = luckPerms.getPlayerAdapter(ServerPlayerEntity.class).getMetaData(player);
-        return playerMeta.getSuffix();
+
+        return suffixMap.computeIfAbsent(player.getUuid(), uuid -> {
+            var playerMeta = luckPerms.getPlayerAdapter(ServerPlayerEntity.class).getMetaData(player);
+            return Optional.ofNullable(playerMeta.getSuffix());
+        }).orElse(null);
+    }
+
+    public static boolean isInGroup(ServerPlayerEntity player, String group) {
+        if (!available) {
+            return false;
+        }
+        var user = luckPerms.getPlayerAdapter(ServerPlayerEntity.class).getUser(player);
+        var inheritedGroups = user.getInheritedGroups(user.getQueryOptions());
+        return inheritedGroups.stream().anyMatch(g -> g.getName().equalsIgnoreCase(group));
     }
 
     public static class Listeners {
 
         public static void onDataRecalculate(UserDataRecalculateEvent event) {
-            Solstice.modules.getModule(CustomNameModule.class).refreshNames();
+            var uuid = event.getUser().getUniqueId();
+            prefixMap.remove(uuid);
+            suffixMap.remove(uuid);
         }
     }
 }
