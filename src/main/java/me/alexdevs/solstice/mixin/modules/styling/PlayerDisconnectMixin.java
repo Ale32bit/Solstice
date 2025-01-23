@@ -14,7 +14,7 @@ public abstract class PlayerDisconnectMixin {
     @Shadow
     public ServerPlayerEntity player;
 
-    @ModifyArg(method = "onDisconnected", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Z)V"))
+    @ModifyArg(method = "cleanUp", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/PlayerManager;broadcast(Lnet/minecraft/text/Text;Z)V"))
     private Text solstice$getPlayerLeaveMessage(Text message) {
         return ConnectionActivityFormatter.onLeave(this.player);
     }
