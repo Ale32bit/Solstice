@@ -10,12 +10,15 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.UUID;
 
-public class InventorySeeModule extends ModuleBase {
+public class InventorySeeModule extends ModuleBase.Toggleable {
     public static final String ID = "inventorysee";
 
     public InventorySeeModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.localeManager.registerModule(ID, InventorySeeLocale.MODULE);
 
         commands.add(new InventorySeeCommand(this));

@@ -9,12 +9,9 @@ import me.alexdevs.solstice.modules.rtp.RTPModule;
 import me.alexdevs.solstice.modules.rtp.core.Locator;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.argument.RegistryEntryArgumentType;
 import net.minecraft.command.argument.RegistryEntryPredicateArgumentType;
-import net.minecraft.command.argument.RegistryKeyArgumentType;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.command.LocateCommand;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
@@ -46,7 +43,9 @@ public class RTPCommand extends ModCommand<RTPModule> {
                         .requires(require("biome.base", 2))
                         .suggests((context, builder) -> {
                             if (Permissions.check(context.getSource(), getPermissionNode("exempt.biome"), 2)) {
-                                return builder.buildFuture();
+                                var biomeRegistry = this.commandRegistry.getWrapperOrThrow(RegistryKeys.BIOME);
+                                var biomes = biomeRegistry.streamEntries().map(r -> r.getKey().get().getValue().toString()).toList();
+                                return CommandSource.suggestMatching(biomes, builder);
                             }
 
                             var biomes = getAllowedBiomes(context.getSource(), context.getSource().getWorld());

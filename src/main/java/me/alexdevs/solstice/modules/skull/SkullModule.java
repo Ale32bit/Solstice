@@ -12,12 +12,15 @@ import net.minecraft.item.Items;
 import java.util.Optional;
 import java.util.UUID;
 
-public class SkullModule extends ModuleBase {
+public class SkullModule extends ModuleBase.Toggleable {
     public static final String ID = "skull";
 
     public SkullModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         commands.add(new SkullCommand(this));
     }
 

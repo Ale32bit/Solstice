@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.mixin;
+package me.alexdevs.solstice.mixin.modules.styling;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.styling.CustomSentMessage;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(SentMessage.class)
-public interface SentMessageMixin {
+public interface CustomSentMessageMixin {
     @Inject(method = "of", at = @At("HEAD"), cancellable = true)
     private static void solstice$of(SignedMessage message, CallbackInfoReturnable<SentMessage> cir) {
         if (message.isSenderMissing()) {

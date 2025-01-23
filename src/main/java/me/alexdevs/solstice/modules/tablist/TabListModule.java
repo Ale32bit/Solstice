@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class TabListModule extends ModuleBase {
+public class TabListModule extends ModuleBase.Toggleable {
     public static final String ID = "tablist";
 
     private MinecraftServer server;
@@ -23,7 +23,10 @@ public class TabListModule extends ModuleBase {
 
     public TabListModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.configManager.registerData(ID, TabListConfig.class, TabListConfig::new);
 
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {

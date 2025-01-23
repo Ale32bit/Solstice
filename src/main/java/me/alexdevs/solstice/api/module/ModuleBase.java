@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.api.module;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.core.ToggleableConfig;
 import me.alexdevs.solstice.locale.Locale;
 
 import java.util.ArrayList;
@@ -15,6 +16,13 @@ public abstract class ModuleBase implements Comparable<ModuleBase> {
     public ModuleBase(String id) {
         this.id = id;
     }
+
+    /**
+     * This method is called when Solstice is ready to initialize modules.
+     * <p>
+     * If the module is a {@linkplain Toggleable}, it will check if it is enabled before calling it.
+     */
+    public abstract void init();
 
     public Collection<? extends ModCommand<?>> getCommands() {
         return commands;
@@ -56,5 +64,15 @@ public abstract class ModuleBase implements Comparable<ModuleBase> {
     @Override
     public int compareTo(ModuleBase o) {
         return id.compareTo(o.id);
+    }
+
+    public static abstract class Toggleable extends ModuleBase {
+        public Toggleable(String id) {
+            super(id);
+        }
+
+        public boolean isEnabled() {
+            return ToggleableConfig.get().isEnabled(this.id);
+        }
     }
 }

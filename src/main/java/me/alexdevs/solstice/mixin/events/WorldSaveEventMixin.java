@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.mixin;
+package me.alexdevs.solstice.mixin.events;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.WorldSaveCallback;
@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MinecraftServer.class)
-public class MinecraftServerMixin {
+public class WorldSaveEventMixin {
     @Inject(method = "save", at = @At("TAIL"))
     public void save(boolean suppressLogs, boolean flush, boolean force, CallbackInfoReturnable<Boolean> cir) {
         try {

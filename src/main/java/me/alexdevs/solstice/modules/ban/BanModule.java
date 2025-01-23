@@ -7,12 +7,15 @@ import me.alexdevs.solstice.modules.ban.commands.TempBanCommand;
 import me.alexdevs.solstice.modules.ban.commands.UnbanCommand;
 import me.alexdevs.solstice.modules.ban.data.BanLocale;
 
-public class BanModule extends ModuleBase {
+public class BanModule extends ModuleBase.Toggleable {
     public static final String ID = "ban";
 
     public BanModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.localeManager.registerModule(ID, BanLocale.MODULE);
 
         commands.add(new BanCommand(this));

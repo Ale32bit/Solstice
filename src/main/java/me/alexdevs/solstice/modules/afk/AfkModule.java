@@ -29,7 +29,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class AfkModule extends ModuleBase {
+public class AfkModule extends ModuleBase.Toggleable {
     public static final String ID = "afk";
 
     public static final double sprintSpeed = 0.280617;
@@ -42,7 +42,10 @@ public class AfkModule extends ModuleBase {
 
     public AfkModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.configManager.registerData(ID, AfkConfig.class, AfkConfig::new);
         Solstice.localeManager.registerModule(ID, AfkLocale.MODULE);
         Solstice.playerData.registerData(ID, AfkPlayerData.class, AfkPlayerData::new);

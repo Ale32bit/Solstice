@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.module.ModCommand;
@@ -36,12 +37,16 @@ public class TimeBarCommand extends ModCommand<TimeBarModule> {
         TimeBarEvents.END.register((timeBar, server) -> {
             if (runningBars.containsKey(timeBar.getUuid())) {
                 var barCommand = runningBars.get(timeBar.getUuid());
-                try {
-                    dispatcher.execute(barCommand.command(), barCommand.source);
-                } catch (CommandSyntaxException e) {
-                    barCommand.source.sendFeedback(() -> Text.literal(e.toString()).formatted(Formatting.RED), false);
-                }
+                final var command = barCommand.command();
+                final var source = barCommand.source();
                 runningBars.remove(timeBar.getUuid());
+                Solstice.nextTick(() -> {
+                    try {
+                        dispatcher.execute(command, source);
+                    } catch (CommandSyntaxException e) {
+                        source.sendFeedback(() -> Text.literal(e.toString()).formatted(Formatting.RED), false);
+                    }
+                });
             }
         });
     }

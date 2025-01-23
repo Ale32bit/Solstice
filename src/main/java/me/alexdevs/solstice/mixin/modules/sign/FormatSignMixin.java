@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.mixin;
+package me.alexdevs.solstice.mixin.modules.sign;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.sign.SignModule;
@@ -14,10 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 
 @Mixin(SignBlockEntity.class)
-public abstract class SignBlockEntityMixin {
+public abstract class FormatSignMixin {
 
     @Inject(method = "getTextWithMessages", at = @At("HEAD"), cancellable = true)
-    private void getTextWithMessages(PlayerEntity player, List<FilteredMessage> messages, SignText text, CallbackInfoReturnable<SignText> cir) {
+    private void solstice$formatSignText(PlayerEntity player, List<FilteredMessage> messages, SignText text, CallbackInfoReturnable<SignText> cir) {
         var formattableSignsModule = Solstice.modules.getModule(SignModule.class);
         if (formattableSignsModule.canFormatSign(player)) {
             try {

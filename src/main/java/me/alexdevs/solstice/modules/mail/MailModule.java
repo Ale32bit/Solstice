@@ -14,12 +14,15 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class MailModule extends ModuleBase {
+public class MailModule extends ModuleBase.Toggleable {
     public static final String ID = "mail";
 
     public MailModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.localeManager.registerModule(ID, MailLocale.MODULE);
         Solstice.playerData.registerData(ID, MailPlayerData.class, MailPlayerData::new);
 

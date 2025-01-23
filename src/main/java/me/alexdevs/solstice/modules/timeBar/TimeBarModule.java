@@ -12,13 +12,16 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
-public class TimeBarModule extends ModuleBase {
+public class TimeBarModule extends ModuleBase.Toggleable {
     public static final String ID = "timebar";
     private static final ConcurrentLinkedDeque<TimeBar> timeBars = new ConcurrentLinkedDeque<>();
 
     public TimeBarModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         commands.add(new TimeBarCommand(this));
 
         Solstice.scheduler.scheduleAtFixedRate(this::updateBars, 0, 1, TimeUnit.SECONDS);

@@ -5,12 +5,15 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.helpOp.commands.HelpOpCommand;
 import me.alexdevs.solstice.modules.helpOp.data.HelpOpLocale;
 
-public class HelpOpModule extends ModuleBase {
+public class HelpOpModule extends ModuleBase.Toggleable {
     public static final String ID = "helpop";
 
     public HelpOpModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.localeManager.registerModule(ID, HelpOpLocale.MODULE);
 
         commands.add(new HelpOpCommand(this));

@@ -1,6 +1,5 @@
 package me.alexdevs.solstice.modules.restart.commands;
 
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -42,7 +41,7 @@ public class RestartCommand extends ModCommand<RestartModule> {
                                 .suggests(TimeSpan::suggest)
                                 .executes(context -> schedule(context, TimeSpan.getTimeSpan(context, "timespan"), null))
                                 .then(argument("message", StringArgumentType.greedyString())
-                                        .executes(context -> schedule(context, IntegerArgumentType.getInteger(context, "seconds"), StringArgumentType.getString(context, "message")))))
+                                        .executes(context -> schedule(context, TimeSpan.getTimeSpan(context, "timespan"), StringArgumentType.getString(context, "message")))))
                         .then(literal("next")
                                 .executes(this::scheduleNext))
                 )

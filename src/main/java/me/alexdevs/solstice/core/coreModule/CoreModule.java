@@ -22,7 +22,10 @@ public class CoreModule extends ModuleBase {
 
     public CoreModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.configManager.registerData(ID, CoreConfig.class, CoreConfig::new);
         Solstice.localeManager.registerShared(CoreLocale.SHARED);
         Solstice.localeManager.registerModule(ID, CoreLocale.MODULE);

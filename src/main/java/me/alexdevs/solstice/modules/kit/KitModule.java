@@ -14,12 +14,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class KitModule extends ModuleBase {
+public class KitModule extends ModuleBase.Toggleable {
     public static final String ID = "kit";
 
     public KitModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.configManager.registerData(ID, KitConfig.class, KitConfig::new);
         Solstice.localeManager.registerModule(ID, KitLocale.MODULE);
         Solstice.playerData.registerData(ID, KitPlayerData.class, KitPlayerData::new);

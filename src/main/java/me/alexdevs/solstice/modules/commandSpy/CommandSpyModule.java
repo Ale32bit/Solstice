@@ -10,12 +10,15 @@ import net.minecraft.text.Text;
 
 import java.util.Map;
 
-public class CommandSpyModule extends ModuleBase {
+public class CommandSpyModule extends ModuleBase.Toggleable {
     public static final String ID = "commandspy";
 
     public CommandSpyModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.configManager.registerData(ID, CommandSpyConfig.class, CommandSpyConfig::new);
         Solstice.localeManager.registerModule(ID, CommandSpyLocale.MODULE);
 
@@ -51,6 +54,9 @@ public class CommandSpyModule extends ModuleBase {
     }
 
     public boolean isIgnored(String command) {
+        if(!isEnabled())
+            return false;
+
         return Solstice.configManager.getData(CommandSpyConfig.class).ignoredCommands.contains(command);
     }
 }

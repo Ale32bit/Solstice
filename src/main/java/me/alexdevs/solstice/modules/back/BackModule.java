@@ -13,12 +13,16 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BackModule extends ModuleBase {
+public class BackModule extends ModuleBase.Toggleable {
     public static final String ID = "back";
     public final ConcurrentHashMap<UUID, ServerLocation> lastPlayerPositions = new ConcurrentHashMap<>();
 
     public BackModule() {
         super(ID);
+    }
+
+    @Override
+    public void init() {
         Solstice.localeManager.registerModule(ID, BackLocale.MODULE);
 
         commands.add(new BackCommand(this));
@@ -32,7 +36,7 @@ public class BackModule extends ModuleBase {
                 try {
                     var player = (ServerPlayerEntity) entity;
                     lastPlayerPositions.put(entity.getUuid(), new ServerLocation(player));
-                } catch(ClassCastException e) {
+                } catch (ClassCastException e) {
                     // They were, in fact, not a player.
                 }
             }

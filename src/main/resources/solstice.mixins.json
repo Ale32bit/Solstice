@@ -3,25 +3,31 @@
   "minVersion": "0.8",
   "package": "me.alexdevs.solstice.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [
-  ],
+  "plugin": "me.alexdevs.solstice.mixin.SolsticeMixinConfigPlugin",
   "client": [],
-  "server": [
-    "CommandManagerMixin",
-    "dedicatedPlayerManager.ConnectionBypassMixin",
-    "MinecraftServerMixin",
-    "PlayerEntityMixin",
-    "PlayerManagerMixin",
-    "RegistryLoaderMixin",
-    "SentMessageMixin",
-    "ServerPlayerEntityMixin",
-    "ServerPlayNetworkHandlerMixin",
-    "PlayerManagerMixin",
-    "MinecraftServerMixin",
-    "AdvancementFrameMixin",
-    "SignBlockEntityMixin"
-  ],
+  "server": [],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "events.CommandEventsMixin",
+    "events.WorldSaveEventMixin",
+    "modules.admin.ConnectionBypassMixin",
+    "modules.back.PreTeleportMixin",
+    "modules.ban.CustomBanMessageMixin",
+    "modules.customname.CustomDisplayNameMixin",
+    "modules.miscellaneous.BypassSleepingInBedCheckMixin",
+    "modules.sign.FormatSignMixin",
+    "modules.spawn.OverridePlayerSpawnMixin",
+    "modules.spawn.OverrideSpawnPointMixin",
+    "modules.styling.CustomAdvancementMixin",
+    "modules.styling.CustomChatMessageMixin",
+    "modules.styling.CustomConnectionMessagesMixin",
+    "modules.styling.CustomDeathMessageMixin",
+    "modules.styling.CustomSentMessageMixin",
+    "modules.styling.InjectCustomChatMessageMixin",
+    "modules.styling.PlayerDisconnectMixin",
+    "modules.tablist.CustomPlayerListNameMixin",
+    "modules.tablist.UpdatePlayerListMixin"
+  ]
 }

@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.mixin;
+package me.alexdevs.solstice.mixin.events;
 
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(CommandManager.class)
-public abstract class CommandManagerMixin {
+public abstract class CommandEventsMixin {
     // Lnet/minecraft/server/command/CommandManager;execute(Lcom/mojang/brigadier/ParseResults;Ljava/lang/String;)V
 
     @Inject(method = "execute", at = @At("HEAD"), cancellable = true)

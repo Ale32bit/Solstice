@@ -13,14 +13,17 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class StaffChatModule extends ModuleBase {
+public class StaffChatModule extends ModuleBase.Toggleable {
     public static final String ID = "staffchat";
     private final ConcurrentHashMap<UUID, Boolean> stickyStaffChat = new ConcurrentHashMap<>();
     private StaffChatCommand scCommand;
 
     public StaffChatModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.localeManager.registerModule(ID, StaffChatLocale.MODULE);
 
         commands.add(new StaffChatCommand(this));

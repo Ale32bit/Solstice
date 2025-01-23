@@ -11,12 +11,15 @@ import net.minecraft.registry.tag.TagKey;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class HatModule extends ModuleBase {
+public class HatModule extends ModuleBase.Toggleable {
     public static final String ID = "hat";
 
     public HatModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         Solstice.configManager.registerData(ID, HatConfig.class, HatConfig::new);
         Solstice.localeManager.registerModule(ID, HatLocale.MODULE);
 

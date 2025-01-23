@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.mixin;
+package me.alexdevs.solstice.mixin.modules.styling;
 
 import me.alexdevs.solstice.modules.styling.formatters.AdvancementFormatter;
 import net.minecraft.advancement.AdvancementEntry;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AdvancementFrame.class)
-public abstract class AdvancementFrameMixin {
+public abstract class CustomAdvancementMixin {
 
     @Inject(method = "getChatAnnouncementText", at = @At("HEAD"), cancellable = true)
     public void solstice$getCustomAnnouncement(AdvancementEntry entry, ServerPlayerEntity player, CallbackInfoReturnable<MutableText> cir) {

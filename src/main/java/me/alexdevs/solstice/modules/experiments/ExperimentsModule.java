@@ -13,7 +13,10 @@ public class ExperimentsModule extends ModuleBase {
 
     public ExperimentsModule() {
         super(ID);
+    }
 
+    @Override
+    public void init() {
         commands.add(new TimeSpanCommand(this));
     }
 
