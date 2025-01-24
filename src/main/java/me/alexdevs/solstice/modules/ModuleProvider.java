@@ -10,6 +10,7 @@ import me.alexdevs.solstice.modules.jail.JailModule;
 import me.alexdevs.solstice.modules.kit.KitModule;
 import me.alexdevs.solstice.modules.miscellaneous.MiscellaneousModule;
 import me.alexdevs.solstice.modules.note.NoteModule;
+import me.alexdevs.solstice.modules.notification.NotificationModule;
 import me.alexdevs.solstice.modules.placeholders.PlaceholdersModule;
 import me.alexdevs.solstice.modules.powertool.PowerToolModule;
 import me.alexdevs.solstice.modules.restart.RestartModule;
@@ -94,6 +95,7 @@ public class ModuleProvider implements ModuleEntrypoint {
             new MuteModule(),
             new NearModule(),
             new NoteModule(),
+            new NotificationModule(),
             new PlaceholdersModule(),
             new PowerToolModule(),
             new RTPModule(),
