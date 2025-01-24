@@ -4,6 +4,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.text.Format;
+import me.alexdevs.solstice.api.text.RawPlaceholder;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.modules.customName.commands.NicknameCommand;
 import me.alexdevs.solstice.modules.customName.data.CustomNameConfig;
@@ -80,16 +81,7 @@ public class CustomNameModule extends ModuleBase.Toggleable {
                 "suffix", suffix
         );
 
-        var pattern = Format.PLACEHOLDER_PATTERN;
-        var output = format;
-        var matcher = pattern.matcher(format);
-        while (matcher.find()) {
-            var chunk = matcher.group();
-            var key = matcher.group("id");
-            output = output.replace(chunk, placeholders.getOrDefault(key, ""));
-        }
-
-        return output;
+        return RawPlaceholder.parse(format, placeholders);
     }
 
     public MutableText getNameForPlayer(ServerPlayerEntity player) {
