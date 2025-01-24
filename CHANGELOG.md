@@ -1,5 +1,12 @@
 # 1.7.0
 
+## Alpha 3
+
+- Fixed `/activetime player` showing as suggestion to players without the permission node.
+- Refactored the teleport requests (TPAs) module.
+- Bugfix `/staffchat` crashing.
+- Implemented tag `<phase_gradient>` (`<pgr>`, `<sgr>`) as an improved gradient algorithm with optional phase, copied from Kyori's Adventure.
+
 ## Alpha 2
 
 - `/sleep` now works in daytime too, but does not skip day.
