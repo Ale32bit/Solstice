@@ -76,7 +76,7 @@ public class Components {
 
         NodeParser parser;
         if (allowAdvancedChatFormat) {
-            parser = NodeParser.merge(TextParserV1.DEFAULT, MarkdownParser.defaultParser);
+            parser = NodeParser.merge(Format.PARSER, MarkdownParser.defaultParser);
         } else {
             parser = MarkdownParser.defaultParser;
         }
