@@ -2,6 +2,7 @@ package me.alexdevs.solstice.modules.timeBar;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.text.Format;
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.entity.boss.CommandBossBar;
@@ -30,27 +31,17 @@ public class TimeBar {
         updateProgress();
     }
 
-    public static String formatTime(int totalSeconds) {
-        var hours = totalSeconds / 3600;
-        var minutes = (totalSeconds / 60) % 60;
-        var seconds = totalSeconds % 60;
-        if (totalSeconds >= 3600) {
-            return String.format("%dh%dm%ds", hours, minutes, seconds);
-        }
-        return String.format("%dm%ds", minutes, seconds);
-    }
-
     public void updateName() {
         var text = parseLabel(label);
         bossBar.setName(text);
     }
 
     public Text parseLabel(String labelString) {
-        var totalTime = formatTime(this.time);
-        var elapsedTime = formatTime(this.elapsedSeconds);
+        var totalTime = TimeSpan.toLongString(this.time);
+        var elapsedTime = TimeSpan.toLongString(this.elapsedSeconds);
 
         var remaining = getRemainingSeconds();
-        var remainingTime = formatTime(remaining);
+        var remainingTime = TimeSpan.toLongString(remaining);
 
         var placeholders = Map.of(
                 "total_time", Text.of(totalTime),
