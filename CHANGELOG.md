@@ -1,5 +1,11 @@
 # 1.7.0
 
+## Alpha 4
+
+- Added `/nudge` command to slightly push players.
+- Added notifications system for TPA requests and direct messages.
+- Bugfix homes limit being bypassable.
+
 ## Alpha 3
 
 - Fixed `/activetime player` showing as suggestion to players without the permission node.
