@@ -12,4 +12,6 @@ public class NotificationsPlayerData {
     public Float pitch = null;
     @Nullable
     public Float volume = null;
+    @Nullable
+    public Boolean onChat = null;
 }

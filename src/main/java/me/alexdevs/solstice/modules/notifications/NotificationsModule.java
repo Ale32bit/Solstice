@@ -8,6 +8,7 @@ import me.alexdevs.solstice.modules.notifications.data.NotificationsConfig;
 import me.alexdevs.solstice.modules.notifications.data.NotificationsLocale;
 import me.alexdevs.solstice.modules.notifications.data.NotificationsPlayerData;
 import me.alexdevs.solstice.modules.notifications.data.PlayerNotificationSettings;
+import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -27,6 +28,24 @@ public class NotificationsModule extends ModuleBase.Toggleable {
         Solstice.playerData.registerData(ID, NotificationsPlayerData.class, NotificationsPlayerData::new);
 
         commands.add(new NotificationsCommand(this));
+
+        ServerMessageEvents.CHAT_MESSAGE.register((message, sender, parameters) -> {
+            var content = message.getContent().getString().toLowerCase();
+
+            sender.getServer().getPlayerManager().getPlayerList().forEach(player -> {
+                if(player.equals(sender)) {
+                    return;
+                }
+
+                var playerName = player.getGameProfile().getName().toLowerCase();
+                if (content.contains(playerName)) {
+                    var settings = getPlayerSettings(player);
+                    if (settings.onChat()) {
+                        notifyPlayer(player);
+                    }
+                }
+            });
+        });
     }
 
     public static void notify(ServerPlayerEntity player) {
@@ -53,7 +72,8 @@ public class NotificationsModule extends ModuleBase.Toggleable {
                 data.soundId != null ? data.soundId : config.defaultValues.soundId,
                 data.pitch != null ? data.pitch : config.defaultValues.pitch,
                 data.volume != null ? data.volume : config.defaultValues.volume,
-                data.afkOnly != null ? data.afkOnly : config.defaultValues.afkOnly
+                data.afkOnly != null ? data.afkOnly : config.defaultValues.afkOnly,
+                data.onChat != null ? data.onChat : config.defaultValues.onChat
         );
     }
 

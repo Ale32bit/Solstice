@@ -12,5 +12,6 @@ public class NotificationsConfig {
         public float pitch = 1f;
         public float volume = 1f;
         public boolean afkOnly = true;
+        public boolean onChat = true;
     }
 }

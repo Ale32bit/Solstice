@@ -54,6 +54,11 @@ public class NotificationsCommand extends ModCommand<NotificationsModule> {
                                         .executes(this::setAfkOnly)
                                 )
                         )
+                        .then(CommandManager.literal("on-chat")
+                                .then(CommandManager.argument("on-chat", BoolArgumentType.bool())
+                                        .executes(this::setOnChat)
+                                )
+                        )
                 )
                 .then(CommandManager.literal("get")
                         .executes(this::getSettings))
@@ -124,6 +129,22 @@ public class NotificationsCommand extends ModCommand<NotificationsModule> {
         return 1;
     }
 
+    private int setOnChat(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrThrow();
+        var onChat = BoolArgumentType.getBool(context, "on-chat");
+
+        var data = module.getPlayerData(player);
+        data.onChat = onChat;
+
+        if (onChat) {
+            context.getSource().sendFeedback(() -> module.locale().get("setOnChatEnabled"), false);
+        } else {
+            context.getSource().sendFeedback(() -> module.locale().get("setOnChatDisabled"), false);
+        }
+
+        return 1;
+    }
+
     private int getSettings(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrThrow();
 
@@ -149,6 +170,8 @@ public class NotificationsCommand extends ModCommand<NotificationsModule> {
         text.append(module.locale().get("getVolume", map));
         text.append("\n");
         text.append(module.locale().get(settings.afkOnly() ? "getAfkOnly.true" : "getAfkOnly.false"));
+        text.append("\n");
+        text.append(module.locale().get(settings.onChat() ? "getOnChat.true" : "getOnChat.false"));
 
         context.getSource().sendFeedback(() -> text, false);
 

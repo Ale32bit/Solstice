@@ -9,6 +9,8 @@ public class NotificationsLocale {
             Map.entry("setVolume", "<gold>Notifications volume set to <yellow>${volume}</yellow>.</gold>"),
             Map.entry("setAfkOnlyEnabled", "<gold>Notifications enabled only while AFK.</gold>"),
             Map.entry("setAfkOnlyDisabled", "<gold>Notifications always enabled.</gold>"),
+            Map.entry("setOnChatEnabled", "<green>Chat pings enabled.</green>"),
+            Map.entry("setOnChatDisabled", "<gold>Chat pings disabled.</gold>"),
 
             Map.entry("toggleEnabled", "<green>Notifications enabled.</green>"),
             Map.entry("toggleDisabled", "<gold>Notifications disabled.</gold>"),
@@ -22,6 +24,8 @@ public class NotificationsLocale {
             Map.entry("getPitch", "  <gold>Pitch: <yellow>${pitch}</yellow></gold>"),
             Map.entry("getVolume", "  <gold>Volume: <yellow>${volume}</yellow></gold>"),
             Map.entry("getAfkOnly.true", "  <gold>AFK-Only: <green>enabled</green></gold>"),
-            Map.entry("getAfkOnly.false", "  <gold>AFK-Only: <red>disabled</red></gold>")
+            Map.entry("getAfkOnly.false", "  <gold>AFK-Only: <red>disabled</red></gold>"),
+            Map.entry("getOnChat.true", "  <gold>On chat: <green>enabled</green></gold>"),
+            Map.entry("getOnChat.false", "  <gold>On chat: <red>disabled</red></gold>")
     );
 }
