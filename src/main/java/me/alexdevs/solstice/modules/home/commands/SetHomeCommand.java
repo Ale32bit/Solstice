@@ -75,6 +75,8 @@ public class SetHomeCommand extends ModCommand<HomeModule> {
             return 0;
         }
 
+        homes.remove(name);
+
         var groups = module.getConfig().homes;
         var maxHomes = Integer.MIN_VALUE;
         for(var entry : groups.entrySet()) {
@@ -85,7 +87,7 @@ public class SetHomeCommand extends ModCommand<HomeModule> {
         }
 
         var allowUnlimited = Permissions.check(player, getPermissionNode("unlimited"), 3);
-        if (!allowUnlimited && homes.size() >= maxHomes && !exists) {
+        if (!allowUnlimited && homes.size() >= maxHomes) {
             context.getSource().sendFeedback(() -> module.locale().get(
                     "maxHomesReached",
                     playerContext,
