@@ -62,13 +62,14 @@ public class NotificationsModule extends ModuleBase.Toggleable {
             return false;
 
         var data = getPlayerData(player);
+        var settings = getPlayerSettings(player);
 
         if (!data.enable)
             return false;
 
         var afkModule = Solstice.modules.getModule(AfkModule.class);
         if (afkModule.isEnabled()) {
-            return afkModule.isPlayerAfk(player) || !data.afkOnly;
+            return afkModule.isPlayerAfk(player) || !settings.afkOnly();
         }
 
         return true;
