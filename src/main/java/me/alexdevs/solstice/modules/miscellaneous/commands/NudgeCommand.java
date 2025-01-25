@@ -34,7 +34,7 @@ public class NudgeCommand extends ModCommand<MiscellaneousModule> {
                 .requires(require("nudge.base", 2))
                 .then(CommandManager.argument("entities", EntityArgumentType.entities())
                         .executes(context -> this.execute(context, 1, false))
-                        .then(CommandManager.argument("power", FloatArgumentType.floatArg(0))
+                        .then(CommandManager.argument("power", FloatArgumentType.floatArg(0, 32))
                                 .executes(context -> this.execute(context, FloatArgumentType.getFloat(context, "power"), false))
                                 .then(CommandManager.argument("quiet", BoolArgumentType.bool())
                                         .executes(context -> this.execute(context, FloatArgumentType.getFloat(context, "power"), BoolArgumentType.getBool(context, "quiet")))
