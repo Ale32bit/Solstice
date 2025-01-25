@@ -5,6 +5,7 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.miscellaneous.commands.EffectsCommand;
 import me.alexdevs.solstice.modules.miscellaneous.commands.NudgeCommand;
 import me.alexdevs.solstice.modules.miscellaneous.commands.SleepCommand;
+import me.alexdevs.solstice.modules.miscellaneous.commands.TopCommand;
 import me.alexdevs.solstice.modules.miscellaneous.data.MiscellaneousLocale;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -32,6 +33,7 @@ public class MiscellaneousModule extends ModuleBase.Toggleable {
         commands.add(new EffectsCommand(this));
         commands.add(new SleepCommand(this));
         commands.add(new NudgeCommand(this));
+        commands.add(new TopCommand(this));
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> commandSleeping.remove(handler.getPlayer().getUuid()));
         EntitySleepEvents.STOP_SLEEPING.register((entity, pos) -> commandSleeping.remove(entity.getUuid()));
