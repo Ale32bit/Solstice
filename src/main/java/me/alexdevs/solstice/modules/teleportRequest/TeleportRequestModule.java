@@ -5,7 +5,7 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.text.Components;
-import me.alexdevs.solstice.modules.notification.NotificationModule;
+import me.alexdevs.solstice.modules.notifications.NotificationsModule;
 import me.alexdevs.solstice.modules.teleportRequest.commands.TeleportAcceptCommand;
 import me.alexdevs.solstice.modules.teleportRequest.commands.TeleportAskCommand;
 import me.alexdevs.solstice.modules.teleportRequest.commands.TeleportAskHereCommand;
@@ -136,7 +136,7 @@ public class TeleportRequestModule extends ModuleBase.Toggleable {
                 sourceContext
         ));
 
-        NotificationModule.notify(target);
+        NotificationsModule.notify(target);
     }
 
     public void requestToHere(ServerPlayerEntity source, ServerPlayerEntity target) {
@@ -168,6 +168,6 @@ public class TeleportRequestModule extends ModuleBase.Toggleable {
                 sourceContext
         ));
 
-        NotificationModule.notify(target);
+        NotificationsModule.notify(target);
     }
 }

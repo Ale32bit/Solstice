@@ -4,7 +4,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.ignore.IgnoreModule;
-import me.alexdevs.solstice.modules.notification.NotificationModule;
+import me.alexdevs.solstice.modules.notifications.NotificationsModule;
 import me.alexdevs.solstice.modules.tell.commands.ReplyCommand;
 import me.alexdevs.solstice.modules.tell.commands.TellCommand;
 import me.alexdevs.solstice.modules.tell.data.TellLocale;
@@ -120,7 +120,7 @@ public class TellModule extends ModuleBase.Toggleable {
             var ignoreModule = Solstice.modules.getModule(IgnoreModule.class);
             if (!source.isExecutedByPlayer() || !ignoreModule.isIgnoring(targetPlayer, source.getPlayer())) {
                 targetPlayer.sendMessage(targetText);
-                NotificationModule.notify(targetPlayer);
+                NotificationsModule.notify(targetPlayer);
             }
 
             if (source.isExecutedByPlayer()) {
