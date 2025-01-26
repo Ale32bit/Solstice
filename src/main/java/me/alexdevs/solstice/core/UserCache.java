@@ -52,11 +52,6 @@ public class UserCache {
     public Optional<GameProfile> getByName(String name) {
         name = name.toLowerCase(Locale.ROOT);
         var entry = byName.get(name);
-        if (entry != null && new Date().getTime() >= entry.expirationDate.getTime()) {
-            this.byUUID.remove(entry.getProfile().getId());
-            this.byName.remove(entry.getProfile().getName().toLowerCase(Locale.ROOT));
-            return Optional.empty();
-        }
 
         if (entry == null) {
             return Optional.empty();
