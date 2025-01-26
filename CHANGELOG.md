@@ -3,7 +3,9 @@
 ## Alpha 4
 
 - Added `/nudge` command to slightly push players.
-- Added notifications system for TPA requests and direct messages.
+- Added `/top` command to teleport to the highest block in the current position.
+- Added notifications system for pings, TPA requests and direct messages.
+- Restart message now use the long time format.
 - Bugfix homes limit being bypassable.
 
 ## Alpha 3
