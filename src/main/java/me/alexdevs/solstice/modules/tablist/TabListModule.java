@@ -4,12 +4,12 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
-import me.alexdevs.solstice.modules.tablist.data.TabListConfig;
 import me.alexdevs.solstice.api.text.Format;
+import me.alexdevs.solstice.api.text.RawPlaceholder;
+import me.alexdevs.solstice.modules.tablist.data.TabListConfig;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.network.packet.s2c.play.PlayerListHeaderS2CPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.Text;
 
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
@@ -54,19 +54,19 @@ public class TabListModule extends ModuleBase.Toggleable {
         var config = Solstice.configManager.getData(TabListConfig.class);
         var period = Math.max(config.phasePeriod, 1);
 
-        var phase = (Math.sin((server.getTicks() * Math.PI * 2) / period) + 1) / 2d;
+        var phase = (float) (Math.sin((server.getTicks() * Math.PI * 2) / period) + 1) / 2f;
 
         var placeholders = Map.of(
-                "phase", Text.of(String.valueOf(phase))
+                "phase", String.valueOf(phase)
         );
 
         server.getPlayerManager().getPlayerList().forEach(player -> {
             var playerContext = PlaceholderContext.of(player);
-            var header = String.join("\n", config.header);
-            var footer = String.join("\n", config.footer);
+            var header = RawPlaceholder.parse(String.join("\n", config.header), placeholders);
+            var footer = RawPlaceholder.parse(String.join("\n", config.footer), placeholders);
             player.networkHandler.sendPacket(new PlayerListHeaderS2CPacket(
-                    Format.parse(header, playerContext, placeholders),
-                    Format.parse(footer, playerContext, placeholders)
+                    Format.parse(header, playerContext),
+                    Format.parse(footer, playerContext)
             ));
         });
     }

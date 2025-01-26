@@ -5,7 +5,7 @@ on: [ workflow_dispatch ]
 env:
   MINECRAFT_VERSION: 1.21.1
   JAVA_VERSION: 21
-  VERSION: 1.7.0+1.21.1-alpha-1
+  VERSION: 1.7.0+1.21.1-alpha-4
   RELEASE_NAME: Solstice 1.7.0-alpha-1 for Minecraft 1.21.1
   MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
   CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}

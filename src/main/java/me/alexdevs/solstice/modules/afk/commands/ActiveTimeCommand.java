@@ -43,8 +43,8 @@ public class ActiveTimeCommand extends ModCommand<AfkModule> {
                     return 1;
                 })
                 .then(CommandManager.literal("player")
+                        .requires(require("others", 1))
                         .then(CommandManager.argument("player", StringArgumentType.word())
-                                .requires(require("others", 1))
                                 .suggests(LocalGameProfile::suggest)
                                 .executes(context -> {
                                     var profile = LocalGameProfile.getProfile(context, "player");
