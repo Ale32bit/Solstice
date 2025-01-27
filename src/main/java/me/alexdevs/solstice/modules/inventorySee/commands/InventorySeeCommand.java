@@ -4,14 +4,13 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dev.emi.trinkets.api.TrinketsApi;
 import eu.pb4.sgui.api.gui.SimpleGui;
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.integrations.TrinketsIntegration;
 import me.alexdevs.solstice.modules.inventorySee.ImmutableSlot;
 import me.alexdevs.solstice.modules.inventorySee.InventorySeeModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.command.CommandSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.GenericContainerScreenHandler;
@@ -60,7 +59,7 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                             var source = context.getSource();
                             var player = source.getPlayerOrThrow();
                             var targetProfile = LocalGameProfile.getProfile(context, "player");
-                            var targetOnline = module.isOnline(targetProfile.getId());
+                            var targetOnline = PlayerUtils.isOnline(targetProfile.getId());
 
                             if (!targetOnline && !Permissions.check(player, getPermissionNode("offline"), 3)) {
                                 source.sendFeedback(() -> module.locale().get("offlineNotAllowed"), false);
@@ -70,13 +69,16 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                             ServerPlayerEntity target;
                             if (targetOnline) {
                                 target = context.getSource().getServer().getPlayerManager().getPlayer(targetProfile.getId());
+                                if (Permissions.check(target, getPermissionNode("exempt"), 3)) {
+                                    source.sendFeedback(() -> module.locale().get("exempt"), false);
+                                    return 0;
+                                }
                             } else {
-                                target = module.loadOfflinePlayer(targetProfile);
-                            }
-
-                            if (Permissions.check(target, getPermissionNode("exempt"), 3)) {
-                                source.sendFeedback(() -> module.locale().get("exempt"), false);
-                                return 0;
+                                target = PlayerUtils.loadOfflinePlayer(targetProfile);
+                                if (Permissions.check(targetProfile, getPermissionNode("exempt"), 3, source.getServer()).getNow(false)) {
+                                    source.sendFeedback(() -> module.locale().get("exempt"), false);
+                                    return 0;
+                                }
                             }
 
                             var canEdit = Permissions.check(player, getPermissionNode("edit"), 3);
@@ -87,7 +89,7 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                                 @Override
                                 public void onClose() {
                                     if (!targetOnline) {
-                                        module.saveOfflinePlayer(target);
+                                        PlayerUtils.saveOfflinePlayer(target);
                                     }
                                 }
                             };
@@ -124,7 +126,7 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                                     var source = context.getSource();
                                     var player = source.getPlayerOrThrow();
                                     var targetProfile = LocalGameProfile.getProfile(context, "player");
-                                    var targetOnline = module.isOnline(targetProfile.getId());
+                                    var targetOnline = PlayerUtils.isOnline(targetProfile.getId());
 
                                     if (!targetOnline && !Permissions.check(player, getPermissionNode("offline"), 3)) {
                                         source.sendFeedback(() -> module.locale().get("offlineNotAllowed"), false);
@@ -135,7 +137,7 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                                     if (targetOnline) {
                                         target = context.getSource().getServer().getPlayerManager().getPlayer(targetProfile.getId());
                                     } else {
-                                        target = module.loadOfflinePlayer(targetProfile);
+                                        target = PlayerUtils.loadOfflinePlayer(targetProfile);
                                     }
 
                                     if (Permissions.check(target, getPermissionNode() + ".exempt", 3)) {
@@ -179,7 +181,7 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                                         @Override
                                         public void onClose() {
                                             if (!targetOnline) {
-                                                module.saveOfflinePlayer(target);
+                                                PlayerUtils.saveOfflinePlayer(target);
                                             }
                                         }
                                     };

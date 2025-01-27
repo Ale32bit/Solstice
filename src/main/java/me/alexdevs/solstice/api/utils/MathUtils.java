@@ -1,8 +1,8 @@
-package me.alexdevs.solstice.api;
+package me.alexdevs.solstice.api.utils;
 
 import java.util.Optional;
 
-public class Utils {
+public class MathUtils {
     public static Optional<Double> parseDouble(String value) {
         try {
             return Optional.of(Double.parseDouble(value));
