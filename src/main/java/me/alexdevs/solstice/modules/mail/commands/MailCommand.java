@@ -63,7 +63,7 @@ public class MailCommand extends ModCommand<MailModule> {
 
         if (mails.isEmpty()) {
             context.getSource().sendFeedback(() -> module.locale().get("emptyMailbox", playerContext), false);
-            return 1;
+            return 0;
         }
 
         var output = Text.empty()
@@ -109,7 +109,7 @@ public class MailCommand extends ModCommand<MailModule> {
 
         if (index < 0 || index >= mails.size()) {
             context.getSource().sendFeedback(() -> module.locale().get("notFound"), false);
-            return 1;
+            return 0;
         }
 
         var mail = mails.get(index);
