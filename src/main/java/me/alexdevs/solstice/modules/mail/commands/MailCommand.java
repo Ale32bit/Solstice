@@ -8,13 +8,13 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.PlayerMail;
+import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.text.Components;
+import me.alexdevs.solstice.api.text.parser.MarkdownParser;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.mail.MailModule;
-import me.alexdevs.solstice.api.text.Components;
-import me.alexdevs.solstice.api.text.parser.MarkdownParser;
-import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
@@ -42,12 +42,7 @@ public class MailCommand extends ModCommand<MailModule> {
                 .executes(this::listMails)
                 .then(literal("send")
                         .then(argument("recipient", StringArgumentType.word())
-                                .suggests((context, builder) -> {
-                                    var playerManager = context.getSource().getServer().getPlayerManager();
-                                    return CommandSource.suggestMatching(
-                                            playerManager.getPlayerNames(),
-                                            builder);
-                                })
+                                .suggests(LocalGameProfile::suggest)
                                 .then(argument("message", StringArgumentType.greedyString())
                                         .executes(this::sendMail)
                                 )
@@ -68,7 +63,7 @@ public class MailCommand extends ModCommand<MailModule> {
 
         if (mails.isEmpty()) {
             context.getSource().sendFeedback(() -> module.locale().get("emptyMailbox", playerContext), false);
-            return 1;
+            return 0;
         }
 
         var output = Text.empty()
@@ -114,7 +109,7 @@ public class MailCommand extends ModCommand<MailModule> {
 
         if (index < 0 || index >= mails.size()) {
             context.getSource().sendFeedback(() -> module.locale().get("notFound"), false);
-            return 1;
+            return 0;
         }
 
         var mail = mails.get(index);
@@ -164,44 +159,31 @@ public class MailCommand extends ModCommand<MailModule> {
 
     private int sendMail(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         var sender = context.getSource().getPlayerOrThrow();
-        var username = StringArgumentType.getString(context, "recipient");
-        context.getSource().getServer().getUserCache().findByNameAsync(username).thenAcceptAsync(gameProfile -> {
-            if (gameProfile.isEmpty()) {
-                var playerContext = PlaceholderContext.of(sender);
+        var recipient = LocalGameProfile.getProfile(context, "recipient");
 
-                var placeholders = Map.of(
-                        "recipient", Text.of(username)
-                );
+        var message = StringArgumentType.getString(context, "message");
+        var server = context.getSource().getServer();
 
-                context.getSource().sendFeedback(() -> module.locale().get("playerNotFound", playerContext, placeholders), false);
-                return;
+        var mail = new PlayerMail(message, sender.getUuid());
+        var actuallySent = module.sendMail(recipient.getId(), mail);
+
+        var senderContext = PlaceholderContext.of(sender);
+
+        context.getSource().sendFeedback(() -> module.locale().get("mailSent", senderContext), false);
+
+        if (actuallySent) {
+            var recPlayer = server.getPlayerManager().getPlayer(recipient.getId());
+            if (recPlayer == null) {
+                return 1;
             }
 
-            var message = StringArgumentType.getString(context, "message");
-            var recipient = gameProfile.get();
-            var server = context.getSource().getServer();
+            var ignoreModule = Solstice.modules.getModule(IgnoreModule.class);
+            if (ignoreModule.isIgnoring(recPlayer, sender))
+                return 0;
 
-            var mail = new PlayerMail(message, sender.getUuid());
-            var actuallySent = module.sendMail(recipient.getId(), mail);
-
-            var senderContext = PlaceholderContext.of(sender);
-
-            context.getSource().sendFeedback(() -> module.locale().get("mailSent", senderContext), false);
-
-            if (actuallySent) {
-                var recPlayer = server.getPlayerManager().getPlayer(recipient.getId());
-                if (recPlayer == null) {
-                    return;
-                }
-
-                var ignoreModule = Solstice.modules.getModule(IgnoreModule.class);
-                if (ignoreModule.isIgnoring(recPlayer, sender))
-                    return;
-
-                var recContext = PlaceholderContext.of(recPlayer);
-                recPlayer.sendMessage(module.locale().get("mailReceived", recContext));
-            }
-        });
+            var recContext = PlaceholderContext.of(recPlayer);
+            recPlayer.sendMessage(module.locale().get("mailReceived", recContext));
+        }
 
         return 1;
     }

@@ -4,7 +4,7 @@ import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.node.parent.GradientNode;
 import eu.pb4.placeholders.api.parsers.TextParserV1;
 import eu.pb4.placeholders.impl.textparser.TextParserImpl;
-import me.alexdevs.solstice.api.Utils;
+import me.alexdevs.solstice.api.utils.MathUtils;
 import me.alexdevs.solstice.api.color.Gradient;
 import me.alexdevs.solstice.api.color.RGBColor;
 import net.minecraft.text.TextColor;
@@ -40,9 +40,9 @@ public class PhaseGradientTag {
                         while (args.hasNext()) {
                             var arg = args.next();
                             if (!args.hasNext()) {
-                                final var possiblePhase = Utils.parseDouble(arg);
+                                final var possiblePhase = MathUtils.parseDouble(arg);
                                 if (possiblePhase.isPresent()) {
-                                    phase = Utils.clamp(possiblePhase.get(), -1d, 1d);
+                                    phase = MathUtils.clamp(possiblePhase.get(), -1d, 1d);
                                     break;
                                 }
                             }
