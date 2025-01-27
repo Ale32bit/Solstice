@@ -136,13 +136,16 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                                     ServerPlayerEntity target;
                                     if (targetOnline) {
                                         target = context.getSource().getServer().getPlayerManager().getPlayer(targetProfile.getId());
+                                        if (Permissions.check(target, getPermissionNode("exempt"), 3)) {
+                                            source.sendFeedback(() -> module.locale().get("exempt"), false);
+                                            return 0;
+                                        }
                                     } else {
                                         target = PlayerUtils.loadOfflinePlayer(targetProfile);
-                                    }
-
-                                    if (Permissions.check(target, getPermissionNode() + ".exempt", 3)) {
-                                        source.sendFeedback(() -> module.locale().get("exempt"), false);
-                                        return 0;
+                                        if (Permissions.check(targetProfile, getPermissionNode("exempt"), 3, source.getServer()).getNow(false)) {
+                                            source.sendFeedback(() -> module.locale().get("exempt"), false);
+                                            return 0;
+                                        }
                                     }
 
                                     if (!TrinketsIntegration.isAvailable()) {
