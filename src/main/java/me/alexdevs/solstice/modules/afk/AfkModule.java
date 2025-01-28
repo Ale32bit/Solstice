@@ -84,6 +84,10 @@ public class AfkModule extends ModuleBase.Toggleable {
         PlayerActivityEvents.AFK.register((player, server) -> {
             var config = getConfig();
 
+            if(player.getServerWorld().isSleepingEnabled()) {
+                player.getServerWorld().updateSleepingPlayers();
+            }
+
             Solstice.LOGGER.info("{} is AFK. Active time: {} seconds.", player.getGameProfile().getName(), getActiveTime(player.getUuid()));
             if (!config.announce)
                 return;
@@ -95,6 +99,11 @@ public class AfkModule extends ModuleBase.Toggleable {
 
         PlayerActivityEvents.AFK_RETURN.register((player, server) -> {
             var config = getConfig();
+
+            if(player.getServerWorld().isSleepingEnabled()) {
+                player.getServerWorld().updateSleepingPlayers();
+            }
+
             Solstice.LOGGER.info("{} is no longer AFK. Active time: {} seconds.", player.getGameProfile().getName(), getActiveTime(player.getUuid()));
             if (!config.announce)
                 return;
@@ -253,6 +262,10 @@ public class AfkModule extends ModuleBase.Toggleable {
     public List<LeaderboardEntry> getActiveTimeLeaderboard() {
         var serverData = getServerData();
         return Collections.unmodifiableList(serverData.leaderboard);
+    }
+
+    public List<ServerPlayerEntity> getCurrentActivePlayers() {
+        return Solstice.server.getPlayerManager().getPlayerList().stream().filter(player -> !isPlayerAfk(player)).toList();
     }
 
     private void clearAfk(ServerPlayerEntity player) {
