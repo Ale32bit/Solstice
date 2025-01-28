@@ -13,6 +13,7 @@
     "events.CommandEventsMixin",
     "events.WorldSaveEventMixin",
     "modules.admin.ConnectionBypassMixin",
+    "modules.afk.FixPlayerSleepPercentageMixin",
     "modules.back.PreTeleportMixin",
     "modules.ban.CustomBanMessageMixin",
     "modules.customname.CustomDisplayNameMixin",

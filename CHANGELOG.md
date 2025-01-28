@@ -1,15 +1,1 @@
-- Made modules toggleable (requires restart).
-- Added `/sleep [<entities>]` command.
-- Added `/nudge` command to slightly push players.
-- Added `/top` command to teleport to the highest block in the current position.
-- Added notifications system for pings, TPA requests and direct messages.
-- Restart message now use the long time format.
-- Bugfix homes limit being bypassable.
-- Fixed `/activetime player` showing as suggestion to players without the permission node.
-- Refactored the teleport requests (TPAs) module.
-- Bugfix `/staffchat` crashing.
-- Implemented tag `<phase_gradient>` (`<pgr>`, `<sgr>`) as an improved gradient algorithm with optional phase, copied from Kyori's Adventure.
-- Revamped how display names are processed, fixing many bugs.
-- Added all biomes list to `/rtp [<biome>]` command if `solstice.rtp.exempt.biome` is granted.
-- Fixed permissions for `/effects` command.
-- Minor bugfixes and improvements
+- AFK players no longer count when calculating sleeping percentage.

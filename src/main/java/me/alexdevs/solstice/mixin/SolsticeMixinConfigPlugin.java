@@ -22,13 +22,7 @@ public class SolsticeMixinConfigPlugin implements IMixinConfigPlugin {
             var moduleMixin = mixinClassName.replace(packageBase, "");
             var parts = moduleMixin.split("\\.");
             var module = parts[0].toLowerCase();
-            String mixin = mixinClassName;
-            if (parts.length > 1)
-                mixin = parts[1];
-
-            var enabled = config.isEnabled(module);
-            System.out.println("Solstice module " + module + " is " + (enabled ? "enabled" : "disabled") + " for mixin " + mixin);
-            return enabled;
+            return config.isEnabled(module);
         }
         return true;
     }
