@@ -1,1 +1,1 @@
-- AFK players no longer count when calculating sleeping percentage.
+- Bugfix LuckPerms throwing exceptions when fetching information about a fake player.
