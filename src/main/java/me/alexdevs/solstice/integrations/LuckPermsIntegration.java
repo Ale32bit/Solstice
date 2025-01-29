@@ -49,8 +49,13 @@ public class LuckPermsIntegration {
         }
 
         return prefixMap.computeIfAbsent(player.getUuid(), uuid -> {
-            var playerMeta = luckPerms.getPlayerAdapter(ServerPlayerEntity.class).getMetaData(player);
-            return Optional.ofNullable(playerMeta.getPrefix());
+            try {
+                var playerMeta = luckPerms.getPlayerAdapter(ServerPlayerEntity.class).getMetaData(player);
+                return Optional.ofNullable(playerMeta.getPrefix());
+            } catch (IllegalStateException e) {
+                // Fake player may throw with IllegalStateException
+                return Optional.empty();
+            }
         }).orElse(null);
     }
 
@@ -60,8 +65,13 @@ public class LuckPermsIntegration {
         }
 
         return suffixMap.computeIfAbsent(player.getUuid(), uuid -> {
-            var playerMeta = luckPerms.getPlayerAdapter(ServerPlayerEntity.class).getMetaData(player);
-            return Optional.ofNullable(playerMeta.getSuffix());
+            try {
+                var playerMeta = luckPerms.getPlayerAdapter(ServerPlayerEntity.class).getMetaData(player);
+                return Optional.ofNullable(playerMeta.getSuffix());
+            } catch (IllegalStateException e) {
+                // Fake player may throw with IllegalStateException
+                return Optional.empty();
+            }
         }).orElse(null);
     }
 
@@ -69,13 +79,17 @@ public class LuckPermsIntegration {
         if (!available) {
             return false;
         }
-        var user = luckPerms.getPlayerAdapter(ServerPlayerEntity.class).getUser(player);
-        var inheritedGroups = user.getInheritedGroups(user.getQueryOptions());
-        return inheritedGroups.stream().anyMatch(g -> g.getName().equalsIgnoreCase(group));
+        try {
+            var user = luckPerms.getPlayerAdapter(ServerPlayerEntity.class).getUser(player);
+            var inheritedGroups = user.getInheritedGroups(user.getQueryOptions());
+            return inheritedGroups.stream().anyMatch(g -> g.getName().equalsIgnoreCase(group));
+        } catch (IllegalStateException e) {
+            // Fake player may throw with IllegalStateException
+            return false;
+        }
     }
 
     public static class Listeners {
-
         public static void onDataRecalculate(UserDataRecalculateEvent event) {
             var uuid = event.getUser().getUniqueId();
             prefixMap.remove(uuid);

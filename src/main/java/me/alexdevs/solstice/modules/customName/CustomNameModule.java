@@ -62,14 +62,8 @@ public class CustomNameModule extends ModuleBase.Toggleable {
         var playerData = Solstice.playerData.get(player).getData(CustomNamePlayerData.class);
         var name = playerData.nickname == null ? player.getGameProfile().getName() : playerData.nickname;
 
-        String prefix = null;
-        String suffix = null;
-        try {
-            prefix = LuckPermsIntegration.getPrefix(player);
-            suffix = LuckPermsIntegration.getSuffix(player);
-        } catch (IllegalStateException e) {
-            // we do nothing, LP does NOT like fake players
-        }
+        var prefix = LuckPermsIntegration.getPrefix(player);
+        var suffix = LuckPermsIntegration.getSuffix(player);
         if (prefix == null)
             prefix = "";
         if (suffix == null)
