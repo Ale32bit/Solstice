@@ -8,6 +8,7 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -30,8 +31,15 @@ public abstract class ModCommand<T extends ModuleBase> {
         this.commandRegistry = commandRegistry;
         this.environment = environment;
 
-        for (var name : getNames()) {
-            registerCommand(command(name));
+        var aliases = new ArrayList<>(getNames());
+        var name = aliases.remove(0);
+        var node = registerCommand(command(name));
+
+        for (var alias : aliases) {
+            dispatcher.register(CommandManager.literal(alias)
+                    .requires(node.getRequirement())
+                    .executes(node.getCommand())
+                    .redirect(node));
         }
     }
 
