@@ -1,10 +1,7 @@
 package me.alexdevs.solstice.modules.enderchest.commands;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.sgui.api.gui.SimpleGui;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
@@ -12,13 +9,13 @@ import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.enderchest.EnderChestModule;
 import me.alexdevs.solstice.modules.inventorySee.ImmutableSlot;
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.inventory.EnderChestInventory;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -40,81 +37,85 @@ public class EnderChestCommand extends ModCommand<EnderChestModule> {
     public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
         return literal(name)
                 .requires(require(2))
-                .executes(context -> execute(context, null))
+                .executes(context -> {
+                    var player = context.getSource().getPlayerOrThrow();
+                    player.incrementStat(Stats.OPEN_ENDERCHEST);
+
+                    open(player, player.getEnderChestInventory(), Text.translatable("container.enderchest"), true, () -> {
+                    });
+
+                    return 1;
+                })
                 .then(argument("player", StringArgumentType.word())
                         .requires(require("others", 2))
                         .suggests(LocalGameProfile::suggest)
-                        .executes(context -> execute(context, LocalGameProfile.getProfile(context, "player"))));
+                        .executes(context -> {
+                            final var source = context.getSource();
+                            var player = source.getPlayerOrThrow();
+                            var profile = LocalGameProfile.getProfile(context, "player");
+
+                            Permissions.check(profile, getPermissionNode("exempt"), 3, source.getServer()).thenAccept(exempt -> {
+                                if (exempt) {
+                                    source.sendFeedback(() -> module.locale().get("exempt"), false);
+                                    return;
+                                }
+
+                                var isOnline = PlayerUtils.isOnline(profile.getId());
+                                if (!isOnline && !Permissions.check(player, getPermissionNode("offline"), 3)) {
+                                    source.sendFeedback(() -> module.locale().get("offlineNotAllowed"), false);
+                                    return;
+                                }
+
+                                ServerPlayerEntity targetPlayer;
+
+                                if (isOnline) {
+                                    targetPlayer = source.getServer().getPlayerManager().getPlayer(profile.getId());
+                                } else {
+                                    targetPlayer = PlayerUtils.loadOfflinePlayer(profile);
+                                }
+
+                                var inventory = targetPlayer.getEnderChestInventory();
+
+                                var canEdit = Permissions.check(player, getPermissionNode("edit"), 3);
+
+                                var map = Map.of(
+                                        "player", Text.of(profile.getName())
+                                );
+                                var title = module.locale().get("title", map);
+
+                                open(player, inventory, title, canEdit, () -> {
+                                    if(!isOnline) {
+                                        PlayerUtils.saveOfflinePlayer(targetPlayer);
+                                    }
+                                });
+
+                                source.sendFeedback(() -> module.locale().get("opened", map), true);
+                            });
+
+                            return 1;
+                        }));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, @Nullable GameProfile profile) throws CommandSyntaxException {
-        var source = context.getSource();
-        var player = source.getPlayerOrThrow();
-        ServerPlayerEntity target;
-
-        if (profile == null) {
-            target = player;
-            if (Permissions.check(target, getPermissionNode("exempt"), 3)) {
-                source.sendFeedback(() -> module.locale().get("exempt"), false);
-                return 0;
-            }
-        } else {
-            target = source.getServer().getPlayerManager().getPlayer(profile.getName());
-            if (target == null) {
-                if (!PlayerUtils.isOnline(profile.getId()) && !Permissions.check(player, getPermissionNode("offline"), 3)) {
-                    source.sendFeedback(() -> module.locale().get("offlineNotAllowed"), false);
-                    return 0;
-                }
-                target = PlayerUtils.loadOfflinePlayer(profile);
-                if (Permissions.check(profile, getPermissionNode("exempt"), 3, source.getServer()).getNow(false)) {
-                    source.sendFeedback(() -> module.locale().get("exempt"), false);
-                    return 0;
-                }
-            }
-        }
-
-        final var isOnline = PlayerUtils.isOnline(target.getUuid());
-        final var targetPlayer = target;
-
-        var canEdit = Permissions.check(player, getPermissionNode("edit"), 3);
-
-        var enderChestInventory = target.getEnderChestInventory();
-
+    private void open(ServerPlayerEntity player, EnderChestInventory inventory, Text title, boolean canEdit, Runnable onClose) {
         var container = new SimpleGui(ScreenHandlerType.GENERIC_9X3, player, false) {
             @Override
             public void onClose() {
-                if (!isOnline) {
-                    PlayerUtils.saveOfflinePlayer(targetPlayer);
-                }
+                onClose.run();
             }
         };
 
-        for (var i = 0; i < enderChestInventory.size(); i++) {
+        for (var i = 0; i < inventory.size(); i++) {
             Slot slot;
             if (canEdit) {
-                slot = new Slot(enderChestInventory, i, 0, 0);
+                slot = new Slot(inventory, i, 0, 0);
             } else {
-                slot = new ImmutableSlot(enderChestInventory, i, 0, 0);
+                slot = new ImmutableSlot(inventory, i, 0, 0);
             }
             container.setSlotRedirect(i, slot);
         }
 
-        if (targetPlayer == player) {
-            container.setTitle(Text.translatable("container.enderchest"));
-            player.incrementStat(Stats.OPEN_ENDERCHEST);
-        } else {
-            var map = Map.of(
-                    "player", Text.of(target.getGameProfile().getName())
-            );
-            container.setTitle(module.locale().get("title", map));
-        }
+        container.setTitle(title);
 
         container.open();
-
-        var map = Map.of(
-                "player", Text.of(target.getGameProfile().getName())
-        );
-        source.sendFeedback(() -> module.locale().get("opened", map), false);
-        return 1;
     }
 }
