@@ -2,6 +2,7 @@ package me.alexdevs.solstice.modules.experiments;
 
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.modules.experiments.commands.FlagsCommand;
 import me.alexdevs.solstice.modules.experiments.commands.TimeSpanCommand;
 
 import java.util.Collection;
@@ -18,6 +19,7 @@ public class ExperimentsModule extends ModuleBase {
     @Override
     public void init() {
         commands.add(new TimeSpanCommand(this));
+        commands.add(new FlagsCommand(this));
     }
 
     @Override
