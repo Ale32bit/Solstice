@@ -2,7 +2,6 @@ package me.alexdevs.solstice.modules.mute;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
-import me.alexdevs.solstice.modules.ignore.data.IgnoreLocale;
 import me.alexdevs.solstice.modules.mute.commands.MuteCommand;
 import me.alexdevs.solstice.modules.mute.commands.UnmuteCommand;
 import me.alexdevs.solstice.modules.mute.data.MuteLocale;

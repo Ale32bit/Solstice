@@ -10,7 +10,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -47,7 +46,6 @@ public class KittyCannonCommand extends ModCommand<MiscellaneousModule> {
                             entity.remove(Entity.RemovalReason.DISCARDED);
                         }, 1, TimeUnit.SECONDS);
                     }, player.getBlockPos().up(), SpawnReason.COMMAND, true, false);
-
 
 
                     return 1;
