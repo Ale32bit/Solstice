@@ -2,7 +2,6 @@ package me.alexdevs.solstice.api.command.flags;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.FloatArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.List;
 public class FloatFlag extends ArgumentFlag<Float> {
     protected Float value;
     protected final FloatArgumentType type;
+
     public FloatFlag(String name, List<Character> shortFlags) {
         super(name, shortFlags);
         type = FloatArgumentType.floatArg();

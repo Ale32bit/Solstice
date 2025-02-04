@@ -43,18 +43,6 @@ public class Locator {
     private BlockPos attemptPos;
     private boolean failed = false;
 
-//    private static final ImmutableList<Vec3i> VALID_HORIZONTAL_SPAWN_OFFSETS = ImmutableList.of(
-//            new Vec3i(0, 0, 0),
-//            new Vec3i(0, 0, -1),
-//            new Vec3i(-1, 0, 0),
-//            new Vec3i(0, 0, 1),
-//            new Vec3i(1, 0, 0),
-//            new Vec3i(-1, 0, -1),
-//            new Vec3i(1, 0, -1),
-//            new Vec3i(-1, 0, 1),
-//            new Vec3i(1, 0, 1)
-//    );
-
     private static final ImmutableList<Block> unsafeBlocks = ImmutableList.of(
             Blocks.LAVA,
             Blocks.MAGMA_BLOCK,

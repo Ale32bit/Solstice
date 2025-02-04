@@ -20,8 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.ConfigurateException;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 
 public class Solstice implements ModInitializer {
