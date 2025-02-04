@@ -1,1 +1,2 @@
-- Bugfix LuckPerms throwing exceptions when fetching information about a fake player.
+- Bugfix `/enderchest` not working correctly.
+- Command aliases are now registered as redirects.
