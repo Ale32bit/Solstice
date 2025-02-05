@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.command.TimeSpan;
+import me.alexdevs.solstice.api.events.RestartEvents;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.restart.RestartModule;
 import net.minecraft.server.command.ServerCommandSource;
@@ -58,7 +59,7 @@ public class RestartCommand extends ModCommand<RestartModule> {
         if (message == null) {
             message = Solstice.localeManager.getLocale(RestartModule.ID).raw("barLabel");
         }
-        module.schedule(seconds, message);
+        module.schedule(seconds, message, RestartEvents.RestartType.MANUAL);
 
         context.getSource().sendFeedback(() -> Text.of("Manual restart scheduled in " + seconds + " seconds."), true);
 
