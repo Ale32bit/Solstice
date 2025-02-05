@@ -57,13 +57,15 @@ public class TimeBarModule extends ModuleBase.Toggleable {
     public TimeBar startTimeBar(String label, int seconds, BossBar.Color color, BossBar.Style style, boolean countdown) {
         var timeBar = new TimeBar(label, seconds, countdown, color, style);
 
-        timeBars.add(timeBar);
+        Solstice.scheduler.schedule(() -> {
+            timeBars.add(timeBar);
 
-        var players = Solstice.server.getPlayerManager().getPlayerList();
-        showBar(players, timeBar);
+            var players = Solstice.server.getPlayerManager().getPlayerList();
+            showBar(players, timeBar);
 
-        TimeBarEvents.START.invoker().onStart(timeBar, Solstice.server);
-        TimeBarEvents.PROGRESS.invoker().onProgress(timeBar, Solstice.server);
+            TimeBarEvents.START.invoker().onStart(timeBar, Solstice.server);
+            TimeBarEvents.PROGRESS.invoker().onProgress(timeBar, Solstice.server);
+        }, 0, TimeUnit.SECONDS);
 
         return timeBar;
     }
