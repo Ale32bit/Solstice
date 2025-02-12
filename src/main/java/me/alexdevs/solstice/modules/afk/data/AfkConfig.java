@@ -20,6 +20,7 @@ public class AfkConfig {
     @Comment("These triggers clear the AFK status. Events regarding entities, blocks or item usage may be triggered by fake players.")
     public AfkTriggers triggers = new AfkTriggers();
 
+    @ConfigSerializable
     public static class AfkTriggers {
         @Comment("Movement is triggered when the velocity threshold is met.")
         public boolean onMovement = true;
