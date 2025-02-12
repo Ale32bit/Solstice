@@ -125,7 +125,7 @@ public class RestartModule extends ModuleBase.Toggleable {
         }
     }
 
-    public void schedule(int seconds, String message) {
+    public void schedule(int seconds, String message, RestartEvents.RestartType restartType) {
         if(isRunning()) {
             Solstice.LOGGER.warn("Could not start a new restart countdown because there is one already running.");
             return;
@@ -140,7 +140,7 @@ public class RestartModule extends ModuleBase.Toggleable {
                 true
         );
 
-        RestartEvents.SCHEDULED.invoker().onSchedule(restartBar);
+        RestartEvents.SCHEDULED.invoker().onSchedule(restartBar, restartType);
     }
 
     public boolean isScheduled() {
@@ -183,7 +183,7 @@ public class RestartModule extends ModuleBase.Toggleable {
         var barTime = getConfig().restartNotifications.stream().max(Integer::compareTo).orElse(600);
         var barStartTime = delay - barTime;
 
-        currentSchedule = Solstice.scheduler.schedule(() -> schedule(barTime, locale().raw("barLabel")), barStartTime, TimeUnit.SECONDS);
+        currentSchedule = Solstice.scheduler.schedule(() -> schedule(barTime, locale().raw("barLabel"), RestartEvents.RestartType.AUTOMATIC), barStartTime, TimeUnit.SECONDS);
 
         Solstice.LOGGER.info("Restart scheduled for in {} seconds", delay);
         return delay;

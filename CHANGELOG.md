@@ -1,2 +1,3 @@
-- Bugfix `/enderchest` not working correctly.
-- Command aliases are now registered as redirects.
+- Bugfix restart not announcing the first milestone.
+- Improve AFK configurability.
+- Added `/activetime set` to change the active time a player.

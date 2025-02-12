@@ -95,6 +95,29 @@ public class ActiveTimeCommand extends ModCommand<AfkModule> {
 
                             return 1;
                         })
+                )
+                .then(CommandManager.literal("set")
+                        .requires(require("set", 3))
+                        .then(CommandManager.argument("player", StringArgumentType.word())
+                                .suggests(LocalGameProfile::suggest)
+                                .then(CommandManager.argument("time", TimeSpan.timeSpan())
+                                        .suggests(TimeSpan::suggest)
+                                        .executes(context -> {
+                                            var profile = LocalGameProfile.getProfile(context, "player");
+                                            var time = TimeSpan.getTimeSpan(context, "time");
+
+                                            var data = module.getPlayerData(profile.getId());
+                                            data.activeTime = time;
+
+                                            var map = Map.of(
+                                                    "player", Text.of(profile.getName()),
+                                                    "time", Text.of(TimeSpan.toLongString(time))
+                                            );
+                                            context.getSource().sendFeedback(() -> module.locale().get("activeTimeSet", map), true);
+
+                                            return 1;
+                                        })
+                                ))
                 );
     }
 }

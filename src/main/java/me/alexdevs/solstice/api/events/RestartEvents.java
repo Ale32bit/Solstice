@@ -6,9 +6,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 public class RestartEvents {
     public static final Event<Schedule> SCHEDULED = EventFactory.createArrayBacked(Schedule.class, callbacks ->
-            (timeBar) -> {
+            (timeBar, type) -> {
                 for (Schedule callback : callbacks) {
-                    callback.onSchedule(timeBar);
+                    callback.onSchedule(timeBar, type);
                 }
             });
 
@@ -21,11 +21,16 @@ public class RestartEvents {
 
     @FunctionalInterface
     public interface Schedule {
-        void onSchedule(TimeBar timeBar);
+        void onSchedule(TimeBar timeBar, RestartType type);
     }
 
     @FunctionalInterface
     public interface Cancel {
         void onCancel(TimeBar timeBar);
+    }
+
+    public enum RestartType {
+        AUTOMATIC,
+        MANUAL
     }
 }
