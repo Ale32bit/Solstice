@@ -38,6 +38,19 @@ public class AfkModule extends ModuleBase.Toggleable {
 
     public static final int LEADERBOARD_SIZE = 10;
 
+    public enum AfkTriggerReason {
+        MANUAL,
+        MOVEMENT,
+        LOOK_CHANGE,
+        CHAT_MESSAGE,
+        COMMAND,
+        BLOCK_ATTACK,
+        BLOCK_INTERACT,
+        ENTITY_ATTACK,
+        ENTITY_INTERACT,
+        ITEM_USE,
+    }
+
     private final Map<UUID, PlayerActivityState> activities = new ConcurrentHashMap<>();
 
     public AfkModule() {
@@ -81,10 +94,10 @@ public class AfkModule extends ModuleBase.Toggleable {
 
         ServerTickEvents.END_SERVER_TICK.register(this::tick);
 
-        PlayerActivityEvents.AFK.register((player, server) -> {
+        PlayerActivityEvents.AFK.register((player) -> {
             var config = getConfig();
 
-            if(player.getServerWorld().isSleepingEnabled()) {
+            if (player.getServerWorld().isSleepingEnabled()) {
                 player.getServerWorld().updateSleepingPlayers();
             }
 
@@ -97,14 +110,14 @@ public class AfkModule extends ModuleBase.Toggleable {
             Solstice.getInstance().broadcast(locale().get("goneAfk", playerContext));
         });
 
-        PlayerActivityEvents.AFK_RETURN.register((player, server) -> {
+        PlayerActivityEvents.AFK_RETURN.register((player, reason) -> {
             var config = getConfig();
 
-            if(player.getServerWorld().isSleepingEnabled()) {
+            if (player.getServerWorld().isSleepingEnabled()) {
                 player.getServerWorld().updateSleepingPlayers();
             }
 
-            Solstice.LOGGER.info("{} is no longer AFK. Active time: {} seconds.", player.getGameProfile().getName(), getActiveTime(player.getUuid()));
+            Solstice.LOGGER.info("{} is no longer AFK due to {}. Active time: {} seconds.", player.getGameProfile().getName(), reason.name(), getActiveTime(player.getUuid()));
             if (!config.announce)
                 return;
 
@@ -125,6 +138,10 @@ public class AfkModule extends ModuleBase.Toggleable {
                 .stream().filter(player -> !isPlayerAfk(player));
 
         activePlayers.forEach(player -> {
+            var activity = activities.computeIfAbsent(player.getUuid(), uuid -> new PlayerActivityState(player, player.getServer().getTicks()));
+            if (!activity.activeTimeEnabled)
+                return;
+
             var playerData = getPlayerData(player.getUuid());
             playerData.activeTime++;
             tryInsertLeaderboard(player, playerData.activeTime);
@@ -178,20 +195,24 @@ public class AfkModule extends ModuleBase.Toggleable {
             if (player.getVehicle() == null) {
                 // Defeats some anti-afk stuff, like pools. Works best when no lag.
                 if ((player.isSneaking() && speed >= sneakSpeed) || (player.isSprinting() && speed >= sprintSpeed) || (speed >= walkSpeed)) {
-                    clearAfk(player);
+                    if (getConfig().triggers.onMovement) {
+                        clearAfk(player, AfkTriggerReason.MOVEMENT);
+                    }
                 }
             }
 
             // Looking around requires player input
             if (curLocation.getPitch() != oldLocation.getPitch() || curLocation.getYaw() != oldLocation.getYaw()) {
-                clearAfk(player);
+                if (getConfig().triggers.onLookChange) {
+                    clearAfk(player, AfkTriggerReason.LOOK_CHANGE);
+                }
             }
 
             var ticks = server.getTicks();
             if (activity.lastUpdate < ticks - config.timeTrigger * 20) {
-                if (!activity.isAfk) {
+                if (!activity.isAfk && activity.afkEnabled) {
                     activity.isAfk = true;
-                    PlayerActivityEvents.AFK.invoker().onAfk(player, server);
+                    PlayerActivityEvents.AFK.invoker().onAfk(player);
                 }
             }
         });
@@ -218,7 +239,7 @@ public class AfkModule extends ModuleBase.Toggleable {
         if (isAfk) {
             activity.lastUpdate = activity.lastUpdate - (config.timeTrigger * 20);
         } else {
-            clearAfk(player);
+            clearAfk(player, AfkTriggerReason.MANUAL);
         }
     }
 
@@ -268,7 +289,7 @@ public class AfkModule extends ModuleBase.Toggleable {
         return Solstice.server.getPlayerManager().getPlayerList().stream().filter(player -> !isPlayerAfk(player)).toList();
     }
 
-    private void clearAfk(ServerPlayerEntity player) {
+    private void clearAfk(ServerPlayerEntity player, AfkTriggerReason reason) {
         if (!activities.containsKey(player.getUuid()))
             return;
 
@@ -280,39 +301,51 @@ public class AfkModule extends ModuleBase.Toggleable {
 
         if (activity.isAfk) {
             activity.isAfk = false;
-            PlayerActivityEvents.AFK_RETURN.invoker().onAfkReturn(player, Solstice.server);
+            PlayerActivityEvents.AFK_RETURN.invoker().onAfkReturn(player, reason);
         }
 
     }
 
     private void registerTriggers() {
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-            clearAfk((ServerPlayerEntity) player);
+            if (getConfig().triggers.onBlockAttack) {
+                clearAfk((ServerPlayerEntity) player, AfkTriggerReason.BLOCK_ATTACK);
+            }
             return ActionResult.PASS;
         });
 
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            clearAfk((ServerPlayerEntity) player);
+            if (getConfig().triggers.onEntityAttack) {
+                clearAfk((ServerPlayerEntity) player, AfkTriggerReason.ENTITY_ATTACK);
+            }
             return ActionResult.PASS;
         });
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-            clearAfk((ServerPlayerEntity) player);
+            if (getConfig().triggers.onBlockInteract) {
+                clearAfk((ServerPlayerEntity) player, AfkTriggerReason.BLOCK_INTERACT);
+            }
             return ActionResult.PASS;
         });
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-            clearAfk((ServerPlayerEntity) player);
+            if (getConfig().triggers.onEntityInteract) {
+                clearAfk((ServerPlayerEntity) player, AfkTriggerReason.ENTITY_INTERACT);
+            }
             return ActionResult.PASS;
         });
 
         UseItemCallback.EVENT.register((player, world, hand) -> {
-            clearAfk((ServerPlayerEntity) player);
+            if (getConfig().triggers.onItemUse) {
+                clearAfk((ServerPlayerEntity) player, AfkTriggerReason.ITEM_USE);
+            }
             return TypedActionResult.pass(player.getStackInHand(hand));
         });
 
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> {
-            clearAfk(sender);
+            if (getConfig().triggers.onChat) {
+                clearAfk(sender, AfkTriggerReason.CHAT_MESSAGE);
+            }
             return true;
         });
 
@@ -320,7 +353,9 @@ public class AfkModule extends ModuleBase.Toggleable {
             if (!source.isExecutedByPlayer())
                 return true;
 
-            clearAfk(source.getPlayer());
+            if (getConfig().triggers.onCommand) {
+                clearAfk(source.getPlayer(), AfkTriggerReason.COMMAND);
+            }
             return true;
         });
     }

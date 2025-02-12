@@ -11,11 +11,13 @@ public class PlayerActivityState {
     public int lastUpdate;
     public boolean isAfk;
     public boolean afkEnabled;
+    public boolean activeTimeEnabled;
 
     public PlayerActivityState(ServerPlayerEntity player, int lastUpdate) {
         this.location = new ServerLocation(player);
         this.lastUpdate = lastUpdate;
         this.isAfk = false;
         this.afkEnabled = Permissions.check(player, Solstice.MOD_ID + "." + AfkModule.ID + ".base", true);
+        this.activeTimeEnabled = Permissions.check(player, Solstice.MOD_ID + "." + AfkModule.ID + ".activetime", true);
     }
 }
