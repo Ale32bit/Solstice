@@ -16,6 +16,7 @@
     "modules.afk.FixPlayerSleepPercentageMixin",
     "modules.back.PreTeleportMixin",
     "modules.ban.CustomBanMessageMixin",
+    "modules.core.RealPingMixin",
     "modules.customname.CustomDisplayNameMixin",
     "modules.miscellaneous.BypassSleepingInBedCheckMixin",
     "modules.sign.FormatSignMixin",
