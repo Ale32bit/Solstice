@@ -42,7 +42,7 @@ public class ReplyCommand extends ModCommand<TellModule> {
                     "noLastSenderReply",
                     playerContext
             ), false);
-            return 1;
+            return 0;
         }
 
         var targetName = module.lastSender.get(senderName);

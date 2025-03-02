@@ -11,7 +11,6 @@ import java.util.Map;
 
 public class AdvancementFormatter {
     public static Component getText(ServerPlayer player, String advancementKey, String frameId) {
-        var locale = Solstice.localeManager.getLocale(StylingModule.ID);
         var frame = FrameType.byName(frameId);
         var title = advancementKey + ".title";
         var description = advancementKey + ".description";

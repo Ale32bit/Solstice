@@ -34,9 +34,7 @@ public class PowerToolModule extends ModuleBase.Toggleable {
 
         commands.add(new PowerToolCommand(this));
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, registry, environment) -> {
-            this.dispatcher = dispatcher;
-        });
+        CommandRegistrationCallback.EVENT.register((dispatcher, registry, environment) -> this.dispatcher = dispatcher);
 
         // USE
         UseItemCallback.EVENT.register((player, world, hand) -> {

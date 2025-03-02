@@ -3,11 +3,13 @@ package me.alexdevs.solstice.modules.teleportOffline.commands;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.core.coreModule.data.CorePlayerData;
 import me.alexdevs.solstice.modules.teleportOffline.TeleportOfflineModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+
 import java.util.List;
 
 import static net.minecraft.commands.Commands.argument;
@@ -28,29 +30,22 @@ public class TeleportOfflineCommand extends ModCommand<TeleportOfflineModule> {
         return literal(name)
                 .requires(require(2))
                 .then(argument("player", StringArgumentType.word())
+                        .suggests(LocalGameProfile::suggest)
                         .executes(context -> {
                             var source = context.getSource();
                             var player = source.getPlayerOrException();
-                            var server = context.getSource().getServer();
 
-                            var targetName = StringArgumentType.getString(context, "player");
+                            var gameProfile = LocalGameProfile.getProfile(context, "player");
 
-                            server.getProfileCache().getAsync(targetName, gameProfile -> {
-                                if (gameProfile.isEmpty()) {
-                                    source.sendFailure(Component.nullToEmpty("Could not find player"));
-                                    return;
-                                }
+                            var targetData = Solstice.playerData.get(gameProfile).getData(CorePlayerData.class);
+                            if (targetData == null || targetData.logoffPosition == null) {
+                                source.sendFailure(Component.nullToEmpty("Could not find location of offline player"));
+                                return 0;
+                            }
 
-                                var targetData = Solstice.playerData.get(gameProfile.get()).getData(CorePlayerData.class);
-                                if (targetData == null || targetData.logoffPosition == null) {
-                                    source.sendFailure(Component.nullToEmpty("Could not find location of offline player"));
-                                    return;
-                                }
+                            source.sendSuccess(() -> Component.translatable("commands.teleport.success.entity.single", player.getDisplayName(), Component.nullToEmpty(gameProfile.getName())), true);
 
-                                source.sendSuccess(() -> Component.translatable("commands.teleport.success.entity.single", player.getDisplayName(), Component.nullToEmpty(gameProfile.get().getName())), true);
-
-                                targetData.logoffPosition.teleport(player, true);
-                            });
+                            targetData.logoffPosition.teleport(player, true);
                             return 1;
                         }));
     }

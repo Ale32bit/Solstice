@@ -28,9 +28,7 @@ public class RTPModule extends ModuleBase.Toggleable {
 
         commands.add(new RTPCommand(this));
 
-        ServerTickEvents.END_SERVER_TICK.register(server -> {
-            locators.removeIf(Locator::tick);
-        });
+        ServerTickEvents.END_SERVER_TICK.register(server -> locators.removeIf(Locator::tick));
     }
 
     public RTPConfig getConfig() {

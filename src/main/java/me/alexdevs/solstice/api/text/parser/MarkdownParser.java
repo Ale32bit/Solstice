@@ -4,9 +4,6 @@ import eu.pb4.placeholders.api.parsers.MarkdownLiteParserV1;
 import eu.pb4.placeholders.api.parsers.MarkdownLiteParserV1.MarkdownFormat;
 import eu.pb4.placeholders.api.parsers.NodeParser;
 
-import static eu.pb4.placeholders.api.parsers.MarkdownLiteParserV1.MarkdownFormat;
-
-
 public class MarkdownParser {
     public static final MarkdownFormat[] ALL = new MarkdownFormat[]{
             //MarkdownFormat.QUOTE,

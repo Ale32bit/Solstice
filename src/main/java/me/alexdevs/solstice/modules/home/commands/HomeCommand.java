@@ -60,7 +60,7 @@ public class HomeCommand extends ModCommand<HomeModule> {
                             placeholders
                     ), false);
 
-            return 1;
+            return 0;
         }
 
         context.getSource().sendSuccess(() ->

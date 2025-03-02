@@ -112,7 +112,7 @@ public class SolsticeCommand extends ModCommand<CoreModule> {
                                     var itemStack = player.getItemInHand(hand);
 
                                     var entry = itemStack.getItemHolder().unwrapKey().get();
-                                    var entryString = String.format("Tags for [%s / %s]:", entry.registry().toString(), entry.location().toString());
+                                    var entryString = String.format("Tags for [%s / %s]:", entry.registry(), entry.location());
 
                                     var text = Component.empty();
                                     text.append(Component.nullToEmpty(entryString));
@@ -121,10 +121,10 @@ public class SolsticeCommand extends ModCommand<CoreModule> {
                                         var tag = tags.next();
                                         text.append(Component.nullToEmpty("\n"));
                                         text.append(
-                                                Component.literal(" #" + tag.location().toString())
+                                                Component.literal(" #" + tag.location())
                                                         .setStyle(Style.EMPTY
                                                                 .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.nullToEmpty("Click to copy")))
-                                                                .withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, "#" + tag.location().toString()))
+                                                                .withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, "#" + tag.location()))
                                                         )
                                         );
                                     }

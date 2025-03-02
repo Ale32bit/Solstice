@@ -9,15 +9,8 @@ public class Note {
     public Date creationDate = new Date();
     public String note;
 
-    public Note() {}
-
     public Note(String note, UUID createdBy) {
         this.note = note;
         this.createdBy = createdBy;
-    }
-
-    public Note(String note, ServerPlayer player) {
-        this.note = note;
-        this.createdBy = player.getUUID();
     }
 }
