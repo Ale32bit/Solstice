@@ -2,8 +2,7 @@ package me.alexdevs.solstice.data;
 
 import com.mojang.authlib.GameProfile;
 import me.alexdevs.solstice.Solstice;
-import net.minecraft.server.network.ServerPlayerEntity;
-
+import net.minecraft.server.level.ServerPlayer;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -58,8 +57,8 @@ public class PlayerDataManager {
      * @param player Player
      * @return player data
      */
-    public PlayerData get(ServerPlayerEntity player) {
-        return get(player.getUuid());
+    public PlayerData get(ServerPlayer player) {
+        return get(player.getUUID());
     }
 
     /**

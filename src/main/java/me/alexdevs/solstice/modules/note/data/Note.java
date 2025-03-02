@@ -1,9 +1,8 @@
 package me.alexdevs.solstice.modules.note.data;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.Date;
 import java.util.UUID;
+import net.minecraft.server.level.ServerPlayer;
 
 public class Note {
     public UUID createdBy;
@@ -17,8 +16,8 @@ public class Note {
         this.createdBy = createdBy;
     }
 
-    public Note(String note, ServerPlayerEntity player) {
+    public Note(String note, ServerPlayer player) {
         this.note = note;
-        this.createdBy = player.getUuid();
+        this.createdBy = player.getUUID();
     }
 }

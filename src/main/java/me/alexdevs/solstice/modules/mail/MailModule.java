@@ -33,8 +33,8 @@ public class MailModule extends ModuleBase.Toggleable {
             var playerContext = PlaceholderContext.of(player);
 
             Solstice.scheduler.schedule(() -> {
-                if (!getMailData(player.getUuid()).mails.isEmpty()) {
-                    player.sendMessage(locale().get("mailPending", playerContext));
+                if (!getMailData(player.getUUID()).mails.isEmpty()) {
+                    player.sendSystemMessage(locale().get("mailPending", playerContext));
                 }
             }, 1, TimeUnit.SECONDS);
         });

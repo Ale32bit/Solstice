@@ -4,7 +4,7 @@ import me.alexdevs.solstice.Solstice;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class SolsticeEvents {
     public static final Event<Ready> READY = EventFactory.createArrayBacked(Ready.class, callbacks ->
@@ -58,16 +58,16 @@ public final class SolsticeEvents {
 
     @FunctionalInterface
     public interface Welcome {
-        void onWelcome(ServerPlayerEntity player, MinecraftServer server);
+        void onWelcome(ServerPlayer player, MinecraftServer server);
     }
 
     @FunctionalInterface
     public interface UsernameChange {
-        void onUsernameChange(ServerPlayerEntity player, String previousUsername);
+        void onUsernameChange(ServerPlayer player, String previousUsername);
     }
 
     @FunctionalInterface
     public interface PlayerCommand {
-        void onPlayerCommand(ServerPlayerEntity player, String command);
+        void onPlayerCommand(ServerPlayer player, String command);
     }
 }

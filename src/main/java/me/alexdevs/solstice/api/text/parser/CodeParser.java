@@ -4,14 +4,13 @@ import eu.pb4.placeholders.api.node.DirectTextNode;
 import eu.pb4.placeholders.api.node.LiteralNode;
 import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.parsers.NodeParser;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
 
 public class CodeParser implements NodeParser {
     public static final Pattern CODE_REGEX = Pattern.compile("(?<!\\\\)`(.*?)(?<!\\\\)`");
@@ -39,10 +38,10 @@ public class CodeParser implements NodeParser {
 
                 var content = matcher.group(1);
 
-                var display = Text.literal(content).formatted(Formatting.GRAY);
-                var hover = Text.of("Click to copy");
+                var display = Component.literal(content).withStyle(ChatFormatting.GRAY);
+                var hover = Component.nullToEmpty("Click to copy");
 
-                var text = Text.empty()
+                var text = Component.empty()
                         .append(display)
                         .setStyle(Style.EMPTY
                                 .withHoverEvent(

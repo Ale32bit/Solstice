@@ -6,11 +6,10 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.spawn.SpawnModule;
-import net.minecraft.server.command.ServerCommandSource;
-
+import net.minecraft.commands.CommandSourceStack;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 public class SetFirstSpawnCommand extends ModCommand<SpawnModule> {
     public SetFirstSpawnCommand(SpawnModule module) {
@@ -23,7 +22,7 @@ public class SetFirstSpawnCommand extends ModCommand<SpawnModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require("firstspawn.set", 2))
                 .then(literal("delete")
@@ -31,21 +30,21 @@ public class SetFirstSpawnCommand extends ModCommand<SpawnModule> {
                 .executes(this::executeSet);
     }
 
-    private int executeDel(CommandContext<ServerCommandSource> context) {
+    private int executeDel(CommandContext<CommandSourceStack> context) {
         var data = module.getServerData();
         data.firstSpawn = null;
 
-        context.getSource().sendFeedback(() -> module.locale().get("firstSpawnDeleted"), true);
+        context.getSource().sendSuccess(() -> module.locale().get("firstSpawnDeleted"), true);
 
         return 1;
     }
 
-    private int executeSet(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int executeSet(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         var data = module.getServerData();
         data.firstSpawn = new ServerLocation(player);
 
-        context.getSource().sendFeedback(() -> module.locale().get("firstSpawnSet"), true);
+        context.getSource().sendSuccess(() -> module.locale().get("firstSpawnSet"), true);
 
         return 1;
     }

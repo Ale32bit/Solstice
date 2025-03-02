@@ -8,12 +8,11 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.notifications.NotificationsModule;
-import net.minecraft.command.argument.IdentifierArgumentType;
-import net.minecraft.command.suggestion.SuggestionProviders;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.commands.synchronization.SuggestionProviders;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 
@@ -29,135 +28,135 @@ public class NotificationsCommand extends ModCommand<NotificationsModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return CommandManager.literal(name)
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
+        return Commands.literal(name)
                 .requires(require(true))
-                .then(CommandManager.literal("set")
-                        .then(CommandManager.literal("sound")
-                                .then(CommandManager.argument("sound", IdentifierArgumentType.identifier())
+                .then(Commands.literal("set")
+                        .then(Commands.literal("sound")
+                                .then(Commands.argument("sound", ResourceLocationArgument.id())
                                         .suggests(SuggestionProviders.AVAILABLE_SOUNDS)
                                         .executes(this::setSound)
                                 )
                         )
-                        .then(CommandManager.literal("pitch")
-                                .then(CommandManager.argument("pitch", FloatArgumentType.floatArg(0f, 2f))
+                        .then(Commands.literal("pitch")
+                                .then(Commands.argument("pitch", FloatArgumentType.floatArg(0f, 2f))
                                         .executes(this::setPitch)
                                 )
                         )
-                        .then(CommandManager.literal("volume")
-                                .then(CommandManager.argument("volume", IntegerArgumentType.integer(0, 200))
+                        .then(Commands.literal("volume")
+                                .then(Commands.argument("volume", IntegerArgumentType.integer(0, 200))
                                         .executes(this::setVolume)
                                 )
                         )
-                        .then(CommandManager.literal("afk-only")
-                                .then(CommandManager.argument("afk-only", BoolArgumentType.bool())
+                        .then(Commands.literal("afk-only")
+                                .then(Commands.argument("afk-only", BoolArgumentType.bool())
                                         .executes(this::setAfkOnly)
                                 )
                         )
-                        .then(CommandManager.literal("on-chat")
-                                .then(CommandManager.argument("on-chat", BoolArgumentType.bool())
+                        .then(Commands.literal("on-chat")
+                                .then(Commands.argument("on-chat", BoolArgumentType.bool())
                                         .executes(this::setOnChat)
                                 )
                         )
                 )
-                .then(CommandManager.literal("get")
+                .then(Commands.literal("get")
                         .executes(this::getSettings))
-                .then(CommandManager.literal("toggle")
+                .then(Commands.literal("toggle")
                         .executes(this::toggle))
-                .then(CommandManager.literal("reset")
+                .then(Commands.literal("reset")
                         .executes(this::reset));
     }
 
-    private int setSound(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
-        var soundId = IdentifierArgumentType.getIdentifier(context, "sound");
+    private int setSound(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
+        var soundId = ResourceLocationArgument.getId(context, "sound");
 
         var data = module.getPlayerData(player);
         data.soundId = soundId.toString();
 
         var map = Map.of(
-                "sound", Text.of(soundId.toString())
+                "sound", Component.nullToEmpty(soundId.toString())
         );
-        context.getSource().sendFeedback(() -> module.locale().get("setSound", map), false);
+        context.getSource().sendSuccess(() -> module.locale().get("setSound", map), false);
 
         return 1;
     }
 
-    private int setPitch(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int setPitch(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         var pitch = FloatArgumentType.getFloat(context, "pitch");
 
         var data = module.getPlayerData(player);
         data.pitch = pitch;
 
         var map = Map.of(
-                "pitch", Text.of(String.valueOf(pitch))
+                "pitch", Component.nullToEmpty(String.valueOf(pitch))
         );
-        context.getSource().sendFeedback(() -> module.locale().get("setPitch", map), false);
+        context.getSource().sendSuccess(() -> module.locale().get("setPitch", map), false);
 
         return 1;
     }
 
-    private int setVolume(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int setVolume(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         var volume = IntegerArgumentType.getInteger(context, "volume");
 
         var data = module.getPlayerData(player);
         data.volume = volume / 100f;
 
         var map = Map.of(
-                "volume", Text.of(volume + "%")
+                "volume", Component.nullToEmpty(volume + "%")
         );
-        context.getSource().sendFeedback(() -> module.locale().get("setVolume", map), false);
+        context.getSource().sendSuccess(() -> module.locale().get("setVolume", map), false);
 
         return 1;
     }
 
-    private int setAfkOnly(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int setAfkOnly(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         var afkOnly = BoolArgumentType.getBool(context, "afk-only");
 
         var data = module.getPlayerData(player);
         data.afkOnly = afkOnly;
 
         if (afkOnly) {
-            context.getSource().sendFeedback(() -> module.locale().get("setAfkOnlyEnabled"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("setAfkOnlyEnabled"), false);
         } else {
-            context.getSource().sendFeedback(() -> module.locale().get("setAfkOnlyDisabled"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("setAfkOnlyDisabled"), false);
         }
 
         return 1;
     }
 
-    private int setOnChat(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int setOnChat(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         var onChat = BoolArgumentType.getBool(context, "on-chat");
 
         var data = module.getPlayerData(player);
         data.onChat = onChat;
 
         if (onChat) {
-            context.getSource().sendFeedback(() -> module.locale().get("setOnChatEnabled"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("setOnChatEnabled"), false);
         } else {
-            context.getSource().sendFeedback(() -> module.locale().get("setOnChatDisabled"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("setOnChatDisabled"), false);
         }
 
         return 1;
     }
 
-    private int getSettings(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int getSettings(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
 
         var data = module.getPlayerData(player);
         var settings = module.getPlayerSettings(player);
 
         var map = Map.of(
-                "sound", Text.of(settings.soundId()),
-                "pitch", Text.of(String.valueOf(settings.pitch())),
-                "volume", Text.of(settings.volume() * 100 + "%")
+                "sound", Component.nullToEmpty(settings.soundId()),
+                "pitch", Component.nullToEmpty(String.valueOf(settings.pitch())),
+                "volume", Component.nullToEmpty(settings.volume() * 100 + "%")
         );
 
-        var text = Text.empty();
+        var text = Component.empty();
         text.append(module.locale().get("getHeader"));
         text.append("\n");
 
@@ -173,28 +172,28 @@ public class NotificationsCommand extends ModCommand<NotificationsModule> {
         text.append("\n");
         text.append(module.locale().get(settings.onChat() ? "getOnChat.true" : "getOnChat.false"));
 
-        context.getSource().sendFeedback(() -> text, false);
+        context.getSource().sendSuccess(() -> text, false);
 
         return 1;
     }
 
-    private int toggle(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int toggle(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
 
         var data = module.getPlayerData(player);
         data.enable = !data.enable;
 
         if (data.enable) {
-            context.getSource().sendFeedback(() -> module.locale().get("toggleEnabled"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("toggleEnabled"), false);
         } else {
-            context.getSource().sendFeedback(() -> module.locale().get("toggleDisabled"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("toggleDisabled"), false);
         }
 
         return 1;
     }
 
-    private int reset(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int reset(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
 
         var data = module.getPlayerData(player);
         data.soundId = null;
@@ -202,7 +201,7 @@ public class NotificationsCommand extends ModCommand<NotificationsModule> {
         data.volume = null;
         data.afkOnly = null;
 
-        context.getSource().sendFeedback(() -> module.locale().get("reset"), false);
+        context.getSource().sendSuccess(() -> module.locale().get("reset"), false);
 
         return 1;
     }

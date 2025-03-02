@@ -9,28 +9,27 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.Utils;
 import me.alexdevs.solstice.modules.ban.BanModule;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.argument.GameProfileArgumentType;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-import net.minecraft.text.Texts;
-
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.GameProfileArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
 import java.util.Collection;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 public class UnbanCommand extends ModCommand<BanModule> {
-    private static final SimpleCommandExceptionType ALREADY_UNBANNED_EXCEPTION = new SimpleCommandExceptionType(Text.translatable("commands.pardon.failed"));
+    private static final SimpleCommandExceptionType ALREADY_UNBANNED_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.pardon.failed"));
 
     public UnbanCommand(BanModule module) {
         super(module);
     }
 
     @Override
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandRegistry, Commands.CommandSelection environment) {
         Utils.removeCommands(dispatcher, "pardon");
         super.register(dispatcher, commandRegistry, environment);
     }
@@ -41,23 +40,23 @@ public class UnbanCommand extends ModCommand<BanModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(3))
-                .then(CommandManager.argument("targets", GameProfileArgumentType.gameProfile())
-                        .suggests((context, builder) -> CommandSource.suggestMatching((context.getSource()).getServer().getPlayerManager().getUserBanList().getNames(), builder))
-                        .executes(context -> execute(context, GameProfileArgumentType.getProfileArgument(context, "targets"))));
+                .then(Commands.argument("targets", GameProfileArgument.gameProfile())
+                        .suggests((context, builder) -> SharedSuggestionProvider.suggest((context.getSource()).getServer().getPlayerList().getBans().getUserList(), builder))
+                        .executes(context -> execute(context, GameProfileArgument.getGameProfiles(context, "targets"))));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, Collection<GameProfile> targets) throws CommandSyntaxException {
-        var banList = context.getSource().getServer().getPlayerManager().getUserBanList();
+    private int execute(CommandContext<CommandSourceStack> context, Collection<GameProfile> targets) throws CommandSyntaxException {
+        var banList = context.getSource().getServer().getPlayerList().getBans();
         var source = context.getSource();
         var pardonCount = 0;
         for (GameProfile profile : targets) {
-            if (banList.contains(profile)) {
+            if (banList.isBanned(profile)) {
                 banList.remove(profile);
                 pardonCount++;
-                source.sendFeedback(() -> Text.translatable("commands.pardon.success", Texts.toText(profile)), true);
+                source.sendSuccess(() -> Component.translatable("commands.pardon.success", ComponentUtils.getDisplayName(profile)), true);
             }
         }
 

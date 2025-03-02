@@ -10,14 +10,13 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.home.HomeModule;
 import me.alexdevs.solstice.api.text.Components;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class SetHomeCommand extends ModCommand<HomeModule> {
     public SetHomeCommand(HomeModule module) {
@@ -30,7 +29,7 @@ public class SetHomeCommand extends ModCommand<HomeModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .executes(context -> execute(context,
@@ -47,14 +46,14 @@ public class SetHomeCommand extends ModCommand<HomeModule> {
 
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, String name, boolean forced) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
-        var data = module.getData(player.getUuid());
+    private int execute(CommandContext<CommandSourceStack> context, String name, boolean forced) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
+        var data = module.getData(player.getUUID());
         var homes = data.homes;
         var playerContext = PlaceholderContext.of(player);
 
         var placeholders = Map.of(
-                "home", Text.of(name),
+                "home", Component.nullToEmpty(name),
                 "forceSetButton", Components.button(
                         module.locale().raw("forceSetLabel"),
                         module.locale().raw("forceSetHover"),
@@ -70,7 +69,7 @@ public class SetHomeCommand extends ModCommand<HomeModule> {
                     placeholders
             );
 
-            context.getSource().sendFeedback(() -> text, false);
+            context.getSource().sendSuccess(() -> text, false);
 
             return 0;
         }
@@ -88,7 +87,7 @@ public class SetHomeCommand extends ModCommand<HomeModule> {
 
         var allowUnlimited = Permissions.check(player, getPermissionNode("unlimited"), 3);
         if (!allowUnlimited && homes.size() >= maxHomes) {
-            context.getSource().sendFeedback(() -> module.locale().get(
+            context.getSource().sendSuccess(() -> module.locale().get(
                     "maxHomesReached",
                     playerContext,
                     placeholders
@@ -99,7 +98,7 @@ public class SetHomeCommand extends ModCommand<HomeModule> {
         var homePosition = new ServerLocation(player);
         homes.put(name, homePosition);
 
-        context.getSource().sendFeedback(() -> module.locale().get(
+        context.getSource().sendSuccess(() -> module.locale().get(
                 "homeSetSuccess",
                 playerContext,
                 placeholders

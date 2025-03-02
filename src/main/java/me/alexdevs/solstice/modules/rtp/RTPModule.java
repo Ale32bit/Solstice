@@ -7,10 +7,9 @@ import me.alexdevs.solstice.modules.rtp.core.Locator;
 import me.alexdevs.solstice.modules.rtp.data.RTPConfig;
 import me.alexdevs.solstice.modules.rtp.data.RTPLocale;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.world.biome.Biome;
-
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.biome.Biome;
 import java.util.ArrayList;
 
 public class RTPModule extends ModuleBase.Toggleable {
@@ -38,14 +37,14 @@ public class RTPModule extends ModuleBase.Toggleable {
         return Solstice.configManager.getData(RTPConfig.class);
     }
 
-    public Locator createLocator(ServerPlayerEntity player) {
-        var locator = new Locator(player, player.getServerWorld(), getConfig());
+    public Locator createLocator(ServerPlayer player) {
+        var locator = new Locator(player, player.serverLevel(), getConfig());
         locators.add(locator);
         return locator;
     }
 
-    public Locator createLocatorWithBiome(ServerPlayerEntity player, RegistryKey<Biome> biome) {
-        var locator = new Locator(player, player.getServerWorld(), getConfig(), biome);
+    public Locator createLocatorWithBiome(ServerPlayer player, ResourceKey<Biome> biome) {
+        var locator = new Locator(player, player.serverLevel(), getConfig(), biome);
         locators.add(locator);
         return locator;
     }

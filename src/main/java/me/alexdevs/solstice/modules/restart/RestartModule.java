@@ -10,12 +10,12 @@ import me.alexdevs.solstice.modules.restart.data.RestartConfig;
 import me.alexdevs.solstice.modules.restart.data.RestartLocale;
 import me.alexdevs.solstice.modules.timeBar.TimeBar;
 import me.alexdevs.solstice.modules.timeBar.TimeBarModule;
-import net.minecraft.entity.boss.BossBar;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.BossEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
@@ -27,8 +27,8 @@ import java.util.concurrent.TimeUnit;
 public class RestartModule extends ModuleBase.Toggleable {
     public static final String ID = "restart";
 
-    private static final BossBar.Color fallbackBarColor = BossBar.Color.RED;
-    private static final BossBar.Style fallbackBarStyle = BossBar.Style.NOTCHED_10;
+    private static final BossEvent.BossBarColor fallbackBarColor = BossEvent.BossBarColor.RED;
+    private static final BossEvent.BossBarOverlay fallbackBarStyle = BossEvent.BossBarOverlay.NOTCHED_10;
 
     private TimeBar restartBar = null;
     private SoundEvent sound;
@@ -88,20 +88,20 @@ public class RestartModule extends ModuleBase.Toggleable {
         return Solstice.configManager.getData(RestartConfig.class);
     }
 
-    public BossBar.Style getBarStyle() {
+    public BossEvent.BossBarOverlay getBarStyle() {
         var styleName = getConfig().barStyle;
         try {
-            return BossBar.Style.valueOf(styleName);
+            return BossEvent.BossBarOverlay.valueOf(styleName);
         } catch (IllegalArgumentException e) {
             Solstice.LOGGER.error("Invalid value in `restart -> bar-style` setting.");
             return fallbackBarStyle;
         }
     }
 
-    public BossBar.Color getBarColor() {
+    public BossEvent.BossBarColor getBarColor() {
         var colorName = getConfig().barColor;
         try {
-            return BossBar.Color.valueOf(colorName);
+            return BossEvent.BossBarColor.valueOf(colorName);
         } catch (IllegalArgumentException e) {
             Solstice.LOGGER.error("Invalid value in `restart -> bar-color` setting.");
             return fallbackBarColor;
@@ -109,19 +109,19 @@ public class RestartModule extends ModuleBase.Toggleable {
     }
 
     public void restart() {
-        Solstice.server.getPlayerManager().getPlayerList().forEach(player -> player.networkHandler.disconnect(locale().get("kickMessage")));
+        Solstice.server.getPlayerList().getPlayers().forEach(player -> player.connection.disconnect(locale().get("kickMessage")));
 
-        Solstice.nextTick(() -> Solstice.server.stop(false));
+        Solstice.nextTick(() -> Solstice.server.halt(false));
     }
 
     private void setup() {
         var soundName = getConfig().restartSound;
-        var id = Identifier.tryParse(soundName);
+        var id = ResourceLocation.tryParse(soundName);
         if (id == null) {
             Solstice.LOGGER.error("Invalid restart notification sound name {}", soundName);
-            sound = SoundEvents.BLOCK_NOTE_BLOCK_BELL.value();
+            sound = SoundEvents.NOTE_BLOCK_BELL.value();
         } else {
-            sound = SoundEvent.of(id);
+            sound = SoundEvent.createVariableRangeEvent(id);
         }
     }
 
@@ -171,7 +171,7 @@ public class RestartModule extends ModuleBase.Toggleable {
         solstice.broadcast(text);
 
         var pitch = getConfig().restartSoundPitch;
-        server.getPlayerManager().getPlayerList().forEach(player -> player.playSound(sound, SoundCategory.MASTER, 1f, pitch));
+        server.getPlayerList().getPlayers().forEach(player -> player.playNotifySound(sound, SoundSource.MASTER, 1f, pitch));
     }
 
     @Nullable

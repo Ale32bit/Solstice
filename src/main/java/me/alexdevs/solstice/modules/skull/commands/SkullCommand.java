@@ -6,12 +6,11 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.skull.SkullModule;
-import net.minecraft.server.command.ServerCommandSource;
-
+import net.minecraft.commands.CommandSourceStack;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class SkullCommand extends ModCommand<SkullModule> {
     public SkullCommand(SkullModule module) {
@@ -24,19 +23,19 @@ public class SkullCommand extends ModCommand<SkullModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(2))
-                .executes(context -> execute(context, context.getSource().getPlayerOrThrow().getGameProfile().getName()))
+                .executes(context -> execute(context, context.getSource().getPlayerOrException().getGameProfile().getName()))
                 .then(argument("name", StringArgumentType.word())
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name"))));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, String skullName) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int execute(CommandContext<CommandSourceStack> context, String skullName) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         var skull = module.createSkull(skullName);
 
-        player.getInventory().insertStack(skull);
+        player.getInventory().add(skull);
         return 1;
     }
 }

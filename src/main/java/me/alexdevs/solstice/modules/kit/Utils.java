@@ -2,38 +2,37 @@ package me.alexdevs.solstice.modules.kit;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.sgui.api.gui.SimpleGui;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.StringNbtReader;
-import net.minecraft.screen.slot.Slot;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class Utils {
     public static String serializeItemStack(ItemStack itemStack) {
-        var nbt = new NbtCompound();
-        itemStack.writeNbt(nbt);
-        return nbt.asString();
+        var nbt = new CompoundTag();
+        itemStack.save(nbt);
+        return nbt.getAsString();
     }
 
     public static ItemStack deserializeItemStack(String string) throws CommandSyntaxException {
-        var nbt = StringNbtReader.parse(string);
-        return ItemStack.fromNbt(nbt);
+        var nbt = TagParser.parseTag(string);
+        return ItemStack.of(nbt);
     }
 
     public static KitInventory createInventory(List<ItemStack> items) {
         var inventory = new KitInventory();
         for (var i = 0; i < items.size(); i++) {
-            inventory.setStack(i, items.get(i));
+            inventory.setItem(i, items.get(i));
         }
         return inventory;
     }
 
     public static List<ItemStack> getItemStacks(KitInventory inventory) {
         var items = new ArrayList<ItemStack>();
-        for (var i = 0; i < inventory.size(); i++) {
-            var stack = inventory.getStack(i);
+        for (var i = 0; i < inventory.getContainerSize(); i++) {
+            var stack = inventory.getItem(i);
             if(!stack.isEmpty()) {
                 items.add(stack);
             }

@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MinecraftServer.class)
 public class WorldSaveEventMixin {
-    @Inject(method = "save", at = @At("TAIL"))
+    @Inject(method = "saveEverything", at = @At("TAIL"))
     public void save(boolean suppressLogs, boolean flush, boolean force, CallbackInfoReturnable<Boolean> cir) {
         try {
             WorldSaveCallback.EVENT.invoker().onSave((MinecraftServer) (Object) this, suppressLogs, flush, force);

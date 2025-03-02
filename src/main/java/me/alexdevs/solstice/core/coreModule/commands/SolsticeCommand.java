@@ -9,12 +9,11 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.api.text.Format;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 public class SolsticeCommand extends ModCommand<CoreModule> {
     public SolsticeCommand(CoreModule module) {
@@ -35,26 +34,26 @@ public class SolsticeCommand extends ModCommand<CoreModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .executes(context -> {
                     var modContainer = FabricLoader.getInstance().getModContainer(Solstice.MOD_ID).orElse(null);
                     if (modContainer == null) {
-                        context.getSource().sendFeedback(() -> Text.of("Could not find self in mod list???"), false);
+                        context.getSource().sendSuccess(() -> Component.nullToEmpty("Could not find self in mod list???"), false);
                         return 1;
                     }
 
                     var metadata = modContainer.getMetadata();
                     var placeholders = Map.of(
-                            "name", Text.of(metadata.getName()),
-                            "version", Text.of(metadata.getVersion().getFriendlyString())
+                            "name", Component.nullToEmpty(metadata.getName()),
+                            "version", Component.nullToEmpty(metadata.getVersion().getFriendlyString())
                     );
 
                     var text = Format.parse(
                             "<gold>${name} v${version}</gold>",
                             placeholders);
-                    context.getSource().sendFeedback(() -> text, false);
+                    context.getSource().sendSuccess(() -> text, false);
 
                     return 1;
                 })
@@ -66,13 +65,13 @@ public class SolsticeCommand extends ModCommand<CoreModule> {
                                 Solstice.localeManager.reload();
                             } catch (Exception e) {
                                 Solstice.LOGGER.error("Failed to reload Solstice", e);
-                                context.getSource().sendFeedback(() -> Text.of("Failed to load Solstice config. Check console for more info."), true);
+                                context.getSource().sendSuccess(() -> Component.nullToEmpty("Failed to load Solstice config. Check console for more info."), true);
                                 return 1;
                             }
 
                             SolsticeEvents.RELOAD.invoker().onReload(Solstice.getInstance());
 
-                            context.getSource().sendFeedback(() -> Text.of("Reloaded Solstice config"), true);
+                            context.getSource().sendSuccess(() -> Component.nullToEmpty("Reloaded Solstice config"), true);
 
                             return 1;
                         }))
@@ -98,39 +97,39 @@ public class SolsticeCommand extends ModCommand<CoreModule> {
                                     try (var fw = new FileWriter(file)) {
                                         fw.write(output);
                                     } catch (IOException e) {
-                                        throw new SimpleCommandExceptionType(Text.of(e.getMessage())).create();
+                                        throw new SimpleCommandExceptionType(Component.nullToEmpty(e.getMessage())).create();
                                     }
 
-                                    context.getSource().sendFeedback(() -> Text.of("Generated 'solstice-commands.md'"), true);
+                                    context.getSource().sendSuccess(() -> Component.nullToEmpty("Generated 'solstice-commands.md'"), true);
 
                                     return 1;
                                 }))
                         .then(literal("tags")
                                 .executes(context -> {
-                                    var player = context.getSource().getPlayerOrThrow();
+                                    var player = context.getSource().getPlayerOrException();
 
-                                    var hand = player.getActiveHand();
-                                    var itemStack = player.getStackInHand(hand);
+                                    var hand = player.getUsedItemHand();
+                                    var itemStack = player.getItemInHand(hand);
 
-                                    var entry = itemStack.getRegistryEntry().getKey().get();
-                                    var entryString = String.format("Tags for [%s / %s]:", entry.getRegistry().toString(), entry.getValue().toString());
+                                    var entry = itemStack.getItemHolder().unwrapKey().get();
+                                    var entryString = String.format("Tags for [%s / %s]:", entry.registry().toString(), entry.location().toString());
 
-                                    var text = Text.empty();
-                                    text.append(Text.of(entryString));
-                                    var tags = itemStack.streamTags().iterator();
+                                    var text = Component.empty();
+                                    text.append(Component.nullToEmpty(entryString));
+                                    var tags = itemStack.getTags().iterator();
                                     while(tags.hasNext()) {
                                         var tag = tags.next();
-                                        text.append(Text.of("\n"));
+                                        text.append(Component.nullToEmpty("\n"));
                                         text.append(
-                                                Text.literal(" #" + tag.id().toString())
+                                                Component.literal(" #" + tag.location().toString())
                                                         .setStyle(Style.EMPTY
-                                                                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("Click to copy")))
-                                                                .withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, "#" + tag.id().toString()))
+                                                                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.nullToEmpty("Click to copy")))
+                                                                .withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, "#" + tag.location().toString()))
                                                         )
                                         );
                                     }
 
-                                    context.getSource().sendFeedback(() -> text, false);
+                                    context.getSource().sendSuccess(() -> text, false);
 
                                     return 1;
                                 }))

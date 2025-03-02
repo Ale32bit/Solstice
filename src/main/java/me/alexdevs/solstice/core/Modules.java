@@ -7,10 +7,9 @@ import me.alexdevs.solstice.api.module.ModuleEntrypoint;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -90,7 +89,7 @@ public class Modules {
         }
     }
 
-    private void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
+    private void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandRegistry, Commands.CommandSelection environment) {
         for (var module : modules) {
             for (var command : module.getCommands()) {
                 command.register(dispatcher, commandRegistry, environment);

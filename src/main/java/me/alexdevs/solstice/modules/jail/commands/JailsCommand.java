@@ -9,11 +9,10 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.jail.JailModule;
-import net.minecraft.command.CommandSource;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -29,44 +28,44 @@ public class JailsCommand extends ModCommand<JailModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return CommandManager.literal(name)
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
+        return Commands.literal(name)
                 .requires(require(2))
                 .executes(this::listJails)
-                .then(CommandManager.literal("set")
+                .then(Commands.literal("set")
                         .requires(require("set", 3))
-                        .then(CommandManager.argument("name", StringArgumentType.word())
+                        .then(Commands.argument("name", StringArgumentType.word())
                                 .executes(this::createJail)
                         ))
-                .then(CommandManager.literal("delete")
+                .then(Commands.literal("delete")
                         .requires(require("set", 3))
-                        .then(CommandManager.argument("name", StringArgumentType.word())
+                        .then(Commands.argument("name", StringArgumentType.word())
                                 .suggests(this::suggestJails)
                                 .executes(this::deleteJail)
                         ))
-                .then(CommandManager.literal("tp")
+                .then(Commands.literal("tp")
                         .requires(require("tp", 2))
-                        .then(CommandManager.argument("name", StringArgumentType.word())
+                        .then(Commands.argument("name", StringArgumentType.word())
                                 .suggests(this::suggestJails)
                                 .executes(this::teleport)
                         ));
     }
 
-    private CompletableFuture<Suggestions> suggestJails(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
+    private CompletableFuture<Suggestions> suggestJails(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
         var jails = module.getJails().keySet().stream();
-        return CommandSource.suggestMatching(jails, builder);
+        return SharedSuggestionProvider.suggest(jails, builder);
     }
 
-    private int listJails(CommandContext<ServerCommandSource> context) {
+    private int listJails(CommandContext<CommandSourceStack> context) {
         var jails = module.getJails().keySet().stream().toList();
 
         if(jails.isEmpty()) {
-            context.getSource().sendFeedback(() -> module.locale().get("noJails"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("noJails"), false);
             return 0;
         }
 
         var comma = module.locale().get("comma");
-        var list = Text.empty();
+        var list = Component.empty();
 
         for(var i = 0; i < jails.size(); i++) {
             if(i > 0) {
@@ -74,74 +73,74 @@ public class JailsCommand extends ModCommand<JailModule> {
             }
 
             list.append(module.locale().get("listEntry", Map.of(
-                    "jail", Text.of(jails.get(i))
+                    "jail", Component.nullToEmpty(jails.get(i))
             )));
         }
 
-        context.getSource().sendFeedback(() -> module.locale().get("jailList", Map.of(
+        context.getSource().sendSuccess(() -> module.locale().get("jailList", Map.of(
                 "list", list
         )), false);
 
         return 1;
     }
 
-    private int createJail(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int createJail(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         var jailName = StringArgumentType.getString(context, "name");
 
         var position = new ServerLocation(player);
 
         var jails = module.getJails();
         if (jails.containsKey(jailName)) {
-            context.getSource().sendFeedback(() -> module.locale().get("jailAlreadyExists"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("jailAlreadyExists"), false);
             return 0;
         }
 
         jails.put(jailName, position);
 
         var map = Map.of(
-                "jail", Text.of(jailName)
+                "jail", Component.nullToEmpty(jailName)
         );
-        context.getSource().sendFeedback(() -> module.locale().get("created", map), true);
+        context.getSource().sendSuccess(() -> module.locale().get("created", map), true);
 
         return 1;
     }
 
-    private int deleteJail(CommandContext<ServerCommandSource> context) {
+    private int deleteJail(CommandContext<CommandSourceStack> context) {
         var jailName = StringArgumentType.getString(context, "name");
 
         var jails = module.getJails();
         if (!jails.containsKey(jailName)) {
-            context.getSource().sendFeedback(() -> module.locale().get("jailNotFound"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("jailNotFound"), false);
             return 0;
         }
 
         jails.remove(jailName);
 
         var map = Map.of(
-                "jail", Text.of(jailName)
+                "jail", Component.nullToEmpty(jailName)
         );
-        context.getSource().sendFeedback(() -> module.locale().get("deleted", map), true);
+        context.getSource().sendSuccess(() -> module.locale().get("deleted", map), true);
 
         return 1;
     }
 
-    private int teleport(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int teleport(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         var jailName = StringArgumentType.getString(context, "name");
         var jails = module.getJails();
         if(!jails.containsKey(jailName)) {
-            context.getSource().sendFeedback(() -> module.locale().get("jailNotFound"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("jailNotFound"), false);
             return 0;
         }
 
         var jail = jails.get(jailName);
 
         var map = Map.of(
-                "jail", Text.of(jailName)
+                "jail", Component.nullToEmpty(jailName)
         );
 
-        context.getSource().sendFeedback(() -> module.locale().get("teleporting", map), true);
+        context.getSource().sendSuccess(() -> module.locale().get("teleporting", map), true);
 
         jail.teleport(player);
 

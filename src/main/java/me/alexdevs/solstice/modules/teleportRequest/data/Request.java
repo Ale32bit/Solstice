@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.modules.teleportRequest.data;
 
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public class Request {
     public enum Direction {
@@ -8,17 +8,17 @@ public class Request {
         TARGET_TO_SOURCE,
     }
 
-    private final ServerPlayerEntity source;
+    private final ServerPlayer source;
     private int remainingTime;
     private final Direction direction;
 
-    public Request(ServerPlayerEntity source, int remainingTime, Direction direction) {
+    public Request(ServerPlayer source, int remainingTime, Direction direction) {
         this.source = source;
         this.remainingTime = remainingTime;
         this.direction = direction;
     }
 
-    public ServerPlayerEntity getSource() {
+    public ServerPlayer getSource() {
         return source;
     }
 

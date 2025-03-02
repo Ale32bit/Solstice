@@ -8,14 +8,13 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.helpOp.HelpOpModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class HelpOpCommand extends ModCommand<HelpOpModule> {
     private final Locale locale = Solstice.localeManager.getLocale(HelpOpModule.ID);
@@ -31,7 +30,7 @@ public class HelpOpCommand extends ModCommand<HelpOpModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .then(argument("message", StringArgumentType.greedyString())
@@ -41,7 +40,7 @@ public class HelpOpCommand extends ModCommand<HelpOpModule> {
                             var message = StringArgumentType.getString(context, "message");
 
                             var placeholders = Map.of(
-                                    "message", Text.of(message)
+                                    "message", Component.nullToEmpty(message)
                             );
                             var requestMessage = locale.get(
                                     "helpRequestMessage",
@@ -49,15 +48,15 @@ public class HelpOpCommand extends ModCommand<HelpOpModule> {
                                     placeholders
 
                             );
-                            source.getServer().sendMessage(requestMessage);
+                            source.getServer().sendSystemMessage(requestMessage);
 
-                            source.getServer().getPlayerManager().getPlayerList().forEach(player -> {
+                            source.getServer().getPlayerList().getPlayers().forEach(player -> {
                                 if (Permissions.check(player, getPermissionNode("operator"), 1)) {
-                                    player.sendMessage(requestMessage);
+                                    player.sendSystemMessage(requestMessage);
                                 }
                             });
 
-                            source.sendFeedback(() -> locale.get("helpRequestFeedback", sourceContext, placeholders), false);
+                            source.sendSuccess(() -> locale.get("helpRequestFeedback", sourceContext, placeholders), false);
 
                             return 1;
                         }));

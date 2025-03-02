@@ -10,10 +10,9 @@ import me.alexdevs.solstice.modules.tell.commands.TellCommand;
 import me.alexdevs.solstice.modules.tell.data.TellLocale;
 import me.alexdevs.solstice.api.text.Components;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,21 +32,21 @@ public class TellModule extends ModuleBase.Toggleable {
         commands.add(new ReplyCommand(this));
     }
 
-    public void sendDirectMessage(String targetName, ServerCommandSource source, String message) {
+    public void sendDirectMessage(String targetName, CommandSourceStack source, String message) {
         var locale = Solstice.localeManager.getLocale(ID);
-        Text targetDisplayName;
-        ServerPlayerEntity targetPlayer = null;
+        Component targetDisplayName;
+        ServerPlayer targetPlayer = null;
         if (targetName.equalsIgnoreCase("server")) {
-            targetDisplayName = Text.of("Server");
+            targetDisplayName = Component.nullToEmpty("Server");
         } else {
-            targetPlayer = source.getServer().getPlayerManager().getPlayer(targetName);
+            targetPlayer = source.getServer().getPlayerList().getPlayerByName(targetName);
             if (targetPlayer == null) {
                 var placeholders = Map.of(
-                        "targetPlayer", Text.of(targetName)
+                        "targetPlayer", Component.nullToEmpty(targetName)
                 );
                 var sourceContext = PlaceholderContext.of(source);
 
-                source.sendFeedback(() -> locale.get(
+                source.sendSuccess(() -> locale.get(
                         "playerNotFound",
                         sourceContext,
                         placeholders
@@ -110,34 +109,34 @@ public class TellModule extends ModuleBase.Toggleable {
                 placeholders
         );
 
-        lastSender.put(targetName, source.getName());
-        lastSender.put(source.getName(), targetName);
+        lastSender.put(targetName, source.getTextName());
+        lastSender.put(source.getTextName(), targetName);
 
-        if (!source.getName().equals(targetName)) {
-            source.sendMessage(sourceText);
+        if (!source.getTextName().equals(targetName)) {
+            source.sendSystemMessage(sourceText);
         }
         if (targetPlayer != null) {
             var ignoreModule = Solstice.modules.getModule(IgnoreModule.class);
-            if (!source.isExecutedByPlayer() || !ignoreModule.isIgnoring(targetPlayer, source.getPlayer())) {
-                targetPlayer.sendMessage(targetText);
+            if (!source.isPlayer() || !ignoreModule.isIgnoring(targetPlayer, source.getPlayer())) {
+                targetPlayer.sendSystemMessage(targetText);
                 NotificationsModule.notify(targetPlayer);
             }
 
-            if (source.isExecutedByPlayer()) {
-                source.getServer().sendMessage(genericText);
+            if (source.isPlayer()) {
+                source.getServer().sendSystemMessage(genericText);
             }
         } else {
             // avoid duped message
-            source.getServer().sendMessage(targetText);
+            source.getServer().sendSystemMessage(targetText);
         }
 
-        source.getServer().getPlayerManager().getPlayerList().forEach(player -> {
+        source.getServer().getPlayerList().getPlayers().forEach(player -> {
             var playerName = player.getGameProfile().getName();
-            if (playerName.equals(targetName) || playerName.equals(source.getName())) {
+            if (playerName.equals(targetName) || playerName.equals(source.getTextName())) {
                 return;
             }
             if (Permissions.check(player, getPermissionNode("spy"))) {
-                player.sendMessage(spyText);
+                player.sendSystemMessage(spyText);
             }
         });
     }

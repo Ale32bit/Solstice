@@ -6,12 +6,11 @@ import com.mojang.brigadier.context.CommandContext;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.tell.TellModule;
-import net.minecraft.server.command.ServerCommandSource;
-
+import net.minecraft.commands.CommandSourceStack;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 
 public class ReplyCommand extends ModCommand<TellModule> {
@@ -25,21 +24,21 @@ public class ReplyCommand extends ModCommand<TellModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .then(argument("message", StringArgumentType.greedyString())
                         .executes(this::execute));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context) {
+    private int execute(CommandContext<CommandSourceStack> context) {
         var source = context.getSource();
-        var senderName = source.getName();
+        var senderName = source.getTextName();
         var message = StringArgumentType.getString(context, "message");
 
         if (!module.lastSender.containsKey(senderName)) {
             var playerContext = PlaceholderContext.of(context.getSource());
-            source.sendFeedback(() -> module.locale().get(
+            source.sendSuccess(() -> module.locale().get(
                     "noLastSenderReply",
                     playerContext
             ), false);

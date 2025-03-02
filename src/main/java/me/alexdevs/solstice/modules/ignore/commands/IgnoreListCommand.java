@@ -4,13 +4,12 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.ignore.IgnoreModule;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 public class IgnoreListCommand extends ModCommand<IgnoreModule> {
     public IgnoreListCommand(IgnoreModule module) {
@@ -23,23 +22,23 @@ public class IgnoreListCommand extends ModCommand<IgnoreModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .executes(context -> {
-                    var player = context.getSource().getPlayerOrThrow();
-                    var playerData = module.getPlayerData(player.getUuid());
+                    var player = context.getSource().getPlayerOrException();
+                    var playerData = module.getPlayerData(player.getUUID());
                     var ignoreList = playerData.ignoredPlayers;
                     var playerContext = PlaceholderContext.of(player);
 
                     if (ignoreList.isEmpty()) {
-                        context.getSource().sendFeedback(() -> module.locale().get("ignoreListEmpty",
+                        context.getSource().sendSuccess(() -> module.locale().get("ignoreListEmpty",
                                 playerContext
                         ), false);
                         return 1;
                     }
 
-                    var listText = Text.empty();
+                    var listText = Component.empty();
                     var comma = module.locale().get("ignoreListComma");
                     for (var i = 0; i < ignoreList.size(); i++) {
                         if (i > 0) {
@@ -47,7 +46,7 @@ public class IgnoreListCommand extends ModCommand<IgnoreModule> {
                         }
 
                         String playerName;
-                        var gameProfile = context.getSource().getServer().getUserCache().getByUuid(ignoreList.get(i));
+                        var gameProfile = context.getSource().getServer().getProfileCache().get(ignoreList.get(i));
                         if (gameProfile.isPresent()) {
                             playerName = gameProfile.get().getName();
                         } else {
@@ -55,7 +54,7 @@ public class IgnoreListCommand extends ModCommand<IgnoreModule> {
                         }
 
                         var placeholders = Map.of(
-                                "player", Text.of(playerName)
+                                "player", Component.nullToEmpty(playerName)
                         );
 
                         listText = listText.append(module.locale().get(
@@ -66,9 +65,9 @@ public class IgnoreListCommand extends ModCommand<IgnoreModule> {
                     }
 
                     var placeholders = Map.of(
-                            "playerList", (Text) listText
+                            "playerList", (Component) listText
                     );
-                    context.getSource().sendFeedback(() -> module.locale().get(
+                    context.getSource().sendSuccess(() -> module.locale().get(
                             "ignoreList",
                             playerContext,
                             placeholders

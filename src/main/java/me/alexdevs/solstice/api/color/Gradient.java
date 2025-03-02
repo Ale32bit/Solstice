@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.api.color;
 
-import net.minecraft.text.TextColor;
+import net.minecraft.network.chat.TextColor;
 import org.jetbrains.annotations.NotNull;
 
 public class Gradient {

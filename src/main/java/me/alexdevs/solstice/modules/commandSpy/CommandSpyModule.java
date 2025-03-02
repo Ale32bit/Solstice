@@ -6,8 +6,7 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.commandSpy.data.CommandSpyConfig;
 import me.alexdevs.solstice.modules.commandSpy.data.CommandSpyLocale;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.text.Text;
-
+import net.minecraft.network.chat.Component;
 import java.util.Map;
 
 public class CommandSpyModule extends ModuleBase.Toggleable {
@@ -23,10 +22,10 @@ public class CommandSpyModule extends ModuleBase.Toggleable {
         Solstice.localeManager.registerModule(ID, CommandSpyLocale.MODULE);
 
         CommandEvents.ALLOW_COMMAND.register((source, command) -> {
-            if (!source.isExecutedByPlayer())
+            if (!source.isPlayer())
                 return true;
 
-            Solstice.LOGGER.info("{}: /{}", source.getName(), command);
+            Solstice.LOGGER.info("{}: /{}", source.getTextName(), command);
 
             var parts = command.split("\\s");
             if (parts.length >= 1) {
@@ -38,14 +37,14 @@ public class CommandSpyModule extends ModuleBase.Toggleable {
 
             var player = source.getPlayer();
 
-            var players = source.getServer().getPlayerManager().getPlayerList();
-            var placeholders = Map.of("player", Text.of(player.getGameProfile().getName()), "command", Text.of(command));
+            var players = source.getServer().getPlayerList().getPlayers();
+            var placeholders = Map.of("player", Component.nullToEmpty(player.getGameProfile().getName()), "command", Component.nullToEmpty(command));
             var message = locale().get("spyFormat", placeholders);
             for (var pl : players) {
                 var commandSpyEnabled = Permissions.check(pl, this.getPermissionNode("base"));
 
-                if (commandSpyEnabled && !pl.getUuid().equals(player.getUuid())) {
-                    pl.sendMessage(message, false);
+                if (commandSpyEnabled && !pl.getUUID().equals(player.getUUID())) {
+                    pl.displayClientMessage(message, false);
                 }
             }
             return true;

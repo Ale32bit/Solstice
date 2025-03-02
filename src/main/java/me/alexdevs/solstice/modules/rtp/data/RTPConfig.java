@@ -1,14 +1,14 @@
 package me.alexdevs.solstice.modules.rtp.data;
 
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.biome.Biome;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 
 import java.util.List;
 import java.util.Map;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.biome.Biome;
 
 @ConfigSerializable
 public class RTPConfig {
@@ -82,7 +82,7 @@ public class RTPConfig {
     }
 
 
-    public List<RegistryKey<Biome>> parseBiomes() {
-        return prohibitedBiomes.stream().map(biomeId -> RegistryKey.of(RegistryKeys.BIOME, new Identifier(biomeId))).toList();
+    public List<ResourceKey<Biome>> parseBiomes() {
+        return prohibitedBiomes.stream().map(biomeId -> ResourceKey.create(Registries.BIOME, new ResourceLocation(biomeId))).toList();
     }
 }

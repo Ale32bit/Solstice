@@ -5,12 +5,11 @@ import com.mojang.brigadier.context.CommandContext;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.miscellaneous.MiscellaneousModule;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import java.util.List;
 import java.util.Map;
 
@@ -25,24 +24,24 @@ public class EffectsCommand extends ModCommand<MiscellaneousModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return CommandManager.literal(name)
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
+        return Commands.literal(name)
                 .requires(require("effects.base", 1))
-                .executes(context -> execute(context, context.getSource().getPlayerOrThrow()))
-                .then(CommandManager.argument("player", EntityArgumentType.player())
+                .executes(context -> execute(context, context.getSource().getPlayerOrException()))
+                .then(Commands.argument("player", EntityArgument.player())
                         .requires(require("effects.others", 2))
-                        .executes(context -> execute(context, EntityArgumentType.getPlayer(context, "player")))
+                        .executes(context -> execute(context, EntityArgument.getPlayer(context, "player")))
                 );
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, ServerPlayerEntity target) {
-        var effects = target.getActiveStatusEffects();
+    private int execute(CommandContext<CommandSourceStack> context, ServerPlayer target) {
+        var effects = target.getActiveEffectsMap();
         if (effects.isEmpty()) {
-            context.getSource().sendFeedback(() -> module.locale().get("noEffects"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("noEffects"), false);
             return 0;
         }
 
-        var text = Text.empty();
+        var text = Component.empty();
         text.append(module.locale().get("effectHeader"));
 
         for (var entry : effects.entrySet()) {
@@ -52,21 +51,21 @@ public class EffectsCommand extends ModCommand<MiscellaneousModule> {
             var instance = entry.getValue();
 
             String duration;
-            if (instance.isInfinite()) {
+            if (instance.isInfiniteDuration()) {
                 duration = module.locale().raw("infinite");
             } else {
                 duration = TimeSpan.toShortString(instance.getDuration() / 20);
             }
 
             var map = Map.of(
-                    "effect", Text.translatable(effect.getTranslationKey()),
-                    "amplifier", Text.of(String.valueOf(instance.getAmplifier())),
-                    "duration", Text.of(duration)
+                    "effect", Component.translatable(effect.getDescriptionId()),
+                    "amplifier", Component.nullToEmpty(String.valueOf(instance.getAmplifier())),
+                    "duration", Component.nullToEmpty(duration)
             );
             text.append(module.locale().get("effect", map));
         }
 
-        context.getSource().sendFeedback(() -> text, false);
+        context.getSource().sendSuccess(() -> text, false);
 
         return effects.size();
     }

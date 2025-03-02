@@ -10,13 +10,12 @@ import me.alexdevs.solstice.api.command.flags.FloatFlag;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.miscellaneous.DummyExplosion;
 import me.alexdevs.solstice.modules.miscellaneous.MiscellaneousModule;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import java.util.List;
 
 public class RocketCommand extends ModCommand<MiscellaneousModule> {
@@ -30,19 +29,19 @@ public class RocketCommand extends ModCommand<MiscellaneousModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return CommandManager.literal(name)
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
+        return Commands.literal(name)
                 .requires(require("rocket.base", 2))
-                .then(CommandManager.argument("targets", EntityArgumentType.entities())
+                .then(Commands.argument("targets", EntityArgument.entities())
                         .executes(context -> execute(context, ""))
-                        .then(CommandManager.argument("flags", StringArgumentType.greedyString())
+                        .then(Commands.argument("flags", StringArgumentType.greedyString())
                                 .executes(context -> execute(context, StringArgumentType.getString(context, "flags")))
                         )
                 );
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, String flags) throws CommandSyntaxException {
-        var targets = EntityArgumentType.getEntities(context, "targets");
+    private int execute(CommandContext<CommandSourceStack> context, String flags) throws CommandSyntaxException {
+        var targets = EntityArgument.getEntities(context, "targets");
 
         var explodeFlag = new Flag("explode", List.of('e'));
         var powerFlag = new FloatFlag("power", List.of('p'));
@@ -58,17 +57,17 @@ public class RocketCommand extends ModCommand<MiscellaneousModule> {
         for (var target : targets) {
             count++;
             if (explode) {
-                var world = (ServerWorld) target.getWorld();
-                var pos = target.getPos();
+                var world = (ServerLevel) target.level();
+                var pos = target.position();
                 DummyExplosion.spawn(world, pos, power * 2);
                 world.playSound(null,
                         pos.x, pos.y, pos.z,
-                        SoundEvents.ENTITY_FIREWORK_ROCKET_LAUNCH, SoundCategory.MASTER,
+                        SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.MASTER,
                         2, 1);
             }
 
-            target.addVelocity(0, power, 0);
-            target.velocityModified = true;
+            target.push(0, power, 0);
+            target.hurtMarked = true;
         }
 
 

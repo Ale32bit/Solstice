@@ -8,17 +8,16 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.near.NearModule;
 import me.alexdevs.solstice.modules.near.data.NearConfig;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class NearCommand extends ModCommand<NearModule> {
     public NearCommand(NearModule module) {
@@ -31,29 +30,29 @@ public class NearCommand extends ModCommand<NearModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(2))
-                .executes(context -> execute(context, Solstice.configManager.getData(NearConfig.class).defaultRange, context.getSource().getPlayerOrThrow()))
+                .executes(context -> execute(context, Solstice.configManager.getData(NearConfig.class).defaultRange, context.getSource().getPlayerOrException()))
                 .then(argument("range", IntegerArgumentType.integer(0, Solstice.configManager.getData(NearConfig.class).maxRange))
-                        .executes(context -> execute(context, IntegerArgumentType.getInteger(context, "range"), context.getSource().getPlayerOrThrow())));
+                        .executes(context -> execute(context, IntegerArgumentType.getInteger(context, "range"), context.getSource().getPlayerOrException())));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, int range, ServerPlayerEntity sourcePlayer) {
+    private int execute(CommandContext<CommandSourceStack> context, int range, ServerPlayer sourcePlayer) {
         var playerContext = PlaceholderContext.of(sourcePlayer);
         var list = new ArrayList<ClosePlayers>();
 
-        var sourcePos = sourcePlayer.getPos();
-        sourcePlayer.getServerWorld().getPlayers().forEach(targetPlayer -> {
-            var targetPos = targetPlayer.getPos();
-            if (!sourcePlayer.getUuid().equals(targetPlayer.getUuid()) && sourcePos.isInRange(targetPos, range)) {
+        var sourcePos = sourcePlayer.position();
+        sourcePlayer.serverLevel().players().forEach(targetPlayer -> {
+            var targetPos = targetPlayer.position();
+            if (!sourcePlayer.getUUID().equals(targetPlayer.getUUID()) && sourcePos.closerThan(targetPos, range)) {
                 var distance = sourcePos.distanceTo(targetPos);
                 list.add(new ClosePlayers(targetPlayer, distance));
             }
         });
 
         if (list.isEmpty()) {
-            context.getSource().sendFeedback(() -> module.locale().get(
+            context.getSource().sendSuccess(() -> module.locale().get(
                     "noOne",
                     playerContext
             ), false);
@@ -62,7 +61,7 @@ public class NearCommand extends ModCommand<NearModule> {
 
         list.sort(Comparator.comparingDouble(ClosePlayers::distance));
 
-        var listText = Text.empty();
+        var listText = Component.empty();
         var comma = module.locale().get("comma");
         for (int i = 0; i < list.size(); i++) {
             var player = list.get(i);
@@ -71,7 +70,7 @@ public class NearCommand extends ModCommand<NearModule> {
             }
             var placeholders = Map.of(
                     "player", player.player.getDisplayName(),
-                    "distance", Text.of(String.format("%.1fm", player.distance))
+                    "distance", Component.nullToEmpty(String.format("%.1fm", player.distance))
             );
 
             var targetContext = PlaceholderContext.of(sourcePlayer);
@@ -84,9 +83,9 @@ public class NearCommand extends ModCommand<NearModule> {
         }
 
         var placeholders = Map.of(
-                "playerList", (Text) listText
+                "playerList", (Component) listText
         );
-        context.getSource().sendFeedback(() -> module.locale().get(
+        context.getSource().sendSuccess(() -> module.locale().get(
                 "nearestPlayers",
                 playerContext,
                 placeholders
@@ -95,6 +94,6 @@ public class NearCommand extends ModCommand<NearModule> {
         return 1;
     }
 
-    private record ClosePlayers(ServerPlayerEntity player, double distance) {
+    private record ClosePlayers(ServerPlayer player, double distance) {
     }
 }

@@ -2,7 +2,7 @@ package me.alexdevs.solstice.data;
 
 import com.google.gson.*;
 import me.alexdevs.solstice.Solstice;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -68,7 +68,7 @@ public class ServerData {
 
             var target = filePath.toFile();
             var backup = parentDir.resolve(fileName + "_old").toFile();
-            Util.backupAndReplace(target, temp, backup);
+            Util.safeReplaceFile(target, temp, backup);
         } catch (Exception e) {
             Solstice.LOGGER.error("Could not save {}. This will lead to data loss!", filePath, e);
         }

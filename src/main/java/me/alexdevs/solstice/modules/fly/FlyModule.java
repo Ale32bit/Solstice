@@ -27,8 +27,8 @@ public class FlyModule extends ModuleBase.Toggleable {
             var data = Solstice.playerData.get(player).getData(FlyPlayerData.class);
             if(data.flightEnabled) {
                 var abilities = player.getAbilities();
-                abilities.allowFlying = true;
-                player.sendAbilitiesUpdate();
+                abilities.mayfly = true;
+                player.onUpdateAbilities();
             }
         });
     }

@@ -3,10 +3,9 @@ package me.alexdevs.solstice.modules.miscellaneous.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.miscellaneous.MiscellaneousModule;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.world.Heightmap;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.world.level.levelgen.Heightmap;
 import java.util.List;
 
 public class TopCommand extends ModCommand<MiscellaneousModule> {
@@ -20,19 +19,19 @@ public class TopCommand extends ModCommand<MiscellaneousModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return CommandManager.literal(name)
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
+        return Commands.literal(name)
                 .requires(require("top.base", 2))
                 .executes(context -> {
-                    var player = context.getSource().getPlayerOrThrow();
+                    var player = context.getSource().getPlayerOrException();
 
-                    var world = player.getServerWorld();
-                    var top = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING, player.getBlockPos());
-                    var pos = top.toCenterPos();
+                    var world = player.serverLevel();
+                    var top = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, player.blockPosition());
+                    var pos = top.getCenter();
 
-                    player.teleport(pos.getX(), pos.getY(), pos.getZ());
+                    player.teleportToWithTicket(pos.x(), pos.y(), pos.z());
 
-                    player.setVelocity(player.getVelocity().multiply(1.0, 0.0, 1.0));
+                    player.setDeltaMovement(player.getDeltaMovement().multiply(1.0, 0.0, 1.0));
                     player.setOnGround(true);
 
                     return 1;

@@ -7,9 +7,8 @@ import me.alexdevs.solstice.modules.kit.commands.KitCommand;
 import me.alexdevs.solstice.modules.kit.commands.KitsCommand;
 import me.alexdevs.solstice.modules.kit.data.*;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
-
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -61,13 +60,13 @@ public class KitModule extends ModuleBase.Toggleable {
      * @param player Player
      * @param name Kit name
      */
-    public void claimKit(ServerPlayerEntity player, String name) {
+    public void claimKit(ServerPlayer player, String name) {
         var playerData = Solstice.playerData.get(player).getData(KitPlayerData.class);
         var kit = getKits().get(name);
         var items = kit.getItemStacks();
         var inventory = player.getInventory();
         for (var stack : items) {
-            inventory.insertStack(stack);
+            inventory.add(stack);
         }
         playerData.claimedKits.put(name, new Date());
     }
@@ -78,7 +77,7 @@ public class KitModule extends ModuleBase.Toggleable {
      * @param name Kit name
      * @return Whether the player has permission to claim the kit.
      */
-    public boolean hasKitPermission(ServerPlayerEntity player, String name) {
+    public boolean hasKitPermission(ServerPlayer player, String name) {
         var config = Solstice.configManager.getData(KitConfig.class);
         if (config.requirePermission) {
             return Permissions.check(player, getPermissionNode("kits." + name), 2);
@@ -94,7 +93,7 @@ public class KitModule extends ModuleBase.Toggleable {
      * @param name Kit name
      * @return Whether the player could claim the kit.
      */
-    public boolean couldClaimKit(ServerPlayerEntity player, String name) {
+    public boolean couldClaimKit(ServerPlayer player, String name) {
         var kit = getKits().get(name);
         var playerData = Solstice.playerData.get(player).getData(KitPlayerData.class);
         if (kit.oneTime && playerData.claimedKits.containsKey(name)) {
@@ -114,7 +113,7 @@ public class KitModule extends ModuleBase.Toggleable {
         return true;
     }
 
-    public List<String> getPlayerKitNames(ServerPlayerEntity player) {
+    public List<String> getPlayerKitNames(ServerPlayer player) {
         return getKits().keySet().stream().filter(kit -> hasKitPermission(player, kit)).toList();
     }
 }

@@ -1,17 +1,17 @@
 package me.alexdevs.solstice.modules.kit;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
-public class KitInventory implements Inventory {
+public class KitInventory implements Container {
     public static final int SIZE = 27;
 
-    private final DefaultedList<ItemStack> items = DefaultedList.ofSize(SIZE, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> items = NonNullList.withSize(SIZE, ItemStack.EMPTY);
 
     @Override
-    public int size() {
+    public int getContainerSize() {
         return SIZE;
     }
 
@@ -21,41 +21,41 @@ public class KitInventory implements Inventory {
     }
 
     @Override
-    public ItemStack getStack(int slot) {
+    public ItemStack getItem(int slot) {
         return items.get(slot);
     }
 
     @Override
-    public ItemStack removeStack(int slot, int amount) {
-        var stack = getStack(slot);
+    public ItemStack removeItem(int slot, int amount) {
+        var stack = getItem(slot);
         var taken = stack.copyWithCount(amount);
-        stack.decrement(amount);
+        stack.shrink(amount);
         return taken;
     }
 
     @Override
-    public ItemStack removeStack(int slot) {
+    public ItemStack removeItemNoUpdate(int slot) {
         var stack = items.get(slot);
-        return stack.copyAndEmpty();
+        return stack.copyAndClear();
     }
 
     @Override
-    public void setStack(int slot, ItemStack stack) {
+    public void setItem(int slot, ItemStack stack) {
         items.set(slot, stack);
     }
 
     @Override
-    public void markDirty() {
+    public void setChanged() {
 
     }
 
     @Override
-    public boolean canPlayerUse(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return false;
     }
 
     @Override
-    public void clear() {
+    public void clearContent() {
         items.clear();
     }
 }

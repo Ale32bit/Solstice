@@ -7,17 +7,16 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.Utils;
 import me.alexdevs.solstice.modules.info.InfoModule;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.CommandSource;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class InfoCommand extends ModCommand<InfoModule> {
     public InfoCommand(InfoModule module) {
@@ -25,7 +24,7 @@ public class InfoCommand extends ModCommand<InfoModule> {
     }
 
     @Override
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandRegistry, Commands.CommandSelection environment) {
         // WorldEdit's /info -> /tool info
         Utils.removeCommands(dispatcher, "info");
         super.register(dispatcher, commandRegistry, environment);
@@ -37,7 +36,7 @@ public class InfoCommand extends ModCommand<InfoModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .executes(context -> {
@@ -47,14 +46,14 @@ public class InfoCommand extends ModCommand<InfoModule> {
                     var sourceContext = PlaceholderContext.of(source);
 
                     if (pageList.isEmpty()) {
-                        context.getSource().sendFeedback(() -> module.locale().get(
+                        context.getSource().sendSuccess(() -> module.locale().get(
                                 "noPages",
                                 sourceContext
                         ), false);
                         return 1;
                     }
 
-                    var listText = Text.empty();
+                    var listText = Component.empty();
                     var comma = module.locale().get("pagesComma");
                     var list = pageList.stream().toList();
                     for (var i = 0; i < list.size(); i++) {
@@ -62,7 +61,7 @@ public class InfoCommand extends ModCommand<InfoModule> {
                             listText = listText.append(comma);
                         }
                         var placeholders = Map.of(
-                                "page", Text.of(list.get(i))
+                                "page", Component.nullToEmpty(list.get(i))
                         );
 
                         listText = listText.append(module.locale().get(
@@ -73,9 +72,9 @@ public class InfoCommand extends ModCommand<InfoModule> {
                     }
 
                     var placeholders = Map.of(
-                            "pageList", (Text) listText
+                            "pageList", (Component) listText
                     );
-                    context.getSource().sendFeedback(() -> module.locale().get(
+                    context.getSource().sendSuccess(() -> module.locale().get(
                             "pageList",
                             sourceContext,
                             placeholders
@@ -84,11 +83,11 @@ public class InfoCommand extends ModCommand<InfoModule> {
                     return 1;
                 })
                 .then(argument("page", StringArgumentType.word())
-                        .suggests((context, builder) -> CommandSource.suggestMatching(module.enumerate(), builder))
+                        .suggests((context, builder) -> SharedSuggestionProvider.suggest(module.enumerate(), builder))
                         .executes(context -> {
                             var sourceContext = PlaceholderContext.of(context.getSource());
                             var page = module.getPage(StringArgumentType.getString(context, "page"), sourceContext);
-                            context.getSource().sendFeedback(() -> page, false);
+                            context.getSource().sendSuccess(() -> page, false);
                             return 1;
                         }));
 

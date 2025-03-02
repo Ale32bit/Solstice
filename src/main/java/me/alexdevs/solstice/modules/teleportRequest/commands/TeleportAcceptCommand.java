@@ -5,14 +5,13 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.teleportRequest.TeleportRequestModule;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.server.level.ServerPlayer;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class TeleportAcceptCommand extends ModCommand<TeleportRequestModule> {
     public TeleportAcceptCommand(TeleportRequestModule module) {
@@ -25,21 +24,21 @@ public class TeleportAcceptCommand extends ModCommand<TeleportRequestModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .executes(this::execute)
-                .then(argument("player", EntityArgumentType.player())
-                        .executes(context -> this.execute(context, EntityArgumentType.getPlayer(context, "player")))
+                .then(argument("player", EntityArgument.player())
+                        .executes(context -> this.execute(context, EntityArgument.getPlayer(context, "player")))
                 );
     }
 
-    private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
 
         var request = module.getLatestRequest(player);
         if (request == null) {
-            context.getSource().sendFeedback(() -> module.locale().get("noPending"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("noPending"), false);
             return 0;
         }
         module.acceptRequest(player, request);
@@ -47,12 +46,12 @@ public class TeleportAcceptCommand extends ModCommand<TeleportRequestModule> {
         return 1;
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, ServerPlayerEntity source) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int execute(CommandContext<CommandSourceStack> context, ServerPlayer source) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
 
         var request = module.getRequestFromSource(player, source);
         if (request == null) {
-            context.getSource().sendFeedback(() -> module.locale().get("unavailable"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("unavailable"), false);
             return 0;
         }
         module.acceptRequest(player, request);

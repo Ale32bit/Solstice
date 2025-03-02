@@ -12,8 +12,7 @@ import me.alexdevs.solstice.core.coreModule.data.CoreConfig;
 import me.alexdevs.solstice.core.coreModule.data.CoreLocale;
 import me.alexdevs.solstice.core.coreModule.data.CorePlayerData;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.entity.Entity;
-
+import net.minecraft.world.entity.Entity;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -43,7 +42,7 @@ public class CoreModule extends ModuleBase {
             var playerData = Solstice.playerData.get(player).getData(CorePlayerData.class);
             playerData.username = player.getGameProfile().getName();
             playerData.lastSeenDate = new Date();
-            playerData.ipAddress = handler.getPlayer().getIp();
+            playerData.ipAddress = handler.getPlayer().getIpAddress();
 
             if (playerData.firstJoinedDate == null) {
                 Solstice.LOGGER.info("Player {} joined for the first time!", player.getGameProfile().getName());
@@ -62,12 +61,12 @@ public class CoreModule extends ModuleBase {
             playerData.lastSeenDate = new Date();
             playerData.logoffPosition = new ServerLocation(handler.getPlayer());
             Solstice.scheduler.schedule(() -> {
-                Solstice.playerData.dispose(handler.getPlayer().getUuid());
+                Solstice.playerData.dispose(handler.getPlayer().getUUID());
             }, 1, TimeUnit.SECONDS);
         });
 
         WorldSaveCallback.EVENT.register((server, suppressLogs, flush, force) -> {
-            var uuids = server.getPlayerManager().getPlayerList().stream().map(Entity::getUuid).toList();
+            var uuids = server.getPlayerList().getPlayers().stream().map(Entity::getUUID).toList();
             Solstice.playerData.disposeMissing(uuids);
         });
     }
@@ -81,7 +80,7 @@ public class CoreModule extends ModuleBase {
     }
 
     public static String getUsername(UUID uuid) {
-        var profile = Solstice.server.getUserCache().getByUuid(uuid);
+        var profile = Solstice.server.getProfileCache().get(uuid);
         if(profile.isPresent())
             return profile.get().getName();
 

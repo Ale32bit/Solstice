@@ -8,17 +8,17 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.fly.FlyModule;
 import me.alexdevs.solstice.modules.fly.data.FlyPlayerData;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class FlyCommand extends ModCommand<FlyModule> {
     public FlyCommand(FlyModule module) {
@@ -31,50 +31,50 @@ public class FlyCommand extends ModCommand<FlyModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(3))
                 .executes(context -> execute(context, null))
-                .then(argument("player", EntityArgumentType.player())
+                .then(argument("player", EntityArgument.player())
                         .requires(require("others", 3))
-                        .executes(context -> execute(context, EntityArgumentType.getPlayer(context, "player")))
+                        .executes(context -> execute(context, EntityArgument.getPlayer(context, "player")))
                 );
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, @Nullable ServerPlayerEntity player) throws CommandSyntaxException {
+    private int execute(CommandContext<CommandSourceStack> context, @Nullable ServerPlayer player) throws CommandSyntaxException {
         var forOther = player != null;
         if (player == null) {
-            player = context.getSource().getPlayerOrThrow();
+            player = context.getSource().getPlayerOrException();
         }
 
         var abilities = player.getAbilities();
-        abilities.allowFlying = !abilities.allowFlying;
-        player.sendAbilitiesUpdate();
+        abilities.mayfly = !abilities.mayfly;
+        player.onUpdateAbilities();
 
         var data = Solstice.playerData.get(player).getData(FlyPlayerData.class);
-        data.flightEnabled = abilities.allowFlying;
+        data.flightEnabled = abilities.mayfly;
 
-        Text text;
+        Component text;
         var sourceContext = PlaceholderContext.of(context.getSource());
         if (forOther) {
             var placeholders = Map.of(
                     "player", player.getDisplayName()
             );
 
-            if (abilities.allowFlying) {
+            if (abilities.mayfly) {
                 text = module.locale().get("enabledForOther", sourceContext, placeholders);
             } else {
                 text = module.locale().get("disabledForOther", sourceContext, placeholders);
             }
         } else {
-            if (abilities.allowFlying) {
+            if (abilities.mayfly) {
                 text = module.locale().get("enabled", sourceContext);
             } else {
                 text = module.locale().get("disabled", sourceContext);
             }
         }
 
-        context.getSource().sendFeedback(() -> text, forOther);
+        context.getSource().sendSuccess(() -> text, forOther);
 
         return 1;
     }

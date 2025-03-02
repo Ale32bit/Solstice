@@ -7,13 +7,12 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.experiments.ExperimentsModule;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class TimeSpanCommand extends ModCommand<ExperimentsModule> {
 
@@ -27,7 +26,7 @@ public class TimeSpanCommand extends ModCommand<ExperimentsModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .then(argument("timespan", StringArgumentType.string())
@@ -35,9 +34,9 @@ public class TimeSpanCommand extends ModCommand<ExperimentsModule> {
                         .executes(this::execute));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var timespan = TimeSpan.getTimeSpan(context, "timespan");
-        context.getSource().sendFeedback(() -> Text.of(String.format("Got %s (%d)", TimeSpan.toShortString(timespan), timespan)), false);
+        context.getSource().sendSuccess(() -> Component.nullToEmpty(String.format("Got %s (%d)", TimeSpan.toShortString(timespan), timespan)), false);
         return 1;
     }
 }

@@ -3,15 +3,15 @@ package me.alexdevs.solstice.mixin.modules.admin;
 import com.mojang.authlib.GameProfile;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.PlayerConnectionEvents;
-import net.minecraft.server.dedicated.DedicatedPlayerManager;
+import net.minecraft.server.dedicated.DedicatedPlayerList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(DedicatedPlayerManager.class)
+@Mixin(DedicatedPlayerList.class)
 public abstract class ConnectionBypassMixin {
-    @Inject(method = "isWhitelisted", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "isWhiteListed", at = @At("HEAD"), cancellable = true)
     public void solstice$bypassWhitelist(GameProfile profile, CallbackInfoReturnable<Boolean> cir) {
         try {
             if (PlayerConnectionEvents.WHITELIST_BYPASS.invoker().bypassWhitelist(profile))

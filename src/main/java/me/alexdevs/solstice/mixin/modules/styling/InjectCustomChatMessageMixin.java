@@ -2,10 +2,14 @@ package me.alexdevs.solstice.mixin.modules.styling;
 
 import com.mojang.datafixers.util.Pair;
 import me.alexdevs.solstice.modules.styling.StylingModule;
-import net.minecraft.network.message.MessageType;
-import net.minecraft.registry.*;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.text.Decoration;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.WritableRegistry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.ChatTypeDecoration;
+import net.minecraft.resources.RegistryDataLoader;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,20 +19,28 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.List;
 import java.util.Map;
 
-@Mixin(RegistryLoader.class)
+@Mixin(RegistryDataLoader.class)
 public class InjectCustomChatMessageMixin {
 
     @SuppressWarnings("unchecked")
-    @Inject(method = "load(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;", at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V", ordinal = 0, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    private static void solstice$load(ResourceManager resourceManager, DynamicRegistryManager baseRegistryManager, List<RegistryLoader.Entry<?>> entries,
-                                      CallbackInfoReturnable<DynamicRegistryManager.Immutable> cir, Map _unused, List<Pair<MutableRegistry<?>, Object>> list) {
+    @Inject(
+            method = "load",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V",
+                    ordinal = 0,
+                    shift = At.Shift.AFTER
+            ),
+            locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+    private static void solstice$load(ResourceManager resourceManager, RegistryAccess baseRegistryManager, List<RegistryDataLoader.RegistryData<?>> entries,
+                                      CallbackInfoReturnable<RegistryAccess.Frozen> cir, Map _unused, List<Pair<WritableRegistry<?>, Object>> list) {
         for (var pair : list) {
             var registry = pair.getFirst();
-            if (registry.getKey().equals(RegistryKeys.MESSAGE_TYPE)) {
-                Registry.register((Registry<MessageType>) registry, StylingModule.CHAT_TYPE,
-                        new MessageType(
-                                Decoration.ofChat("%s"),
-                                Decoration.ofChat("%s")
+            if (registry.key().equals(Registries.CHAT_TYPE)) {
+                Registry.register((Registry<ChatType>) registry, StylingModule.CHAT_TYPE,
+                        new ChatType(
+                                ChatTypeDecoration.withSender("%s"),
+                                ChatTypeDecoration.withSender("%s")
                         ));
             }
         }
