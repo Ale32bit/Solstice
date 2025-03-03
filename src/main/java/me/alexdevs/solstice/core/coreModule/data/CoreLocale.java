@@ -37,6 +37,8 @@ public class CoreLocale {
             Map.entry("stat.dedicatedMemory", "<hover:'${hover}'><gold>Dedicated memory: <yellow>${memory} MB</yellow></gold></hover>"),
             Map.entry("stat.dedicatedMemory.hover", "How much memory the JVM is using, can expand up to maximum memory."),
             Map.entry("stat.freeMemory", "<hover:'${hover}'><gold>Free memory: <yellow>${memory} MB</yellow></gold></hover>"),
-            Map.entry("stat.freeMemory.hover", "How much memory is left free in the dedicated memory.")
+            Map.entry("stat.freeMemory.hover", "How much memory is left free in the dedicated memory."),
+            Map.entry("ping.self", "<gold>Ping: <yellow>${ping}ms</yellow></gold>"),
+            Map.entry("ping.other", "<gold><yellow>${player}</yellow>'s ping: <yellow>${ping}ms</yellow></gold>")
     );
 }

@@ -50,6 +50,7 @@ import me.alexdevs.solstice.modules.suicide.SuicideModule;
 import me.alexdevs.solstice.modules.tablist.TabListModule;
 import me.alexdevs.solstice.modules.teleportHere.TeleportHereModule;
 import me.alexdevs.solstice.modules.teleportOffline.TeleportOfflineModule;
+import me.alexdevs.solstice.modules.teleportPosition.TeleportPositionModule;
 import me.alexdevs.solstice.modules.teleportRequest.TeleportRequestModule;
 import me.alexdevs.solstice.modules.tell.TellModule;
 import me.alexdevs.solstice.modules.timeBar.TimeBarModule;
@@ -110,6 +111,7 @@ public class ModuleProvider implements ModuleEntrypoint {
             new TabListModule(),
             new TeleportHereModule(),
             new TeleportOfflineModule(),
+            new TeleportPositionModule(),
             new TeleportRequestModule(),
             new TellModule(),
             new TimeBarModule(),

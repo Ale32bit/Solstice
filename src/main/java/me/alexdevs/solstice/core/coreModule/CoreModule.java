@@ -5,6 +5,7 @@ import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSaveCallback;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.core.coreModule.commands.PingCommand;
 import me.alexdevs.solstice.core.coreModule.commands.ServerStatCommand;
 import me.alexdevs.solstice.core.coreModule.commands.SolsticeCommand;
 import me.alexdevs.solstice.core.coreModule.data.CoreConfig;
@@ -34,6 +35,7 @@ public class CoreModule extends ModuleBase {
 
         commands.add(new SolsticeCommand(this));
         commands.add(new ServerStatCommand(this));
+        commands.add(new PingCommand(this));
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             Solstice.getUserCache().add(handler.getPlayer().getGameProfile());

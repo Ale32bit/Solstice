@@ -8,7 +8,7 @@ import static eu.pb4.placeholders.api.parsers.MarkdownLiteParserV1.MarkdownForma
 
 public class MarkdownParser {
     public static final MarkdownFormat[] ALL = new MarkdownFormat[]{
-            MarkdownFormat.QUOTE,
+            //MarkdownFormat.QUOTE,
             MarkdownFormat.BOLD,
             MarkdownFormat.ITALIC,
             MarkdownFormat.UNDERLINE,
@@ -27,6 +27,6 @@ public class MarkdownParser {
                 capabilities
         );
 
-        return NodeParser.merge(mdParser, new LinkParser());
+        return NodeParser.merge(new CodeParser(), mdParser, new LinkParser());
     }
 }
