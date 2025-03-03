@@ -15,15 +15,14 @@ import me.alexdevs.solstice.api.text.parser.MarkdownParser;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.mail.MailModule;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class MailCommand extends ModCommand<MailModule> {
     public MailCommand(MailModule module) {
@@ -36,7 +35,7 @@ public class MailCommand extends ModCommand<MailModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .executes(this::listMails)
@@ -56,23 +55,23 @@ public class MailCommand extends ModCommand<MailModule> {
                                 .executes(this::deleteMail)));
     }
 
-    private int listMails(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int listMails(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         var playerContext = PlaceholderContext.of(player);
-        var mails = module.getMailList(player.getUuid());
+        var mails = module.getMailList(player.getUUID());
 
         if (mails.isEmpty()) {
-            context.getSource().sendFeedback(() -> module.locale().get("emptyMailbox", playerContext), false);
+            context.getSource().sendSuccess(() -> module.locale().get("emptyMailbox", playerContext), false);
             return 0;
         }
 
-        var output = Text.empty()
+        var output = Component.empty()
                 .append(module.locale().get("mailListHeader", playerContext))
-                .append(Text.of("\n"));
+                .append(Component.nullToEmpty("\n"));
 
         for (var i = 0; i < mails.size(); i++) {
             if (i > 0)
-                output = output.append(Text.of("\n"));
+                output = output.append(Component.nullToEmpty("\n"));
 
             var mail = mails.get(i);
             var index = i + 1;
@@ -86,9 +85,9 @@ public class MailCommand extends ModCommand<MailModule> {
             var senderName = CoreModule.getUsername(mail.sender);
             var dateFormatter = new SimpleDateFormat(CoreModule.getConfig().dateTimeFormat);
             var placeholders = Map.of(
-                    "index", Text.of(String.valueOf(index)),
-                    "sender", Text.of(senderName),
-                    "date", Text.of(dateFormatter.format(mail.date)),
+                    "index", Component.nullToEmpty(String.valueOf(index)),
+                    "sender", Component.nullToEmpty(senderName),
+                    "date", Component.nullToEmpty(dateFormatter.format(mail.date)),
                     "readButton", readButton
             );
             output = output.append(module.locale().get("mailListEntry", playerContext, placeholders));
@@ -96,19 +95,19 @@ public class MailCommand extends ModCommand<MailModule> {
 
         final var finalOutput = output;
 
-        context.getSource().sendFeedback(() -> finalOutput, false);
+        context.getSource().sendSuccess(() -> finalOutput, false);
 
         return 1;
     }
 
-    private int readMail(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int readMail(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         var playerContext = PlaceholderContext.of(player);
-        var mails = module.getMailList(player.getUuid());
+        var mails = module.getMailList(player.getUUID());
         var index = IntegerArgumentType.getInteger(context, "index") - 1;
 
         if (index < 0 || index >= mails.size()) {
-            context.getSource().sendFeedback(() -> module.locale().get("notFound"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("notFound"), false);
             return 0;
         }
 
@@ -131,48 +130,48 @@ public class MailCommand extends ModCommand<MailModule> {
         var dateFormatter = new SimpleDateFormat(CoreModule.getConfig().dateTimeFormat);
         var message = MarkdownParser.defaultParser.parseNode(mail.message);
         var placeholders = Map.of(
-                "sender", Text.of(senderName),
-                "date", Text.of(dateFormatter.format(mail.date)),
+                "sender", Component.nullToEmpty(senderName),
+                "date", Component.nullToEmpty(dateFormatter.format(mail.date)),
                 "message", message.toText(),
                 "replyButton", replyButton,
                 "deleteButton", deleteButton
         );
 
-        context.getSource().sendFeedback(() -> module.locale().get("mailDetails", playerContext, placeholders), false);
+        context.getSource().sendSuccess(() -> module.locale().get("mailDetails", playerContext, placeholders), false);
 
         return 1;
     }
 
-    private int deleteMail(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int deleteMail(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         var playerContext = PlaceholderContext.of(player);
         var index = IntegerArgumentType.getInteger(context, "index") - 1;
 
-        if (module.deleteMail(player.getUuid(), index)) {
-            context.getSource().sendFeedback(() -> module.locale().get("mailDeleted", playerContext), false);
+        if (module.deleteMail(player.getUUID(), index)) {
+            context.getSource().sendSuccess(() -> module.locale().get("mailDeleted", playerContext), false);
         } else {
-            context.getSource().sendFeedback(() -> module.locale().get("notFound"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("notFound"), false);
         }
 
         return 1;
     }
 
-    private int sendMail(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var sender = context.getSource().getPlayerOrThrow();
+    private int sendMail(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var sender = context.getSource().getPlayerOrException();
         var recipient = LocalGameProfile.getProfile(context, "recipient");
 
         var message = StringArgumentType.getString(context, "message");
         var server = context.getSource().getServer();
 
-        var mail = new PlayerMail(message, sender.getUuid());
+        var mail = new PlayerMail(message, sender.getUUID());
         var actuallySent = module.sendMail(recipient.getId(), mail);
 
         var senderContext = PlaceholderContext.of(sender);
 
-        context.getSource().sendFeedback(() -> module.locale().get("mailSent", senderContext), false);
+        context.getSource().sendSuccess(() -> module.locale().get("mailSent", senderContext), false);
 
         if (actuallySent) {
-            var recPlayer = server.getPlayerManager().getPlayer(recipient.getId());
+            var recPlayer = server.getPlayerList().getPlayer(recipient.getId());
             if (recPlayer == null) {
                 return 1;
             }
@@ -182,7 +181,7 @@ public class MailCommand extends ModCommand<MailModule> {
                 return 0;
 
             var recContext = PlaceholderContext.of(recPlayer);
-            recPlayer.sendMessage(module.locale().get("mailReceived", recContext));
+            recPlayer.sendSystemMessage(module.locale().get("mailReceived", recContext));
         }
 
         return 1;

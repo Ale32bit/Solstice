@@ -6,11 +6,10 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.back.BackModule;
-import net.minecraft.server.command.ServerCommandSource;
-
+import net.minecraft.commands.CommandSourceStack;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 public class BackCommand extends ModCommand<BackModule> {
     private final Locale locale = Solstice.localeManager.getLocale(BackModule.ID);
@@ -25,23 +24,23 @@ public class BackCommand extends ModCommand<BackModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .executes(context -> {
-                    var player = context.getSource().getPlayerOrThrow();
+                    var player = context.getSource().getPlayerOrException();
                     var playerContext = PlaceholderContext.of(player);
 
-                    var lastPosition = module.lastPlayerPositions.get(player.getUuid());
+                    var lastPosition = module.lastPlayerPositions.get(player.getUUID());
                     if (lastPosition == null) {
-                        context.getSource().sendFeedback(() -> locale.get(
+                        context.getSource().sendSuccess(() -> locale.get(
                                 "noPosition",
                                 playerContext
                         ), false);
                         return 1;
                     }
 
-                    context.getSource().sendFeedback(() -> locale.get(
+                    context.getSource().sendSuccess(() -> locale.get(
                             "teleporting",
                             playerContext
                     ), false);

@@ -6,10 +6,9 @@ import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.afk.AfkModule;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 
@@ -24,55 +23,55 @@ public class ActiveTimeCommand extends ModCommand<AfkModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return CommandManager.literal(name)
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
+        return Commands.literal(name)
                 .requires(require(true))
                 .executes(context -> {
-                    var player = context.getSource().getPlayerOrThrow();
-                    var activeTime = module.getActiveTime(player.getUuid());
+                    var player = context.getSource().getPlayerOrException();
+                    var activeTime = module.getActiveTime(player.getUUID());
 
                     var longSpan = TimeSpan.toLongString(activeTime);
 
                     var map = Map.of(
-                            "activeTime", Text.of(longSpan),
+                            "activeTime", Component.nullToEmpty(longSpan),
                             "player", player.getName()
                     );
 
-                    context.getSource().sendFeedback(() -> module.locale().get("yourActiveTime", map), false);
+                    context.getSource().sendSuccess(() -> module.locale().get("yourActiveTime", map), false);
 
                     return 1;
                 })
-                .then(CommandManager.literal("player")
+                .then(Commands.literal("player")
                         .requires(require("others", 1))
-                        .then(CommandManager.argument("player", StringArgumentType.word())
+                        .then(Commands.argument("player", StringArgumentType.word())
                                 .suggests(LocalGameProfile::suggest)
                                 .executes(context -> {
                                     var profile = LocalGameProfile.getProfile(context, "player");
                                     var activeTime = module.getActiveTime(profile.getId());
 
                                     if (activeTime == 0) {
-                                        context.getSource().sendFeedback(() -> module.locale().get("neverPlayed"), false);
+                                        context.getSource().sendSuccess(() -> module.locale().get("neverPlayed"), false);
                                         return 0;
                                     }
 
                                     var longSpan = TimeSpan.toLongString(activeTime);
 
                                     var map = Map.of(
-                                            "activeTime", Text.of(longSpan),
-                                            "player", Text.of(profile.getName())
+                                            "activeTime", Component.nullToEmpty(longSpan),
+                                            "player", Component.nullToEmpty(profile.getName())
                                     );
 
-                                    context.getSource().sendFeedback(() -> module.locale().get("playerActiveTime", map), false);
+                                    context.getSource().sendSuccess(() -> module.locale().get("playerActiveTime", map), false);
 
                                     return 1;
                                 })
                         ))
-                .then(CommandManager.literal("leaderboard")
+                .then(Commands.literal("leaderboard")
                         .requires(require("leaderboard", true))
                         .executes(context -> {
                             var leaderboard = module.getActiveTimeLeaderboard();
 
-                            var text = Text.empty();
+                            var text = Component.empty();
 
                             text.append(module.locale().get("leaderboardHeader"));
 
@@ -81,26 +80,26 @@ public class ActiveTimeCommand extends ModCommand<AfkModule> {
                                 text.append("\n");
                                 index++;
                                 var map = Map.of(
-                                        "index", Text.of(String.valueOf(index)),
-                                        "player", Text.of(entry.name()),
-                                        "uuid", Text.of(entry.uuid().toString()),
-                                        "time", Text.of(TimeSpan.toLongString(entry.activeTime())),
-                                        "shortTime", Text.of(TimeSpan.toShortString(entry.activeTime())),
-                                        "seconds", Text.of(String.valueOf(entry.activeTime()))
+                                        "index", Component.nullToEmpty(String.valueOf(index)),
+                                        "player", Component.nullToEmpty(entry.name()),
+                                        "uuid", Component.nullToEmpty(entry.uuid().toString()),
+                                        "time", Component.nullToEmpty(TimeSpan.toLongString(entry.activeTime())),
+                                        "shortTime", Component.nullToEmpty(TimeSpan.toShortString(entry.activeTime())),
+                                        "seconds", Component.nullToEmpty(String.valueOf(entry.activeTime()))
                                 );
                                 text.append(module.locale().get("leaderboardEntry", map));
                             }
 
-                            context.getSource().sendFeedback(() -> text, false);
+                            context.getSource().sendSuccess(() -> text, false);
 
                             return 1;
                         })
                 )
-                .then(CommandManager.literal("set")
+                .then(Commands.literal("set")
                         .requires(require("set", 3))
-                        .then(CommandManager.argument("player", StringArgumentType.word())
+                        .then(Commands.argument("player", StringArgumentType.word())
                                 .suggests(LocalGameProfile::suggest)
-                                .then(CommandManager.argument("time", TimeSpan.timeSpan())
+                                .then(Commands.argument("time", TimeSpan.timeSpan())
                                         .suggests(TimeSpan::suggest)
                                         .executes(context -> {
                                             var profile = LocalGameProfile.getProfile(context, "player");
@@ -110,10 +109,10 @@ public class ActiveTimeCommand extends ModCommand<AfkModule> {
                                             data.activeTime = time;
 
                                             var map = Map.of(
-                                                    "player", Text.of(profile.getName()),
-                                                    "time", Text.of(TimeSpan.toLongString(time))
+                                                    "player", Component.nullToEmpty(profile.getName()),
+                                                    "time", Component.nullToEmpty(TimeSpan.toLongString(time))
                                             );
-                                            context.getSource().sendFeedback(() -> module.locale().get("activeTimeSet", map), true);
+                                            context.getSource().sendSuccess(() -> module.locale().get("activeTimeSet", map), true);
 
                                             return 1;
                                         })

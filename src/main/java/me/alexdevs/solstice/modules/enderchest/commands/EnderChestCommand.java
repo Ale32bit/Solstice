@@ -9,19 +9,18 @@ import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.enderchest.EnderChestModule;
 import me.alexdevs.solstice.modules.inventorySee.ImmutableSlot;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.inventory.EnderChestInventory;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.stat.Stats;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.PlayerEnderChestContainer;
+import net.minecraft.world.inventory.Slot;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class EnderChestCommand extends ModCommand<EnderChestModule> {
     public EnderChestCommand(EnderChestModule module) {
@@ -34,14 +33,14 @@ public class EnderChestCommand extends ModCommand<EnderChestModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(2))
                 .executes(context -> {
-                    var player = context.getSource().getPlayerOrThrow();
-                    player.incrementStat(Stats.OPEN_ENDERCHEST);
+                    var player = context.getSource().getPlayerOrException();
+                    player.awardStat(Stats.OPEN_ENDERCHEST);
 
-                    open(player, player.getEnderChestInventory(), Text.translatable("container.enderchest"), true, () -> {
+                    open(player, player.getEnderChestInventory(), Component.translatable("container.enderchest"), true, () -> {
                     });
 
                     return 1;
@@ -51,25 +50,25 @@ public class EnderChestCommand extends ModCommand<EnderChestModule> {
                         .suggests(LocalGameProfile::suggest)
                         .executes(context -> {
                             final var source = context.getSource();
-                            var player = source.getPlayerOrThrow();
+                            var player = source.getPlayerOrException();
                             var profile = LocalGameProfile.getProfile(context, "player");
 
                             Permissions.check(profile, getPermissionNode("exempt"), 3, source.getServer()).thenAccept(exempt -> {
                                 if (exempt) {
-                                    source.sendFeedback(() -> module.locale().get("exempt"), false);
+                                    source.sendSuccess(() -> module.locale().get("exempt"), false);
                                     return;
                                 }
 
                                 var isOnline = PlayerUtils.isOnline(profile.getId());
                                 if (!isOnline && !Permissions.check(player, getPermissionNode("offline"), 3)) {
-                                    source.sendFeedback(() -> module.locale().get("offlineNotAllowed"), false);
+                                    source.sendSuccess(() -> module.locale().get("offlineNotAllowed"), false);
                                     return;
                                 }
 
-                                ServerPlayerEntity targetPlayer;
+                                ServerPlayer targetPlayer;
 
                                 if (isOnline) {
-                                    targetPlayer = source.getServer().getPlayerManager().getPlayer(profile.getId());
+                                    targetPlayer = source.getServer().getPlayerList().getPlayer(profile.getId());
                                 } else {
                                     targetPlayer = PlayerUtils.loadOfflinePlayer(profile);
                                 }
@@ -79,7 +78,7 @@ public class EnderChestCommand extends ModCommand<EnderChestModule> {
                                 var canEdit = Permissions.check(player, getPermissionNode("edit"), 3);
 
                                 var map = Map.of(
-                                        "player", Text.of(profile.getName())
+                                        "player", Component.nullToEmpty(profile.getName())
                                 );
                                 var title = module.locale().get("title", map);
 
@@ -89,22 +88,22 @@ public class EnderChestCommand extends ModCommand<EnderChestModule> {
                                     }
                                 });
 
-                                source.sendFeedback(() -> module.locale().get("opened", map), true);
+                                source.sendSuccess(() -> module.locale().get("opened", map), true);
                             });
 
                             return 1;
                         }));
     }
 
-    private void open(ServerPlayerEntity player, EnderChestInventory inventory, Text title, boolean canEdit, Runnable onClose) {
-        var container = new SimpleGui(ScreenHandlerType.GENERIC_9X3, player, false) {
+    private void open(ServerPlayer player, PlayerEnderChestContainer inventory, Component title, boolean canEdit, Runnable onClose) {
+        var container = new SimpleGui(MenuType.GENERIC_9x3, player, false) {
             @Override
             public void onClose() {
                 onClose.run();
             }
         };
 
-        for (var i = 0; i < inventory.size(); i++) {
+        for (var i = 0; i < inventory.getContainerSize(); i++) {
             Slot slot;
             if (canEdit) {
                 slot = new Slot(inventory, i, 0, 0);

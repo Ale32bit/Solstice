@@ -19,11 +19,10 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.*;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.TypedActionResult;
-
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -49,17 +48,17 @@ public class JailModule extends ModuleBase.Toggleable {
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             Solstice.nextTick(() -> {
-                var data = getPlayer(handler.getPlayer().getUuid());
+                var data = getPlayer(handler.getPlayer().getUUID());
                 if (data.jailed) {
                     sendToJail(handler.getPlayer());
                 } else if (data.teleportToPreviousLocation) {
-                    unjailPlayer(handler.getPlayer().getUuid());
+                    unjailPlayer(handler.getPlayer().getUUID());
                 }
             });
         });
 
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, player, alive) -> {
-            if (isPlayerJailed(player.getUuid())) {
+            if (isPlayerJailed(player.getUUID())) {
                 sendToJail(player);
             }
         });
@@ -69,15 +68,15 @@ public class JailModule extends ModuleBase.Toggleable {
         });
 
         CommandEvents.ALLOW_COMMAND.register((source, command) -> {
-            if (!source.isExecutedByPlayer())
+            if (!source.isPlayer())
                 return true;
 
-            if (isPlayerJailed(source.getPlayer().getUuid())) {
+            if (isPlayerJailed(source.getPlayer().getUUID())) {
                 var config = getConfig();
                 var cmd = command.split(" ")[0];
                 var canRun = config.allowedCommands.contains(cmd);
                 if (!canRun) {
-                    source.sendFeedback(() -> locale().get("cannotRunCommands"), false);
+                    source.sendSuccess(() -> locale().get("cannotRunCommands"), false);
                 }
                 return canRun;
             }
@@ -86,24 +85,24 @@ public class JailModule extends ModuleBase.Toggleable {
         });
 
         AttackBlockCallback.EVENT.register((player, world, hand, blockPos, direction) -> {
-            if (isPlayerJailed(player.getUuid())) {
-                player.sendMessage(locale().get("cannotBreakBlocks"));
-                return ActionResult.FAIL;
+            if (isPlayerJailed(player.getUUID())) {
+                player.sendSystemMessage(locale().get("cannotBreakBlocks"));
+                return InteractionResult.FAIL;
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
         AttackEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
-            if (isPlayerJailed(player.getUuid())) {
-                player.sendMessage(locale().get("cannotAttackEntities"));
-                return ActionResult.FAIL;
+            if (isPlayerJailed(player.getUUID())) {
+                player.sendSystemMessage(locale().get("cannotAttackEntities"));
+                return InteractionResult.FAIL;
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
         PlayerBlockBreakEvents.BEFORE.register((world, player, blockPos, blockState, blockEntity) -> {
-            if (isPlayerJailed(player.getUuid())) {
-                player.sendMessage(locale().get("cannotBreakBlocks"));
+            if (isPlayerJailed(player.getUUID())) {
+                player.sendSystemMessage(locale().get("cannotBreakBlocks"));
                 return false;
             }
 
@@ -111,35 +110,35 @@ public class JailModule extends ModuleBase.Toggleable {
         });
 
         UseBlockCallback.EVENT.register((player, world, hand, blockHitResult) -> {
-            if (isPlayerJailed(player.getUuid())) {
-                player.sendMessage(locale().get("cannotUseBlocks"));
-                return ActionResult.FAIL;
+            if (isPlayerJailed(player.getUUID())) {
+                player.sendSystemMessage(locale().get("cannotUseBlocks"));
+                return InteractionResult.FAIL;
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
-            if (isPlayerJailed(player.getUuid())) {
-                player.sendMessage(locale().get("cannotUseEntities"));
-                return ActionResult.FAIL;
+            if (isPlayerJailed(player.getUUID())) {
+                player.sendSystemMessage(locale().get("cannotUseEntities"));
+                return InteractionResult.FAIL;
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
         UseItemCallback.EVENT.register((player, world, hand) -> {
-            var stack = player.getStackInHand(hand);
-            if (isPlayerJailed(player.getUuid())) {
-                player.sendMessage(locale().get("cannotUseItems"));
-                return TypedActionResult.fail(stack);
+            var stack = player.getItemInHand(hand);
+            if (isPlayerJailed(player.getUUID())) {
+                player.sendSystemMessage(locale().get("cannotUseItems"));
+                return InteractionResultHolder.fail(stack);
             }
-            return TypedActionResult.pass(stack);
+            return InteractionResultHolder.pass(stack);
         });
 
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((signedMessage, player, parameters) -> {
-            if (isPlayerJailed(player.getUuid())) {
+            if (isPlayerJailed(player.getUUID())) {
                 var config = getConfig();
                 if(config.mute) {
-                    player.sendMessage(locale().get("cannotSpeak"));
+                    player.sendSystemMessage(locale().get("cannotSpeak"));
                     return false;
                 }
             }
@@ -150,12 +149,12 @@ public class JailModule extends ModuleBase.Toggleable {
     private void checkJailedPlayers() {
         // run on server thread
         Solstice.nextTick(() -> {
-            var players = Solstice.server.getPlayerManager().getPlayerList();
+            var players = Solstice.server.getPlayerList().getPlayers();
             for (var player : players) {
-                var data = getPlayer(player.getUuid());
-                if (isPlayerJailed(player.getUuid()) && data.jailTime > 0) {
+                var data = getPlayer(player.getUUID());
+                if (isPlayerJailed(player.getUUID()) && data.jailTime > 0) {
                     if (data.jailedOn != null && data.jailedOn.getTime() + (data.jailTime * 1000L) < System.currentTimeMillis()) {
-                        unjailPlayer(player.getUuid());
+                        unjailPlayer(player.getUUID());
                     }
                 }
             }
@@ -179,9 +178,9 @@ public class JailModule extends ModuleBase.Toggleable {
         return getPlayer(uuid).jailed;
     }
 
-    public void sendToJail(ServerPlayerEntity player) {
+    public void sendToJail(ServerPlayer player) {
         Solstice.nextTick(() -> {
-            var data = getPlayer(player.getUuid());
+            var data = getPlayer(player.getUUID());
             var jails = getJails();
             var jail = jails.get(data.jailName);
             if (jail != null) {
@@ -189,12 +188,12 @@ public class JailModule extends ModuleBase.Toggleable {
 
                 var map = Map.of(
                         "player", player.getName(),
-                        "jail", Text.of(data.jailName),
-                        "duration", Text.of(TimeSpan.toLongString(data.jailTime)),
-                        "reason", Text.of(data.jailReason)
+                        "jail", Component.nullToEmpty(data.jailName),
+                        "duration", Component.nullToEmpty(TimeSpan.toLongString(data.jailTime)),
+                        "reason", Component.nullToEmpty(data.jailReason)
                 );
 
-                Text text;
+                Component text;
                 if (data.jailTime > 0) {
                     if (data.jailReason != null) {
                         text = locale().get("playerJailedForWithReason", map);
@@ -204,7 +203,7 @@ public class JailModule extends ModuleBase.Toggleable {
                 } else {
                     text = locale().get("playerJailed", map);
                 }
-                player.sendMessage(text, false);
+                player.displayClientMessage(text, false);
             }
         });
     }
@@ -214,11 +213,11 @@ public class JailModule extends ModuleBase.Toggleable {
         data.jailed = false;
         data.teleportToPreviousLocation = true;
 
-        var player = Solstice.server.getPlayerManager().getPlayer(uuid);
+        var player = Solstice.server.getPlayerList().getPlayer(uuid);
         if (player != null) {
             data.teleportToPreviousLocation = false;
 
-            player.sendMessage(locale().get("playerUnjailed"));
+            player.sendSystemMessage(locale().get("playerUnjailed"));
 
             if (data.previousLocation != null) {
                 data.previousLocation.teleport(player);

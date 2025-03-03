@@ -1,10 +1,9 @@
 package me.alexdevs.solstice.modules.powertool;
 
-import net.minecraft.util.StringIdentifiable;
-
 import java.util.Arrays;
+import net.minecraft.util.StringRepresentable;
 
-public enum Action implements StringIdentifiable {
+public enum Action implements StringRepresentable {
     USE,
     ATTACK_BLOCK,
     ATTACK_ENTITY,
@@ -12,11 +11,11 @@ public enum Action implements StringIdentifiable {
     INTERACT_ENTITY;
 
     @Override
-    public String asString() {
+    public String getSerializedName() {
         return this.name().toLowerCase();
     }
 
     public static String[] stringValues() {
-        return Arrays.stream(values()).map(Action::asString).toArray(String[]::new);
+        return Arrays.stream(values()).map(Action::getSerializedName).toArray(String[]::new);
     }
 }

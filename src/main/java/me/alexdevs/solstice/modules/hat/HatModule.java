@@ -5,9 +5,8 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.hat.commands.HatCommand;
 import me.alexdevs.solstice.modules.hat.data.HatConfig;
 import me.alexdevs.solstice.modules.hat.data.HatLocale;
-import net.minecraft.item.Item;
-import net.minecraft.registry.tag.TagKey;
-
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -51,7 +50,7 @@ public class HatModule extends ModuleBase.Toggleable {
         var iter = stream.iterator();
         while (iter.hasNext()) {
             var tag = iter.next();
-            if(tags.contains(tag.id().toString()))
+            if(tags.contains(tag.location().toString()))
                 return true;
         }
         return false;

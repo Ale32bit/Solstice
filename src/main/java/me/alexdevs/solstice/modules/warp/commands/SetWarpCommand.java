@@ -9,14 +9,13 @@ import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.warp.WarpModule;
 import me.alexdevs.solstice.modules.warp.data.WarpServerData;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class SetWarpCommand extends ModCommand<WarpModule> {
     public SetWarpCommand(WarpModule module) {
@@ -29,7 +28,7 @@ public class SetWarpCommand extends ModCommand<WarpModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require("set", 2))
                 .then(argument("name", StringArgumentType.word())
@@ -37,8 +36,8 @@ public class SetWarpCommand extends ModCommand<WarpModule> {
                                 StringArgumentType.getString(context, "name"))));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int execute(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         var serverData = Solstice.serverData.getData(WarpServerData.class);
 
         var warps = serverData.warps;
@@ -46,10 +45,10 @@ public class SetWarpCommand extends ModCommand<WarpModule> {
         var warpPosition = new ServerLocation(player);
         warps.put(name, warpPosition);
 
-        context.getSource().sendFeedback(() -> module.locale().get(
+        context.getSource().sendSuccess(() -> module.locale().get(
                 "created",
                 Map.of(
-                        "warp", Text.of(name)
+                        "warp", Component.nullToEmpty(name)
                 )
         ), true);
 

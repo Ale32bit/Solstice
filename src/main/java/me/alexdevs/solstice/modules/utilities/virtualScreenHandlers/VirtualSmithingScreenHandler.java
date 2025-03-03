@@ -1,17 +1,17 @@
 package me.alexdevs.solstice.modules.utilities.virtualScreenHandlers;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.screen.SmithingScreenHandler;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.SmithingMenu;
 
-public class VirtualSmithingScreenHandler extends SmithingScreenHandler {
-    public VirtualSmithingScreenHandler(int syncId, PlayerInventory playerInventory, ScreenHandlerContext context) {
+public class VirtualSmithingScreenHandler extends SmithingMenu {
+    public VirtualSmithingScreenHandler(int syncId, Inventory playerInventory, ContainerLevelAccess context) {
         super(syncId, playerInventory, context);
     }
 
     @Override
-    public boolean canUse(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return true;
     }
 }

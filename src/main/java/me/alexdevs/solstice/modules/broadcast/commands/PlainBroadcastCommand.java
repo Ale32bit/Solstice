@@ -6,13 +6,12 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.broadcast.BroadcastModule;
+import net.minecraft.commands.CommandSourceStack;
 import me.alexdevs.solstice.api.text.Format;
-import net.minecraft.server.command.ServerCommandSource;
-
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class PlainBroadcastCommand extends ModCommand<BroadcastModule> {
 
@@ -26,7 +25,7 @@ public class PlainBroadcastCommand extends ModCommand<BroadcastModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require("plain", 2))
                 .then(argument("message", StringArgumentType.greedyString())

@@ -2,16 +2,15 @@ package me.alexdevs.solstice.api;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.back.BackModule;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import java.util.Objects;
 
 public class ServerLocation {
@@ -22,22 +21,22 @@ public class ServerLocation {
     protected final float pitch;
     protected final String world;
 
-    public ServerLocation(double x, double y, double z, float yaw, float pitch, ServerWorld world) {
+    public ServerLocation(double x, double y, double z, float yaw, float pitch, ServerLevel world) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.yaw = yaw;
         this.pitch = pitch;
-        this.world = world.getRegistryKey().getValue().toString();
+        this.world = world.dimension().location().toString();
     }
 
-    public ServerLocation(ServerPlayerEntity player) {
+    public ServerLocation(ServerPlayer player) {
         this.x = player.getX();
         this.y = player.getY();
         this.z = player.getZ();
-        this.yaw = player.getYaw();
-        this.pitch = player.getPitch();
-        this.world = player.getServerWorld().getRegistryKey().getValue().toString();
+        this.yaw = player.getYRot();
+        this.pitch = player.getXRot();
+        this.world = player.serverLevel().dimension().location().toString();
     }
 
     public ServerLocation(double x, double y, double z, float yaw, float pitch, String worldKey) {
@@ -61,38 +60,38 @@ public class ServerLocation {
         return Objects.hash(getX(), getY(), getZ(), getYaw(), getPitch(), getWorld());
     }
 
-    public void teleport(ServerPlayerEntity player, boolean setBackPosition) {
+    public void teleport(ServerPlayer player, boolean setBackPosition) {
         if (setBackPosition) {
             var currentPosition = new ServerLocation(player);
-            Solstice.modules.getModule(BackModule.class).lastPlayerPositions.put(player.getUuid(), currentPosition);
+            Solstice.modules.getModule(BackModule.class).lastPlayerPositions.put(player.getUUID(), currentPosition);
         }
 
         var serverWorld = getWorld(player.getServer());
 
-        player.setVelocity(player.getVelocity().multiply(1f, 0f, 1f));
+        player.setDeltaMovement(player.getDeltaMovement().multiply(1f, 0f, 1f));
         player.setOnGround(true);
 
-        player.teleport(serverWorld, this.getX(), this.getY(), this.getZ(), this.getYaw(), this.getPitch());
+        player.teleportTo(serverWorld, this.getX(), this.getY(), this.getZ(), this.getYaw(), this.getPitch());
 
         // There is a bug (presumably in Fabric's api) that causes experience level to be set to 0 when teleporting between dimensions/worlds.
         // Therefore, this will update the experience client side as a temporary solution.
-        player.addExperience(0);
+        player.giveExperiencePoints(0);
     }
 
-    public void teleport(ServerPlayerEntity player) {
+    public void teleport(ServerPlayer player) {
         teleport(player, true);
     }
 
-    public RegistryKey<World> getWorldKey() {
-        return RegistryKey.of(RegistryKeys.WORLD, new Identifier(this.getWorld()));
+    public ResourceKey<Level> getWorldKey() {
+        return ResourceKey.create(Registries.DIMENSION, new ResourceLocation(this.getWorld()));
     }
 
-    public ServerWorld getWorld(MinecraftServer server) {
-        return server.getWorld(getWorldKey());
+    public ServerLevel getWorld(MinecraftServer server) {
+        return server.getLevel(getWorldKey());
     }
 
     public BlockPos getBlockPos() {
-        return BlockPos.ofFloored(this.getX(), this.getY(), this.getZ());
+        return BlockPos.containing(this.getX(), this.getY(), this.getZ());
     }
 
     public double getX() {
@@ -124,13 +123,13 @@ public class ServerLocation {
             return Double.POSITIVE_INFINITY;
         }
 
-        var thisVec = new Vec3d(this.getX(), this.getY(), this.getZ());
-        var otherVec = new Vec3d(other.getX(), other.getY(), other.getZ());
+        var thisVec = new Vec3(this.getX(), this.getY(), this.getZ());
+        var otherVec = new Vec3(other.getX(), other.getY(), other.getZ());
 
         return thisVec.distanceTo(otherVec);
     }
 
-    public Vec3d getDelta(ServerLocation other) {
-        return new Vec3d(this.getX() - other.getX(), this.getY() - other.getY(), this.getZ() - other.getZ());
+    public Vec3 getDelta(ServerLocation other) {
+        return new Vec3(this.getX() - other.getX(), this.getY() - other.getY(), this.getZ() - other.getZ());
     }
 }

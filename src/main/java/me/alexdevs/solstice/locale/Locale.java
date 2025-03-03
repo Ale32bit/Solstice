@@ -2,8 +2,7 @@ package me.alexdevs.solstice.locale;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.text.Format;
-import net.minecraft.text.Text;
-
+import net.minecraft.network.chat.Component;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -30,22 +29,22 @@ public class Locale {
         return localeSupplier.get().get(fullPath);
     }
 
-    public Text get(String path) {
+    public Component get(String path) {
         var src = this.raw(path);
         return Format.parse(src);
     }
 
-    public Text get(String path, PlaceholderContext context) {
+    public Component get(String path, PlaceholderContext context) {
         var src = this.raw(path);
         return Format.parse(src, context);
     }
 
-    public Text get(String path, Map<String, Text> placeholders) {
+    public Component get(String path, Map<String, Component> placeholders) {
         var src = this.raw(path);
         return Format.parse(src, placeholders);
     }
 
-    public Text get(String path, PlaceholderContext context, Map<String, Text> placeholders) {
+    public Component get(String path, PlaceholderContext context, Map<String, Component> placeholders) {
         var src = this.raw(path);
         return Format.parse(src, context, placeholders);
     }

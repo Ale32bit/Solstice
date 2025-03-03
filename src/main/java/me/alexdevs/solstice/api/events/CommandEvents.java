@@ -2,7 +2,7 @@ package me.alexdevs.solstice.api.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.commands.CommandSourceStack;
 
 public class CommandEvents {
     public static final Event<AllowCommand> ALLOW_COMMAND = EventFactory.createArrayBacked(AllowCommand.class, callbacks ->
@@ -23,11 +23,11 @@ public class CommandEvents {
 
     @FunctionalInterface
     public interface AllowCommand {
-        boolean allowCommand(ServerCommandSource source, String command);
+        boolean allowCommand(CommandSourceStack source, String command);
     }
 
     @FunctionalInterface
     public interface Command {
-        void onCommand(ServerCommandSource source, String command);
+        void onCommand(CommandSourceStack source, String command);
     }
 }

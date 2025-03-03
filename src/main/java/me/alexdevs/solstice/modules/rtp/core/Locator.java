@@ -5,20 +5,20 @@ import com.google.common.collect.ImmutableList;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.modules.rtp.data.RTPConfig;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ChunkHolder;
-import net.minecraft.server.world.ChunkTicketType;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ChunkHolder;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.TicketType;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.levelgen.Heightmap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
@@ -28,18 +28,18 @@ import java.util.function.Consumer;
 
 public class Locator {
 
-    public static final ChunkTicketType<BlockPos> RTP_TICKET = ChunkTicketType.create("rtp", Comparator.comparingLong(ChunkPos::toLong), 300);
+    public static final TicketType<BlockPos> RTP_TICKET = TicketType.create("rtp", Comparator.comparingLong(ChunkPos::asLong), 300);
 
-    public final ServerPlayerEntity player;
-    public final ServerWorld world;
+    public final ServerPlayer player;
+    public final ServerLevel world;
     public final RTPConfig config;
     public @Nullable
-    final RegistryKey<Biome> biome;
+    final ResourceKey<Biome> biome;
 
     private Consumer<Result> callback;
     private final Stopwatch stopwatch = Stopwatch.createUnstarted();
 
-    private Chunk chunk;
+    private ChunkAccess chunk;
     private BlockPos attemptPos;
     private boolean failed = false;
 
@@ -58,11 +58,11 @@ public class Locator {
             Blocks.WATER
     );
 
-    public Locator(ServerPlayerEntity player, ServerWorld world, RTPConfig config) {
+    public Locator(ServerPlayer player, ServerLevel world, RTPConfig config) {
         this(player, world, config, null);
     }
 
-    public Locator(ServerPlayerEntity player, ServerWorld world, RTPConfig config, @Nullable RegistryKey<Biome> biome) {
+    public Locator(ServerPlayer player, ServerLevel world, RTPConfig config, @Nullable ResourceKey<Biome> biome) {
         this.player = player;
         this.world = world;
         this.config = config;
@@ -117,13 +117,13 @@ public class Locator {
     }
 
     private BlockPos getTopBlock(BlockPos pos) {
-        return world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pos);
+        return world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos);
     }
 
     private BlockPos getEmptySpace(BlockPos pos) {
-        var bottom = chunk.getBottomY();
+        var bottom = chunk.getMinBuildHeight();
         var top = world.getLogicalHeight();
-        var blockPos = new BlockPos.Mutable(pos.getX(), top, pos.getZ());
+        var blockPos = new BlockPos.MutableBlockPos(pos.getX(), top, pos.getZ());
 
         var isAir = false;
         var isAirBelow = false;
@@ -131,50 +131,50 @@ public class Locator {
             isAir = isAirBelow;
             isAirBelow = chunk.getBlockState(blockPos.move(Direction.DOWN)).isAir();
         }
-        return blockPos.up().toImmutable();
+        return blockPos.above().immutable();
     }
 
     private void findValidPlacement() {
         BlockPos pos = attemptPos;
         for (var i = 0; i <= 256; i++) {
-            if (world.getDimension().hasCeiling()) {
+            if (world.dimensionType().hasCeiling()) {
                 pos = getEmptySpace(pos);
             } else {
                 pos = getTopBlock(pos);
             }
             var bs = chunk.getBlockState(pos);
-            var bsBelow = chunk.getBlockState(pos.down());
+            var bsBelow = chunk.getBlockState(pos.below());
             if (!unsafeBlocks.contains(bs.getBlock()) && !unsafeBlocks.contains(bsBelow.getBlock())) {
                 break;
             }
 
             var dx = i % 16;
             var dz = i / 16;
-            pos = chunk.getPos().getBlockPos(dx, chunk.getBottomY(), dz);
+            pos = chunk.getPos().getBlockAt(dx, chunk.getMinBuildHeight(), dz);
         }
 
-        if (pos.getY() <= chunk.getBottomY()) {
+        if (pos.getY() <= chunk.getMinBuildHeight()) {
             callback.accept(new Result(Result.Type.UNSAFE, Optional.empty()));
             return;
         }
 
-        var vec = pos.toCenterPos();
+        var vec = pos.getCenter();
 
         callback.accept(new Result(Result.Type.SUCCESS, Optional.of(new ServerLocation(
-                vec.getX(), vec.getY(), vec.getZ(), 0, 0, world
+                vec.x(), vec.y(), vec.z(), 0, 0, world
         ))));
     }
 
     private void load() {
-        world.getChunkManager().addTicket(RTP_TICKET, new ChunkPos(attemptPos), 0, attemptPos);
+        world.getChunkSource().addRegionTicket(RTP_TICKET, new ChunkPos(attemptPos), 0, attemptPos);
     }
 
-    private Optional<WorldChunk> getChunk(ChunkPos pos) {
-        var holder = world.getChunkManager().getChunkHolder(pos.toLong());
+    private Optional<LevelChunk> getChunk(ChunkPos pos) {
+        var holder = world.getChunkSource().getVisibleChunkIfPresent(pos.toLong());
         if (holder == null) {
             return Optional.empty();
         } else {
-            return holder.getAccessibleFuture().getNow(ChunkHolder.UNLOADED_WORLD_CHUNK).left();
+            return holder.getFullChunkFuture().getNow(ChunkHolder.UNLOADED_LEVEL_CHUNK).left();
         }
     }
 
@@ -187,12 +187,12 @@ public class Locator {
         }
 
         var biome = world.getBiome(pos);
-        return !config.parseBiomes().contains(biome.getKey().orElse(null));
+        return !config.parseBiomes().contains(biome.unwrapKey().orElse(null));
     }
 
-    public boolean isInBiome(BlockPos pos, RegistryKey<Biome> biome) {
+    public boolean isInBiome(BlockPos pos, ResourceKey<Biome> biome) {
         var biomeAtPos = world.getBiome(pos);
-        return biomeAtPos.getKey().get().equals(biome);
+        return biomeAtPos.unwrapKey().get().equals(biome);
     }
 
     public BlockPos getRandomPos() {
@@ -223,7 +223,7 @@ public class Locator {
             x = (int) (Math.cos(angle) * dist + centerX);
             z = (int) (Math.sin(angle) * dist + centerZ);
 
-            if (worldBorder.contains(x, z))
+            if (worldBorder.isWithinBounds(x, z))
                 break;
 
             if (i == limit) {

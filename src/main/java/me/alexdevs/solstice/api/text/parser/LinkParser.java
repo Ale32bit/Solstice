@@ -6,12 +6,11 @@ import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.node.parent.ParentNode;
 import eu.pb4.placeholders.api.parsers.NodeParser;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
 import me.alexdevs.solstice.api.text.Format;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +44,7 @@ public class LinkParser implements NodeParser {
 
                 var link = matcher.group();
 
-                var url = Text.of(link);
+                var url = Component.nullToEmpty(link);
 
                 var placeholders = Map.of(
                         "url", url,
@@ -62,7 +61,7 @@ public class LinkParser implements NodeParser {
                         placeholders
                 );
 
-                var text = Text.empty()
+                var text = Component.empty()
                         .append(display)
                         .setStyle(Style.EMPTY
                                 .withHoverEvent(

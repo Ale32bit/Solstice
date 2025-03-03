@@ -5,17 +5,17 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.feed.FeedModule;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class FeedCommand extends ModCommand<FeedModule> {
     private static final int MAX_FOOD_LEVEL = 20;
@@ -30,18 +30,18 @@ public class FeedCommand extends ModCommand<FeedModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(2))
                 .executes(context -> execute(context, null))
-                .then(argument("targets", EntityArgumentType.players())
+                .then(argument("targets", EntityArgument.players())
                         .requires(require("others", 2))
-                        .executes(context -> execute(context, EntityArgumentType.getPlayers(context, "targets"))));
+                        .executes(context -> execute(context, EntityArgument.getPlayers(context, "targets"))));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, @Nullable Collection<ServerPlayerEntity> targets) throws CommandSyntaxException {
+    private int execute(CommandContext<CommandSourceStack> context, @Nullable Collection<ServerPlayer> targets) throws CommandSyntaxException {
         if (targets == null) {
-            var player = context.getSource().getPlayerOrThrow();
+            var player = context.getSource().getPlayerOrException();
             feed(context, player);
             return 1;
         } else {
@@ -53,9 +53,9 @@ public class FeedCommand extends ModCommand<FeedModule> {
         }
     }
 
-    private void feed(CommandContext<ServerCommandSource> context, ServerPlayerEntity player) {
-        player.getHungerManager().setFoodLevel(MAX_FOOD_LEVEL);
-        player.getHungerManager().setSaturationLevel(MAX_FOOD_LEVEL);
-        context.getSource().sendFeedback(() -> Text.literal("Fed ").append(player.getDisplayName()), true);
+    private void feed(CommandContext<CommandSourceStack> context, ServerPlayer player) {
+        player.getFoodData().setFoodLevel(MAX_FOOD_LEVEL);
+        player.getFoodData().setSaturation(MAX_FOOD_LEVEL);
+        context.getSource().sendSuccess(() -> Component.literal("Fed ").append(player.getDisplayName()), true);
     }
 }

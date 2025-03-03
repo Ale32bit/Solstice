@@ -7,14 +7,13 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.broadcast.BroadcastModule;
 import me.alexdevs.solstice.modules.broadcast.data.BroadcastConfig;
+import net.minecraft.commands.CommandSourceStack;
 import me.alexdevs.solstice.api.text.Format;
-import net.minecraft.server.command.ServerCommandSource;
-
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class BroadcastCommand extends ModCommand<BroadcastModule> {
 
@@ -28,7 +27,7 @@ public class BroadcastCommand extends ModCommand<BroadcastModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(2))
                 .then(argument("message", StringArgumentType.greedyString())

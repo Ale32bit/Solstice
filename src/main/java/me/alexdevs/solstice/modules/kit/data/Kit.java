@@ -3,8 +3,8 @@ package me.alexdevs.solstice.modules.kit.data;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.kit.Utils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class Kit {
     }
 
     public ItemStack getIcon() {
-        var defaultStack = Items.DIRT.getDefaultStack();
+        var defaultStack = Items.DIRT.getDefaultInstance();
         if (icon == null) {
             return defaultStack;
         }

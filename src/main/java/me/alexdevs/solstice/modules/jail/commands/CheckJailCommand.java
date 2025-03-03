@@ -8,10 +8,9 @@ import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.core.coreModule.data.CoreConfig;
 import me.alexdevs.solstice.modules.jail.JailModule;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
@@ -29,17 +28,17 @@ public class CheckJailCommand extends ModCommand<JailModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return CommandManager.literal(name)
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
+        return Commands.literal(name)
                 .requires(require(2))
-                .then(CommandManager.argument("user", StringArgumentType.word())
+                .then(Commands.argument("user", StringArgumentType.word())
                         .suggests(LocalGameProfile::suggest)
                         .executes(context -> {
                             var user = LocalGameProfile.getProfile(context, "user");
                             var data = module.getPlayer(user.getId());
 
                             if (!data.jailed) {
-                                context.getSource().sendFeedback(() -> module.locale().get("notJailed"), false);
+                                context.getSource().sendSuccess(() -> module.locale().get("notJailed"), false);
                                 return 0;
                             }
 
@@ -47,7 +46,7 @@ public class CheckJailCommand extends ModCommand<JailModule> {
                             if (new UUID(0, 0).equals(data.jailedBy)) {
                                 operator = "Server";
                             } else {
-                                var opProfile = context.getSource().getServer().getUserCache().getByUuid(data.jailedBy);
+                                var opProfile = context.getSource().getServer().getProfileCache().get(data.jailedBy);
                                 if (opProfile.isPresent()) {
                                     operator = opProfile.get().getName();
                                 } else {
@@ -73,16 +72,16 @@ public class CheckJailCommand extends ModCommand<JailModule> {
                             var df = new SimpleDateFormat(coreConfig.dateTimeFormat);
 
                             var map = Map.of(
-                                    "player", Text.of(user.getName()),
-                                    "jail", Text.of(data.jailName),
-                                    "operator", Text.of(operator),
-                                    "reason", Text.of(reason),
-                                    "duration", Text.of(duration),
-                                    "date", Text.of(df.format(data.jailedOn))
+                                    "player", Component.nullToEmpty(user.getName()),
+                                    "jail", Component.nullToEmpty(data.jailName),
+                                    "operator", Component.nullToEmpty(operator),
+                                    "reason", Component.nullToEmpty(reason),
+                                    "duration", Component.nullToEmpty(duration),
+                                    "date", Component.nullToEmpty(df.format(data.jailedOn))
 
                             );
 
-                            var text = Text.empty();
+                            var text = Component.empty();
                             text.append(module.locale().get("infoHeader", map));
                             text.append("\n");
                             text.append(module.locale().get("infoJailedAt", map));
@@ -95,7 +94,7 @@ public class CheckJailCommand extends ModCommand<JailModule> {
                             text.append("\n");
                             text.append(module.locale().get("infoJailedOn", map));
 
-                            context.getSource().sendFeedback(() -> text, false);
+                            context.getSource().sendSuccess(() -> text, false);
 
                             return 1;
                         })

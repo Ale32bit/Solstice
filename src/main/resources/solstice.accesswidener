@@ -1,6 +1,6 @@
 accessWidener v2 named
 # RTP
-accessible method net/minecraft/server/world/ServerChunkManager getChunkHolder (J)Lnet/minecraft/server/world/ChunkHolder;
+accessible method net/minecraft/server/level/ServerChunkCache getVisibleChunkIfPresent (J)Lnet/minecraft/server/level/ChunkHolder;
 
 # Inventory see
-accessible field net/minecraft/server/MinecraftServer saveHandler Lnet/minecraft/world/WorldSaveHandler;
+accessible field net/minecraft/server/MinecraftServer playerDataStorage Lnet/minecraft/world/level/storage/PlayerDataStorage;

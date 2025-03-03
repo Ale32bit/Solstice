@@ -6,13 +6,12 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.item.ItemModule;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 
 public class ItemLoreCommand extends ModCommand<ItemModule> {
@@ -26,54 +25,54 @@ public class ItemLoreCommand extends ModCommand<ItemModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return CommandManager.literal(name)
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
+        return Commands.literal(name)
                 .requires(require("lore", 2))
                 .executes(context -> {
-                    var player = context.getSource().getPlayerOrThrow();
-                    var item = player.getMainHandStack();
+                    var player = context.getSource().getPlayerOrException();
+                    var item = player.getMainHandItem();
 
                     if (item.isEmpty()) {
-                        context.getSource().sendFeedback(() -> module.locale().get("noItem"), false);
+                        context.getSource().sendSuccess(() -> module.locale().get("noItem"), false);
                         return 0;
                     }
 
-                    NbtCompound nbtCompound = item.getSubNbt("display");
+                    CompoundTag nbtCompound = item.getTagElement("display");
                     if (nbtCompound != null) {
                         nbtCompound.remove("Lore");
                         if (nbtCompound.isEmpty()) {
-                            item.removeSubNbt("display");
+                            item.removeTagKey("display");
                         }
                     }
 
-                    context.getSource().sendFeedback(() -> module.locale().get("loreCleared"), false);
+                    context.getSource().sendSuccess(() -> module.locale().get("loreCleared"), false);
 
                     return 1;
                 })
-                .then(CommandManager.argument("lore", StringArgumentType.greedyString())
+                .then(Commands.argument("lore", StringArgumentType.greedyString())
                         .executes(context -> {
-                            var player = context.getSource().getPlayerOrThrow();
-                            var item = player.getMainHandStack();
+                            var player = context.getSource().getPlayerOrException();
+                            var item = player.getMainHandItem();
                             var itemLore = StringArgumentType.getString(context, "lore");
 
                             if (item.isEmpty()) {
-                                context.getSource().sendFeedback(() -> module.locale().get("noItem"), false);
+                                context.getSource().sendSuccess(() -> module.locale().get("noItem"), false);
                                 return 0;
                             }
 
 
-                            var displayNbt = item.getOrCreateSubNbt("display");
-                            var list = new NbtList();
+                            var displayNbt = item.getOrCreateTagElement("display");
+                            var list = new ListTag();
 
                             var playerContext = PlaceholderContext.of(player);
                             for(var line : itemLore.split("\\\\n")) {
                                 var text = Format.parse(line, playerContext);
-                                list.add(NbtString.of(Text.Serializer.toJson(text)));
+                                list.add(StringTag.valueOf(Component.Serializer.toJson(text)));
                             }
 
                             displayNbt.put("Lore", list);
 
-                            context.getSource().sendFeedback(() -> module.locale().get("loreSet"), false);
+                            context.getSource().sendSuccess(() -> module.locale().get("loreSet"), false);
 
                             return 1;
                         })

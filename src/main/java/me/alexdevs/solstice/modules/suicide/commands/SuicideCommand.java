@@ -3,11 +3,10 @@ package me.alexdevs.solstice.modules.suicide.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.suicide.SuicideModule;
-import net.minecraft.server.command.ServerCommandSource;
-
+import net.minecraft.commands.CommandSourceStack;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 public class SuicideCommand extends ModCommand<SuicideModule> {
     public SuicideCommand(SuicideModule module) {
@@ -20,11 +19,11 @@ public class SuicideCommand extends ModCommand<SuicideModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .executes(context -> {
-                    var player = context.getSource().getPlayerOrThrow();
+                    var player = context.getSource().getPlayerOrException();
 
                     player.kill();
 

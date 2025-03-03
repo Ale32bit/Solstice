@@ -11,7 +11,7 @@ import me.alexdevs.solstice.modules.info.commands.RulesCommand;
 import me.alexdevs.solstice.modules.info.data.InfoConfig;
 import me.alexdevs.solstice.modules.info.data.InfoLocale;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -78,7 +78,7 @@ public class InfoModule extends ModuleBase.Toggleable {
                 }
                 Solstice.nextTick(() -> {
                     var motd = buildMotd(PlaceholderContext.of(handler.getPlayer()));
-                    handler.getPlayer().sendMessage(motd);
+                    handler.getPlayer().sendSystemMessage(motd);
                 });
             }
         });
@@ -88,7 +88,7 @@ public class InfoModule extends ModuleBase.Toggleable {
         return Solstice.configManager.getData(InfoConfig.class);
     }
 
-    public Text buildMotd(PlaceholderContext context) {
+    public Component buildMotd(PlaceholderContext context) {
         return getPage("motd", context);
     }
 
@@ -107,7 +107,7 @@ public class InfoModule extends ModuleBase.Toggleable {
         return infoFile.toFile().exists();
     }
 
-    public Text getPage(String name, @Nullable PlaceholderContext context) {
+    public Component getPage(String name, @Nullable PlaceholderContext context) {
         name = sanitize(name);
         if (!exists(name)) {
             return locale().get("pageNotFound");
@@ -126,7 +126,7 @@ public class InfoModule extends ModuleBase.Toggleable {
             if (context != null)
                 return Format.parse(output, context);
             else
-                return Text.of(output);
+                return Component.nullToEmpty(output);
         } catch (IOException e) {
             Solstice.LOGGER.error("Could not read info file", e);
             return locale().get("pageError");

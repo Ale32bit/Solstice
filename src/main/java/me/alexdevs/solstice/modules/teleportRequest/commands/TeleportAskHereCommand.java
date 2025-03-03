@@ -7,13 +7,12 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.teleportRequest.TeleportRequestModule;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.ServerCommandSource;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class TeleportAskHereCommand extends ModCommand<TeleportRequestModule> {
     public TeleportAskHereCommand(TeleportRequestModule module) {
@@ -26,19 +25,19 @@ public class TeleportAskHereCommand extends ModCommand<TeleportRequestModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require("here", true))
-                .then(argument("player", EntityArgumentType.player())
+                .then(argument("player", EntityArgument.player())
                         .executes(this::execute));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
-        var target = EntityArgumentType.getPlayer(context, "player");
+    private int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
+        var target = EntityArgument.getPlayer(context, "player");
 
         var ignoreModule = Solstice.modules.getModule(IgnoreModule.class);
-        if (ignoreModule.getPlayerData(target.getUuid()).ignoredPlayers.contains(player.getUuid())) {
+        if (ignoreModule.getPlayerData(target.getUUID()).ignoredPlayers.contains(player.getUUID())) {
             return 0;
         }
 

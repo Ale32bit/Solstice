@@ -9,14 +9,13 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.home.HomeModule;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class HomesCommand extends ModCommand<HomeModule> {
     public HomesCommand(HomeModule module) {
@@ -29,7 +28,7 @@ public class HomesCommand extends ModCommand<HomeModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .executes(this::execute)
@@ -39,28 +38,28 @@ public class HomesCommand extends ModCommand<HomeModule> {
                         .executes(context -> executeOthers(context, LocalGameProfile.getProfile(context, "player"))));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
-        var data = module.getData(player.getUuid());
+    private int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
+        var data = module.getData(player.getUUID());
         var homeList = data.homes.keySet().stream().toList();
         var playerContext = PlaceholderContext.of(player);
 
         if (homeList.isEmpty()) {
-            context.getSource().sendFeedback(() -> module.locale().get(
+            context.getSource().sendSuccess(() -> module.locale().get(
                     "noHomes",
                     playerContext
             ), false);
             return 1;
         }
 
-        var listText = Text.empty();
+        var listText = Component.empty();
         var comma = module.locale().get("homesComma");
         for (var i = 0; i < homeList.size(); i++) {
             if (i > 0) {
                 listText = listText.append(comma);
             }
             var placeholders = Map.of(
-                    "home", Text.of(homeList.get(i))
+                    "home", Component.nullToEmpty(homeList.get(i))
             );
 
             listText = listText.append(module.locale().get(
@@ -71,9 +70,9 @@ public class HomesCommand extends ModCommand<HomeModule> {
         }
 
         var placeholders = Map.of(
-                "homeList", (Text) listText
+                "homeList", (Component) listText
         );
-        context.getSource().sendFeedback(() -> module.locale().get(
+        context.getSource().sendSuccess(() -> module.locale().get(
                 "homeList",
                 playerContext,
                 placeholders
@@ -82,8 +81,8 @@ public class HomesCommand extends ModCommand<HomeModule> {
         return homeList.size();
     }
 
-    private int executeOthers(CommandContext<ServerCommandSource> context, GameProfile profile) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int executeOthers(CommandContext<CommandSourceStack> context, GameProfile profile) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         var playerContext = PlaceholderContext.of(player);
 
         var data = module.getData(profile.getId());
@@ -91,9 +90,9 @@ public class HomesCommand extends ModCommand<HomeModule> {
 
         if (homeList.isEmpty()) {
             var placeholders = Map.of(
-                    "owner", Text.of(profile.getName())
+                    "owner", Component.nullToEmpty(profile.getName())
             );
-            context.getSource().sendFeedback(() -> module.locale().get(
+            context.getSource().sendSuccess(() -> module.locale().get(
                     "noHomesOther",
                     playerContext,
                     placeholders
@@ -101,15 +100,15 @@ public class HomesCommand extends ModCommand<HomeModule> {
             return 1;
         }
 
-        var listText = Text.empty();
+        var listText = Component.empty();
         var comma = module.locale().get("homesComma");
         for (var i = 0; i < homeList.size(); i++) {
             if (i > 0) {
                 listText = listText.append(comma);
             }
             var placeholders = Map.of(
-                    "home", Text.of(homeList.get(i)),
-                    "owner", Text.of(profile.getName())
+                    "home", Component.nullToEmpty(homeList.get(i)),
+                    "owner", Component.nullToEmpty(profile.getName())
             );
 
             listText = listText.append(module.locale().get(
@@ -121,9 +120,9 @@ public class HomesCommand extends ModCommand<HomeModule> {
 
         var placeholders = Map.of(
                 "homeList", listText,
-                "owner", Text.of(profile.getName())
+                "owner", Component.nullToEmpty(profile.getName())
         );
-        context.getSource().sendFeedback(() -> module.locale().get(
+        context.getSource().sendSuccess(() -> module.locale().get(
                 "homeListOther",
                 playerContext,
                 placeholders

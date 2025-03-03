@@ -5,10 +5,9 @@ import eu.pb4.placeholders.api.node.parent.GradientNode;
 import eu.pb4.placeholders.api.parsers.TextParserV1;
 import eu.pb4.placeholders.impl.textparser.TextParserImpl;
 import me.alexdevs.solstice.api.utils.MathUtils;
+import net.minecraft.network.chat.TextColor;
 import me.alexdevs.solstice.api.color.Gradient;
 import me.alexdevs.solstice.api.color.RGBColor;
-import net.minecraft.text.TextColor;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,7 +46,7 @@ public class PhaseGradientTag {
                                 }
                             }
 
-                            var parsedColor = TextColor.parse(arg);
+                            var parsedColor = TextColor.parseColor(arg);
                             if (parsedColor == null) {
                                 parsedColor = TextColor.fromRgb(0);
                             }

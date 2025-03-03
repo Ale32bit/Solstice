@@ -5,10 +5,9 @@ import eu.pb4.placeholders.api.node.parent.ClickActionNode;
 import eu.pb4.placeholders.api.node.parent.FormattingNode;
 import eu.pb4.placeholders.api.node.parent.HoverNode;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ClickEvent;
 import me.alexdevs.solstice.api.text.Format;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.util.Formatting;
-
 import java.util.Map;
 
 public class MarkdownComponentParser {
@@ -16,7 +15,7 @@ public class MarkdownComponentParser {
         var text = TextNode.asSingle(textNodes);
         return new HoverNode<>(
                 TextNode.array(
-                        new FormattingNode(TextNode.array(TextNode.of("\u258C".repeat(text.toText().getString().length()))), Formatting.DARK_GRAY)
+                        new FormattingNode(TextNode.array(TextNode.of("\u258C".repeat(text.toText().getString().length()))), ChatFormatting.DARK_GRAY)
                 ),
                 HoverNode.Action.TEXT, text);
     }
@@ -25,7 +24,7 @@ public class MarkdownComponentParser {
         return new ClickActionNode(
                 TextNode.array(
                         new HoverNode<>(
-                                TextNode.array(new FormattingNode(textNodes, Formatting.GRAY)),
+                                TextNode.array(new FormattingNode(textNodes, ChatFormatting.GRAY)),
                                 HoverNode.Action.TEXT, TextNode.of("Click to copy"))
                 ),
                 ClickEvent.Action.COPY_TO_CLIPBOARD, TextNode.asSingle(textNodes)

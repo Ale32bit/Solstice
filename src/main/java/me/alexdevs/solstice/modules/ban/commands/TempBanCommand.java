@@ -8,16 +8,15 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.ban.BanModule;
-import net.minecraft.command.argument.GameProfileArgumentType;
-import net.minecraft.server.command.ServerCommandSource;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.GameProfileArgument;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class TempBanCommand extends ModCommand<BanModule> {
     public TempBanCommand(BanModule module) {
@@ -38,19 +37,19 @@ public class TempBanCommand extends ModCommand<BanModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require("tempban", 3))
-                .then(argument("targets", GameProfileArgumentType.gameProfile())
+                .then(argument("targets", GameProfileArgument.gameProfile())
                         .then(argument("duration", StringArgumentType.string())
                                 .suggests(TimeSpan::suggest)
-                                .executes(context -> execute(context, GameProfileArgumentType.getProfileArgument(context, "targets"), null, TimeSpan.getTimeSpan(context, "duration")))
+                                .executes(context -> execute(context, GameProfileArgument.getGameProfiles(context, "targets"), null, TimeSpan.getTimeSpan(context, "duration")))
                                 .then(argument("reason", StringArgumentType.greedyString())
-                                        .executes(context -> execute(context, GameProfileArgumentType.getProfileArgument(context, "targets"), StringArgumentType.getString(context, "reason"), TimeSpan.getTimeSpan(context, "duration"))))));
+                                        .executes(context -> execute(context, GameProfileArgument.getGameProfiles(context, "targets"), StringArgumentType.getString(context, "reason"), TimeSpan.getTimeSpan(context, "duration"))))));
 
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, Collection<GameProfile> targets, String reason, int duration) throws CommandSyntaxException {
+    private int execute(CommandContext<CommandSourceStack> context, Collection<GameProfile> targets, String reason, int duration) throws CommandSyntaxException {
         var expiryDate = getDateFromNow(duration);
 
         return BanCommand.execute(context, targets, reason, expiryDate);

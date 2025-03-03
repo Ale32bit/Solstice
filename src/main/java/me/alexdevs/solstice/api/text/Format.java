@@ -7,8 +7,7 @@ import eu.pb4.placeholders.api.parsers.NodeParser;
 import eu.pb4.placeholders.api.parsers.PatternPlaceholderParser;
 import eu.pb4.placeholders.api.parsers.TextParserV1;
 import me.alexdevs.solstice.api.text.tag.PhaseGradientTag;
-import net.minecraft.text.Text;
-
+import net.minecraft.network.chat.Component;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -22,32 +21,32 @@ public class Format {
         PARSER = parser;
     }
 
-    public static Text parse(String text) {
+    public static Component parse(String text) {
         return PARSER.parseNode(text).toText(null, true);
     }
 
-    public static Text parse(TextNode textNode, PlaceholderContext context, Map<String, Text> placeholders) {
+    public static Component parse(TextNode textNode, PlaceholderContext context, Map<String, Component> placeholders) {
         var predefinedNode = Placeholders.parseNodes(textNode, PLACEHOLDER_PATTERN, placeholders);
         return Placeholders.parseText(predefinedNode, context);
     }
 
-    public static Text parse(Text text, PlaceholderContext context, Map<String, Text> placeholders) {
+    public static Component parse(Component text, PlaceholderContext context, Map<String, Component> placeholders) {
         return parse(TextNode.convert(text), context, placeholders);
     }
 
-    public static Text parse(String text, PlaceholderContext context, Map<String, Text> placeholders) {
+    public static Component parse(String text, PlaceholderContext context, Map<String, Component> placeholders) {
         return parse(parse(text), context, placeholders);
     }
 
-    public static Text parse(String text, PlaceholderContext context) {
+    public static Component parse(String text, PlaceholderContext context) {
         return parse(parse(text), context, Map.of());
     }
 
-    public static Text parse(String text, Map<String, Text> placeholders) {
+    public static Component parse(String text, Map<String, Component> placeholders) {
         return Placeholders.parseText(parse(text), PLACEHOLDER_PATTERN, placeholders);
     }
 
-    public static Text parse(Text text, Map<String, Text> placeholders) {
+    public static Component parse(Component text, Map<String, Component> placeholders) {
         return Placeholders.parseText(TextNode.convert(text), PLACEHOLDER_PATTERN, placeholders);
     }
 }

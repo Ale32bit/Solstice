@@ -8,14 +8,13 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.home.HomeModule;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class HomeOtherCommand extends ModCommand<HomeModule> {
     public HomeOtherCommand(HomeModule module) {
@@ -28,7 +27,7 @@ public class HomeOtherCommand extends ModCommand<HomeModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require("others", 2))
                 .then(argument("player", StringArgumentType.word())
@@ -38,8 +37,8 @@ public class HomeOtherCommand extends ModCommand<HomeModule> {
                                 .executes(context -> execute(context, StringArgumentType.getString(context, "name")))));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
-        var sourcePlayer = context.getSource().getPlayerOrThrow();
+    private int execute(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+        var sourcePlayer = context.getSource().getPlayerOrException();
         var profile = LocalGameProfile.getProfile(context, "player");
         var playerContext = PlaceholderContext.of(context.getSource().getPlayer());
 
@@ -47,12 +46,12 @@ public class HomeOtherCommand extends ModCommand<HomeModule> {
         var data = module.getData(profile.getId());
 
         var placeholders = Map.of(
-                "home", Text.of(name),
-                "owner", Text.of(profile.getName())
+                "home", Component.nullToEmpty(name),
+                "owner", Component.nullToEmpty(profile.getName())
         );
 
         if (!data.homes.containsKey(name)) {
-            context.getSource().sendFeedback(() ->
+            context.getSource().sendSuccess(() ->
                     module.locale().get(
                             "homeNotFound",
                             playerContext,
@@ -62,7 +61,7 @@ public class HomeOtherCommand extends ModCommand<HomeModule> {
             return 1;
         }
 
-        context.getSource().sendFeedback(() ->
+        context.getSource().sendSuccess(() ->
                 module.locale().get(
                         "teleportingOther",
                         playerContext,

@@ -9,7 +9,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -202,7 +202,7 @@ public class TimeSpan {
         return Optional.empty();
     }
 
-    public static int getTimeSpan(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
+    public static int getTimeSpan(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
         var argument = context.getArgument(name, String.class);
         var timespan = parse(argument);
         if (timespan.isPresent()) {
@@ -212,7 +212,7 @@ public class TimeSpan {
         throw INVALID_TIMESPAN.create();
     }
 
-    public static CompletableFuture<Suggestions> suggest(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
+    public static CompletableFuture<Suggestions> suggest(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
         var original = builder.getRemainingLowerCase();
         if (original.isEmpty()) {
             return Suggestions.empty();

@@ -3,14 +3,13 @@ package me.alexdevs.solstice.modules.styling.formatters;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.styling.StylingModule;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import me.alexdevs.solstice.api.text.Format;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-
 import java.util.Map;
 
 public class ConnectionActivityFormatter {
-    public static Text onJoin(ServerPlayerEntity player) {
+    public static Component onJoin(ServerPlayer player) {
         var config = Solstice.modules.getModule(StylingModule.class).getConfig();
         var playerContext = PlaceholderContext.of(player);
         return Format.parse(
@@ -19,17 +18,17 @@ public class ConnectionActivityFormatter {
         );
     }
 
-    public static Text onJoinRenamed(ServerPlayerEntity player, String previousName) {
+    public static Component onJoinRenamed(ServerPlayer player, String previousName) {
         var config = Solstice.modules.getModule(StylingModule.class).getConfig();
         var playerContext = PlaceholderContext.of(player);
         return Format.parse(
                 config.joinRenamedFormat,
                 playerContext,
-                Map.of("previousName", Text.of(previousName))
+                Map.of("previousName", Component.nullToEmpty(previousName))
         );
     }
 
-    public static Text onLeave(ServerPlayerEntity player) {
+    public static Component onLeave(ServerPlayer player) {
         var config = Solstice.modules.getModule(StylingModule.class).getConfig();
         var playerContext = PlaceholderContext.of(player);
         return Format.parse(

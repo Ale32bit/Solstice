@@ -3,11 +3,10 @@ package me.alexdevs.solstice.modules.hat.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.hat.HatModule;
-import net.minecraft.server.command.ServerCommandSource;
-
+import net.minecraft.commands.CommandSourceStack;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 public class HatCommand extends ModCommand<HatModule> {
     public HatCommand(HatModule module) {
@@ -21,30 +20,30 @@ public class HatCommand extends ModCommand<HatModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(2))
                 .executes(context -> {
-                    var player = context.getSource().getPlayerOrThrow();
-                    var handStack = player.getMainHandStack();
+                    var player = context.getSource().getPlayerOrException();
+                    var handStack = player.getMainHandItem();
 
                     if (handStack.isEmpty()) {
-                        context.getSource().sendFeedback(() -> module.locale().get("emptyStack"), false);
+                        context.getSource().sendSuccess(() -> module.locale().get("emptyStack"), false);
                         return 0;
                     }
 
                     var config = module.getConfig();
 
-                    var itemId = handStack.getRegistryEntry().getKey().get().getValue().toString();
-                    var tags = handStack.streamTags();
+                    var itemId = handStack.getItemHolder().unwrapKey().get().location().toString();
+                    var tags = handStack.getTags();
                     if (config.whitelistFilter) {
                         if(!module.isInFilter(itemId) && !module.isInFilter(tags)) {
-                            context.getSource().sendFeedback(() -> module.locale().get("notAllowed"), false);
+                            context.getSource().sendSuccess(() -> module.locale().get("notAllowed"), false);
                             return 0;
                         }
                     } else {
                         if(module.isInFilter(itemId) || module.isInFilter(tags)) {
-                            context.getSource().sendFeedback(() -> module.locale().get("notAllowed"), false);
+                            context.getSource().sendSuccess(() -> module.locale().get("notAllowed"), false);
                             return 0;
                         }
                     }
@@ -53,10 +52,10 @@ public class HatCommand extends ModCommand<HatModule> {
 
                     var inventory = player.getInventory();
                     var oldHeadStack = inventory.armor.get(3); // head slot
-                    inventory.setStack(inventory.selectedSlot, oldHeadStack.copyAndEmpty());
-                    inventory.armor.set(3, handStack.copyAndEmpty());
+                    inventory.setItem(inventory.selected, oldHeadStack.copyAndClear());
+                    inventory.armor.set(3, handStack.copyAndClear());
 
-                    context.getSource().sendFeedback(() -> module.locale().get("success"), false);
+                    context.getSource().sendSuccess(() -> module.locale().get("success"), false);
 
                     return 1;
                 });

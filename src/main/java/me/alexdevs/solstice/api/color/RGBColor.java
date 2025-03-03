@@ -1,12 +1,12 @@
 package me.alexdevs.solstice.api.color;
 
-import net.minecraft.text.TextColor;
+import net.minecraft.network.chat.TextColor;
 
 public class RGBColor {
     public final int color;
 
     public RGBColor(TextColor color) {
-        this.color = color.getRgb();
+        this.color = color.getValue();
     }
 
     public RGBColor(int color) {

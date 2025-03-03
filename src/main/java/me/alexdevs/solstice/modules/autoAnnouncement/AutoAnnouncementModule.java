@@ -62,7 +62,7 @@ public class AutoAnnouncementModule extends ModuleBase.Toggleable {
         var line = lines.get(currentLine);
         currentLine++;
 
-        Solstice.server.getPlayerManager().getPlayerList().forEach(player -> {
+        Solstice.server.getPlayerList().getPlayers().forEach(player -> {
             if (line.permission() != null) {
                 var result = line.result();
                 if (result == null)
@@ -72,7 +72,7 @@ public class AutoAnnouncementModule extends ModuleBase.Toggleable {
                 }
             }
             var playerContext = PlaceholderContext.of(player);
-            player.sendMessage(Format.parse(line.text(), playerContext));
+            player.sendSystemMessage(Format.parse(line.text(), playerContext));
         });
 
     }

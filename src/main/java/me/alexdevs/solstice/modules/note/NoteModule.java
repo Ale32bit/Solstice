@@ -11,8 +11,7 @@ import me.alexdevs.solstice.modules.note.data.NoteLocale;
 import me.alexdevs.solstice.modules.note.data.NotePlayerData;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.text.Text;
-
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -38,7 +37,7 @@ public class NoteModule extends ModuleBase.Toggleable {
                 return;
 
             var player = handler.getPlayer();
-            var notes = getNotes(player.getUuid());
+            var notes = getNotes(player.getUUID());
 
             if (notes.isEmpty())
                 return;
@@ -51,15 +50,15 @@ public class NoteModule extends ModuleBase.Toggleable {
                     "/notes " + player.getGameProfile().getName()
             );
             final var text = locale().get("loginInfo", context, Map.of(
-                    "user", Text.of(player.getGameProfile().getName()),
-                    "notes", Text.of(String.valueOf(notes.size())),
+                    "user", Component.nullToEmpty(player.getGameProfile().getName()),
+                    "notes", Component.nullToEmpty(String.valueOf(notes.size())),
                     "checkButton", checkButton
             ));
 
             Solstice.nextTick(() ->
-                    server.getPlayerManager().getPlayerList().forEach(pl -> {
+                    server.getPlayerList().getPlayers().forEach(pl -> {
                         if (Permissions.check(pl, getPermissionNode("showonlogin"), 2)) {
-                            pl.sendMessage(text);
+                            pl.sendSystemMessage(text);
                         }
                     }));
         });

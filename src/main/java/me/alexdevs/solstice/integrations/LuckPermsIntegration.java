@@ -6,7 +6,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.event.user.UserDataRecalculateEvent;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -43,14 +43,14 @@ public class LuckPermsIntegration {
         return FabricLoader.getInstance().isModLoaded("luckperms");
     }
 
-    public static @Nullable String getPrefix(ServerPlayerEntity player) {
+    public static @Nullable String getPrefix(ServerPlayer player) {
         if (!available) {
             return null;
         }
 
-        return prefixMap.computeIfAbsent(player.getUuid(), uuid -> {
+        return prefixMap.computeIfAbsent(player.getUUID(), uuid -> {
             try {
-                var playerMeta = luckPerms.getPlayerAdapter(ServerPlayerEntity.class).getMetaData(player);
+                var playerMeta = luckPerms.getPlayerAdapter(ServerPlayer.class).getMetaData(player);
                 return Optional.ofNullable(playerMeta.getPrefix());
             } catch (IllegalStateException e) {
                 // Fake player may throw with IllegalStateException
@@ -59,14 +59,14 @@ public class LuckPermsIntegration {
         }).orElse(null);
     }
 
-    public static @Nullable String getSuffix(ServerPlayerEntity player) {
+    public static @Nullable String getSuffix(ServerPlayer player) {
         if (!available) {
             return null;
         }
 
-        return suffixMap.computeIfAbsent(player.getUuid(), uuid -> {
+        return suffixMap.computeIfAbsent(player.getUUID(), uuid -> {
             try {
-                var playerMeta = luckPerms.getPlayerAdapter(ServerPlayerEntity.class).getMetaData(player);
+                var playerMeta = luckPerms.getPlayerAdapter(ServerPlayer.class).getMetaData(player);
                 return Optional.ofNullable(playerMeta.getSuffix());
             } catch (IllegalStateException e) {
                 // Fake player may throw with IllegalStateException
@@ -75,12 +75,12 @@ public class LuckPermsIntegration {
         }).orElse(null);
     }
 
-    public static boolean isInGroup(ServerPlayerEntity player, String group) {
+    public static boolean isInGroup(ServerPlayer player, String group) {
         if (!available) {
             return false;
         }
         try {
-            var user = luckPerms.getPlayerAdapter(ServerPlayerEntity.class).getUser(player);
+            var user = luckPerms.getPlayerAdapter(ServerPlayer.class).getUser(player);
             var inheritedGroups = user.getInheritedGroups(user.getQueryOptions());
             return inheritedGroups.stream().anyMatch(g -> g.getName().equalsIgnoreCase(group));
         } catch (IllegalStateException e) {

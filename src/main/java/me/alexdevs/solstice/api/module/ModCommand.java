@@ -4,19 +4,18 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
 public abstract class ModCommand<T extends ModuleBase> {
     protected final T module;
-    protected CommandDispatcher<ServerCommandSource> dispatcher;
-    protected CommandRegistryAccess commandRegistry;
-    protected CommandManager.RegistrationEnvironment environment;
+    protected CommandDispatcher<CommandSourceStack> dispatcher;
+    protected CommandBuildContext commandRegistry;
+    protected Commands.CommandSelection environment;
 
     public ModCommand(T module) {
         this.commandRegistry = null;
@@ -26,7 +25,7 @@ public abstract class ModCommand<T extends ModuleBase> {
         this.module = module;
     }
 
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandRegistry, Commands.CommandSelection environment) {
         this.dispatcher = dispatcher;
         this.commandRegistry = commandRegistry;
         this.environment = environment;
@@ -36,14 +35,14 @@ public abstract class ModCommand<T extends ModuleBase> {
         var node = registerCommand(command(name));
 
         for (var alias : aliases) {
-            dispatcher.register(CommandManager.literal(alias)
+            dispatcher.register(Commands.literal(alias)
                     .requires(node.getRequirement())
                     .executes(node.getCommand())
                     .redirect(node));
         }
     }
 
-    public LiteralCommandNode<ServerCommandSource> registerCommand(LiteralArgumentBuilder<ServerCommandSource> command) {
+    public LiteralCommandNode<CommandSourceStack> registerCommand(LiteralArgumentBuilder<CommandSourceStack> command) {
         return dispatcher.register(command);
     }
 
@@ -63,27 +62,27 @@ public abstract class ModCommand<T extends ModuleBase> {
         return node;
     }
 
-    public Predicate<ServerCommandSource> require() {
+    public Predicate<CommandSourceStack> require() {
         return Permissions.require(getPermissionNode());
     }
 
-    public Predicate<ServerCommandSource> require(int defaultRequiredLevel) {
+    public Predicate<CommandSourceStack> require(int defaultRequiredLevel) {
         return Permissions.require(getPermissionNode(), defaultRequiredLevel);
     }
 
-    public Predicate<ServerCommandSource> require(boolean defaultValue) {
+    public Predicate<CommandSourceStack> require(boolean defaultValue) {
         return Permissions.require(getPermissionNode(), defaultValue);
     }
 
-    public Predicate<ServerCommandSource> require(String subNode) {
+    public Predicate<CommandSourceStack> require(String subNode) {
         return Permissions.require(getPermissionNode(subNode));
     }
 
-    public Predicate<ServerCommandSource> require(String subNode, int defaultRequiredLevel) {
+    public Predicate<CommandSourceStack> require(String subNode, int defaultRequiredLevel) {
         return Permissions.require(getPermissionNode(subNode), defaultRequiredLevel);
     }
 
-    public Predicate<ServerCommandSource> require(String subNode, boolean defaultValue) {
+    public Predicate<CommandSourceStack> require(String subNode, boolean defaultValue) {
         return Permissions.require(getPermissionNode(subNode), defaultValue);
     }
 
@@ -100,5 +99,5 @@ public abstract class ModCommand<T extends ModuleBase> {
      * @param name Command name
      * @return Command node
      */
-    public abstract LiteralArgumentBuilder<ServerCommandSource> command(String name);
+    public abstract LiteralArgumentBuilder<CommandSourceStack> command(String name);
 }

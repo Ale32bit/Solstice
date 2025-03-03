@@ -6,17 +6,17 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.spawn.SpawnModule;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class FirstSpawnCommand extends ModCommand<SpawnModule> {
     public FirstSpawnCommand(SpawnModule module) {
@@ -28,27 +28,27 @@ public class FirstSpawnCommand extends ModCommand<SpawnModule> {
         return List.of("firstspawn");
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, @Nullable Collection<ServerPlayerEntity> players) throws CommandSyntaxException {
+    private int execute(CommandContext<CommandSourceStack> context, @Nullable Collection<ServerPlayer> players) throws CommandSyntaxException {
         if (module.getFirstSpawn() == null) {
-            context.getSource().sendFeedback(() -> module.locale().get("noFirstSpawn"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("noFirstSpawn"), false);
             return 0;
         }
         if (players == null) {
-            var player = context.getSource().getPlayerOrThrow();
+            var player = context.getSource().getPlayerOrException();
             sendToFirstSpawn(context, player);
             return 1;
         } else {
-            for (ServerPlayerEntity player : players) {
+            for (ServerPlayer player : players) {
                 sendToFirstSpawn(context, player);
-                context.getSource().sendFeedback(() -> Text.literal("Sent ").append(player.getDisplayName()).append(" to first spawn."), true);
+                context.getSource().sendSuccess(() -> Component.literal("Sent ").append(player.getDisplayName()).append(" to first spawn."), true);
             }
             return players.size();
         }
     }
 
-    private void sendToFirstSpawn(CommandContext<ServerCommandSource> context, ServerPlayerEntity player) {
+    private void sendToFirstSpawn(CommandContext<CommandSourceStack> context, ServerPlayer player) {
         var playerContext = PlaceholderContext.of(player);
-        context.getSource().sendFeedback(() -> module.locale().get(
+        context.getSource().sendSuccess(() -> module.locale().get(
                 "teleporting",
                 playerContext
         ), false);
@@ -57,12 +57,12 @@ public class FirstSpawnCommand extends ModCommand<SpawnModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require("firstspawn", true))
                 .executes(context -> execute(context, null))
-                .then(argument("players", EntityArgumentType.players())
-                        .executes(context -> execute(context, EntityArgumentType.getPlayers(context, "players"))));
+                .then(argument("players", EntityArgument.players())
+                        .executes(context -> execute(context, EntityArgument.getPlayers(context, "players"))));
     }
 
 

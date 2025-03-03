@@ -4,30 +4,29 @@ import com.mojang.authlib.GameProfile;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.ban.BanModule;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.players.UserBanListEntry;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.api.text.Format;
-import net.minecraft.server.BannedPlayerEntry;
-import net.minecraft.text.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.Map;
 
 public class BanMessageFormatter {
-    public static Text format(GameProfile profile, BannedPlayerEntry entry) {
+    public static Component format(GameProfile profile, UserBanListEntry entry) {
         var locale = Solstice.modules.getModule(BanModule.class).locale();
         var coreConfig = CoreModule.getConfig();
         var df = new SimpleDateFormat(coreConfig.dateTimeFormat);
 
         var context = PlaceholderContext.of(profile, Solstice.server);
-        var expiryDate = Text.of(entry.getExpiryDate() != null ? df.format(entry.getExpiryDate()) : "never");
-        Map<String, Text> placeholders = Map.of(
+        var expiryDate = Component.nullToEmpty(entry.getExpires() != null ? df.format(entry.getExpires()) : "never");
+        Map<String, Component> placeholders = Map.of(
                 "reason", Format.parse(entry.getReason(), context),
-                "creation_date", Text.of(df.format(entry.getCreationDate())),
+                "creation_date", Component.nullToEmpty(df.format(entry.getCreated())),
                 "expiry_date", expiryDate,
-                "source", Text.of(entry.getSource())
+                "source", Component.nullToEmpty(entry.getSource())
         );
 
-        var format = entry.getExpiryDate() != null ? locale.raw("tempBanMessageFormat") : locale.raw("banMessageFormat");
+        var format = entry.getExpires() != null ? locale.raw("tempBanMessageFormat") : locale.raw("banMessageFormat");
 
         return Format.parse(format, context, placeholders);
     }

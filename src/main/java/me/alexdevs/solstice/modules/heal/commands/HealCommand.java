@@ -5,18 +5,18 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.heal.HealModule;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class HealCommand extends ModCommand<HealModule> {
     public HealCommand(HealModule module) {
@@ -29,18 +29,18 @@ public class HealCommand extends ModCommand<HealModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(2))
                 .executes(context -> execute(context, null))
-                .then(argument("targets", EntityArgumentType.entities())
+                .then(argument("targets", EntityArgument.entities())
                         .requires(require("others", 2))
-                        .executes(context -> execute(context, EntityArgumentType.getEntities(context, "targets"))));
+                        .executes(context -> execute(context, EntityArgument.getEntities(context, "targets"))));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, @Nullable Collection<? extends Entity> targets) throws CommandSyntaxException {
+    private int execute(CommandContext<CommandSourceStack> context, @Nullable Collection<? extends Entity> targets) throws CommandSyntaxException {
         if (targets == null) {
-            var player = context.getSource().getPlayerOrThrow();
+            var player = context.getSource().getPlayerOrException();
             heal(context, player);
             return 1;
         } else {
@@ -53,14 +53,14 @@ public class HealCommand extends ModCommand<HealModule> {
             }
 
             if (healedCount == 0) {
-                context.getSource().sendError(Text.of("There are no living entities in the selector"));
+                context.getSource().sendFailure(Component.nullToEmpty("There are no living entities in the selector"));
             }
             return healedCount;
         }
     }
 
-    private void heal(CommandContext<ServerCommandSource> context, LivingEntity entity) {
+    private void heal(CommandContext<CommandSourceStack> context, LivingEntity entity) {
         entity.setHealth(entity.getMaxHealth());
-        context.getSource().sendFeedback(() -> Text.literal("Healed ").append(entity.getDisplayName()), true);
+        context.getSource().sendSuccess(() -> Component.literal("Healed ").append(entity.getDisplayName()), true);
     }
 }

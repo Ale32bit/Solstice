@@ -10,16 +10,16 @@ import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.seen.SeenModule;
 import me.alexdevs.solstice.api.text.Format;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class SeenCommand extends ModCommand<SeenModule> {
     public SeenCommand(SeenModule module) {
@@ -39,7 +39,7 @@ public class SeenCommand extends ModCommand<SeenModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .then(argument("player", StringArgumentType.word())
@@ -50,7 +50,7 @@ public class SeenCommand extends ModCommand<SeenModule> {
                             var profile = LocalGameProfile.getProfile(context, "player");
 
                             boolean extended;
-                            if (context.getSource().isExecutedByPlayer()) {
+                            if (context.getSource().isPlayer()) {
                                 extended = Permissions.check(context.getSource().getPlayer(), getPermissionNode("extended"), 2);
                             } else {
                                 extended = true;
@@ -59,11 +59,11 @@ public class SeenCommand extends ModCommand<SeenModule> {
                             var config = CoreModule.getConfig();
 
                             var dateFormatter = new SimpleDateFormat(config.dateTimeFormat);
-                            var player = source.getServer().getPlayerManager().getPlayer(profile.getId());
+                            var player = source.getServer().getPlayerList().getPlayer(profile.getId());
                             var playerData = CoreModule.getPlayerData(profile.getId());
 
                             if(playerData.firstJoinedDate == null) {
-                                source.sendFeedback(() -> module.locale().get("playerNotFound"), false);
+                                source.sendSuccess(() -> module.locale().get("playerNotFound"), false);
                                 return 0;
                             }
 
@@ -78,13 +78,13 @@ public class SeenCommand extends ModCommand<SeenModule> {
                             var lastSeenDate = playerData.lastSeenDate != null ? dateFormatter.format(playerData.lastSeenDate) : module.locale().raw("unknown");
                             var ipAddress = playerData.ipAddress != null ? playerData.ipAddress : module.locale().raw("unknown");
 
-                            Map<String, Text> map = Map.of(
-                                    "username", Text.of(profile.getName()),
-                                    "uuid", Text.of(profile.getId().toString()),
-                                    "firstSeenDate", Text.of(firstSeenDate),
-                                    "lastSeenDate", Text.of(player != null ? module.locale().raw("online") : lastSeenDate),
-                                    "ipAddress", Text.of(ipAddress),
-                                    "location", Text.of(getPositionAsString(location))
+                            Map<String, Component> map = Map.of(
+                                    "username", Component.nullToEmpty(profile.getName()),
+                                    "uuid", Component.nullToEmpty(profile.getId().toString()),
+                                    "firstSeenDate", Component.nullToEmpty(firstSeenDate),
+                                    "lastSeenDate", Component.nullToEmpty(player != null ? module.locale().raw("online") : lastSeenDate),
+                                    "ipAddress", Component.nullToEmpty(ipAddress),
+                                    "location", Component.nullToEmpty(getPositionAsString(location))
                             );
 
                             var outputString = module.locale().raw("base");
@@ -95,9 +95,9 @@ public class SeenCommand extends ModCommand<SeenModule> {
 
                             final var finalOutput = outputString;
                             if (player != null) {
-                                source.sendFeedback(() -> Format.parse(finalOutput, PlaceholderContext.of(player), map), false);
+                                source.sendSuccess(() -> Format.parse(finalOutput, PlaceholderContext.of(player), map), false);
                             } else {
-                                source.sendFeedback(() -> Format.parse(finalOutput, PlaceholderContext.of(source.getServer()), map), false);
+                                source.sendSuccess(() -> Format.parse(finalOutput, PlaceholderContext.of(source.getServer()), map), false);
                             }
 
                             return 1;

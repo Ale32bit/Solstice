@@ -5,9 +5,8 @@ import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,7 +17,7 @@ public class CooldownManager {
 
     public CooldownManager() {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            var playerUuid = handler.getPlayer().getUuid();
+            var playerUuid = handler.getPlayer().getUUID();
             cooldowns.computeIfAbsent(playerUuid, k -> new ConcurrentHashMap<>());
         });
 
@@ -38,25 +37,25 @@ public class CooldownManager {
         }
     }
 
-    public boolean isExempt(ServerPlayerEntity player, String node) {
+    public boolean isExempt(ServerPlayer player, String node) {
         return Permissions.check(player, node + ".exempt.cooldown", 3);
     }
 
-    public boolean onCooldown(ServerPlayerEntity player, String node) {
+    public boolean onCooldown(ServerPlayer player, String node) {
         if (isExempt(player, node))
             return false;
-        var uuid = player.getUuid();
+        var uuid = player.getUUID();
         var cooldown = cooldowns.computeIfAbsent(uuid, k -> new ConcurrentHashMap<>());
         return cooldown.getOrDefault(node, 0) > 0;
     }
 
-    public Text getMessage(ServerPlayerEntity player, String node) {
-        var uuid = player.getUuid();
+    public Component getMessage(ServerPlayer player, String node) {
+        var uuid = player.getUUID();
         var cooldown = cooldowns.computeIfAbsent(uuid, k -> new ConcurrentHashMap<>());
         var value = cooldown.getOrDefault(node, 0);
         var locale = Solstice.localeManager.getLocale(CoreModule.ID);
         return locale.get("~cooldown", Map.of(
-                "timespan", Text.of(TimeSpan.toShortString(value))
+                "timespan", Component.nullToEmpty(TimeSpan.toShortString(value))
         ));
     }
 
@@ -67,7 +66,7 @@ public class CooldownManager {
      * @param seconds Cooldown seconds
      * @return Whether to execute
      */
-    public boolean trigger(ServerPlayerEntity player, String node, int seconds) {
+    public boolean trigger(ServerPlayer player, String node, int seconds) {
         if (onCooldown(player, node)) {
             return false;
         }
@@ -76,15 +75,15 @@ public class CooldownManager {
             return true;
         }
 
-        var uuid = player.getUuid();
+        var uuid = player.getUUID();
         var cooldown = cooldowns.get(uuid);
         cooldown.put(node, seconds);
 
         return true;
     }
 
-    public void clear(ServerPlayerEntity player, String node) {
-        var uuid = player.getUuid();
+    public void clear(ServerPlayer player, String node) {
+        var uuid = player.getUUID();
         var cooldown = cooldowns.get(uuid);
         cooldown.remove(node);
     }
