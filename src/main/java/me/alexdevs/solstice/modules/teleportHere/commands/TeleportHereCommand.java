@@ -3,16 +3,15 @@ package me.alexdevs.solstice.modules.teleportHere.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.teleportHere.TeleportHereModule;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.PathfinderMob;
 import java.util.List;
 import java.util.Set;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class TeleportHereCommand extends ModCommand<TeleportHereModule> {
     public TeleportHereCommand(TeleportHereModule module) {
@@ -24,34 +23,34 @@ public class TeleportHereCommand extends ModCommand<TeleportHereModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(2))
-                .then(argument("targets", EntityArgumentType.entities())
+                .then(argument("targets", EntityArgument.entities())
                         .executes(context -> {
                             var source = context.getSource();
-                            var player = source.getPlayerOrThrow();
-                            var world = player.getServerWorld();
-                            var vec3d = player.getPos();
-                            var yaw = player.getYaw();
-                            var pitch = player.getPitch();
+                            var player = source.getPlayerOrException();
+                            var world = player.serverLevel();
+                            var vec3d = player.position();
+                            var yaw = player.getYRot();
+                            var pitch = player.getXRot();
 
-                            var targets = EntityArgumentType.getEntities(context, "targets");
+                            var targets = EntityArgument.getEntities(context, "targets");
 
                             targets.forEach(target -> {
-                                target.teleport(world, vec3d.x, vec3d.y, vec3d.z, Set.of(), yaw, pitch);
-                                target.setVelocity(target.getVelocity().multiply(1.0, 0.0, 1.0));
+                                target.teleportTo(world, vec3d.x, vec3d.y, vec3d.z, Set.of(), yaw, pitch);
+                                target.setDeltaMovement(target.getDeltaMovement().multiply(1.0, 0.0, 1.0));
                                 target.setOnGround(true);
 
-                                if (target instanceof PathAwareEntity pathAwareEntity) {
+                                if (target instanceof PathfinderMob pathAwareEntity) {
                                     pathAwareEntity.getNavigation().stop();
                                 }
                             });
 
                             if (targets.size() == 1) {
-                                source.sendFeedback(() -> Text.translatable("commands.teleport.success.entity.single", targets.iterator().next().getDisplayName(), player.getDisplayName()), true);
+                                source.sendSuccess(() -> Component.translatable("commands.teleport.success.entity.single", targets.iterator().next().getDisplayName(), player.getDisplayName()), true);
                             } else {
-                                source.sendFeedback(() -> Text.translatable("commands.teleport.success.entity.multiple", targets.size(), player.getDisplayName()), true);
+                                source.sendSuccess(() -> Component.translatable("commands.teleport.success.entity.multiple", targets.size(), player.getDisplayName()), true);
                             }
 
                             return targets.size();

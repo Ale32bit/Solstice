@@ -3,21 +3,15 @@ package me.alexdevs.solstice.modules.styling.formatters;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.styling.StylingModule;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import me.alexdevs.solstice.api.text.Format;
-import net.minecraft.advancement.AdvancementEntry;
-import net.minecraft.advancement.AdvancementFrame;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-
-
-
 import java.util.Map;
 
 public class AdvancementFormatter {
-    public static Text getText(ServerPlayerEntity player, AdvancementEntry entry, AdvancementFrame frame) {
-        //var title = advancementKey + ".title";
-        //var description = advancementKey + ".description";
-
+    public static Component getText(ServerPlayer player, AdvancementHolder entry, AdvancementType frame) {
         var locale = Solstice.localeManager.getLocale(StylingModule.ID);
 
         var title = entry.value().display().get().getTitle();
@@ -33,8 +27,8 @@ public class AdvancementFormatter {
 
         var playerContext = PlaceholderContext.of(player);
 
-        Map<String, Text> placeholders = Map.of(
-                "frame", frame.getToastText(),
+        Map<String, Component> placeholders = Map.of(
+                "frame", frame.getDisplayName(),
                 "title", title,
                 "description", description
         );

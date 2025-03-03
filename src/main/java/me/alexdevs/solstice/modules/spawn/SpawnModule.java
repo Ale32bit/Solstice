@@ -12,12 +12,12 @@ import me.alexdevs.solstice.modules.spawn.data.SpawnConfig;
 import me.alexdevs.solstice.modules.spawn.data.SpawnLocale;
 import me.alexdevs.solstice.modules.spawn.data.SpawnServerData;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 public class SpawnModule extends ModuleBase.Toggleable {
@@ -61,7 +61,7 @@ public class SpawnModule extends ModuleBase.Toggleable {
             if (spawnData.spawn != null) {
                 var legacy = spawnData.spawn;
                 var world = legacy.getWorld(server);
-                world.setSpawnPos(new BlockPos((int) legacy.getX(), (int) legacy.getY(), (int) legacy.getZ()), legacy.getYaw());
+                world.setDefaultSpawnPos(new BlockPos((int) legacy.getX(), (int) legacy.getY(), (int) legacy.getZ()), legacy.getYaw());
                 spawnData.spawn = null;
             }
         });
@@ -73,32 +73,32 @@ public class SpawnModule extends ModuleBase.Toggleable {
         var spawnPosition = serverData.spawn;
         if (spawnPosition == null) {
             var server = Solstice.server;
-            var spawnPos = server.getOverworld().getSpawnPos();
-            spawnPosition = new ServerLocation(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), 0, 0, server.getOverworld());
+            var spawnPos = server.overworld().getSharedSpawnPos();
+            spawnPosition = new ServerLocation(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), 0, 0, server.overworld());
         }
         return spawnPosition;
     }
 
-    public ServerWorld getGlobalSpawnWorld() {
+    public ServerLevel getGlobalSpawnWorld() {
         var targetWorld = getConfig().globalSpawn.targetSpawnWorld;
 
-        var key = RegistryKey.of(RegistryKeys.WORLD, Identifier.of(targetWorld));
-        return Solstice.server.getWorld(key);
+        var key = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(targetWorld));
+        return Solstice.server.getLevel(key);
     }
 
     public ServerLocation getGlobalSpawnPosition() {
         var world = getGlobalSpawnWorld();
-        var worldSpawnPos = world.getSpawnPos().toCenterPos();
-        var worldSpawnRot = world.getSpawnAngle();
+        var worldSpawnPos = world.getSharedSpawnPos().getCenter();
+        var worldSpawnRot = world.getSharedSpawnAngle();
         return new ServerLocation(
-                worldSpawnPos.getX(), worldSpawnPos.getY(), worldSpawnPos.getZ(), worldSpawnRot, 0, world
+                worldSpawnPos.x(), worldSpawnPos.y(), worldSpawnPos.z(), worldSpawnRot, 0, world
         );
     }
 
-    public ServerLocation getWorldSpawn(ServerWorld world) {
-        var spawnPos = world.getSpawnPos().toCenterPos();
-        var yaw = world.getSpawnAngle();
-        return new ServerLocation(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), yaw, 0, world);
+    public ServerLocation getWorldSpawn(ServerLevel world) {
+        var spawnPos = world.getSharedSpawnPos().getCenter();
+        var yaw = world.getSharedSpawnAngle();
+        return new ServerLocation(spawnPos.x(), spawnPos.y(), spawnPos.z(), yaw, 0, world);
     }
 
     public SpawnConfig getConfig() {
@@ -109,11 +109,11 @@ public class SpawnModule extends ModuleBase.Toggleable {
         return Solstice.serverData.getData(SpawnServerData.class);
     }
 
-    public void sendToSpawn(ServerPlayerEntity player) {
-        sendToSpawn(player, player.getServerWorld());
+    public void sendToSpawn(ServerPlayer player) {
+        sendToSpawn(player, player.serverLevel());
     }
 
-    public void sendToSpawn(ServerPlayerEntity player, ServerWorld world) {
+    public void sendToSpawn(ServerPlayer player, ServerLevel world) {
         var pos = getWorldSpawn(world);
         pos.teleport(player);
     }

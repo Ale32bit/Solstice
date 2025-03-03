@@ -10,23 +10,22 @@ import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.timeBar.TimeBarModule;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.argument.UuidArgumentType;
-import net.minecraft.entity.boss.BossBar;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.UuidArgument;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.BossEvent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class TimeBarCommand extends ModCommand<TimeBarModule> {
     private static final ConcurrentHashMap<UUID, BarCommand> runningBars = new ConcurrentHashMap<>();
@@ -44,7 +43,7 @@ public class TimeBarCommand extends ModCommand<TimeBarModule> {
                     try {
                         dispatcher.execute(command, source);
                     } catch (CommandSyntaxException e) {
-                        source.sendFeedback(() -> Text.literal(e.toString()).formatted(Formatting.RED), false);
+                        source.sendSuccess(() -> Component.literal(e.toString()).withStyle(ChatFormatting.RED), false);
                     }
                 });
             }
@@ -57,7 +56,7 @@ public class TimeBarCommand extends ModCommand<TimeBarModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(3))
                 .then(literal("start")
@@ -65,13 +64,13 @@ public class TimeBarCommand extends ModCommand<TimeBarModule> {
                                 .suggests(TimeSpan::suggest)
                                 .then(argument("color", StringArgumentType.word())
                                         .suggests((context, builder) -> {
-                                            var colors = Arrays.stream(BossBar.Color.values()).map(Enum::toString).toList();
-                                            return CommandSource.suggestMatching(colors, builder);
+                                            var colors = Arrays.stream(BossEvent.BossBarColor.values()).map(Enum::toString).toList();
+                                            return SharedSuggestionProvider.suggest(colors, builder);
                                         })
                                         .then(argument("style", StringArgumentType.word())
                                                 .suggests((context, builder) -> {
-                                                    var styles = Arrays.stream(BossBar.Style.values()).map(Enum::toString).toList();
-                                                    return CommandSource.suggestMatching(styles, builder);
+                                                    var styles = Arrays.stream(BossEvent.BossBarOverlay.values()).map(Enum::toString).toList();
+                                                    return SharedSuggestionProvider.suggest(styles, builder);
                                                 })
                                                 .then(argument("countdown", BoolArgumentType.bool())
                                                         .then(argument("label", StringArgumentType.string())
@@ -86,11 +85,11 @@ public class TimeBarCommand extends ModCommand<TimeBarModule> {
                         )
                 )
                 .then(literal("cancel")
-                        .then(argument("uuid", UuidArgumentType.uuid())
+                        .then(argument("uuid", UuidArgument.uuid())
                                 .executes(this::executeCancel)));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var seconds = TimeSpan.getTimeSpan(context, "duration");
         var colorName = StringArgumentType.getString(context, "color");
         var styleName = StringArgumentType.getString(context, "style");
@@ -98,38 +97,38 @@ public class TimeBarCommand extends ModCommand<TimeBarModule> {
         var label = StringArgumentType.getString(context, "label");
         var command = StringArgumentType.getString(context, "command");
 
-        var color = BossBar.Color.valueOf(colorName);
-        var style = BossBar.Style.valueOf(styleName);
+        var color = BossEvent.BossBarColor.valueOf(colorName);
+        var style = BossEvent.BossBarOverlay.valueOf(styleName);
 
         var bar = module.startTimeBar(label, seconds, color, style, countdown);
 
         runningBars.put(bar.getUuid(), new BarCommand(context.getSource(), command));
 
-        context.getSource().sendFeedback(() -> Text
+        context.getSource().sendSuccess(() -> Component
                 .literal("New time bar created with UUID ")
-                .append(Text.literal(bar.getUuid().toString()).setStyle(Style.EMPTY
-                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("Click to copy")))
+                .append(Component.literal(bar.getUuid().toString()).setStyle(Style.EMPTY
+                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.nullToEmpty("Click to copy")))
                         .withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, bar.getUuid().toString())))), true);
 
         return 1;
     }
 
-    private int executeCancel(CommandContext<ServerCommandSource> context) {
-        var uuid = UuidArgumentType.getUuid(context, "uuid");
+    private int executeCancel(CommandContext<CommandSourceStack> context) {
+        var uuid = UuidArgument.getUuid(context, "uuid");
 
         if (!runningBars.containsKey(uuid)) {
-            context.getSource().sendFeedback(() -> Text.literal("Time bar not found!").formatted(Formatting.RED), false);
+            context.getSource().sendSuccess(() -> Component.literal("Time bar not found!").withStyle(ChatFormatting.RED), false);
             return 1;
         }
 
         runningBars.remove(uuid);
         module.cancelTimeBar(uuid);
 
-        context.getSource().sendFeedback(() -> Text.literal("Time bar canceled"), true);
+        context.getSource().sendSuccess(() -> Component.literal("Time bar canceled"), true);
 
         return 1;
     }
 
-    private record BarCommand(ServerCommandSource source, String command) {
+    private record BarCommand(CommandSourceStack source, String command) {
     }
 }

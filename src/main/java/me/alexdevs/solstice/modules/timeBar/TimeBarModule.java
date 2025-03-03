@@ -4,9 +4,8 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.timeBar.commands.TimeBarCommand;
-import net.minecraft.entity.boss.BossBar;
-import net.minecraft.server.network.ServerPlayerEntity;
-
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.BossEvent;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -32,7 +31,7 @@ public class TimeBarModule extends ModuleBase.Toggleable {
             var remove = timeBar.elapse();
             TimeBarEvents.PROGRESS.invoker().onProgress(timeBar, Solstice.server);
 
-            var players = Solstice.server.getPlayerManager().getPlayerList();
+            var players = Solstice.server.getPlayerList().getPlayers();
             showBar(players, timeBar);
 
             if (remove) {
@@ -43,24 +42,24 @@ public class TimeBarModule extends ModuleBase.Toggleable {
         }
     }
 
-    private void showBar(Collection<ServerPlayerEntity> players, TimeBar timeBar) {
-        timeBar.getBossBar().addPlayers(players);
+    private void showBar(Collection<ServerPlayer> players, TimeBar timeBar) {
+        timeBar.getBossBar().setPlayers(players);
     }
 
-    private void hideBar(Collection<ServerPlayerEntity> players, TimeBar timeBar) {
+    private void hideBar(Collection<ServerPlayer> players, TimeBar timeBar) {
         players.forEach(player -> {
             timeBar.getBossBar().removePlayer(player);
 
         });
     }
 
-    public TimeBar startTimeBar(String label, int seconds, BossBar.Color color, BossBar.Style style, boolean countdown) {
+    public TimeBar startTimeBar(String label, int seconds, BossEvent.BossBarColor color, BossEvent.BossBarOverlay style, boolean countdown) {
         var timeBar = new TimeBar(label, seconds, countdown, color, style);
 
         Solstice.scheduler.schedule(() -> {
             timeBars.add(timeBar);
 
-            var players = Solstice.server.getPlayerManager().getPlayerList();
+            var players = Solstice.server.getPlayerList().getPlayers();
             showBar(players, timeBar);
 
             TimeBarEvents.START.invoker().onStart(timeBar, Solstice.server);
@@ -73,7 +72,7 @@ public class TimeBarModule extends ModuleBase.Toggleable {
     public boolean cancelTimeBar(TimeBar timeBar) {
         var success = timeBars.remove(timeBar);
         if (success) {
-            var players = Solstice.server.getPlayerManager().getPlayerList();
+            var players = Solstice.server.getPlayerList().getPlayers();
             hideBar(players, timeBar);
             TimeBarEvents.CANCEL.invoker().onCancel(timeBar, Solstice.server);
         }

@@ -13,16 +13,15 @@ import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.note.NoteModule;
 import me.alexdevs.solstice.modules.note.data.Note;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class NotesCommand extends ModCommand<NoteModule> {
     public NotesCommand(NoteModule module) {
@@ -35,7 +34,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(2))
                 .then(argument("user", StringArgumentType.word())
@@ -60,24 +59,24 @@ public class NotesCommand extends ModCommand<NoteModule> {
                 );
     }
 
-    private int listNotes(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private int listNotes(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var user = LocalGameProfile.getProfile(context, "user");
         var notes = module.getNotes(user.getId());
 
         if (notes.isEmpty()) {
-            context.getSource().sendFeedback(() -> module.locale().get("emptyNotes"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("emptyNotes"), false);
             return 0;
         }
 
-        var output = Text.empty()
+        var output = Component.empty()
                 .append(module.locale().get("noteListHeader", Map.of(
-                        "user", Text.of(user.getName())
+                        "user", Component.nullToEmpty(user.getName())
                 )))
-                .append(Text.of("\n"));
+                .append(Component.nullToEmpty("\n"));
 
         for (var i = 0; i < notes.size(); i++) {
             if (i > 0)
-                output = output.append(Text.of("\n"));
+                output = output.append(Component.nullToEmpty("\n"));
 
             var note = notes.get(i);
 
@@ -90,9 +89,9 @@ public class NotesCommand extends ModCommand<NoteModule> {
             var senderName = CoreModule.getUsername(note.createdBy);
             var dateFormatter = new SimpleDateFormat(CoreModule.getConfig().dateTimeFormat);
             var placeholders = Map.of(
-                    "index", Text.of(String.valueOf(i)),
-                    "operator", Text.of(senderName),
-                    "date", Text.of(dateFormatter.format(note.creationDate)),
+                    "index", Component.nullToEmpty(String.valueOf(i)),
+                    "operator", Component.nullToEmpty(senderName),
+                    "date", Component.nullToEmpty(dateFormatter.format(note.creationDate)),
                     "message", Format.parse(note.note),
                     "checkButton", checkButton
             );
@@ -101,18 +100,18 @@ public class NotesCommand extends ModCommand<NoteModule> {
 
         final var finalOutput = output;
 
-        context.getSource().sendFeedback(() -> finalOutput, false);
+        context.getSource().sendSuccess(() -> finalOutput, false);
 
         return 1;
     }
 
-    private int checkNote(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private int checkNote(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var user = LocalGameProfile.getProfile(context, "user");
         var notes = module.getNotes(user.getId());
         var index = IntegerArgumentType.getInteger(context, "index");
 
         if (index < 0 || index >= notes.size()) {
-            context.getSource().sendFeedback(() -> module.locale().get("notFound"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("notFound"), false);
             return 0;
         }
 
@@ -127,39 +126,39 @@ public class NotesCommand extends ModCommand<NoteModule> {
         var operator = CoreModule.getUsername(note.createdBy);
         var dateFormatter = new SimpleDateFormat(CoreModule.getConfig().dateTimeFormat);
         var placeholders = Map.of(
-                "operator", Text.of(operator),
-                "date", Text.of(dateFormatter.format(note.creationDate)),
+                "operator", Component.nullToEmpty(operator),
+                "date", Component.nullToEmpty(dateFormatter.format(note.creationDate)),
                 "message", Format.parse(note.note),
                 "deleteButton", deleteButton
         );
 
-        context.getSource().sendFeedback(() -> module.locale().get("noteDetails", placeholders), false);
+        context.getSource().sendSuccess(() -> module.locale().get("noteDetails", placeholders), false);
 
         return 1;
     }
 
-    private int deleteNote(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private int deleteNote(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var user = LocalGameProfile.getProfile(context, "user");
         var notes = module.getNotes(user.getId());
         var index = IntegerArgumentType.getInteger(context, "index");
 
         if (index < notes.size()) {
             notes.remove(index);
-            context.getSource().sendFeedback(() -> module.locale().get("noteDeleted"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("noteDeleted"), false);
         } else {
-            context.getSource().sendFeedback(() -> module.locale().get("notFound"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("notFound"), false);
             return 0;
         }
 
         return 1;
     }
 
-    private int addNote(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private int addNote(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var user = LocalGameProfile.getProfile(context, "user");
 
         UUID operatorId = new UUID(0, 0);
-        if (context.getSource().isExecutedByPlayer())
-            operatorId = context.getSource().getPlayer().getUuid();
+        if (context.getSource().isPlayer())
+            operatorId = context.getSource().getPlayer().getUUID();
 
         var message = StringArgumentType.getString(context, "message");
 
@@ -169,7 +168,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
         notes.add(note);
         var index = notes.size() - 1;
 
-        context.getSource().sendFeedback(() -> module.locale().get("noteAdded"), false);
+        context.getSource().sendSuccess(() -> module.locale().get("noteAdded"), false);
 
         var checkButton = Components.button(
                 module.locale().raw("checkButton"),
@@ -178,27 +177,27 @@ public class NotesCommand extends ModCommand<NoteModule> {
         );
         final var text = module.locale().get("addedNotification", Map.of(
                 "operator", context.getSource().getDisplayName(),
-                "user", Text.of(user.getName()),
+                "user", Component.nullToEmpty(user.getName()),
                 "checkButton", checkButton
         ));
 
-        context.getSource().getServer().getPlayerManager().getPlayerList().forEach(pl -> {
+        context.getSource().getServer().getPlayerList().getPlayers().forEach(pl -> {
             if (Permissions.check(pl, getPermissionNode("notify"), 2)) {
-                pl.sendMessage(text);
+                pl.sendSystemMessage(text);
             }
         });
 
         return 1;
     }
 
-    private int clearNotes(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private int clearNotes(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var user = LocalGameProfile.getProfile(context, "user");
 
         var notes = module.getNotes(user.getId());
         notes.clear();
 
-        context.getSource().sendFeedback(() -> module.locale().get("notesCleared", Map.of(
-                "user", Text.of(user.getName())
+        context.getSource().sendSuccess(() -> module.locale().get("notesCleared", Map.of(
+                "user", Component.nullToEmpty(user.getName())
         )), true);
 
         return 1;

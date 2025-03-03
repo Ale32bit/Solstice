@@ -9,10 +9,10 @@ import me.alexdevs.solstice.modules.notifications.data.NotificationsLocale;
 import me.alexdevs.solstice.modules.notifications.data.NotificationsPlayerData;
 import me.alexdevs.solstice.modules.notifications.data.PlayerNotificationSettings;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 
 public class NotificationsModule extends ModuleBase.Toggleable {
     public static final String ID = "notifications";
@@ -30,9 +30,9 @@ public class NotificationsModule extends ModuleBase.Toggleable {
         commands.add(new NotificationsCommand(this));
 
         ServerMessageEvents.CHAT_MESSAGE.register((message, sender, parameters) -> {
-            var content = message.getContent().getString().toLowerCase();
+            var content = message.decoratedContent().getString().toLowerCase();
 
-            sender.getServer().getPlayerManager().getPlayerList().forEach(player -> {
+            sender.getServer().getPlayerList().getPlayers().forEach(player -> {
                 if(player.equals(sender)) {
                     return;
                 }
@@ -48,7 +48,7 @@ public class NotificationsModule extends ModuleBase.Toggleable {
         });
     }
 
-    public static void notify(ServerPlayerEntity player) {
+    public static void notify(ServerPlayer player) {
         var module = Solstice.modules.getModule(NotificationsModule.class);
         if (!module.isEnabled())
             return;
@@ -60,11 +60,11 @@ public class NotificationsModule extends ModuleBase.Toggleable {
         return Solstice.configManager.getData(NotificationsConfig.class);
     }
 
-    public NotificationsPlayerData getPlayerData(ServerPlayerEntity player) {
+    public NotificationsPlayerData getPlayerData(ServerPlayer player) {
         return Solstice.playerData.get(player).getData(NotificationsPlayerData.class);
     }
 
-    public PlayerNotificationSettings getPlayerSettings(ServerPlayerEntity player) {
+    public PlayerNotificationSettings getPlayerSettings(ServerPlayer player) {
         var data = getPlayerData(player);
         var config = getConfig();
 
@@ -77,7 +77,7 @@ public class NotificationsModule extends ModuleBase.Toggleable {
         );
     }
 
-    public boolean shouldNotify(ServerPlayerEntity player) {
+    public boolean shouldNotify(ServerPlayer player) {
         if (!isEnabled())
             return false;
 
@@ -95,16 +95,16 @@ public class NotificationsModule extends ModuleBase.Toggleable {
         return true;
     }
 
-    public void notifyPlayer(ServerPlayerEntity player) {
+    public void notifyPlayer(ServerPlayer player) {
         if (!shouldNotify(player))
             return;
 
         var settings = getPlayerSettings(player);
-        var id = Identifier.tryParse(settings.soundId());
+        var id = ResourceLocation.tryParse(settings.soundId());
         if (id == null) {
             return;
         }
 
-        player.playSoundToPlayer(SoundEvent.of(id), SoundCategory.MASTER, settings.volume(), settings.pitch());
+        player.playNotifySound(SoundEvent.createVariableRangeEvent(id), SoundSource.MASTER, settings.volume(), settings.pitch());
     }
 }

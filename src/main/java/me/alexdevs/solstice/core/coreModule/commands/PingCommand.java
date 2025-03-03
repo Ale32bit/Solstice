@@ -3,11 +3,10 @@ package me.alexdevs.solstice.core.coreModule.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 
@@ -22,28 +21,28 @@ public class PingCommand extends ModCommand<CoreModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return CommandManager.literal(name)
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
+        return Commands.literal(name)
                 .requires(require("ping.base", true))
                 .executes(context -> {
-                    var player = context.getSource().getPlayerOrThrow();
-                    var ping = player.networkHandler.getLatency();
+                    var player = context.getSource().getPlayerOrException();
+                    var ping = player.connection.latency();
                     var map = Map.of(
-                            "ping", Text.of(String.valueOf(ping))
+                            "ping", Component.nullToEmpty(String.valueOf(ping))
                     );
-                    context.getSource().sendFeedback(() -> module.locale().get("ping.self", map), false);
+                    context.getSource().sendSuccess(() -> module.locale().get("ping.self", map), false);
                     return 1;
                 })
-                .then(CommandManager.argument("player", EntityArgumentType.player())
+                .then(Commands.argument("player", EntityArgument.player())
                         .requires(require("ping.others", 1))
                         .executes(context -> {
-                            var player = EntityArgumentType.getPlayer(context, "player");
-                            var ping = player.networkHandler.getLatency();
+                            var player = EntityArgument.getPlayer(context, "player");
+                            var ping = player.connection.latency();
                             var map = Map.of(
-                                    "ping", Text.of(String.valueOf(ping)),
+                                    "ping", Component.nullToEmpty(String.valueOf(ping)),
                                     "player", player.getName()
                             );
-                            context.getSource().sendFeedback(() -> module.locale().get("ping.other", map), false);
+                            context.getSource().sendSuccess(() -> module.locale().get("ping.other", map), false);
                             return 1;
                         })
                 );

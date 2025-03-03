@@ -9,15 +9,14 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.warp.WarpModule;
 import me.alexdevs.solstice.modules.warp.data.WarpServerData;
-import net.minecraft.command.CommandSource;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class WarpCommand extends ModCommand<WarpModule> {
     public WarpCommand(WarpModule module) {
@@ -30,34 +29,34 @@ public class WarpCommand extends ModCommand<WarpModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .then(argument("name", StringArgumentType.word())
                         .suggests((context, builder) -> {
-                            if (!context.getSource().isExecutedByPlayer())
-                                return CommandSource.suggestMatching(new String[]{}, builder);
+                            if (!context.getSource().isPlayer())
+                                return SharedSuggestionProvider.suggest(new String[]{}, builder);
 
                             var serverData = Solstice.serverData.getData(WarpServerData.class);
                             var player = context.getSource().getPlayer();
                             var warps = serverData.warps.keySet().stream().filter(serverPosition -> module.canUseWarp(player, serverPosition));
-                            return CommandSource.suggestMatching(warps, builder);
+                            return SharedSuggestionProvider.suggest(warps, builder);
                         })
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name"))));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int execute(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         var serverDate = Solstice.serverData.getData(WarpServerData.class);
         var warps = serverDate.warps;
         var playerContext = PlaceholderContext.of(player);
 
         var placeholders = Map.of(
-                "warp", Text.of(name)
+                "warp", Component.nullToEmpty(name)
         );
 
         if (!warps.containsKey(name)) {
-            context.getSource().sendFeedback(() -> module.locale().get(
+            context.getSource().sendSuccess(() -> module.locale().get(
                     "warpNotFound",
                     playerContext,
                     placeholders
@@ -67,7 +66,7 @@ public class WarpCommand extends ModCommand<WarpModule> {
         }
 
         if (!module.canUseWarp(player, name)) {
-            context.getSource().sendFeedback(() -> module.locale().get(
+            context.getSource().sendSuccess(() -> module.locale().get(
                     "noPermission",
                     playerContext,
                     placeholders
@@ -76,7 +75,7 @@ public class WarpCommand extends ModCommand<WarpModule> {
             return 0;
         }
 
-        context.getSource().sendFeedback(() -> module.locale().get(
+        context.getSource().sendSuccess(() -> module.locale().get(
                 "teleporting",
                 playerContext,
                 placeholders

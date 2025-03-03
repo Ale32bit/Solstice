@@ -12,9 +12,9 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.Text;
-import net.minecraft.util.WorldSavePath;
+import net.minecraft.world.level.storage.LevelResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.ConfigurateException;
@@ -85,7 +85,7 @@ public class Solstice implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             Solstice.server = server;
-            var path = server.getSavePath(WorldSavePath.ROOT).resolve("data").resolve(MOD_ID);
+            var path = server.getWorldPath(LevelResource.ROOT).resolve("data").resolve(MOD_ID);
             if (!path.toFile().exists()) {
                 path.toFile().mkdirs();
             }
@@ -108,7 +108,7 @@ public class Solstice implements ModInitializer {
         });
     }
 
-    public void broadcast(Text text) {
-        server.getPlayerManager().broadcast(text, false);
+    public void broadcast(Component text) {
+        server.getPlayerList().broadcastSystemMessage(text, false);
     }
 }

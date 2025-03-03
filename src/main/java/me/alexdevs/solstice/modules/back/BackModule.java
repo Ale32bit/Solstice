@@ -8,8 +8,7 @@ import me.alexdevs.solstice.modules.back.commands.BackCommand;
 import me.alexdevs.solstice.modules.back.data.BackLocale;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.server.network.ServerPlayerEntity;
-
+import net.minecraft.server.level.ServerPlayer;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,15 +26,15 @@ public class BackModule extends ModuleBase.Toggleable {
 
         commands.add(new BackCommand(this));
 
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> lastPlayerPositions.remove(handler.getPlayer().getUuid()));
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> lastPlayerPositions.remove(handler.getPlayer().getUUID()));
 
-        PlayerTeleportCallback.EVENT.register((player, origin, destination) -> lastPlayerPositions.put(player.getUuid(), origin));
+        PlayerTeleportCallback.EVENT.register((player, origin, destination) -> lastPlayerPositions.put(player.getUUID(), origin));
 
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
-            if (entity.isPlayer()) {
+            if (entity.isAlwaysTicking()) {
                 try {
-                    var player = (ServerPlayerEntity) entity;
-                    lastPlayerPositions.put(entity.getUuid(), new ServerLocation(player));
+                    var player = (ServerPlayer) entity;
+                    lastPlayerPositions.put(entity.getUUID(), new ServerLocation(player));
                 } catch (ClassCastException e) {
                     // They were, in fact, not a player.
                 }

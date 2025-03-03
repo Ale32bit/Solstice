@@ -9,10 +9,9 @@ import me.alexdevs.solstice.api.command.flags.Flag;
 import me.alexdevs.solstice.api.command.flags.StringFlag;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.experiments.ExperimentsModule;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 
 public class FlagsCommand extends ModCommand<ExperimentsModule> {
@@ -26,10 +25,10 @@ public class FlagsCommand extends ModCommand<ExperimentsModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return CommandManager.literal(name)
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
+        return Commands.literal(name)
                 .requires(require(true))
-                .then(CommandManager.argument("flags", StringArgumentType.greedyString())
+                .then(Commands.argument("flags", StringArgumentType.greedyString())
                         .executes(context -> {
                             var source = context.getSource();
 
@@ -43,10 +42,10 @@ public class FlagsCommand extends ModCommand<ExperimentsModule> {
                                 if (flag.isUsed()) {
                                     if (flag.acceptsValue() && flag instanceof ArgumentFlag<?> argFlag) {
                                         var value = argFlag.getValue();
-                                        source.sendMessage(Text.of(String.format("Flag %s: %s", flag.getName(), value)));
+                                        source.sendSystemMessage(Component.nullToEmpty(String.format("Flag %s: %s", flag.getName(), value)));
 
                                     } else {
-                                        source.sendMessage(Text.of(String.format("Flag %s", flag.getName())));
+                                        source.sendSystemMessage(Component.nullToEmpty(String.format("Flag %s", flag.getName())));
                                     }
                                 }
                             }

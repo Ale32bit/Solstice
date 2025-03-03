@@ -8,8 +8,7 @@ import me.alexdevs.solstice.modules.ignore.data.IgnoreLocale;
 import me.alexdevs.solstice.modules.ignore.data.IgnorePlayerData;
 import me.alexdevs.solstice.modules.styling.StylingModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.server.network.ServerPlayerEntity;
-
+import net.minecraft.server.level.ServerPlayer;
 import java.util.UUID;
 
 public class IgnoreModule extends ModuleBase.Toggleable {
@@ -37,7 +36,7 @@ public class IgnoreModule extends ModuleBase.Toggleable {
         return Solstice.playerData.get(playerUuid).getData(IgnorePlayerData.class);
     }
 
-    public boolean isIgnoring(ServerPlayerEntity player, ServerPlayerEntity target) {
-        return getPlayerData(player.getUuid()).ignoredPlayers.contains(target.getUuid()) && !Permissions.check(target, this.getPermissionNode("exempt"), 2);
+    public boolean isIgnoring(ServerPlayer player, ServerPlayer target) {
+        return getPlayerData(player.getUUID()).ignoredPlayers.contains(target.getUUID()) && !Permissions.check(target, this.getPermissionNode("exempt"), 2);
     }
 }

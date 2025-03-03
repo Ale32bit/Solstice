@@ -7,20 +7,19 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.teleportPosition.TeleportPositionModule;
-import net.minecraft.command.argument.DimensionArgumentType;
-import net.minecraft.command.argument.Vec3ArgumentType;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.DimensionArgument;
+import net.minecraft.commands.arguments.coordinates.Vec3Argument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import java.util.List;
 import java.util.Locale;
 
 public class TeleportPositionCommand extends ModCommand<TeleportPositionModule> {
-    public static final SimpleCommandExceptionType INVALID_POSITION_EXCEPTION = new SimpleCommandExceptionType(Text.translatable("commands.teleport.invalidPosition"));
+    public static final SimpleCommandExceptionType INVALID_POSITION_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.teleport.invalidPosition"));
 
     public TeleportPositionCommand(TeleportPositionModule module) {
         super(module);
@@ -32,13 +31,13 @@ public class TeleportPositionCommand extends ModCommand<TeleportPositionModule> 
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return CommandManager.literal(name)
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
+        return Commands.literal(name)
                 .requires(require(2))
-                .then(CommandManager.argument("coordinates", Vec3ArgumentType.vec3())
-                        .executes(context -> execute(context, context.getSource().getWorld()))
-                        .then(CommandManager.argument("dimension", DimensionArgumentType.dimension())
-                                .executes(context -> execute(context, DimensionArgumentType.getDimensionArgument(context, "dimension")))
+                .then(Commands.argument("coordinates", Vec3Argument.vec3())
+                        .executes(context -> execute(context, context.getSource().getLevel()))
+                        .then(Commands.argument("dimension", DimensionArgument.dimension())
+                                .executes(context -> execute(context, DimensionArgument.getDimension(context, "dimension")))
                         )
                 );
     }
@@ -47,23 +46,23 @@ public class TeleportPositionCommand extends ModCommand<TeleportPositionModule> 
         return String.format(Locale.ROOT, "%f", d);
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, ServerWorld world) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
-        var coords = Vec3ArgumentType.getVec3(context, "coordinates");
+    private int execute(CommandContext<CommandSourceStack> context, ServerLevel world) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
+        var coords = Vec3Argument.getVec3(context, "coordinates");
 
-        var blockPos = BlockPos.ofFloored(coords.getX(), coords.getY(), coords.getZ());
-        if (!World.isValid(blockPos)) {
+        var blockPos = BlockPos.containing(coords.x(), coords.y(), coords.z());
+        if (!Level.isInSpawnableBounds(blockPos)) {
             throw INVALID_POSITION_EXCEPTION.create();
         }
 
         var location = new ServerLocation(
-                coords.getX(), coords.getY(), coords.getZ(),
-                player.getYaw(), player.getPitch(),
+                coords.x(), coords.y(), coords.z(),
+                player.getYRot(), player.getXRot(),
                 world
         );
 
-        context.getSource().sendFeedback(() ->
-                        Text.translatable("commands.teleport.success.location.single",
+        context.getSource().sendSuccess(() ->
+                        Component.translatable("commands.teleport.success.location.single",
                                 player.getDisplayName(),
                                 formatFloat(coords.x), formatFloat(coords.y), formatFloat(coords.z)),
                 true);

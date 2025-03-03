@@ -12,52 +12,52 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.Utils;
 import me.alexdevs.solstice.modules.ban.BanModule;
 import me.alexdevs.solstice.modules.ban.formatters.BanMessageFormatter;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.GameProfileArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.server.players.UserBanListEntry;
 import me.alexdevs.solstice.api.text.Format;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.GameProfileArgumentType;
-import net.minecraft.server.BannedPlayerEntry;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-import net.minecraft.text.Texts;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class BanCommand extends ModCommand<BanModule> {
-    public static final SimpleCommandExceptionType ALREADY_BANNED_EXCEPTION = new SimpleCommandExceptionType(Text.translatable("commands.ban.failed"));
+    public static final SimpleCommandExceptionType ALREADY_BANNED_EXCEPTION = new SimpleCommandExceptionType(Component.translatable("commands.ban.failed"));
 
     public BanCommand(BanModule module) {
         super(module);
     }
 
-    static int execute(CommandContext<ServerCommandSource> context, Collection<GameProfile> targets, @Nullable String reason, @Nullable Date expiryDate) throws CommandSyntaxException {
+    static int execute(CommandContext<CommandSourceStack> context, Collection<GameProfile> targets, @Nullable String reason, @Nullable Date expiryDate) throws CommandSyntaxException {
         var source = context.getSource();
         var server = source.getServer();
-        var banList = server.getPlayerManager().getUserBanList();
+        var banList = server.getPlayerList().getBans();
 
         var banCounter = 0;
         for (GameProfile target : targets) {
-            if (banList.contains(target)) {
+            if (banList.isBanned(target)) {
                 continue;
             }
 
-            var banEntry = new BannedPlayerEntry(target, null, source.getName(), expiryDate, reason);
+            var banEntry = new UserBanListEntry(target, null, source.getTextName(), expiryDate, reason);
             banList.add(banEntry);
             banCounter++;
 
             var playerContext = PlaceholderContext.of(target, server);
 
-            source.sendFeedback(() -> Text.translatable("commands.ban.success", Text.of(target.getName()), Format.parse(banEntry.getReason(), playerContext)), true);
+            source.sendSuccess(() -> Component.translatable("commands.ban.success", Component.nullToEmpty(target.getName()), Format.parse(banEntry.getReason(), playerContext)), true);
 
-            var serverPlayerEntity = source.getServer().getPlayerManager().getPlayer(target.getId());
+            var serverPlayerEntity = source.getServer().getPlayerList().getPlayer(target.getId());
             if (serverPlayerEntity != null) {
-                serverPlayerEntity.networkHandler.disconnect(BanMessageFormatter.format(target, banEntry));
+                serverPlayerEntity.connection.disconnect(BanMessageFormatter.format(target, banEntry));
             }
         }
 
@@ -69,7 +69,7 @@ public class BanCommand extends ModCommand<BanModule> {
     }
 
     @Override
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandRegistry, Commands.CommandSelection environment) {
         Utils.removeCommands(dispatcher, "ban");
         super.register(dispatcher, commandRegistry, environment);
     }
@@ -80,13 +80,13 @@ public class BanCommand extends ModCommand<BanModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(3))
-                .then(argument("targets", GameProfileArgumentType.gameProfile())
-                        .executes(context -> execute(context, GameProfileArgumentType.getProfileArgument(context, "targets"), null, null))
+                .then(argument("targets", GameProfileArgument.gameProfile())
+                        .executes(context -> execute(context, GameProfileArgument.getGameProfiles(context, "targets"), null, null))
                         .then(argument("reason", StringArgumentType.greedyString())
-                                .executes(context -> execute(context, GameProfileArgumentType.getProfileArgument(context, "targets"), StringArgumentType.getString(context, "reason"), null))));
+                                .executes(context -> execute(context, GameProfileArgument.getGameProfiles(context, "targets"), StringArgumentType.getString(context, "reason"), null))));
 
     }
 }

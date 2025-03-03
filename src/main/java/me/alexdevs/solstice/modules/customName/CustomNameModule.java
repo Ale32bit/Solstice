@@ -9,9 +9,8 @@ import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.modules.customName.commands.NicknameCommand;
 import me.alexdevs.solstice.modules.customName.data.CustomNameConfig;
 import me.alexdevs.solstice.modules.customName.data.CustomNamePlayerData;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.MutableText;
-
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerPlayer;
 import java.util.Map;
 
 public class CustomNameModule extends ModuleBase.Toggleable {
@@ -29,7 +28,7 @@ public class CustomNameModule extends ModuleBase.Toggleable {
         commands.add(new NicknameCommand(this));
     }
 
-    public String fetchUsernameFormat(ServerPlayerEntity player) {
+    public String fetchUsernameFormat(ServerPlayer player) {
         var formats = Solstice.configManager.getData(CustomNameConfig.class).nameFormats;
 
         String format = null;
@@ -40,7 +39,7 @@ public class CustomNameModule extends ModuleBase.Toggleable {
             }
         }
 
-        var isOperator = player.getServer().getPlayerManager().isOperator(player.getGameProfile());
+        var isOperator = player.getServer().getPlayerList().isOp(player.getGameProfile());
 
         if (format == null) {
             format = "${username}";
@@ -60,7 +59,7 @@ public class CustomNameModule extends ModuleBase.Toggleable {
         return format;
     }
 
-    public String getResolvedUsername(ServerPlayerEntity player) {
+    public String getResolvedUsername(ServerPlayer player) {
         var format = fetchUsernameFormat(player);
         var playerData = Solstice.playerData.get(player).getData(CustomNamePlayerData.class);
         var name = playerData.nickname == null ? player.getGameProfile().getName() : playerData.nickname;
@@ -81,18 +80,18 @@ public class CustomNameModule extends ModuleBase.Toggleable {
         return RawPlaceholder.parse(format, placeholders);
     }
 
-    public MutableText getNameForPlayer(ServerPlayerEntity player) {
+    public MutableComponent getNameForPlayer(ServerPlayer player) {
         var name = getResolvedUsername(player);
         var playerContext = PlaceholderContext.of(player);
         return Format.parse(name, playerContext).copy();
     }
 
-    public void setCustomName(ServerPlayerEntity player, String name) {
+    public void setCustomName(ServerPlayer player, String name) {
         var playerData = Solstice.playerData.get(player).getData(CustomNamePlayerData.class);
         playerData.nickname = name;
     }
 
-    public void clearCustomName(ServerPlayerEntity player) {
+    public void clearCustomName(ServerPlayer player) {
         var playerData = Solstice.playerData.get(player).getData(CustomNamePlayerData.class);
         playerData.nickname = null;
     }

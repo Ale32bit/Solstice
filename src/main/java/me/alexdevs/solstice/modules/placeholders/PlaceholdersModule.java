@@ -3,7 +3,7 @@ package me.alexdevs.solstice.modules.placeholders;
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
 import me.alexdevs.solstice.api.module.ModuleBase;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class PlaceholdersModule extends ModuleBase.Toggleable {
     public static final String ID = "placeholders";
@@ -15,7 +15,7 @@ public class PlaceholdersModule extends ModuleBase.Toggleable {
 
     @Override
     public void init() {
-        Placeholders.register(Identifier.of(ENTITY, "name"), (context, str) -> {
+        Placeholders.register(ResourceLocation.fromNamespaceAndPath(ENTITY, "name"), (context, str) -> {
             if(!context.hasEntity()) {
                 return PlaceholderResult.invalid("No entity!");
             }
@@ -23,7 +23,7 @@ public class PlaceholdersModule extends ModuleBase.Toggleable {
             return PlaceholderResult.value(entity.getName());
         });
 
-        Placeholders.register(Identifier.of(ENTITY, "displayname"), (context, str) -> {
+        Placeholders.register(ResourceLocation.fromNamespaceAndPath(ENTITY, "displayname"), (context, str) -> {
             if(!context.hasEntity()) {
                 return PlaceholderResult.invalid("No entity!");
             }
@@ -31,12 +31,12 @@ public class PlaceholdersModule extends ModuleBase.Toggleable {
             return PlaceholderResult.value(entity.getDisplayName());
         });
 
-        Placeholders.register(Identifier.of(ENTITY, "uuid"), (context, str) -> {
+        Placeholders.register(ResourceLocation.fromNamespaceAndPath(ENTITY, "uuid"), (context, str) -> {
             if(!context.hasEntity()) {
                 return PlaceholderResult.invalid("No entity!");
             }
             var entity = context.entity();
-            return PlaceholderResult.value(entity.getUuidAsString());
+            return PlaceholderResult.value(entity.getStringUUID());
         });
     }
 }

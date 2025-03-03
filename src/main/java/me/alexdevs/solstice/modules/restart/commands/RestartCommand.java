@@ -8,14 +8,14 @@ import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.events.RestartEvents;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.restart.RestartModule;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class RestartCommand extends ModCommand<RestartModule> {
     public RestartCommand(RestartModule module) {
@@ -28,12 +28,12 @@ public class RestartCommand extends ModCommand<RestartModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(4))
                 .then(literal("now")
                         .executes(context -> {
-                            context.getSource().sendFeedback(() -> Text.of("Restarting server"), true);
+                            context.getSource().sendSuccess(() -> Component.nullToEmpty("Restarting server"), true);
                             module.restart();
                             return 1;
                         }))
@@ -50,9 +50,9 @@ public class RestartCommand extends ModCommand<RestartModule> {
                         .executes(this::cancel));
     }
 
-    private int schedule(CommandContext<ServerCommandSource> context, int seconds, @Nullable String message) {
+    private int schedule(CommandContext<CommandSourceStack> context, int seconds, @Nullable String message) {
         if (module.isRunning()) {
-            context.getSource().sendError(Text.of("There is already a running restart."));
+            context.getSource().sendFailure(Component.nullToEmpty("There is already a running restart."));
             return 0;
         }
 
@@ -61,37 +61,37 @@ public class RestartCommand extends ModCommand<RestartModule> {
         }
         module.schedule(seconds, message, RestartEvents.RestartType.MANUAL);
 
-        context.getSource().sendFeedback(() -> Text.of("Manual restart scheduled in " + seconds + " seconds."), true);
+        context.getSource().sendSuccess(() -> Component.nullToEmpty("Manual restart scheduled in " + seconds + " seconds."), true);
 
         return 1;
     }
 
-    private int scheduleNext(CommandContext<ServerCommandSource> context) {
+    private int scheduleNext(CommandContext<CommandSourceStack> context) {
         if (module.isScheduled()) {
-            context.getSource().sendError(Text.of("There is already a scheduled restart."));
+            context.getSource().sendFailure(Component.nullToEmpty("There is already a scheduled restart."));
             return 0;
         }
 
         var delay = module.scheduleNextRestart();
 
         if (delay == null) {
-            context.getSource().sendError(Text.of("Could not schedule next automatic restart."));
+            context.getSource().sendFailure(Component.nullToEmpty("Could not schedule next automatic restart."));
             return 0;
         } else {
-            context.getSource().sendFeedback(() -> Text.literal("Next automatic restart scheduled in " + delay + " seconds."), true);
+            context.getSource().sendSuccess(() -> Component.literal("Next automatic restart scheduled in " + delay + " seconds."), true);
         }
 
         return 1;
     }
 
-    private int cancel(CommandContext<ServerCommandSource> context) {
+    private int cancel(CommandContext<CommandSourceStack> context) {
         if (!module.isScheduled()) {
-            context.getSource().sendError(Text.of("There is no scheduled restart."));
+            context.getSource().sendFailure(Component.nullToEmpty("There is no scheduled restart."));
             return 0;
         }
 
         module.cancel();
-        context.getSource().sendFeedback(() -> Text.literal("Restart schedule canceled."), true);
+        context.getSource().sendSuccess(() -> Component.literal("Restart schedule canceled."), true);
         return 1;
     }
 }

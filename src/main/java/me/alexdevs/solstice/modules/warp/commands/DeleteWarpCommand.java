@@ -7,15 +7,14 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.warp.WarpModule;
 import me.alexdevs.solstice.modules.warp.data.WarpServerData;
-import net.minecraft.command.CommandSource;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class DeleteWarpCommand extends ModCommand<WarpModule> {
     public DeleteWarpCommand(WarpModule module) {
@@ -28,29 +27,29 @@ public class DeleteWarpCommand extends ModCommand<WarpModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require("set", 2))
                 .then(argument("name", StringArgumentType.word())
                         .suggests((context, builder) -> {
-                            if (!context.getSource().isExecutedByPlayer())
-                                return CommandSource.suggestMatching(new String[]{}, builder);
+                            if (!context.getSource().isPlayer())
+                                return SharedSuggestionProvider.suggest(new String[]{}, builder);
 
                             var serverData = Solstice.serverData.getData(WarpServerData.class);
-                            return CommandSource.suggestMatching(serverData.warps.keySet().stream(), builder);
+                            return SharedSuggestionProvider.suggest(serverData.warps.keySet().stream(), builder);
                         })
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name"))));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, String name) {
+    private int execute(CommandContext<CommandSourceStack> context, String name) {
         var serverData = Solstice.serverData.getData(WarpServerData.class);
         var warps = serverData.warps;
 
         if (!warps.containsKey(name)) {
-            context.getSource().sendFeedback(() -> module.locale().get(
+            context.getSource().sendSuccess(() -> module.locale().get(
                     "warpNotFound",
                     Map.of(
-                            "warp", Text.of(name)
+                            "warp", Component.nullToEmpty(name)
                     )
             ), true);
             return 0;
@@ -58,10 +57,10 @@ public class DeleteWarpCommand extends ModCommand<WarpModule> {
 
         warps.remove(name);
 
-        context.getSource().sendFeedback(() -> module.locale().get(
+        context.getSource().sendSuccess(() -> module.locale().get(
                 "deleted",
                 Map.of(
-                        "warp", Text.of(name)
+                        "warp", Component.nullToEmpty(name)
                 )
         ), true);
 

@@ -6,9 +6,9 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.item.ItemModule;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.core.component.DataComponents;
 
 import java.util.List;
 
@@ -23,39 +23,39 @@ public class ItemNameCommand extends ModCommand<ItemModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return CommandManager.literal(name)
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
+        return Commands.literal(name)
                 .requires(require("name", 2))
                 .executes(context -> {
-                    var player = context.getSource().getPlayerOrThrow();
-                    var item = player.getMainHandStack();
+                    var player = context.getSource().getPlayerOrException();
+                    var item = player.getMainHandItem();
 
                     if(item.isEmpty()) {
-                        context.getSource().sendFeedback(() -> module.locale().get("noItem"), false);
+                        context.getSource().sendSuccess(() -> module.locale().get("noItem"), false);
                         return 0;
                     }
 
-                    item.remove(DataComponentTypes.CUSTOM_NAME);
+                    item.remove(DataComponents.CUSTOM_NAME);
 
-                    context.getSource().sendFeedback(() -> module.locale().get("nameCleared"), false);
+                    context.getSource().sendSuccess(() -> module.locale().get("nameCleared"), false);
 
                     return 1;
                 })
-                .then(CommandManager.argument("name", StringArgumentType.greedyString())
+                .then(Commands.argument("name", StringArgumentType.greedyString())
                         .executes(context -> {
-                            var player = context.getSource().getPlayerOrThrow();
-                            var item = player.getMainHandStack();
+                            var player = context.getSource().getPlayerOrException();
+                            var item = player.getMainHandItem();
                             var itemName = StringArgumentType.getString(context, "name");
 
                             if(item.isEmpty()) {
-                                context.getSource().sendFeedback(() -> module.locale().get("noItem"), false);
+                                context.getSource().sendSuccess(() -> module.locale().get("noItem"), false);
                                 return 0;
                             }
 
                             var playerContext = PlaceholderContext.of(player);
-                            item.set(DataComponentTypes.CUSTOM_NAME, Format.parse(itemName, playerContext));
+                            item.set(DataComponents.CUSTOM_NAME, Format.parse(itemName, playerContext));
 
-                            context.getSource().sendFeedback(() -> module.locale().get("nameSet"), false);
+                            context.getSource().sendSuccess(() -> module.locale().get("nameSet"), false);
 
                             return 1;
                         })

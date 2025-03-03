@@ -6,29 +6,28 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.sudo.SudoModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.CommandOutput;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.Vec2f;
-
+import net.minecraft.world.phys.Vec2;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class SudoCommand extends ModCommand<SudoModule> {
     public SudoCommand(SudoModule module) {
         super(module);
     }
 
-    public static void execute(CommandDispatcher<ServerCommandSource> dispatcher, String command, ServerCommandSource source, ServerCommandSource output) {
+    public static void execute(CommandDispatcher<CommandSourceStack> dispatcher, String command, CommandSourceStack source, CommandSourceStack output) {
         try {
             dispatcher.execute(command, source);
         } catch (Exception e) {
-            output.sendError(Text.of(String.format("[%s] %s", source.getName(), e.getMessage())));
+            output.sendFailure(Component.nullToEmpty(String.format("[%s] %s", source.getTextName(), e.getMessage())));
         }
     }
 
@@ -38,21 +37,21 @@ public class SudoCommand extends ModCommand<SudoModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .then(argument("command", StringArgumentType.greedyString())
                         .executes(context -> {
                             if (!Permissions.check(context.getSource(), getPermissionNode("sudo"), 4)) {
-                                context.getSource().sendError(Text.literal(String.format("%s is not in the sudoers file. This incident will be reported.", context.getSource().getName()))
+                                context.getSource().sendFailure(Component.literal(String.format("%s is not in the sudoers file. This incident will be reported.", context.getSource().getTextName()))
                                         .setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://xkcd.com/838/"))));
                                 return 1;
                             }
                             var command = StringArgumentType.getString(context, "command");
 
-                            context.getSource().sendFeedback(() -> Text.literal(String.format("Executing '%s' as Server", command)), true);
+                            context.getSource().sendSuccess(() -> Component.literal(String.format("Executing '%s' as Server", command)), true);
 
-                            CommandOutput commandOutput;
-                            if (context.getSource().isExecutedByPlayer()) {
+                            CommandSource commandOutput;
+                            if (context.getSource().isPlayer()) {
                                 commandOutput = context.getSource().getPlayer();
                             } else {
                                 commandOutput = context.getSource().getServer();
@@ -67,15 +66,15 @@ public class SudoCommand extends ModCommand<SudoModule> {
                 );
     }
 
-    public ServerCommandSource buildServerSource(CommandOutput commandOutput, MinecraftServer server) {
-        return new ServerCommandSource(
+    public CommandSourceStack buildServerSource(CommandSource commandOutput, MinecraftServer server) {
+        return new CommandSourceStack(
                 commandOutput,
-                server.getOverworld().getSpawnPos().toCenterPos(),
-                Vec2f.ZERO,
-                server.getOverworld(),
+                server.overworld().getSharedSpawnPos().getCenter(),
+                Vec2.ZERO,
+                server.overworld(),
                 4,
                 "Server",
-                Text.of("Server"),
+                Component.nullToEmpty("Server"),
                 server,
                 null
         );

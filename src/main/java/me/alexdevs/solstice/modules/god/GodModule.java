@@ -28,7 +28,7 @@ public class GodModule extends ModuleBase.Toggleable {
             if(data.invulnerabilityEnabled) {
                 var abilities = player.getAbilities();
                 abilities.invulnerable = true;
-                player.sendAbilitiesUpdate();
+                player.onUpdateAbilities();
             }
         });
     }

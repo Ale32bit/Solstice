@@ -6,11 +6,14 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.item.ItemModule;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.component.ItemLore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,45 +29,44 @@ public class ItemLoreCommand extends ModCommand<ItemModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return CommandManager.literal(name)
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
+        return Commands.literal(name)
                 .requires(require("lore", 2))
                 .executes(context -> {
-                    var player = context.getSource().getPlayerOrThrow();
-                    var item = player.getMainHandStack();
+                    var player = context.getSource().getPlayerOrException();
+                    var item = player.getMainHandItem();
 
                     if (item.isEmpty()) {
-                        context.getSource().sendFeedback(() -> module.locale().get("noItem"), false);
+                        context.getSource().sendSuccess(() -> module.locale().get("noItem"), false);
                         return 0;
                     }
 
-                    item.remove(DataComponentTypes.LORE);
+                    item.remove(DataComponents.LORE);
 
-                    context.getSource().sendFeedback(() -> module.locale().get("loreCleared"), false);
+                    context.getSource().sendSuccess(() -> module.locale().get("loreCleared"), false);
 
                     return 1;
                 })
-                .then(CommandManager.argument("lore", StringArgumentType.greedyString())
+                .then(Commands.argument("lore", StringArgumentType.greedyString())
                         .executes(context -> {
-                            var player = context.getSource().getPlayerOrThrow();
-                            var item = player.getMainHandStack();
+                            var player = context.getSource().getPlayerOrException();
+                            var item = player.getMainHandItem();
                             var itemLore = StringArgumentType.getString(context, "lore");
 
                             if (item.isEmpty()) {
-                                context.getSource().sendFeedback(() -> module.locale().get("noItem"), false);
+                                context.getSource().sendSuccess(() -> module.locale().get("noItem"), false);
                                 return 0;
                             }
 
-
                             var playerContext = PlaceholderContext.of(player);
-                            var list = new ArrayList<Text>();
+                            var list = new ArrayList<Component>();
                             for(var line : itemLore.split("\\\\n")) {
                                 list.add(Format.parse(line, playerContext));
                             }
 
-                            item.set(DataComponentTypes.LORE, new LoreComponent(list));
+                            item.set(DataComponents.LORE, new ItemLore(list));
 
-                            context.getSource().sendFeedback(() -> module.locale().get("loreSet"), false);
+                            context.getSource().sendSuccess(() -> module.locale().get("loreSet"), false);
 
                             return 1;
                         })

@@ -7,15 +7,14 @@ import com.mojang.brigadier.context.CommandContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.Utils;
 import me.alexdevs.solstice.modules.tell.TellModule;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.CommandSource;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 
 public class TellCommand extends ModCommand<TellModule> {
@@ -24,7 +23,7 @@ public class TellCommand extends ModCommand<TellModule> {
     }
 
     @Override
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistry, CommandManager.RegistrationEnvironment environment) {
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandRegistry, Commands.CommandSelection environment) {
         Utils.removeCommands(dispatcher, "msg", "tell", "w");
         super.register(dispatcher, commandRegistry, environment);
     }
@@ -35,21 +34,21 @@ public class TellCommand extends ModCommand<TellModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .then(argument("player", StringArgumentType.word())
                         .suggests((context, builder) -> {
-                            var playerManager = context.getSource().getServer().getPlayerManager();
-                            return CommandSource.suggestMatching(
-                                    playerManager.getPlayerNames(),
+                            var playerManager = context.getSource().getServer().getPlayerList();
+                            return SharedSuggestionProvider.suggest(
+                                    playerManager.getPlayerNamesArray(),
                                     builder);
                         })
                         .then(argument("message", StringArgumentType.greedyString())
                                 .executes(this::execute)));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context) {
+    private int execute(CommandContext<CommandSourceStack> context) {
         var source = context.getSource();
         var targetName = StringArgumentType.getString(context, "player");
         var message = StringArgumentType.getString(context, "message");

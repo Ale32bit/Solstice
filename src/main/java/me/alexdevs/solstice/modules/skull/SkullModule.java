@@ -4,10 +4,12 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.PropertyMap;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.skull.commands.SkullCommand;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PlayerHeadItem;
+import net.minecraft.world.item.component.ResolvableProfile;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -25,21 +27,21 @@ public class SkullModule extends ModuleBase.Toggleable {
     }
 
     public ItemStack createSkull(String name) {
-        var skull = Items.PLAYER_HEAD.getDefaultStack();
+        var skull = Items.PLAYER_HEAD.getDefaultInstance();
         name = name.substring(0, Math.min(name.length(), 16));
-        skull.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.of(name), Optional.empty(), new PropertyMap()));
+        skull.set(DataComponents.PROFILE, new ResolvableProfile(Optional.of(name), Optional.empty(), new PropertyMap()));
         return skull;
     }
 
     public ItemStack createSkull(UUID uuid) {
-        var skull = Items.PLAYER_HEAD.getDefaultStack();
-        skull.set(DataComponentTypes.PROFILE, new ProfileComponent(Optional.empty(), Optional.of(uuid), new PropertyMap()));
+        var skull = Items.PLAYER_HEAD.getDefaultInstance();
+        skull.set(DataComponents.PROFILE, new ResolvableProfile(Optional.empty(), Optional.of(uuid), new PropertyMap()));
         return skull;
     }
 
     public ItemStack createSkull(GameProfile profile) {
-        var skull = Items.PLAYER_HEAD.getDefaultStack();
-        skull.set(DataComponentTypes.PROFILE, new ProfileComponent(profile));
+        var skull = Items.PLAYER_HEAD.getDefaultInstance();
+        skull.set(DataComponents.PROFILE, new ResolvableProfile(profile));
         return skull;
     }
 }

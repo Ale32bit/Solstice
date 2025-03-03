@@ -5,45 +5,44 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.sudo.SudoModule;
-import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.CommandOutput;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-
+import net.minecraft.server.level.ServerPlayer;
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class DoAsCommand extends ModCommand<SudoModule> {
     public DoAsCommand(SudoModule module) {
         super(module);
     }
 
-    public static void execute(CommandDispatcher<ServerCommandSource> dispatcher, String command, ServerCommandSource source, ServerCommandSource output) {
+    public static void execute(CommandDispatcher<CommandSourceStack> dispatcher, String command, CommandSourceStack source, CommandSourceStack output) {
         try {
             dispatcher.execute(command, source);
         } catch (Exception e) {
-            output.sendError(Text.of(String.format("[%s] %s", source.getName(), e.getMessage())));
+            output.sendFailure(Component.nullToEmpty(String.format("[%s] %s", source.getTextName(), e.getMessage())));
         }
     }
 
-    public static ServerCommandSource buildPlayerSource(CommandOutput commandOutput, MinecraftServer server, ServerPlayerEntity player) {
-        var opList = server.getPlayerManager().getOpList();
+    public static CommandSourceStack buildPlayerSource(CommandSource commandOutput, MinecraftServer server, ServerPlayer player) {
+        var opList = server.getPlayerList().getOps();
         var operator = opList.get(player.getGameProfile());
         int opLevel = 0;
         if (operator != null) {
-            opLevel = operator.getPermissionLevel();
+            opLevel = operator.getLevel();
         }
-        return new ServerCommandSource(
+        return new CommandSourceStack(
                 commandOutput,
-                player.getPos(),
-                player.getRotationClient(),
-                player.getServerWorld(),
+                player.position(),
+                player.getRotationVector(),
+                player.serverLevel(),
                 opLevel,
-                player.getGameProfile().getName(),
+                player.getScoreboardName(),
                 player.getDisplayName(),
                 server,
                 player
@@ -56,13 +55,13 @@ public class DoAsCommand extends ModCommand<SudoModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require("doas", 4))
-                .then(argument("player", EntityArgumentType.players())
+                .then(argument("player", EntityArgument.players())
                         .then(argument("command", StringArgumentType.greedyString())
                                 .executes(context -> {
-                                    var players = EntityArgumentType.getPlayers(context, "player");
+                                    var players = EntityArgument.getPlayers(context, "player");
                                     var profileArgRange = context.getNodes().get(1).getRange();
                                     var stringProfiles = context.getInput().substring(
                                             profileArgRange.getStart(),
@@ -71,10 +70,10 @@ public class DoAsCommand extends ModCommand<SudoModule> {
 
                                     var command = StringArgumentType.getString(context, "command");
 
-                                    context.getSource().sendFeedback(() -> Text.literal(String.format("Executing '%s' as %s", command, stringProfiles)), true);
+                                    context.getSource().sendSuccess(() -> Component.literal(String.format("Executing '%s' as %s", command, stringProfiles)), true);
 
-                                    CommandOutput commandOutput;
-                                    if (context.getSource().isExecutedByPlayer()) {
+                                    CommandSource commandOutput;
+                                    if (context.getSource().isPlayer()) {
                                         commandOutput = context.getSource().getPlayer();
                                     } else {
                                         commandOutput = context.getSource().getServer();

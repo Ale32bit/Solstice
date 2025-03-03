@@ -7,15 +7,14 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.home.HomeModule;
-import net.minecraft.command.CommandSource;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class DeleteHomeCommand extends ModCommand<HomeModule> {
     public DeleteHomeCommand(HomeModule module) {
@@ -28,33 +27,33 @@ public class DeleteHomeCommand extends ModCommand<HomeModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .executes(context -> execute(context, "home"))
                 .then(argument("name", StringArgumentType.word())
                         .suggests((context, builder) -> {
-                            if (!context.getSource().isExecutedByPlayer())
-                                return CommandSource.suggestMatching(new String[]{}, builder);
+                            if (!context.getSource().isPlayer())
+                                return SharedSuggestionProvider.suggest(new String[]{}, builder);
 
-                            var data = module.getData(context.getSource().getPlayer().getUuid());
+                            var data = module.getData(context.getSource().getPlayer().getUUID());
 
-                            return CommandSource.suggestMatching(data.homes.keySet().stream(), builder);
+                            return SharedSuggestionProvider.suggest(data.homes.keySet().stream(), builder);
                         })
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name"))));
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
-        var data = module.getData(player.getUuid());
+    private int execute(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
+        var data = module.getData(player.getUUID());
         var playerContext = PlaceholderContext.of(player);
 
         var placeholders = Map.of(
-                "home", Text.of(name)
+                "home", Component.nullToEmpty(name)
         );
 
         if (!data.homes.containsKey(name)) {
-            context.getSource().sendFeedback(() -> module.locale().get(
+            context.getSource().sendSuccess(() -> module.locale().get(
                     "homeNotFound",
                     playerContext,
                     placeholders
@@ -64,7 +63,7 @@ public class DeleteHomeCommand extends ModCommand<HomeModule> {
 
         data.homes.remove(name);
 
-        context.getSource().sendFeedback(() -> module.locale().get(
+        context.getSource().sendSuccess(() -> module.locale().get(
                 "homeDeleted",
                 playerContext,
                 placeholders

@@ -1,17 +1,17 @@
 package me.alexdevs.solstice.modules.utilities.virtualScreenHandlers;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.CraftingScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.CraftingMenu;
 
-public class VirtualCraftingScreenHandler extends CraftingScreenHandler {
-    public VirtualCraftingScreenHandler(int syncId, PlayerInventory playerInventory, ScreenHandlerContext context) {
+public class VirtualCraftingScreenHandler extends CraftingMenu {
+    public VirtualCraftingScreenHandler(int syncId, Inventory playerInventory, ContainerLevelAccess context) {
         super(syncId, playerInventory, context);
     }
 
     @Override
-    public boolean canUse(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return true;
     }
 }

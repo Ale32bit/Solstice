@@ -8,21 +8,20 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.rtp.RTPModule;
 import me.alexdevs.solstice.modules.rtp.core.Locator;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.argument.RegistryEntryPredicateArgumentType;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.world.biome.Biome;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.ResourceArgument;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.biome.Biome;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class RTPCommand extends ModCommand<RTPModule> {
     public RTPCommand(RTPModule module) {
@@ -35,49 +34,49 @@ public class RTPCommand extends ModCommand<RTPModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(2))
                 .executes(context -> execute(context, false))
-                .then(argument("biome", RegistryEntryPredicateArgumentType.registryEntryPredicate(this.commandRegistry, RegistryKeys.BIOME))
+                .then(argument("biome", ResourceArgument.resource(commandRegistry, Registries.BIOME))
                         .requires(require("biome.base", 2))
                         .suggests((context, builder) -> {
                             if (Permissions.check(context.getSource(), getPermissionNode("exempt.biome"), 2)) {
-                                var biomeRegistry = this.commandRegistry.getWrapperOrThrow(RegistryKeys.BIOME);
-                                var biomes = biomeRegistry.streamEntries().map(r -> r.getKey().get().getValue().toString()).toList();
-                                return CommandSource.suggestMatching(biomes, builder);
+                                var biomeRegistry = this.commandRegistry.lookup(Registries.BIOME);
+                                var biomes = biomeRegistry.stream().map(r -> r.key().location().toString()).toList();
+                                return SharedSuggestionProvider.suggest(biomes, builder);
                             }
 
-                            var biomes = getAllowedBiomes(context.getSource(), context.getSource().getWorld());
-                            return CommandSource.suggestMatching(biomes, builder);
+                            var biomes = getAllowedBiomes(context.getSource(), context.getSource().getLevel());
+                            return SharedSuggestionProvider.suggest(biomes, builder);
                         })
                         .executes(context -> execute(context, true))
                 );
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, boolean withBiome) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int execute(CommandContext<CommandSourceStack> context, boolean withBiome) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         var config = module.getConfig();
 
         if (config.requireWorldPermission) {
-            var worldName = player.getServerWorld().getRegistryKey().getValue().toString();
+            var worldName = player.serverLevel().dimension().location().toString();
             if (!Permissions.check(context.getSource(), getPermissionNode("worlds." + worldName), 2)) {
-                context.getSource().sendFeedback(() -> module.locale().get("noWorldPermission", Map.of("world", Text.of(worldName))), false);
+                context.getSource().sendSuccess(() -> module.locale().get("noWorldPermission", Map.of("world", Component.nullToEmpty(worldName))), false);
                 return 0;
             }
         }
 
-        RegistryKey<Biome> biome = null;
+        ResourceKey<Biome> biome = null;
         if (withBiome) {
-            var biomeEntry = RegistryEntryPredicateArgumentType.getRegistryEntryPredicate(context, "biome", RegistryKeys.BIOME);
+            var biomeEntry = ResourceArgument.getResource(context, "biome", Registries.BIOME);
+            biome = biomeEntry.unwrapKey().orElse(null);
 
-            if (biomeEntry.getEntry().left().isPresent() && biomeEntry.getEntry().left().get().getKey().isPresent()) {
-                biome = biomeEntry.getEntry().left().get().getKey().get();
+            if (biomeEntry.unwrapKey().isPresent()) {
                 if (!Permissions.check(context.getSource(), getPermissionNode("exempt.biome"), 2)) {
-                    var biomeId = biome.getValue().toString();
-                    var allowedBiomes = getAllowedBiomes(context.getSource(), context.getSource().getWorld());
+                    var biomeId = biome.location().toString();
+                    var allowedBiomes = getAllowedBiomes(context.getSource(), context.getSource().getLevel());
                     if (!allowedBiomes.contains(biomeId)) {
-                        context.getSource().sendFeedback(() -> module.locale().get("noBiomePermission"), false);
+                        context.getSource().sendSuccess(() -> module.locale().get("noBiomePermission"), false);
                         return 0;
                     }
                 }
@@ -86,13 +85,13 @@ public class RTPCommand extends ModCommand<RTPModule> {
 
         if (config.cooldown.enable) {
             if (!Solstice.cooldown.trigger(player, module.getPermissionNode(), config.cooldown.cooldown)) {
-                context.getSource().sendFeedback(() -> Solstice.cooldown.getMessage(player, module.getPermissionNode()), false);
+                context.getSource().sendSuccess(() -> Solstice.cooldown.getMessage(player, module.getPermissionNode()), false);
                 return 0;
             }
         }
 
         final var server = context.getSource().getServer();
-        final var uuid = player.getUuid();
+        final var uuid = player.getUUID();
 
         Locator locator;
         if (!withBiome) {
@@ -102,22 +101,22 @@ public class RTPCommand extends ModCommand<RTPModule> {
         }
 
         locator.locate(result -> {
-            var newPlayer = server.getPlayerManager().getPlayer(uuid);
+            var newPlayer = server.getPlayerList().getPlayer(uuid);
             if (newPlayer == null) {
                 Solstice.LOGGER.info("RTP spot found, but player left.");
                 return;
             }
             if (result.position().isPresent() && result.type() == Locator.Result.Type.SUCCESS) {
-                player.sendMessage(module.locale().get("success"));
+                player.sendSystemMessage(module.locale().get("success"));
                 result.position().get().teleport(player);
             } else {
                 final var text = switch (result.type()) {
                     case TOO_MANY_ATTEMPTS -> module.locale().get("tooManyAttempts");
                     case TIMEOUT -> module.locale().get("timeout");
                     case UNSAFE -> module.locale().get("unsafe");
-                    default -> Text.of(result.type().toString());
+                    default -> Component.nullToEmpty(result.type().toString());
                 };
-                player.sendMessage(text);
+                player.sendSystemMessage(text);
 
                 if (config.cooldown.cancelOnFail) {
                     Solstice.cooldown.clear(player, module.getPermissionNode());
@@ -125,22 +124,22 @@ public class RTPCommand extends ModCommand<RTPModule> {
             }
         });
 
-        context.getSource().sendFeedback(() -> module.locale().get("searching"), false);
+        context.getSource().sendSuccess(() -> module.locale().get("searching"), false);
 
         return 1;
     }
 
-    private List<String> getAllowedBiomes(ServerCommandSource source, ServerWorld world) {
+    private List<String> getAllowedBiomes(CommandSourceStack source, ServerLevel world) {
         var groups = getAllowedGroups(source, world);
         var biomes = new ArrayList<String>();
         groups.forEach(group -> biomes.addAll(getBiomesInGroup(world, group)));
         return biomes;
     }
 
-    private List<String> getBiomesInGroup(ServerWorld world, String group) {
+    private List<String> getBiomesInGroup(ServerLevel world, String group) {
         var config = module.getConfig();
         var worlds = config.biomeGroups;
-        var worldId = world.getRegistryKey().getValue().toString();
+        var worldId = world.dimension().location().toString();
         if (!worlds.containsKey(worldId)) {
             return List.of();
         }
@@ -153,8 +152,8 @@ public class RTPCommand extends ModCommand<RTPModule> {
         return groups.get(group);
     }
 
-    private List<String> getAllowedGroups(ServerCommandSource source, ServerWorld world) {
-        var worldId = world.getRegistryKey().getValue().toString();
+    private List<String> getAllowedGroups(CommandSourceStack source, ServerLevel world) {
+        var worldId = world.dimension().location().toString();
         if (Permissions.check(source, getPermissionNode("biomes." + worldId + ".base"), 2)) {
             var config = module.getConfig();
             return config.biomeGroups.getOrDefault(worldId, Map.of())

@@ -2,7 +2,7 @@ package me.alexdevs.solstice.data;
 
 import com.google.gson.*;
 import me.alexdevs.solstice.Solstice;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -82,7 +82,7 @@ public class PlayerData {
 
             var target = filePath;
             var backup = parentDir.resolve(fileName + "_old");
-            Util.backupAndReplace(target, temp.toPath(), backup);
+            Util.safeReplaceFile(target, temp.toPath(), backup);
         } catch (Exception e) {
             Solstice.LOGGER.error("Could not save {}. This will lead to data loss!", filePath, e);
         }
@@ -109,12 +109,7 @@ public class PlayerData {
             return new JsonObject();
         try (var fr = new FileReader(this.filePath.toFile())) {
             var reader = gson.newJsonReader(fr);
-            var parser= JsonParser.parseReader(reader);
-            var jsonObject = parser.getAsJsonObject();
-            return jsonObject;
-        } catch(IllegalStateException e) {
-            Solstice.LOGGER.error("Could not load JSON node?", e);
-            return null;
+            return JsonParser.parseReader(reader).getAsJsonObject();
         } catch (IOException e) {
             Solstice.LOGGER.error("Could not load player data of UUID {}!", uuid, e);
             safeMove();

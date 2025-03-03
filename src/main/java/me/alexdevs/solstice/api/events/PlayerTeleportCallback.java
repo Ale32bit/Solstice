@@ -3,7 +3,7 @@ package me.alexdevs.solstice.api.events;
 import me.alexdevs.solstice.api.ServerLocation;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public interface PlayerTeleportCallback {
     Event<PlayerTeleportCallback> EVENT = EventFactory.createArrayBacked(PlayerTeleportCallback.class,
@@ -13,5 +13,5 @@ public interface PlayerTeleportCallback {
                 }
             });
 
-    void teleport(ServerPlayerEntity player, ServerLocation origin, ServerLocation destination);
+    void teleport(ServerPlayer player, ServerLocation origin, ServerLocation destination);
 }

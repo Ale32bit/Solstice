@@ -6,19 +6,18 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.smite.SmiteModule;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.phys.HitResult;
 import me.alexdevs.solstice.api.Raycast;
-import net.minecraft.command.argument.EntityArgumentType;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-
 import java.util.List;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class SmiteCommand extends ModCommand<SmiteModule> {
     public static final EntityType<?> entityType = EntityType.LIGHTNING_BOLT;
@@ -35,11 +34,11 @@ public class SmiteCommand extends ModCommand<SmiteModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(2))
                 .executes(this::executePos)
-                .then(argument("target", EntityArgumentType.entities())
+                .then(argument("target", EntityArgument.entities())
                         .executes(context ->
                                 execute(context, 1)
                         )
@@ -49,22 +48,22 @@ public class SmiteCommand extends ModCommand<SmiteModule> {
                                 )));
     }
 
-    private int executePos(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int executePos(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
 
         var result = Raycast.cast(player, maxDistance);
         if (result.getType() == HitResult.Type.MISS) {
             return 0;
         }
 
-        summon(player.getServerWorld(), result.getBlockPos().up());
+        summon(player.serverLevel(), result.getBlockPos().above());
 
         return 1;
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, int times) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
-        var targets = EntityArgumentType.getEntities(context, "target");
+    private int execute(CommandContext<CommandSourceStack> context, int times) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
+        var targets = EntityArgument.getEntities(context, "target");
         var timesToSummon = targets.size() * times;
         if (timesToSummon > maxTimes) {
             times = maxTimes / targets.size();
@@ -73,19 +72,19 @@ public class SmiteCommand extends ModCommand<SmiteModule> {
         }
         for (var i = 0; i < times; i++) {
             targets.forEach(target ->
-                    summon(player.getServerWorld(), target.getBlockPos())
+                    summon(player.serverLevel(), target.blockPosition())
             );
         }
 
         return targets.size();
     }
 
-    private void summon(ServerWorld world, BlockPos pos) {
+    private void summon(ServerLevel world, BlockPos pos) {
         entityType.create(
                 world,
-                world::spawnEntity,
+                world::addFreshEntity,
                 pos,
-                SpawnReason.COMMAND,
+                MobSpawnType.COMMAND,
                 false,
                 false);
     }

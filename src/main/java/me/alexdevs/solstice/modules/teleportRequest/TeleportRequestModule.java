@@ -14,8 +14,7 @@ import me.alexdevs.solstice.modules.teleportRequest.data.Request;
 import me.alexdevs.solstice.modules.teleportRequest.data.TeleportConfig;
 import me.alexdevs.solstice.modules.teleportRequest.data.TeleportLocale;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.server.network.ServerPlayerEntity;
-
+import net.minecraft.server.level.ServerPlayer;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,8 +42,8 @@ public class TeleportRequestModule extends ModuleBase.Toggleable {
 
         Solstice.scheduler.scheduleAtFixedRate(this::tickDown, 0, 1, TimeUnit.SECONDS);
 
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> requests.put(handler.getPlayer().getUuid(), new ConcurrentLinkedDeque<>()));
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> Solstice.nextTick(() -> requests.remove(handler.getPlayer().getUuid())));
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> requests.put(handler.getPlayer().getUUID(), new ConcurrentLinkedDeque<>()));
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> Solstice.nextTick(() -> requests.remove(handler.getPlayer().getUUID())));
     }
 
     private void tickDown() {
@@ -57,24 +56,24 @@ public class TeleportRequestModule extends ModuleBase.Toggleable {
         return Solstice.configManager.getData(TeleportConfig.class);
     }
 
-    public Request getRequestFromSource(ServerPlayerEntity player, ServerPlayerEntity source) {
-        return requests.get(player.getUuid())
+    public Request getRequestFromSource(ServerPlayer player, ServerPlayer source) {
+        return requests.get(player.getUUID())
                 .stream()
-                .filter(r -> r.getSource().getUuid().equals(source.getUuid()))
+                .filter(r -> r.getSource().getUUID().equals(source.getUUID()))
                 .findFirst()
                 .orElse(null);
     }
 
-    public Request getLatestRequest(ServerPlayerEntity player) {
-        var reqs = requests.get(player.getUuid());
+    public Request getLatestRequest(ServerPlayer player) {
+        var reqs = requests.get(player.getUUID());
         if (reqs.isEmpty())
             return null;
 
         return reqs.getLast();
     }
 
-    public void acceptRequest(ServerPlayerEntity player, Request request) {
-        requests.get(player.getUuid()).remove(request);
+    public void acceptRequest(ServerPlayer player, Request request) {
+        requests.get(player.getUUID()).remove(request);
         var source = request.getSource();
         var direction = request.getDirection();
 
@@ -82,8 +81,8 @@ public class TeleportRequestModule extends ModuleBase.Toggleable {
                 "player", player.getDisplayName()
         );
 
-        player.sendMessage(locale().get("targetAccepted"));
-        source.sendMessage(locale().get("sourceAccepted", map));
+        player.sendSystemMessage(locale().get("targetAccepted"));
+        source.sendSystemMessage(locale().get("sourceAccepted", map));
 
         if (direction == Request.Direction.SOURCE_TO_TARGET) {
             var location = new ServerLocation(player);
@@ -94,21 +93,21 @@ public class TeleportRequestModule extends ModuleBase.Toggleable {
         }
     }
 
-    public void refuseRequest(ServerPlayerEntity player, Request request) {
-        requests.get(player.getUuid()).remove(request);
+    public void refuseRequest(ServerPlayer player, Request request) {
+        requests.get(player.getUUID()).remove(request);
         var source = request.getSource();
 
         var map = Map.of(
                 "player", player.getDisplayName()
         );
 
-        player.sendMessage(locale().get("targetRefused"));
-        source.sendMessage(locale().get("sourceRefused", map));
+        player.sendSystemMessage(locale().get("targetRefused"));
+        source.sendSystemMessage(locale().get("sourceRefused", map));
     }
 
-    public void requestTo(ServerPlayerEntity source, ServerPlayerEntity target) {
+    public void requestTo(ServerPlayer source, ServerPlayer target) {
         var request = new Request(source, getConfig().teleportRequestTimeout, Request.Direction.SOURCE_TO_TARGET);
-        requests.computeIfAbsent(target.getUuid(), uuid -> new ConcurrentLinkedDeque<>()).add(request);
+        requests.computeIfAbsent(target.getUUID(), uuid -> new ConcurrentLinkedDeque<>()).add(request);
 
         var sourceContext = PlaceholderContext.of(source);
         var targetContext = PlaceholderContext.of(target);
@@ -125,13 +124,13 @@ public class TeleportRequestModule extends ModuleBase.Toggleable {
                         "/tpdeny " + source.getGameProfile().getName())
         );
 
-        target.sendMessage(locale().get(
+        target.sendSystemMessage(locale().get(
                 "pendingTeleport",
                 targetContext,
                 placeholders
         ));
 
-        source.sendMessage(locale().get(
+        source.sendSystemMessage(locale().get(
                 "requestSent",
                 sourceContext
         ));
@@ -139,9 +138,9 @@ public class TeleportRequestModule extends ModuleBase.Toggleable {
         NotificationsModule.notify(target);
     }
 
-    public void requestToHere(ServerPlayerEntity source, ServerPlayerEntity target) {
+    public void requestToHere(ServerPlayer source, ServerPlayer target) {
         var request = new Request(source, getConfig().teleportRequestTimeout, Request.Direction.TARGET_TO_SOURCE);
-        requests.computeIfAbsent(target.getUuid(), uuid -> new ConcurrentLinkedDeque<>()).add(request);
+        requests.computeIfAbsent(target.getUUID(), uuid -> new ConcurrentLinkedDeque<>()).add(request);
 
         var sourceContext = PlaceholderContext.of(source);
         var targetContext = PlaceholderContext.of(target);
@@ -157,13 +156,13 @@ public class TeleportRequestModule extends ModuleBase.Toggleable {
                         "/tpdeny " + source.getGameProfile().getName())
         );
 
-        target.sendMessage(locale().get(
+        target.sendSystemMessage(locale().get(
                 "pendingTeleportHere",
                 targetContext,
                 placeholders
         ));
 
-        source.sendMessage(locale().get(
+        source.sendSystemMessage(locale().get(
                 "requestSent",
                 sourceContext
         ));

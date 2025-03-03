@@ -8,7 +8,7 @@ import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.api.text.RawPlaceholder;
 import me.alexdevs.solstice.modules.tablist.data.TabListConfig;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.network.packet.s2c.play.PlayerListHeaderS2CPacket;
+import net.minecraft.network.protocol.game.ClientboundTabListPacket;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.Map;
@@ -54,17 +54,17 @@ public class TabListModule extends ModuleBase.Toggleable {
         var config = Solstice.configManager.getData(TabListConfig.class);
         var period = Math.max(config.phasePeriod, 1);
 
-        var phase = (float) (Math.sin((server.getTicks() * Math.PI * 2) / period) + 1) / 2f;
+        var phase = (float) (Math.sin((server.getTickCount() * Math.PI * 2) / period) + 1) / 2f;
 
         var placeholders = Map.of(
                 "phase", String.valueOf(phase)
         );
 
-        server.getPlayerManager().getPlayerList().forEach(player -> {
+        server.getPlayerList().getPlayers().forEach(player -> {
             var playerContext = PlaceholderContext.of(player);
             var header = RawPlaceholder.parse(String.join("\n", config.header), placeholders);
             var footer = RawPlaceholder.parse(String.join("\n", config.footer), placeholders);
-            player.networkHandler.sendPacket(new PlayerListHeaderS2CPacket(
+            player.connection.send(new ClientboundTabListPacket(
                     Format.parse(header, playerContext),
                     Format.parse(footer, playerContext)
             ));

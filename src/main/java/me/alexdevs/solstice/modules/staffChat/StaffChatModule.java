@@ -8,9 +8,8 @@ import me.alexdevs.solstice.modules.staffChat.commands.StaffChatCommand;
 import me.alexdevs.solstice.modules.staffChat.data.StaffChatLocale;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,10 +29,10 @@ public class StaffChatModule extends ModuleBase.Toggleable {
         commands.add(new StaffChatCommand(this));
 
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, player, pars) -> {
-            if (stickyStaffChat.getOrDefault(player.getUuid(), false)
+            if (stickyStaffChat.getOrDefault(player.getUUID(), false)
                     && canUseStaffChat(player)) {
 
-                sendStaffChatMessage(player.getDisplayName(), message.getContent());
+                sendStaffChatMessage(player.getDisplayName(), message.decoratedContent());
 
                 return false;
             }
@@ -41,11 +40,11 @@ public class StaffChatModule extends ModuleBase.Toggleable {
         });
     }
 
-    public boolean canUseStaffChat(ServerPlayerEntity player) {
+    public boolean canUseStaffChat(ServerPlayer player) {
         return Permissions.check(player, getPermissionNode("base"), 1);
     }
 
-    public void sendStaffChatMessage(Text sourceName, final Text message) {
+    public void sendStaffChatMessage(Component sourceName, final Component message) {
         var formattedMessage = MarkdownParser.defaultParser.parseNode(TextNode.convert(message)).toText();
 
 
@@ -54,10 +53,10 @@ public class StaffChatModule extends ModuleBase.Toggleable {
                 "message", formattedMessage
         ));
 
-        Solstice.server.sendMessage(text);
-        Solstice.server.getPlayerManager().getPlayerList().forEach(player -> {
+        Solstice.server.sendSystemMessage(text);
+        Solstice.server.getPlayerList().getPlayers().forEach(player -> {
             if (canUseStaffChat(player)) {
-                player.sendMessage(text, false);
+                player.displayClientMessage(text, false);
             }
         });
     }

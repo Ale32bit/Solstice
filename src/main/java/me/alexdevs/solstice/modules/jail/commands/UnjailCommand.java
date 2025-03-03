@@ -5,10 +5,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.jail.JailModule;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 
@@ -23,10 +22,10 @@ public class UnjailCommand extends ModCommand<JailModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return CommandManager.literal(name)
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
+        return Commands.literal(name)
                 .requires(require("unjail", 2))
-                .then(CommandManager.argument("user", StringArgumentType.word())
+                .then(Commands.argument("user", StringArgumentType.word())
                         .suggests(LocalGameProfile::suggest)
                         .executes(context -> {
                             var profile = LocalGameProfile.getProfile(context, "user");
@@ -34,16 +33,16 @@ public class UnjailCommand extends ModCommand<JailModule> {
                             var data = module.getPlayer(profile.getId());
 
                             if (!data.jailed) {
-                                context.getSource().sendFeedback(() -> module.locale().get("notJailed"), false);
+                                context.getSource().sendSuccess(() -> module.locale().get("notJailed"), false);
                                 return 0;
                             }
 
                             module.unjailPlayer(profile.getId());
 
                             var map = Map.of(
-                                    "player", Text.of(profile.getName())
+                                    "player", Component.nullToEmpty(profile.getName())
                             );
-                            context.getSource().sendFeedback(() -> module.locale().get("unjailed", map), false);
+                            context.getSource().sendSuccess(() -> module.locale().get("unjailed", map), false);
 
                             return 1;
                         })

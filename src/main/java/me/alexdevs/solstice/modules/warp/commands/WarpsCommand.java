@@ -6,13 +6,12 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.warp.WarpModule;
 import me.alexdevs.solstice.modules.warp.data.WarpServerData;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Map;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 public class WarpsCommand extends ModCommand<WarpModule> {
     public WarpsCommand(WarpModule module) {
@@ -25,7 +24,7 @@ public class WarpsCommand extends ModCommand<WarpModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .executes(context -> {
@@ -34,27 +33,27 @@ public class WarpsCommand extends ModCommand<WarpModule> {
                     var warpList = serverDate.warps.keySet().stream().toList();
                     var sourceContext = PlaceholderContext.of(source);
 
-                    if(source.isExecutedByPlayer()) {
+                    if(source.isPlayer()) {
                         var player = source.getPlayer();
                         warpList = warpList.stream().filter(warp -> module.canUseWarp(player, warp)).toList();
                     }
 
                     if (warpList.isEmpty()) {
-                        context.getSource().sendFeedback(() -> module.locale().get(
+                        context.getSource().sendSuccess(() -> module.locale().get(
                                 "noWarps",
                                 sourceContext
                         ), false);
                         return 1;
                     }
 
-                    var listText = Text.empty();
+                    var listText = Component.empty();
                     var comma = module.locale().get("warpsComma");
                     for (var i = 0; i < warpList.size(); i++) {
                         if (i > 0) {
                             listText = listText.append(comma);
                         }
                         var placeholders = Map.of(
-                                "warp", Text.of(warpList.get(i))
+                                "warp", Component.nullToEmpty(warpList.get(i))
                         );
 
                         listText = listText.append(module.locale().get(
@@ -65,9 +64,9 @@ public class WarpsCommand extends ModCommand<WarpModule> {
                     }
 
                     var placeholders = Map.of(
-                            "warpList", (Text) listText
+                            "warpList", (Component) listText
                     );
-                    context.getSource().sendFeedback(() -> module.locale().get(
+                    context.getSource().sendSuccess(() -> module.locale().get(
                             "warpList",
                             sourceContext,
                             placeholders

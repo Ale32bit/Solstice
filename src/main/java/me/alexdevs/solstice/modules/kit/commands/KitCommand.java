@@ -15,18 +15,17 @@ import me.alexdevs.solstice.modules.kit.KitInventory;
 import me.alexdevs.solstice.modules.kit.KitModule;
 import me.alexdevs.solstice.modules.kit.Utils;
 import me.alexdevs.solstice.modules.kit.data.KitPlayerData;
-import net.minecraft.command.CommandSource;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.MenuType;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class KitCommand extends ModCommand<KitModule> {
     public KitCommand(KitModule module) {
@@ -39,7 +38,7 @@ public class KitCommand extends ModCommand<KitModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
                 .then(literal("list")
@@ -89,26 +88,26 @@ public class KitCommand extends ModCommand<KitModule> {
                 );
     }
 
-    private int listKits(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
+    private int listKits(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         var kits = module.getPlayerKitNames(player);
 
         if(kits.isEmpty()) {
-            context.getSource().sendFeedback(() -> module.locale().get("listNoKits"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("listNoKits"), false);
             return 0;
         }
 
         var comma = module.locale().get("listComma");
-        var items = Text.empty();
+        var items = Component.empty();
         for (var i = 0; i < kits.size(); i++) {
             var kit = kits.get(i);
             if (module.couldClaimKit(player, kit)) {
                 items.append(module.locale().get("listAvailableKit", Map.of(
-                        "kit", Text.of(kit)
+                        "kit", Component.nullToEmpty(kit)
                 )));
             } else {
                 items.append(module.locale().get("listUnavailableKit", Map.of(
-                        "kit", Text.of(kit)
+                        "kit", Component.nullToEmpty(kit)
                 )));
             }
 
@@ -121,24 +120,24 @@ public class KitCommand extends ModCommand<KitModule> {
                 "list", items
         ));
 
-        context.getSource().sendFeedback(() -> list, false);
+        context.getSource().sendSuccess(() -> list, false);
 
         return 1;
     }
 
-    private int claimKit(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private int claimKit(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var source = context.getSource();
-        var player = source.getPlayerOrThrow();
+        var player = source.getPlayerOrException();
         var name = StringArgumentType.getString(context, "name");
 
         if (!module.hasKitPermission(player, name)) {
-            source.sendFeedback(() -> module.locale().get("noPermission", Map.of("kit", Text.of(name))), false);
+            source.sendSuccess(() -> module.locale().get("noPermission", Map.of("kit", Component.nullToEmpty(name))), false);
             return 0;
         }
 
         var kits = module.getKits();
         if (!kits.containsKey(name)) {
-            source.sendFeedback(() -> module.locale().get("notFound", Map.of("kit", Text.of(name))), false);
+            source.sendSuccess(() -> module.locale().get("notFound", Map.of("kit", Component.nullToEmpty(name))), false);
             return 0;
         }
 
@@ -146,7 +145,7 @@ public class KitCommand extends ModCommand<KitModule> {
 
         var playerData = Solstice.playerData.get(player).getData(KitPlayerData.class);
         if (kit.oneTime && playerData.claimedKits.containsKey(name)) {
-            source.sendFeedback(() -> module.locale().get("alreadyClaimed", Map.of("kit", Text.of(name))), false);
+            source.sendSuccess(() -> module.locale().get("alreadyClaimed", Map.of("kit", Component.nullToEmpty(name))), false);
             return 0;
         }
 
@@ -160,9 +159,9 @@ public class KitCommand extends ModCommand<KitModule> {
                     var remaining = kit.cooldownSeconds - delta;
 
                     var timespan = TimeSpan.toShortString((int) remaining);
-                    source.sendFeedback(() -> module.locale().get("onCooldown", Map.of(
-                            "kit", Text.of(name),
-                            "timespan", Text.of(timespan)
+                    source.sendSuccess(() -> module.locale().get("onCooldown", Map.of(
+                            "kit", Component.nullToEmpty(name),
+                            "timespan", Component.nullToEmpty(timespan)
                     )), false);
                     return 0;
                 }
@@ -171,178 +170,178 @@ public class KitCommand extends ModCommand<KitModule> {
 
         module.claimKit(player, name);
 
-        source.sendFeedback(() -> module.locale().get("claimed", Map.of("kit", Text.of(name))), false);
+        source.sendSuccess(() -> module.locale().get("claimed", Map.of("kit", Component.nullToEmpty(name))), false);
 
         return 1;
     }
 
-    private int createKit(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private int createKit(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var source = context.getSource();
-        var player = source.getPlayerOrThrow();
+        var player = source.getPlayerOrException();
         var name = StringArgumentType.getString(context, "name");
 
         if (module.getKits().containsKey(name)) {
-            source.sendFeedback(() -> module.locale().get("alreadyExists"), false);
+            source.sendSuccess(() -> module.locale().get("alreadyExists"), false);
             return 0;
         }
 
         var kitInventory = new KitInventory();
-        var container = new SimpleGui(ScreenHandlerType.GENERIC_9X3, player, false) {
+        var container = new SimpleGui(MenuType.GENERIC_9x3, player, false) {
             @Override
             public void onClose() {
                 if (module.createKit(name, Utils.getItemStacks(kitInventory))) {
-                    source.sendFeedback(() -> module.locale().get("created", Map.of("kit", Text.of(name))), true);
+                    source.sendSuccess(() -> module.locale().get("created", Map.of("kit", Component.nullToEmpty(name))), true);
                 } else {
-                    source.sendFeedback(() -> module.locale().get("alreadyExists"), false);
+                    source.sendSuccess(() -> module.locale().get("alreadyExists"), false);
                 }
             }
         };
 
         Utils.redirect(container, kitInventory);
-        container.setTitle(module.locale().get("newKitTitle", Map.of("kit", Text.of(name))));
+        container.setTitle(module.locale().get("newKitTitle", Map.of("kit", Component.nullToEmpty(name))));
         container.open();
 
         return 1;
     }
 
-    private int deleteKit(CommandContext<ServerCommandSource> context) {
+    private int deleteKit(CommandContext<CommandSourceStack> context) {
         var name = StringArgumentType.getString(context, "name");
         if (module.getKits().remove(name) != null) {
-            context.getSource().sendFeedback(() -> module.locale().get("deleted", Map.of("kit", Text.of(name))), true);
+            context.getSource().sendSuccess(() -> module.locale().get("deleted", Map.of("kit", Component.nullToEmpty(name))), true);
         } else {
-            context.getSource().sendFeedback(() -> module.locale().get("notFound", Map.of("kit", Text.of(name))), false);
+            context.getSource().sendSuccess(() -> module.locale().get("notFound", Map.of("kit", Component.nullToEmpty(name))), false);
         }
 
         return 1;
     }
 
-    private int editKit(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private int editKit(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var source = context.getSource();
-        var player = source.getPlayerOrThrow();
+        var player = source.getPlayerOrException();
         var name = StringArgumentType.getString(context, "name");
 
         var kits = module.getKits();
         if (!kits.containsKey(name)) {
-            context.getSource().sendFeedback(() -> module.locale().get("notFound", Map.of("kit", Text.of(name))), false);
+            context.getSource().sendSuccess(() -> module.locale().get("notFound", Map.of("kit", Component.nullToEmpty(name))), false);
             return 0;
         }
 
         var kit = kits.get(name);
         var kitInventory = Utils.createInventory(kit.getItemStacks());
 
-        var container = new SimpleGui(ScreenHandlerType.GENERIC_9X3, player, false) {
+        var container = new SimpleGui(MenuType.GENERIC_9x3, player, false) {
             @Override
             public void onClose() {
                 var items = Utils.getItemStacks(kitInventory);
                 kit.itemStacks = items.stream().map(Utils::serializeItemStack).toList();
-                source.sendFeedback(() -> module.locale().get("edited", Map.of("kit", Text.of(name))), true);
+                source.sendSuccess(() -> module.locale().get("edited", Map.of("kit", Component.nullToEmpty(name))), true);
             }
         };
 
         Utils.redirect(container, kitInventory);
-        container.setTitle(module.locale().get("editKitTitle", Map.of("kit", Text.of(name))));
+        container.setTitle(module.locale().get("editKitTitle", Map.of("kit", Component.nullToEmpty(name))));
         container.open();
 
         return 1;
     }
 
-    private int setFirstJoin(CommandContext<ServerCommandSource> context) {
+    private int setFirstJoin(CommandContext<CommandSourceStack> context) {
         var name = StringArgumentType.getString(context, "name");
         var enable = BoolArgumentType.getBool(context, "enable");
 
         var kits = module.getKits();
         if (!kits.containsKey(name)) {
-            context.getSource().sendFeedback(() -> module.locale().get("notFound", Map.of("kit", Text.of(name))), false);
+            context.getSource().sendSuccess(() -> module.locale().get("notFound", Map.of("kit", Component.nullToEmpty(name))), false);
             return 0;
         }
 
         var kit = kits.get(name);
         kit.firstJoin = enable;
 
-        context.getSource().sendFeedback(() -> module.locale().get("setFirstJoin", Map.of(
-                "kit", Text.of(name),
-                "value", Text.of(String.valueOf(enable))
+        context.getSource().sendSuccess(() -> module.locale().get("setFirstJoin", Map.of(
+                "kit", Component.nullToEmpty(name),
+                "value", Component.nullToEmpty(String.valueOf(enable))
         )), true);
 
         return 1;
     }
 
-    private int setCooldown(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private int setCooldown(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var name = StringArgumentType.getString(context, "name");
         var timespan = TimeSpan.getTimeSpan(context, "timespan");
 
         var kits = module.getKits();
         if (!kits.containsKey(name)) {
-            context.getSource().sendFeedback(() -> module.locale().get("notFound", Map.of("kit", Text.of(name))), false);
+            context.getSource().sendSuccess(() -> module.locale().get("notFound", Map.of("kit", Component.nullToEmpty(name))), false);
             return 0;
         }
 
         var kit = kits.get(name);
         kit.cooldownSeconds = timespan;
 
-        context.getSource().sendFeedback(() -> module.locale().get("setCooldown", Map.of(
-                "kit", Text.of(name),
-                "value", Text.of(TimeSpan.toShortString(timespan))
+        context.getSource().sendSuccess(() -> module.locale().get("setCooldown", Map.of(
+                "kit", Component.nullToEmpty(name),
+                "value", Component.nullToEmpty(TimeSpan.toShortString(timespan))
         )), true);
 
         return 1;
     }
 
-    private int setOneTime(CommandContext<ServerCommandSource> context) {
+    private int setOneTime(CommandContext<CommandSourceStack> context) {
         var name = StringArgumentType.getString(context, "name");
         var enable = BoolArgumentType.getBool(context, "enable");
 
         var kits = module.getKits();
         if (!kits.containsKey(name)) {
-            context.getSource().sendFeedback(() -> module.locale().get("notFound", Map.of("kit", Text.of(name))), false);
+            context.getSource().sendSuccess(() -> module.locale().get("notFound", Map.of("kit", Component.nullToEmpty(name))), false);
             return 0;
         }
 
         var kit = kits.get(name);
         kit.oneTime = enable;
 
-        context.getSource().sendFeedback(() -> module.locale().get("setOneTime", Map.of(
-                "kit", Text.of(name),
-                "value", Text.of(String.valueOf(enable))
+        context.getSource().sendSuccess(() -> module.locale().get("setOneTime", Map.of(
+                "kit", Component.nullToEmpty(name),
+                "value", Component.nullToEmpty(String.valueOf(enable))
         )), true);
 
         return 1;
     }
 
-    private int setIcon(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+    private int setIcon(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var name = StringArgumentType.getString(context, "name");
-        var player = context.getSource().getPlayerOrThrow();
+        var player = context.getSource().getPlayerOrException();
 
         var kits = module.getKits();
         if (!kits.containsKey(name)) {
-            context.getSource().sendFeedback(() -> module.locale().get("notFound", Map.of("kit", Text.of(name))), false);
+            context.getSource().sendSuccess(() -> module.locale().get("notFound", Map.of("kit", Component.nullToEmpty(name))), false);
             return 0;
         }
 
-        var hand = player.getActiveHand();
-        var stack = player.getStackInHand(hand).copy();
+        var hand = player.getUsedItemHand();
+        var stack = player.getItemInHand(hand).copy();
         if(stack.isEmpty()) {
-            context.getSource().sendFeedback(() -> module.locale().get("noStackInHand"), false);
+            context.getSource().sendSuccess(() -> module.locale().get("noStackInHand"), false);
             return 0;
         }
 
         var kit = kits.get(name);
         kit.icon = Utils.serializeItemStack(stack);
 
-        context.getSource().sendFeedback(() -> module.locale().get("setIcon", Map.of(
-                "kit", Text.of(name)
+        context.getSource().sendSuccess(() -> module.locale().get("setIcon", Map.of(
+                "kit", Component.nullToEmpty(name)
         )), true);
 
         return 1;
     }
 
-    private CompletableFuture<Suggestions> suggestAllKits(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
+    private CompletableFuture<Suggestions> suggestAllKits(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
         var kits = module.getKits().keySet();
-        return CommandSource.suggestMatching(kits, builder);
+        return SharedSuggestionProvider.suggest(kits, builder);
     }
 
-    private CompletableFuture<Suggestions> suggestKitList(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
-        var player = context.getSource().getPlayerOrThrow();
-        return CommandSource.suggestMatching(module.getPlayerKitNames(player), builder);
+    private CompletableFuture<Suggestions> suggestKitList(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
+        return SharedSuggestionProvider.suggest(module.getPlayerKitNames(player), builder);
     }
 }

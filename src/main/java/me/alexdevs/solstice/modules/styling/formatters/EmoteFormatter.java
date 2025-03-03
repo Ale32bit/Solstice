@@ -3,22 +3,21 @@ package me.alexdevs.solstice.modules.styling.formatters;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.styling.StylingModule;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.PlayerChatMessage;
+import net.minecraft.server.level.ServerPlayer;
 import me.alexdevs.solstice.api.text.Components;
 import me.alexdevs.solstice.api.text.Format;
-import net.minecraft.network.message.MessageType;
-import net.minecraft.network.message.SignedMessage;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-
 import java.util.Map;
 
 public class EmoteFormatter {
-    public static void sendEmoteMessage(ServerPlayerEntity receiver, SignedMessage message, MessageType.Parameters params, ServerPlayerEntity sender) {
+    public static void sendEmoteMessage(ServerPlayer receiver, PlayerChatMessage message, ChatType.Bound params, ServerPlayer sender) {
         var config = Solstice.modules.getModule(StylingModule.class).getConfig();
         var playerContext = PlaceholderContext.of(sender);
 
-        Text messageText = Components.chat(message, sender);
+        Component messageText = Components.chat(message, sender);
 
         var text = Format.parse(
                 config.emoteFormat,
@@ -28,11 +27,6 @@ public class EmoteFormatter {
                 )
         );
 
-        receiver.sendMessage(text);
-
-//        var msgType = Solstice.server.getRegistryManager().get(RegistryKeys.MESSAGE_TYPE).getOrThrow(Solstice.CHAT_TYPE);
-//        var newParams = new MessageType.Parameters(msgType, text, null);
-//
-//        receiver.networkHandler.sendProfilelessChatMessage(message.getContent(), newParams);
+        receiver.sendSystemMessage(text);
     }
 }

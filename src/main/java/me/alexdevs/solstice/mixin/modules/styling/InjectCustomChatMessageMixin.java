@@ -2,10 +2,9 @@ package me.alexdevs.solstice.mixin.modules.styling;
 
 import com.mojang.datafixers.util.Pair;
 import me.alexdevs.solstice.modules.styling.StylingModule;
-import net.minecraft.network.message.MessageType;
-import net.minecraft.registry.*;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.text.Decoration;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.RegistryDataLoader;
+import net.minecraft.resources.RegistryOps;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
@@ -16,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import java.util.List;
 import java.util.Map;
 
-@Mixin(RegistryLoader.class)
+@Mixin(RegistryDataLoader.class)
 public class InjectCustomChatMessageMixin {
 
     /*
@@ -36,12 +35,11 @@ public class InjectCustomChatMessageMixin {
         }
     }*/
 
-    @SuppressWarnings("unchecked")
-    @Inject(method = "load", at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V", ordinal = 0, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    private static void solstice$load(@Coerce Object loadable,
-                                      DynamicRegistryManager baseRegistryManager,
-                                      List<RegistryLoader.Entry<?>> entries,
-                                      CallbackInfoReturnable<DynamicRegistryManager.Immutable> cir) {
+    /*@SuppressWarnings("unchecked")
+    @Inject(method = "Lnet/minecraft/resources/RegistryDataLoader;load(Lnet/minecraft/resources/RegistryDataLoader$LoadingFunction;Lnet/minecraft/core/RegistryAccess;Ljava/util/List;)Lnet/minecraft/core/RegistryAccess$Frozen;",
+            at = @At(value = "INVOKE", target = "Ljava/util/List;forEach(Ljava/util/function/Consumer;)V",
+            ordinal = 0, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+    private static void solstice$load(RegistryDataLoader.LoadingFunction loadingFunction, RegistryAccess registryAccess, List<RegistryDataLoader.RegistryData<?>> registryData, CallbackInfoReturnable<RegistryAccess.Frozen> cir, Map map, List list, RegistryOps.RegistryInfoLookup registryInfoLookup) {
         for (var entry : entries) {
             var registry = entry.key();
             if (registry.getRegistry().equals(RegistryKeys.MESSAGE_TYPE)) {
@@ -52,6 +50,5 @@ public class InjectCustomChatMessageMixin {
                         ));
             }
         }
-    }
-
+    }*/
 }

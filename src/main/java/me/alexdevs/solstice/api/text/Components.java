@@ -8,28 +8,27 @@ import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.styling.StylingModule;
 import me.alexdevs.solstice.modules.styling.data.StylingConfig;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.network.message.SignedMessage;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.PlayerChatMessage;
+import net.minecraft.server.level.ServerPlayer;
 import java.util.Map;
 
 public class Components {
-    public static Text button(Text label, Text hoverText, String command, boolean suggest) {
+    public static Component button(Component label, Component hoverText, String command, boolean suggest) {
         var locale = Solstice.localeManager.getLocale(CoreModule.ID);
         var format = suggest ? locale.raw("~buttonSuggest") : locale.raw("~button");
         var placeholders = Map.of(
                 "label", label,
                 "hoverText", hoverText,
-                "command", Text.of(command)
+                "command", Component.nullToEmpty(command)
         );
 
         var text = TextParserUtils.formatText(format);
         return Format.parse(text, placeholders);
     }
 
-    public static Text button(String label, String hoverText, String command) {
+    public static Component button(String label, String hoverText, String command) {
 
         return button(
                 Format.parse(label),
@@ -39,7 +38,7 @@ public class Components {
         );
     }
 
-    public static Text buttonSuggest(String label, String hoverText, String command) {
+    public static Component buttonSuggest(String label, String hoverText, String command) {
 
         return button(
                 Format.parse(label),
@@ -49,19 +48,19 @@ public class Components {
         );
     }
 
-    public static Text chat(SignedMessage message, ServerPlayerEntity player) {
+    public static Component chat(PlayerChatMessage message, ServerPlayer player) {
         var allowAdvancedChatFormat = Permissions.check(player, StylingModule.ADVANCED_CHAT_FORMATTING_PERMISSION);
 
-        return chat(message.getSignedContent(), allowAdvancedChatFormat);
+        return chat(message.signedContent(), allowAdvancedChatFormat);
     }
 
-    public static Text chat(String message, ServerPlayerEntity player) {
+    public static Component chat(String message, ServerPlayer player) {
         var allowAdvancedChatFormat = Permissions.check(player, StylingModule.ADVANCED_CHAT_FORMATTING_PERMISSION);
 
         return chat(message, allowAdvancedChatFormat);
     }
 
-    public static Text chat(String message, boolean allowAdvancedChatFormat) {
+    public static Component chat(String message, boolean allowAdvancedChatFormat) {
         var config = Solstice.configManager.getData(StylingConfig.class);
         var enableMarkdown = config.enableMarkdown;
 
@@ -70,7 +69,7 @@ public class Components {
         }
 
         if (!allowAdvancedChatFormat && !enableMarkdown) {
-            return Text.of(message);
+            return Component.nullToEmpty(message);
         }
 
         NodeParser parser;
@@ -83,8 +82,8 @@ public class Components {
         return parser.parseNode(message).toText();
     }
 
-    public static Text chat(String message, ServerCommandSource source) {
-        if (source.isExecutedByPlayer())
+    public static Component chat(String message, CommandSourceStack source) {
+        if (source.isPlayer())
             return chat(message, source.getPlayer());
         return chat(message, true);
     }

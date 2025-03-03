@@ -5,11 +5,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.powertool.Action;
 import me.alexdevs.solstice.modules.powertool.PowerToolModule;
-import net.minecraft.command.CommandSource;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,29 +24,29 @@ public class PowerToolCommand extends ModCommand<PowerToolModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return CommandManager.literal(name)
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
+        return Commands.literal(name)
                 .requires(require(2))
-                .then(CommandManager.literal("set")
-                        .then(CommandManager.argument("action", StringArgumentType.word())
-                                .suggests((context, builder) -> CommandSource.suggestMatching(Action.stringValues(), builder))
-                                .then(CommandManager.argument("command", StringArgumentType.greedyString())
+                .then(Commands.literal("set")
+                        .then(Commands.argument("action", StringArgumentType.word())
+                                .suggests((context, builder) -> SharedSuggestionProvider.suggest(Action.stringValues(), builder))
+                                .then(Commands.argument("command", StringArgumentType.greedyString())
                                         .executes(context -> {
-                                            var player = context.getSource().getPlayerOrThrow();
+                                            var player = context.getSource().getPlayerOrException();
                                             var actionName = StringArgumentType.getString(context, "action");
                                             var command = StringArgumentType.getString(context, "command");
 
                                             var action = Action.valueOf(actionName.toUpperCase());
 
-                                            var hand = player.getActiveHand();
-                                            var item = player.getStackInHand(hand);
+                                            var hand = player.getUsedItemHand();
+                                            var item = player.getItemInHand(hand);
 
                                             if (item.isEmpty()) {
-                                                context.getSource().sendFeedback(() -> module.locale().get("emptyHand"), false);
+                                                context.getSource().sendSuccess(() -> module.locale().get("emptyHand"), false);
                                                 return 0;
                                             }
 
-                                            var data = module.getData(player.getUuid());
+                                            var data = module.getData(player.getUUID());
 
                                             var itemId = module.getStackId(item);
 
@@ -55,104 +54,104 @@ public class PowerToolCommand extends ModCommand<PowerToolModule> {
                                             powerTool.put(action, command);
 
                                             var map = Map.of(
-                                                    "item", Text.of(itemId),
-                                                    "action", Text.of(actionName),
-                                                    "command", Text.of(command)
+                                                    "item", Component.nullToEmpty(itemId),
+                                                    "action", Component.nullToEmpty(actionName),
+                                                    "command", Component.nullToEmpty(command)
                                             );
 
-                                            context.getSource().sendFeedback(() -> module.locale().get("actionSet", map), false);
+                                            context.getSource().sendSuccess(() -> module.locale().get("actionSet", map), false);
 
                                             return 1;
                                         })
                                 )
                         ))
-                .then(CommandManager.literal("clear")
-                        .then(CommandManager.argument("action", StringArgumentType.word())
-                                .suggests((context, builder) -> CommandSource.suggestMatching(Action.stringValues(), builder))
+                .then(Commands.literal("clear")
+                        .then(Commands.argument("action", StringArgumentType.word())
+                                .suggests((context, builder) -> SharedSuggestionProvider.suggest(Action.stringValues(), builder))
                                 .executes(context -> {
-                                    var player = context.getSource().getPlayerOrThrow();
+                                    var player = context.getSource().getPlayerOrException();
                                     var actionName = StringArgumentType.getString(context, "action");
 
                                     var action = Action.valueOf(actionName.toUpperCase());
 
-                                    var hand = player.getActiveHand();
-                                    var item = player.getStackInHand(hand);
+                                    var hand = player.getUsedItemHand();
+                                    var item = player.getItemInHand(hand);
 
                                     if (item.isEmpty()) {
-                                        context.getSource().sendFeedback(() -> module.locale().get("emptyHand"), false);
+                                        context.getSource().sendSuccess(() -> module.locale().get("emptyHand"), false);
                                         return 0;
                                     }
 
-                                    var data = module.getData(player.getUuid());
+                                    var data = module.getData(player.getUUID());
 
                                     var itemId = module.getStackId(item);
 
                                     var map = Map.of(
-                                            "item", Text.of(itemId),
-                                            "action", Text.of(actionName)
+                                            "item", Component.nullToEmpty(itemId),
+                                            "action", Component.nullToEmpty(actionName)
                                     );
 
                                     if(!data.powerTools.containsKey(itemId)) {
-                                        context.getSource().sendFeedback(() -> module.locale().get("noAction", map), false);
+                                        context.getSource().sendSuccess(() -> module.locale().get("noAction", map), false);
                                         return 0;
                                     }
 
                                     data.powerTools.get(itemId).remove(action);
 
-                                    context.getSource().sendFeedback(() -> module.locale().get("actionCleared", map), false);
+                                    context.getSource().sendSuccess(() -> module.locale().get("actionCleared", map), false);
 
                                     return 1;
                                 })
                         )
                         .executes(context -> {
-                            var player = context.getSource().getPlayerOrThrow();
+                            var player = context.getSource().getPlayerOrException();
 
-                            var hand = player.getActiveHand();
-                            var item = player.getStackInHand(hand);
+                            var hand = player.getUsedItemHand();
+                            var item = player.getItemInHand(hand);
 
                             if (item.isEmpty()) {
-                                context.getSource().sendFeedback(() -> module.locale().get("emptyHand"), false);
+                                context.getSource().sendSuccess(() -> module.locale().get("emptyHand"), false);
                                 return 0;
                             }
 
-                            var data = module.getData(player.getUuid());
+                            var data = module.getData(player.getUUID());
 
                             var itemId = module.getStackId(item);
 
                             data.powerTools.remove(itemId);
 
                             var map = Map.of(
-                                    "item", Text.of(itemId)
+                                    "item", Component.nullToEmpty(itemId)
                             );
 
-                            context.getSource().sendFeedback(() -> module.locale().get("allCleared", map), false);
+                            context.getSource().sendSuccess(() -> module.locale().get("allCleared", map), false);
 
                             return 1;
                         })
                 )
-                .then(CommandManager.literal("check")
+                .then(Commands.literal("check")
                         .executes(context -> {
-                            var player = context.getSource().getPlayerOrThrow();
+                            var player = context.getSource().getPlayerOrException();
 
-                            var hand = player.getActiveHand();
-                            var item = player.getStackInHand(hand);
+                            var hand = player.getUsedItemHand();
+                            var item = player.getItemInHand(hand);
 
                             if (item.isEmpty()) {
-                                context.getSource().sendFeedback(() -> module.locale().get("emptyHand"), false);
+                                context.getSource().sendSuccess(() -> module.locale().get("emptyHand"), false);
                                 return 0;
                             }
 
-                            var data = module.getData(player.getUuid());
+                            var data = module.getData(player.getUUID());
 
                             var itemId = module.getStackId(item);
 
                             var powertool = data.powerTools.getOrDefault(itemId, Map.of());
 
                             var itemMap = Map.of(
-                                    "item", Text.of(itemId)
+                                    "item", Component.nullToEmpty(itemId)
                             );
 
-                            var text = Text.empty();
+                            var text = Component.empty();
                             text.append(module.locale().get("check", itemMap));
 
                             for(var action : Action.values()) {
@@ -160,21 +159,21 @@ public class PowerToolCommand extends ModCommand<PowerToolModule> {
 
                                 if(powertool.containsKey(action)) {
                                     var map = Map.of(
-                                            "item", Text.of(itemId),
-                                            "action", Text.of(action.asString()),
-                                            "command", Text.of(powertool.get(action))
+                                            "item", Component.nullToEmpty(itemId),
+                                            "action", Component.nullToEmpty(action.getSerializedName()),
+                                            "command", Component.nullToEmpty(powertool.get(action))
                                     );
                                     text.append(module.locale().get("checkEntry", map));
                                 } else {
                                     var map = Map.of(
-                                            "item", Text.of(itemId),
-                                            "action", Text.of(action.asString())
+                                            "item", Component.nullToEmpty(itemId),
+                                            "action", Component.nullToEmpty(action.getSerializedName())
                                     );
                                     text.append(module.locale().get("checkEntryNotSet", map));
                                 }
                             }
 
-                            context.getSource().sendFeedback(() -> text, false);
+                            context.getSource().sendSuccess(() -> text, false);
 
                             return 1;
                         }));

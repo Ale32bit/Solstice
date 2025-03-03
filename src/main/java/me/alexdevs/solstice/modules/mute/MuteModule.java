@@ -26,8 +26,8 @@ public class MuteModule extends ModuleBase.Toggleable {
         commands.add(new UnmuteCommand(this));
 
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((signedMessage, player, parameters) -> {
-            if (isMuted(player.getUuid())) {
-                player.sendMessage(locale().get("youAreMuted"));
+            if (isMuted(player.getUUID())) {
+                player.sendSystemMessage(locale().get("youAreMuted"));
                 return false;
             }
             return true;

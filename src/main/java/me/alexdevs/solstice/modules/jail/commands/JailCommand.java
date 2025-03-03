@@ -14,10 +14,10 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.core.coreModule.data.CorePlayerData;
 import me.alexdevs.solstice.modules.jail.JailModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.command.CommandSource;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
@@ -37,18 +37,18 @@ public class JailCommand extends ModCommand<JailModule> {
     }
 
     @Override
-    public LiteralArgumentBuilder<ServerCommandSource> command(String name) {
-        return CommandManager.literal(name)
+    public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
+        return Commands.literal(name)
                 .requires(require("jail", 2))
-                .then(CommandManager.argument("user", StringArgumentType.word())
+                .then(Commands.argument("user", StringArgumentType.word())
                         .suggests(LocalGameProfile::suggest)
-                        .then(CommandManager.argument("jail", StringArgumentType.word())
+                        .then(Commands.argument("jail", StringArgumentType.word())
                                 .suggests(this::suggestJails)
                                 .executes(context -> execute(context, 0, null))
-                                .then(CommandManager.argument("duration", TimeSpan.timeSpan())
+                                .then(Commands.argument("duration", TimeSpan.timeSpan())
                                         .suggests(TimeSpan::suggest)
                                         .executes(context -> execute(context, TimeSpan.getTimeSpan(context, "duration"), null))
-                                        .then(CommandManager.argument("reason", StringArgumentType.greedyString())
+                                        .then(Commands.argument("reason", StringArgumentType.greedyString())
                                                 .executes(context -> execute(context, TimeSpan.getTimeSpan(context, "duration"), StringArgumentType.getString(context, "reason")))
                                         )
                                 )
@@ -56,7 +56,7 @@ public class JailCommand extends ModCommand<JailModule> {
                 );
     }
 
-    private int execute(CommandContext<ServerCommandSource> context, int seconds, @Nullable String reason) throws CommandSyntaxException {
+    private int execute(CommandContext<CommandSourceStack> context, int seconds, @Nullable String reason) throws CommandSyntaxException {
         var source = context.getSource();
         var profile = LocalGameProfile.getProfile(context, "user");
 
@@ -64,7 +64,7 @@ public class JailCommand extends ModCommand<JailModule> {
         var coreData = Solstice.playerData.get(profile.getId()).getData(CorePlayerData.class);
 
         if (data.jailed) {
-            source.sendFeedback(() -> module.locale().get("alreadyJailed"), false);
+            source.sendSuccess(() -> module.locale().get("alreadyJailed"), false);
             return 0;
         }
 
@@ -72,20 +72,20 @@ public class JailCommand extends ModCommand<JailModule> {
 
         var jails = module.getJails();
         if (!jails.containsKey(jailName)) {
-            source.sendFeedback(() -> module.locale().get("jailNotFound"), false);
+            source.sendSuccess(() -> module.locale().get("jailNotFound"), false);
             return 0;
         }
 
         Permissions.check(profile, getPermissionNode("exempt")).thenAccept(granted -> {
             if (granted) {
-                source.sendFeedback(() -> module.locale().get("playerExempt"), false);
+                source.sendSuccess(() -> module.locale().get("playerExempt"), false);
                 return;
             }
 
-            var player = source.getServer().getPlayerManager().getPlayer(profile.getId());
+            var player = source.getServer().getPlayerList().getPlayer(profile.getId());
 
             data.jailed = true;
-            data.jailedBy = source.isExecutedByPlayer() ? source.getPlayer().getUuid() : new UUID(0L, 0L);
+            data.jailedBy = source.isPlayer() ? source.getPlayer().getUUID() : new UUID(0L, 0L);
             data.jailedOn = new Date();
             data.jailName = jailName;
             data.jailTime = seconds;
@@ -98,13 +98,13 @@ public class JailCommand extends ModCommand<JailModule> {
             }
 
             var map = Map.of(
-                    "player", Text.of(profile.getName()),
-                    "jail", Text.of(jailName),
-                    "duration", Text.of(TimeSpan.toLongString(seconds)),
-                    "reason", Text.of(reason)
+                    "player", Component.nullToEmpty(profile.getName()),
+                    "jail", Component.nullToEmpty(jailName),
+                    "duration", Component.nullToEmpty(TimeSpan.toLongString(seconds)),
+                    "reason", Component.nullToEmpty(reason)
             );
 
-            Text text;
+            Component text;
             if (seconds > 0) {
                 if (reason != null) {
                     text = module.locale().get("jailedForWithReason", map);
@@ -115,7 +115,7 @@ public class JailCommand extends ModCommand<JailModule> {
                 text = module.locale().get("jailed", map);
             }
 
-            source.sendFeedback(() -> text, true);
+            source.sendSuccess(() -> text, true);
 
             if (player != null) {
                 module.sendToJail(player);
@@ -125,8 +125,8 @@ public class JailCommand extends ModCommand<JailModule> {
         return 1;
     }
 
-    private CompletableFuture<Suggestions> suggestJails(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
+    private CompletableFuture<Suggestions> suggestJails(CommandContext<CommandSourceStack> context, SuggestionsBuilder builder) {
         var jails = module.getJails().keySet().stream();
-        return CommandSource.suggestMatching(jails, builder);
+        return SharedSuggestionProvider.suggest(jails, builder);
     }
 }

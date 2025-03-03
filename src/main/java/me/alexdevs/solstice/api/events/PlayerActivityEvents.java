@@ -3,7 +3,7 @@ package me.alexdevs.solstice.api.events;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public final class PlayerActivityEvents {
 
@@ -21,11 +21,11 @@ public final class PlayerActivityEvents {
 
     @FunctionalInterface
     public interface Afk {
-        void onAfk(ServerPlayerEntity player);
+        void onAfk(ServerPlayer player);
     }
 
     @FunctionalInterface
     public interface AfkReturn {
-        void onAfkReturn(ServerPlayerEntity player, AfkModule.AfkTriggerReason reason);
+        void onAfkReturn(ServerPlayer player, AfkModule.AfkTriggerReason reason);
     }
 }

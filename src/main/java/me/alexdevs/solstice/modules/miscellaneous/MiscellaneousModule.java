@@ -6,10 +6,9 @@ import me.alexdevs.solstice.modules.miscellaneous.commands.*;
 import me.alexdevs.solstice.modules.miscellaneous.data.MiscellaneousLocale;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ActionResult;
-
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,20 +33,20 @@ public class MiscellaneousModule extends ModuleBase.Toggleable {
         //commands.add(new KittyCannonCommand(this));
         //commands.add(new RocketCommand(this));
 
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> commandSleeping.remove(handler.getPlayer().getUuid()));
-        EntitySleepEvents.STOP_SLEEPING.register((entity, pos) -> commandSleeping.remove(entity.getUuid()));
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> commandSleeping.remove(handler.getPlayer().getUUID()));
+        EntitySleepEvents.STOP_SLEEPING.register((entity, pos) -> commandSleeping.remove(entity.getUUID()));
 
         EntitySleepEvents.ALLOW_SLEEP_TIME.register((player, pos, vanillaResult) -> {
-            if (commandSleeping.getOrDefault(player.getUuid(), false)) {
-                return ActionResult.SUCCESS;
+            if (commandSleeping.getOrDefault(player.getUUID(), false)) {
+                return InteractionResult.SUCCESS;
             }
 
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
         EntitySleepEvents.ALLOW_RESETTING_TIME.register(player -> {
-            if (commandSleeping.getOrDefault(player.getUuid(), false)) {
-                return !player.getWorld().isDay();
+            if (commandSleeping.getOrDefault(player.getUUID(), false)) {
+                return !player.level().isDay();
             }
 
             return true;
@@ -55,7 +54,7 @@ public class MiscellaneousModule extends ModuleBase.Toggleable {
     }
 
     public boolean isCommandSleep(LivingEntity entity) {
-        return commandSleeping.getOrDefault(entity.getUuid(), false);
+        return commandSleeping.getOrDefault(entity.getUUID(), false);
     }
 
     /**
@@ -66,10 +65,10 @@ public class MiscellaneousModule extends ModuleBase.Toggleable {
      * @param entity The entity to make sleep
      */
     public void putToSleep(LivingEntity entity) {
-        commandSleeping.put(entity.getUuid(), true);
-        entity.sleep(entity.getBlockPos());
-        if (entity instanceof ServerPlayerEntity player) {
-            player.getServerWorld().updateSleepingPlayers();
+        commandSleeping.put(entity.getUUID(), true);
+        entity.startSleeping(entity.blockPosition());
+        if (entity instanceof ServerPlayer player) {
+            player.serverLevel().updateSleepingPlayerList();
         }
     }
 }
