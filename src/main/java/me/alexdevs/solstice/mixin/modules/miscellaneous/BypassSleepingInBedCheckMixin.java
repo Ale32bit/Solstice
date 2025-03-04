@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class BypassSleepingInBedCheckMixin {
-    @Inject(method = "isSleeping", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "checkBedExists", at = @At("HEAD"), cancellable = true)
     private void isSleepingInBed(CallbackInfoReturnable<Boolean> cir) {
         var module = Solstice.modules.getModule(MiscellaneousModule.class);
         if (module.isCommandSleep((LivingEntity) (Object) this)) {
