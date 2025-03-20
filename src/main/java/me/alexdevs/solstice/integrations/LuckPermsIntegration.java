@@ -1,18 +1,31 @@
 package me.alexdevs.solstice.integrations;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.events.SolsticeEvents;
+import me.lucko.fabric.api.permissions.v0.OfflinePermissionCheckEvent;
+import me.lucko.fabric.api.permissions.v0.PermissionCheckEvent;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.loader.api.FabricLoader;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.event.node.NodeAddEvent;
+import net.luckperms.api.event.node.NodeClearEvent;
+import net.luckperms.api.event.node.NodeRemoveEvent;
 import net.luckperms.api.event.user.UserDataRecalculateEvent;
+import net.luckperms.api.node.NodeType;
+import net.luckperms.api.util.Tristate;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class LuckPermsIntegration {
 
@@ -35,7 +48,51 @@ public class LuckPermsIntegration {
             available = true;
             var eventBus = luckPerms.getEventBus();
 
-            eventBus.subscribe(container, UserDataRecalculateEvent.class, Listeners::onDataRecalculate);
+            if (!ConnectorIntegration.isForge()) {
+                eventBus.subscribe(container, UserDataRecalculateEvent.class, Listeners::onDataRecalculate);
+                eventBus.subscribe(container, NodeAddEvent.class, Listeners::onNodeAdded);
+                eventBus.subscribe(container, NodeRemoveEvent.class, Listeners::onNodeRemoved);
+                eventBus.subscribe(container, NodeClearEvent.class, Listeners::onNodeCleared);
+            } else {
+                eventBus.subscribe(UserDataRecalculateEvent.class, Listeners::onDataRecalculate);
+                eventBus.subscribe(NodeAddEvent.class, Listeners::onNodeAdded);
+                eventBus.subscribe(NodeRemoveEvent.class, Listeners::onNodeRemoved);
+                eventBus.subscribe(NodeClearEvent.class, Listeners::onNodeCleared);
+
+                Solstice.LOGGER.warn("Permissions API is not available. Solstice is now taking over!");
+
+                // become the permissions api
+                PermissionCheckEvent.EVENT.register((suggestion, permission) -> {
+                    var stack = (CommandSourceStack) suggestion;
+                    var entity = stack.getEntity();
+                    var result = checkPermission(entity, permission);
+
+                    return switch (result) {
+                        case TRUE -> TriState.TRUE;
+                        case FALSE -> TriState.FALSE;
+                        case UNDEFINED -> TriState.DEFAULT;
+                    };
+                });
+
+                OfflinePermissionCheckEvent.EVENT.register((uuid, permission) -> {
+                    var future = new CompletableFuture<TriState>();
+                    checkPermission(uuid, permission).thenAcceptAsync(result -> {
+                        future.complete(
+                                switch (result) {
+                                    case TRUE -> TriState.TRUE;
+                                    case FALSE -> TriState.FALSE;
+                                    case UNDEFINED -> TriState.DEFAULT;
+                                }
+                        );
+                    });
+                    return future;
+                });
+            }
+        });
+
+        SolsticeEvents.RELOAD.register(event -> {
+            prefixMap.clear();
+            suffixMap.clear();
         });
     }
 
@@ -89,11 +146,98 @@ public class LuckPermsIntegration {
         }
     }
 
+    public static Tristate checkPermission(Entity entity, String permission) {
+        if (!(entity instanceof ServerPlayer)) {
+            return Tristate.UNDEFINED;
+        }
+        var user = luckPerms.getPlayerAdapter(ServerPlayer.class).getUser((ServerPlayer) entity);
+        var perms = user.getCachedData().getPermissionData();
+        return perms.checkPermission(permission);
+    }
+
+    public static CompletableFuture<Tristate> checkPermission(UUID uuid, String permission) {
+        var future = new CompletableFuture<Tristate>();
+        if (luckPerms.getUserManager().isLoaded(uuid)) {
+            var user = luckPerms.getUserManager().getUser(uuid);
+            if (user == null) {
+                future.complete(Tristate.UNDEFINED);
+            } else {
+                future.complete(user
+                        .getCachedData()
+                        .getPermissionData()
+                        .checkPermission(permission));
+            }
+        } else {
+            luckPerms.getUserManager().loadUser(uuid).thenAccept(user -> future
+                    .complete(user
+                            .getCachedData()
+                            .getPermissionData()
+                            .checkPermission(permission)));
+        }
+        return future;
+    }
+
+    public static void clearUserCache(UUID uuid) {
+        prefixMap.remove(uuid);
+        suffixMap.remove(uuid);
+    }
+
+    public static void recalculateUsersCache() {
+        Solstice.server.getPlayerList().getPlayers().forEach(player -> {
+            getPrefix(player);
+            getSuffix(player);
+        });
+    }
+
     public static class Listeners {
         public static void onDataRecalculate(UserDataRecalculateEvent event) {
             var uuid = event.getUser().getUniqueId();
-            prefixMap.remove(uuid);
-            suffixMap.remove(uuid);
+            Solstice.LOGGER.info("Recalculating LuckPerms data for {}", uuid);
+            clearUserCache(uuid);
+        }
+
+        // scheduled with delay because it would not update otherwise
+
+        public static void onNodeAdded(NodeAddEvent event) {
+            Solstice.LOGGER.info("Node added for group? {}: {}", event.isGroup(), event.getNode().getType());
+            if (event.isGroup()) {
+                Solstice.scheduler.scheduleSync(() -> {
+                    if (event.getNode().getType() == NodeType.PREFIX) {
+                        prefixMap.clear();
+                    } else if (event.getNode().getType() == NodeType.SUFFIX) {
+                        suffixMap.clear();
+                    }
+
+                    recalculateUsersCache();
+                }, 50, TimeUnit.MILLISECONDS);
+            }
+        }
+
+        public static void onNodeRemoved(NodeRemoveEvent event) {
+            Solstice.LOGGER.info("Node removed for group? {}: {}", event.isGroup(), event.getNode().getType());
+            if (event.isGroup()) {
+                Solstice.scheduler.scheduleSync(() -> {
+                    if (event.getNode().getType() == NodeType.PREFIX) {
+                        prefixMap.clear();
+                    } else if (event.getNode().getType() == NodeType.SUFFIX) {
+                        suffixMap.clear();
+                    }
+
+                    recalculateUsersCache();
+                }, 50, TimeUnit.MILLISECONDS);
+            }
+        }
+
+        public static void onNodeCleared(NodeClearEvent event) {
+            Solstice.LOGGER.info("Node cleared group? {}", event.isGroup());
+            if (event.isGroup()) {
+                Solstice.scheduler.scheduleSync(() -> {
+                    prefixMap.clear();
+                    suffixMap.clear();
+
+                    recalculateUsersCache();
+                }, 50, TimeUnit.MILLISECONDS);
+            }
         }
     }
 }
