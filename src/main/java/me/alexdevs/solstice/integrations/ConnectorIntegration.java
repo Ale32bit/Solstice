@@ -4,7 +4,7 @@ import me.alexdevs.solstice.Solstice;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class ConnectorIntegration {
-    public static final String CONNECTOR_ID = "connector";
+    public static final String CONNECTOR_ID = "connectormod";
     private static boolean isForge = false;
 
     public static void register() {
