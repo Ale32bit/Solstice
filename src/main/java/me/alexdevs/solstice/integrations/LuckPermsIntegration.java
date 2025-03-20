@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.loader.api.FabricLoader;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.event.EventBus;
 import net.luckperms.api.event.node.NodeAddEvent;
 import net.luckperms.api.event.node.NodeClearEvent;
 import net.luckperms.api.event.node.NodeRemoveEvent;
@@ -49,50 +50,59 @@ public class LuckPermsIntegration {
             var eventBus = luckPerms.getEventBus();
 
             if (!ConnectorIntegration.isForge()) {
-                eventBus.subscribe(container, UserDataRecalculateEvent.class, Listeners::onDataRecalculate);
-                eventBus.subscribe(container, NodeAddEvent.class, Listeners::onNodeAdded);
-                eventBus.subscribe(container, NodeRemoveEvent.class, Listeners::onNodeRemoved);
-                eventBus.subscribe(container, NodeClearEvent.class, Listeners::onNodeCleared);
+                try {
+                    eventBus.subscribe(container, UserDataRecalculateEvent.class, Listeners::onDataRecalculate);
+                    eventBus.subscribe(container, NodeAddEvent.class, Listeners::onNodeAdded);
+                    eventBus.subscribe(container, NodeRemoveEvent.class, Listeners::onNodeRemoved);
+                    eventBus.subscribe(container, NodeClearEvent.class, Listeners::onNodeCleared);
+                } catch(IllegalArgumentException e) {
+                    // fallback
+                    registerOnForge(eventBus);
+                }
             } else {
-                eventBus.subscribe(UserDataRecalculateEvent.class, Listeners::onDataRecalculate);
-                eventBus.subscribe(NodeAddEvent.class, Listeners::onNodeAdded);
-                eventBus.subscribe(NodeRemoveEvent.class, Listeners::onNodeRemoved);
-                eventBus.subscribe(NodeClearEvent.class, Listeners::onNodeCleared);
-
-                Solstice.LOGGER.warn("Permissions API is not available. Solstice is now taking over!");
-
-                // become the permissions api
-                PermissionCheckEvent.EVENT.register((suggestion, permission) -> {
-                    var stack = (CommandSourceStack) suggestion;
-                    var entity = stack.getEntity();
-                    var result = checkPermission(entity, permission);
-
-                    return switch (result) {
-                        case TRUE -> TriState.TRUE;
-                        case FALSE -> TriState.FALSE;
-                        case UNDEFINED -> TriState.DEFAULT;
-                    };
-                });
-
-                OfflinePermissionCheckEvent.EVENT.register((uuid, permission) -> {
-                    var future = new CompletableFuture<TriState>();
-                    checkPermission(uuid, permission).thenAcceptAsync(result -> {
-                        future.complete(
-                                switch (result) {
-                                    case TRUE -> TriState.TRUE;
-                                    case FALSE -> TriState.FALSE;
-                                    case UNDEFINED -> TriState.DEFAULT;
-                                }
-                        );
-                    });
-                    return future;
-                });
+                registerOnForge(eventBus);
             }
         });
 
         SolsticeEvents.RELOAD.register(event -> {
             prefixMap.clear();
             suffixMap.clear();
+        });
+    }
+
+    private static void registerOnForge(EventBus eventBus) {
+        eventBus.subscribe(UserDataRecalculateEvent.class, Listeners::onDataRecalculate);
+        eventBus.subscribe(NodeAddEvent.class, Listeners::onNodeAdded);
+        eventBus.subscribe(NodeRemoveEvent.class, Listeners::onNodeRemoved);
+        eventBus.subscribe(NodeClearEvent.class, Listeners::onNodeCleared);
+
+        Solstice.LOGGER.warn("Permissions API is not available. Solstice is now taking over!");
+
+        // become the permissions api
+        PermissionCheckEvent.EVENT.register((suggestion, permission) -> {
+            var stack = (CommandSourceStack) suggestion;
+            var entity = stack.getEntity();
+            var result = checkPermission(entity, permission);
+
+            return switch (result) {
+                case TRUE -> TriState.TRUE;
+                case FALSE -> TriState.FALSE;
+                case UNDEFINED -> TriState.DEFAULT;
+            };
+        });
+
+        OfflinePermissionCheckEvent.EVENT.register((uuid, permission) -> {
+            var future = new CompletableFuture<TriState>();
+            checkPermission(uuid, permission).thenAcceptAsync(result -> {
+                future.complete(
+                        switch (result) {
+                            case TRUE -> TriState.TRUE;
+                            case FALSE -> TriState.FALSE;
+                            case UNDEFINED -> TriState.DEFAULT;
+                        }
+                );
+            });
+            return future;
         });
     }
 
