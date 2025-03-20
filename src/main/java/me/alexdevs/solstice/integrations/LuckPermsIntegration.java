@@ -192,14 +192,12 @@ public class LuckPermsIntegration {
     public static class Listeners {
         public static void onDataRecalculate(UserDataRecalculateEvent event) {
             var uuid = event.getUser().getUniqueId();
-            Solstice.LOGGER.info("Recalculating LuckPerms data for {}", uuid);
             clearUserCache(uuid);
         }
 
         // scheduled with delay because it would not update otherwise
 
         public static void onNodeAdded(NodeAddEvent event) {
-            Solstice.LOGGER.info("Node added for group? {}: {}", event.isGroup(), event.getNode().getType());
             if (event.isGroup()) {
                 Solstice.scheduler.scheduleSync(() -> {
                     if (event.getNode().getType() == NodeType.PREFIX) {
@@ -214,7 +212,6 @@ public class LuckPermsIntegration {
         }
 
         public static void onNodeRemoved(NodeRemoveEvent event) {
-            Solstice.LOGGER.info("Node removed for group? {}: {}", event.isGroup(), event.getNode().getType());
             if (event.isGroup()) {
                 Solstice.scheduler.scheduleSync(() -> {
                     if (event.getNode().getType() == NodeType.PREFIX) {
@@ -229,7 +226,6 @@ public class LuckPermsIntegration {
         }
 
         public static void onNodeCleared(NodeClearEvent event) {
-            Solstice.LOGGER.info("Node cleared group? {}", event.isGroup());
             if (event.isGroup()) {
                 Solstice.scheduler.scheduleSync(() -> {
                     prefixMap.clear();
