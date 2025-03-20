@@ -6,6 +6,7 @@ import me.alexdevs.solstice.api.events.WorldSaveCallback;
 import me.alexdevs.solstice.core.*;
 import me.alexdevs.solstice.data.PlayerDataManager;
 import me.alexdevs.solstice.data.ServerData;
+import me.alexdevs.solstice.integrations.ConnectorIntegration;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.locale.LocaleManager;
 import net.fabricmc.api.ModInitializer;
@@ -60,6 +61,7 @@ public class Solstice implements ModInitializer {
         var modMeta = FabricLoader.getInstance().getModContainer(MOD_ID).get().getMetadata();
         LOGGER.info("Initializing Solstice v{}...", modMeta.getVersion());
 
+        ConnectorIntegration.register();
         LuckPermsIntegration.register();
 
         modules.register();
@@ -95,7 +97,6 @@ public class Solstice implements ModInitializer {
             serverData.loadData(false);
         });
         ServerLifecycleEvents.SERVER_STARTED.register(server -> SolsticeEvents.READY.invoker().onReady(INSTANCE, server));
-        ServerLifecycleEvents.SERVER_STOPPING.register(server -> scheduler.shutdown());
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> scheduler.shutdownNow());
         WorldSaveCallback.EVENT.register((server1, suppressLogs, flush, force) -> {
             serverData.save();
