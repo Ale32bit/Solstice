@@ -6,6 +6,7 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.timeBar.commands.TimeBarCommand;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
+
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -43,13 +44,20 @@ public class TimeBarModule extends ModuleBase.Toggleable {
     }
 
     private void showBar(Collection<ServerPlayer> players, TimeBar timeBar) {
-        timeBar.getBossBar().setPlayers(players);
+        try {
+            timeBar.getBossBar().setPlayers(players);
+        } catch (Exception e) {
+            Solstice.LOGGER.error("Error while showing boss bar to players", e);
+        }
     }
 
     private void hideBar(Collection<ServerPlayer> players, TimeBar timeBar) {
         players.forEach(player -> {
-            timeBar.getBossBar().removePlayer(player);
-
+            try {
+                timeBar.getBossBar().removePlayer(player);
+            } catch (Exception e) {
+                Solstice.LOGGER.error("Error while hiding boss bar from players", e);
+            }
         });
     }
 
