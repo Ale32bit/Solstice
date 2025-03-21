@@ -4,15 +4,15 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.customName.CustomNameModule;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
@@ -32,45 +32,105 @@ public class NicknameCommand extends ModCommand<CustomNameModule> {
     public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(2))
-                .then(literal("clear")
-                        .executes(context -> executeClear(context, null))
-                )
                 .then(argument("nickname", StringArgumentType.string())
-                        .executes(context -> execute(context, StringArgumentType.getString(context, "nickname"), null))
+                        .executes(this::executeSetSelf)
                 )
-                .then(argument("player", EntityArgument.player())
+                .then(literal("clear")
+                        .executes(this::executeClearSelf)
+                )
+                .then(argument("player", StringArgumentType.word())
                         .requires(require("others", 2))
-                        .then(literal("clear")
-                                .executes(context -> executeClear(context, EntityArgument.getPlayer(context, "player")))
-                        )
+                        .suggests(LocalGameProfile::suggest)
                         .then(argument("nickname", StringArgumentType.string())
-                                .executes(context -> execute(context, StringArgumentType.getString(context, "nickname"), EntityArgument.getPlayer(context, "player")))
+                                .executes(this::executeSetOthers)
+                        )
+                        .then(literal("clear")
+                                .executes(this::executeClearOthers)
                         )
                 );
     }
 
-    private int execute(CommandContext<CommandSourceStack> context, String nickname, @Nullable ServerPlayer player) throws CommandSyntaxException {
-        if (player == null) {
-            player = context.getSource().getPlayerOrException();
+    private boolean hasAdvancedPermission(CommandSourceStack source) {
+        return Permissions.check(source, getPermissionNode("advanced.base"), 2);
+    }
+
+    private boolean hasAdvancedPermissionOthers(CommandSourceStack source) {
+        return Permissions.check(source, getPermissionNode("advanced.others"), 3);
+    }
+
+    private int executeSetSelf(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
+
+        var nickname = StringArgumentType.getString(context, "nickname");
+
+        if(nickname.isEmpty()) {
+            context.getSource().sendFailure(module.locale().get("errorEmpty"));
+            return 0;
         }
 
-        module.setCustomName(player, nickname);
+        module.setCustomName(
+                player,
+                nickname,
+                hasAdvancedPermission(context.getSource())
+        );
 
-        var name = player.getGameProfile().getName();
-        context.getSource().sendSuccess(() -> Component.literal(String.format("Changed %s's nickname", name)), true);
+        var map = Map.of(
+                "player", player.getName(),
+                "nickname", Component.nullToEmpty(module.getCustomName(player))
+        );
+        context.getSource().sendSuccess(() -> module.locale().get("setSelf", map), true);
 
         return 1;
     }
 
-    private int executeClear(CommandContext<CommandSourceStack> context, @Nullable ServerPlayer player) throws CommandSyntaxException {
-        if (player == null) {
-            player = context.getSource().getPlayerOrException();
-        }
-
+    private int executeClearSelf(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
         module.clearCustomName(player);
 
-        var name = player.getGameProfile().getName();
-        context.getSource().sendSuccess(() -> Component.literal(String.format("Cleared %s's nickname", name)), true);
+        var map = Map.of(
+                "player", player.getName(),
+                "nickname", Component.nullToEmpty(module.getCustomName(player))
+        );
+        context.getSource().sendSuccess(() -> module.locale().get("clearedSelf", map), true);
+
+        return 1;
+    }
+
+    private int executeSetOthers(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var profile = LocalGameProfile.getProfile(context, "player");
+
+        var nickname = StringArgumentType.getString(context, "nickname");
+
+        if(nickname.isEmpty()) {
+            context.getSource().sendFailure(module.locale().get("errorEmpty"));
+            return 0;
+        }
+
+        module.setCustomName(
+                profile.getId(),
+                nickname,
+                hasAdvancedPermissionOthers(context.getSource())
+        );
+
+        var map = Map.of(
+                "player", Component.nullToEmpty(profile.getName()),
+                "nickname", Component.nullToEmpty(module.getCustomName(profile.getId()))
+        );
+        context.getSource().sendSuccess(() -> module.locale().get("setOther", map), true);
+
+        return 1;
+    }
+
+    private int executeClearOthers(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        var profile = LocalGameProfile.getProfile(context, "player");
+
+        module.clearCustomName(profile.getId());
+
+        var map = Map.of(
+                "player", Component.nullToEmpty(profile.getName()),
+                "nickname", Component.nullToEmpty(module.getCustomName(profile.getId()))
+        );
+        context.getSource().sendSuccess(() -> module.locale().get("clearedOther", map), true);
 
         return 1;
     }

@@ -5,6 +5,7 @@ import me.alexdevs.solstice.api.events.RestartEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.integrations.ConnectorIntegration;
 import me.alexdevs.solstice.modules.restart.commands.RestartCommand;
 import me.alexdevs.solstice.modules.restart.data.RestartConfig;
 import me.alexdevs.solstice.modules.restart.data.RestartLocale;
@@ -78,7 +79,7 @@ public class RestartModule extends ModuleBase.Toggleable {
 
     @Override
     public boolean isEnabled() {
-        if(!Solstice.modules.getModule(TimeBarModule.class).isEnabled())
+        if (!Solstice.modules.getModule(TimeBarModule.class).isEnabled())
             return false;
 
         return super.isEnabled();
@@ -109,9 +110,20 @@ public class RestartModule extends ModuleBase.Toggleable {
     }
 
     public void restart() {
-        Solstice.server.getPlayerList().getPlayers().forEach(player -> player.connection.disconnect(locale().get("kickMessage")));
+        if (!ConnectorIntegration.isForge()) {
+            var kickMessage = locale().get("kickMessage");
+            for (var player : Solstice.server.getPlayerList().getPlayers()) {
+                try {
+                    player.connection.disconnect(kickMessage);
+                } catch (Exception e) {
+                    Solstice.LOGGER.error("An error occurred while disconnecting player {}", player, e);
+                }
+            }
+        } else {
+            Solstice.LOGGER.warn("Kicking players with restart message is not compatible with Forge at the moment.");
+        }
 
-        Solstice.scheduler.scheduleSync(() -> Solstice.server.halt(false), 50, TimeUnit.MILLISECONDS);
+        Solstice.server.halt(false);
     }
 
     private void setup() {
@@ -126,7 +138,7 @@ public class RestartModule extends ModuleBase.Toggleable {
     }
 
     public void schedule(int seconds, String message, RestartEvents.RestartType restartType) {
-        if(isRunning()) {
+        if (isRunning()) {
             Solstice.LOGGER.warn("Could not start a new restart countdown because there is one already running.");
             return;
         }
