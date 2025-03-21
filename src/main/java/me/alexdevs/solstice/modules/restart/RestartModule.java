@@ -111,7 +111,7 @@ public class RestartModule extends ModuleBase.Toggleable {
     public void restart() {
         Solstice.server.getPlayerList().getPlayers().forEach(player -> player.connection.disconnect(locale().get("kickMessage")));
 
-        Solstice.nextTick(() -> Solstice.server.halt(false));
+        Solstice.scheduler.scheduleSync(() -> Solstice.server.halt(false), 50, TimeUnit.MILLISECONDS);
     }
 
     private void setup() {
