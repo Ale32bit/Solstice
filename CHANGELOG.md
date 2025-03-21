@@ -8,3 +8,6 @@
 - Fixed compatibility issues with Sinytra Connector and LuckPerms for NeoForge support.
   - Compatibility with NeoForge is supported but limited, Forge is not supported.
 - Added NeoForge mod file to be recognized as a NeoForge mod.
+- Revamped `/nickname` command.
+  - Added permission to allow advanced formatting in nicknames (colors, styling, placeholders...).
+    - Running without the advanced permission node will only allow alphanumeric characters, spaces and dashes in the nickname.
