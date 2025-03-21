@@ -1,3 +1,10 @@
-- Bugfix restart not announcing the first milestone.
-- Improve AFK configurability.
-- Added `/activetime set` to change the active time a player.
+- 1.20.1 is now maintenance only.
+  - New features will not be ported; support and patches
+- Improved quote formatting in MarkDown
+- Added `/ping` command to show the latency of your connection.
+- Change how Minecraft calculates the connection latency to be accurate.
+- Added `/tppos` command to teleport at coordinates with optional world argument.
+- Migrated to Mojang mappings from Yarn.
+- Fixed compatibility issues with Sinytra Connector and LuckPerms for NeoForge support.
+  - Compatibility with NeoForge is supported but limited, Forge is not supported.
+- Added NeoForge mod file to be recognized as a NeoForge mod.
