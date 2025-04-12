@@ -150,9 +150,14 @@ public class LuckPermsIntegration {
         if (!(entity instanceof ServerPlayer)) {
             return Tristate.UNDEFINED;
         }
-        var user = luckPerms.getPlayerAdapter(ServerPlayer.class).getUser((ServerPlayer) entity);
-        var perms = user.getCachedData().getPermissionData();
-        return perms.checkPermission(permission);
+        try {
+            var user = luckPerms.getPlayerAdapter(ServerPlayer.class).getUser((ServerPlayer) entity);
+            var perms = user.getCachedData().getPermissionData();
+            return perms.checkPermission(permission);
+        }
+        catch(IllegalStateException e) {
+            return Tristate.UNDEFINED; // Illegal State Exception when dying on forge?? act as if the permission is undefined.
+        }
     }
 
     public static CompletableFuture<Tristate> checkPermission(UUID uuid, String permission) {
