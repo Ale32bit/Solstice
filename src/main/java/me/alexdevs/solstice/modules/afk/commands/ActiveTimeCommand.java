@@ -117,6 +117,15 @@ public class ActiveTimeCommand extends ModCommand<AfkModule> {
                                             return 1;
                                         })
                                 ))
-                );
+                )
+                .then(Commands.literal("recalculate")
+                        .requires(require("recalculate", 2))
+                        .executes(context -> {
+                            module.forceRecalculateLeaderboard();
+
+                            context.getSource().sendSuccess(() -> module.locale().get("leaderboardRecalculated"), true);
+
+                            return 1;
+                        }));
     }
 }
