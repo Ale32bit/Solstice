@@ -1,13 +1,10 @@
-- 1.20.1 is now maintenance only.
-  - New features will not be ported; support and patches
-- Improved quote formatting in MarkDown
-- Added `/ping` command to show the latency of your connection.
-- Change how Minecraft calculates the connection latency to be accurate.
-- Added `/tppos` command to teleport at coordinates with optional world argument.
-- Migrated to Mojang mappings from Yarn.
-- Fixed compatibility issues with Sinytra Connector and LuckPerms for NeoForge support.
-  - Compatibility with NeoForge is supported but limited, Forge is not supported.
-- Added NeoForge mod file to be recognized as a NeoForge mod.
-- Revamped `/nickname` command.
-  - Added permission to allow advanced formatting in nicknames (colors, styling, placeholders...).
-    - Running without the advanced permission node will only allow alphanumeric characters, spaces and dashes in the nickname.
+## Notice
+
+Solstice for Minecraft **1.20.1** will no longer receive content updates!
+
+Patches and support are still provided.
+
+---
+
+- Bugfix `/setspawn` not working correctly in other dimensions.
+- Added `/activetime recalculate` to force recalculate the leaderboard.

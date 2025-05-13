@@ -6,6 +6,8 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.spawn.SpawnModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
+
 import java.util.List;
 import java.util.Map;
 
@@ -27,18 +29,22 @@ public class SetSpawnCommand extends ModCommand<SpawnModule> {
                 .requires(require("set", 3))
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrException();
-                    var spawnPosition = new ServerLocation(player);
+                    var location = new ServerLocation(player);
                     var world = player.serverLevel();
 
-
-                    world.setDefaultSpawnPos(
-                            player.blockPosition(),
-                            spawnPosition.getYaw()
-                    );
+                    // world spawn point is ignored on non-overworld levels
+                    if(world.dimension() == Level.OVERWORLD) {
+                        world.setDefaultSpawnPos(
+                                location.getBlockPos(),
+                                location.getYaw()
+                        );
+                    } else {
+                        module.getServerData().spawnPoints.put(location.getWorld(), location);
+                    }
 
                     context.getSource().sendSuccess(() -> module.locale().get("worldSpawnSet", Map.of(
                             "world", Component.nullToEmpty(world.dimension().location().toString()),
-                            "coordinates", Component.nullToEmpty(String.format("%.1f %.1f %.1f", spawnPosition.getX(), spawnPosition.getY(), spawnPosition.getZ()))
+                            "coordinates", Component.nullToEmpty(String.format("%.1f %.1f %.1f", location.getX(), location.getY(), location.getZ()))
                     )), true);
 
                     return 1;

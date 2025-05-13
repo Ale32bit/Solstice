@@ -9,6 +9,6 @@ public class SpawnLocale {
             Map.entry("noFirstSpawn", "<gold>There is no first spawn yet.</gold>"),
             Map.entry("firstSpawnSet", "<green>First spawn set!</green>"),
             Map.entry("firstSpawnDeleted", "<gold>First spawn deleted!</gold>"),
-            Map.entry("worldSpawnSet", "<green>${world} spawn point set to ${coordinates}.</green>")
+            Map.entry("worldSpawnSet", "<green><yellow>${world}</yellow> spawn point set to <yellow>${coordinates}</yellow>.</green>")
     );
 }

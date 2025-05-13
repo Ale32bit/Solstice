@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class SpawnModule extends ModuleBase.Toggleable {
@@ -87,18 +88,25 @@ public class SpawnModule extends ModuleBase.Toggleable {
     }
 
     public ServerLocation getGlobalSpawnPosition() {
-        var world = getGlobalSpawnWorld();
-        var worldSpawnPos = world.getSharedSpawnPos().getCenter();
-        var worldSpawnRot = world.getSharedSpawnAngle();
-        return new ServerLocation(
-                worldSpawnPos.x(), worldSpawnPos.y(), worldSpawnPos.z(), worldSpawnRot, 0, world
-        );
+        return getWorldSpawn(getGlobalSpawnWorld());
     }
 
     public ServerLocation getWorldSpawn(ServerLevel world) {
-        var spawnPos = world.getSharedSpawnPos().getCenter();
-        var yaw = world.getSharedSpawnAngle();
-        return new ServerLocation(spawnPos.x(), spawnPos.y(), spawnPos.z(), yaw, 0, world);
+        var worldSpawnPosition = world.getSharedSpawnPos().getCenter();
+        var worldSpawnYaw = world.getSharedSpawnAngle();
+        var worldName = world.dimension().location().toString();
+
+        if (world.dimension() != Level.OVERWORLD) {
+            var spawnPoints = getServerData().spawnPoints;
+            if (spawnPoints.containsKey(worldName)) {
+                return spawnPoints.get(worldName);
+            }
+        }
+
+        return new ServerLocation(
+                worldSpawnPosition.x(), worldSpawnPosition.y(), worldSpawnPosition.z(),
+                worldSpawnYaw, 0, world
+        );
     }
 
     public SpawnConfig getConfig() {

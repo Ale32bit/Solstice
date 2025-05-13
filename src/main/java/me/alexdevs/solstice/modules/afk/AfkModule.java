@@ -246,6 +246,11 @@ public class AfkModule extends ModuleBase.Toggleable {
         return getPlayerData(playerUuid).activeTime;
     }
 
+    public void forceRecalculateLeaderboard() {
+        getServerData().forceCalculateLeaderboard = true;
+        calculateLeaderboard();
+    }
+
     private void calculateLeaderboard() {
         var serverData = getServerData();
         if (!serverData.forceCalculateLeaderboard)
