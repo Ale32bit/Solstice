@@ -6,4 +6,5 @@ Patches and support are still provided.
 
 ---
 
-- Bugfix command event not invoking in 1.21.1 NeoForge environments.
+- Bugfix `/setspawn` not working correctly in other dimensions.
+- Added `/activetime recalculate` to force recalculate the leaderboard.
