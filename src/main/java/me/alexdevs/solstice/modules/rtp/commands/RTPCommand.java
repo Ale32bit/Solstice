@@ -5,6 +5,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.RegistryUtils;
 import me.alexdevs.solstice.modules.rtp.RTPModule;
 import me.alexdevs.solstice.modules.rtp.core.Locator;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -43,7 +44,7 @@ public class RTPCommand extends ModCommand<RTPModule> {
                         .suggests((context, builder) -> {
                             if (Permissions.check(context.getSource(), getPermissionNode("exempt.biome"), 2)) {
                                 var biomeRegistry = this.commandRegistry.lookup(Registries.BIOME);
-                                var biomes = biomeRegistry.stream().map(r -> r.key().location().toString()).toList();
+                                var biomes = RegistryUtils.getBiomes(biomeRegistry.get(), true);
                                 return SharedSuggestionProvider.suggest(biomes, builder);
                             }
 

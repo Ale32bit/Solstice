@@ -42,6 +42,7 @@ public class Locator {
     private ChunkAccess chunk;
     private BlockPos attemptPos;
     private boolean failed = false;
+    private int remainingAttempts = 0;
 
     private static final ImmutableList<Block> unsafeBlocks = ImmutableList.of(
             Blocks.LAVA,
@@ -67,21 +68,23 @@ public class Locator {
         this.world = world;
         this.config = config;
         this.biome = biome;
+        this.remainingAttempts = config.attempts;
     }
 
     public void locate(Consumer<Result> callback) {
         this.callback = callback;
         stopwatch.start();
-        attempt(config.attempts);
+        attempt();
     }
 
-    private void attempt(int remainingAttempts) {
-        if (remainingAttempts == 0) {
+    private void attempt() {
+        if (this.remainingAttempts <= 0) {
             failed = true;
             callback.accept(new Result(Result.Type.TOO_MANY_ATTEMPTS, Optional.empty()));
             return;
         }
 
+        this.remainingAttempts--;
         var pos = getRandomPos();
 
         if (isValid(pos)) {
@@ -89,7 +92,14 @@ public class Locator {
             attemptPos = pos;
             load();
         } else {
-            attempt(remainingAttempts - 1);
+            try {
+                attempt();
+            } catch(StackOverflowError e) {
+                this.remainingAttempts = 0;
+                Solstice.LOGGER.warn("Stack overflow exception at RTP attempt {}! Try lowering the attempts available!", config.attempts - remainingAttempts);
+                failed = true;
+                callback.accept(new Result(Result.Type.TOO_MANY_ATTEMPTS, Optional.empty()));
+            }
         }
     }
 
