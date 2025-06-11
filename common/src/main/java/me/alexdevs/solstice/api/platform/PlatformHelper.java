@@ -1,19 +1,13 @@
 package me.alexdevs.solstice.api.platform;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import java.nio.file.Path;
+import java.util.ServiceLoader;
 
 public abstract class PlatformHelper {
-    private static PlatformHelper INSTANCE;
+    private static final PlatformHelper INSTANCE = ServiceLoader.load(PlatformHelper.class).findFirst().orElseThrow();
 
     public static PlatformHelper get() {
         return INSTANCE;
-    }
-
-    @ApiStatus.Internal
-    public static void set(PlatformHelper helper) {
-        INSTANCE = helper;
     }
 
     public abstract void init();

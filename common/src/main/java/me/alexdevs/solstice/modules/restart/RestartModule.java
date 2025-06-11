@@ -5,7 +5,6 @@ import me.alexdevs.solstice.api.events.RestartEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
-import me.alexdevs.solstice.integrations.ConnectorIntegration;
 import me.alexdevs.solstice.modules.restart.commands.RestartCommand;
 import me.alexdevs.solstice.modules.restart.data.RestartConfig;
 import me.alexdevs.solstice.modules.restart.data.RestartLocale;
@@ -54,8 +53,7 @@ public class RestartModule extends ModuleBase.Toggleable {
         });
 
         TimeBarEvents.PROGRESS.register((timeBar, server) -> {
-            if (restartBar == null || !timeBar.getUuid().equals(restartBar.getUuid()))
-                return;
+            if (restartBar == null || !timeBar.getUuid().equals(restartBar.getUuid())) return;
 
             var notificationTimes = getConfig().restartNotifications;
 
@@ -68,8 +66,7 @@ public class RestartModule extends ModuleBase.Toggleable {
 
         // Shutdown
         TimeBarEvents.END.register((timeBar, server) -> {
-            if (restartBar == null || !timeBar.getUuid().equals(restartBar.getUuid()))
-                return;
+            if (restartBar == null || !timeBar.getUuid().equals(restartBar.getUuid())) return;
 
             restart();
         });
@@ -79,8 +76,7 @@ public class RestartModule extends ModuleBase.Toggleable {
 
     @Override
     public boolean isEnabled() {
-        if (!Solstice.modules.getModule(TimeBarModule.class).isEnabled())
-            return false;
+        if (!Solstice.modules.getModule(TimeBarModule.class).isEnabled()) return false;
 
         return super.isEnabled();
     }
@@ -110,17 +106,14 @@ public class RestartModule extends ModuleBase.Toggleable {
     }
 
     public void restart() {
-        if (!ConnectorIntegration.isForge()) {
-            var kickMessage = locale().get("kickMessage");
-            for (var player : Solstice.server.getPlayerList().getPlayers()) {
-                try {
-                    player.connection.disconnect(kickMessage);
-                } catch (Exception e) {
-                    Solstice.LOGGER.error("An error occurred while disconnecting player {}", player, e);
-                }
+        var kickMessage = locale().get("kickMessage");
+
+        for (var player : Solstice.server.getPlayerList().getPlayers()) {
+            try {
+                player.connection.disconnect(kickMessage);
+            } catch (Exception e) {
+                Solstice.LOGGER.error("An error occurred while disconnecting player {}", player, e);
             }
-        } else {
-            Solstice.LOGGER.warn("Kicking players with restart message is not compatible with Forge at the moment.");
         }
 
         Solstice.server.halt(false);
@@ -129,6 +122,7 @@ public class RestartModule extends ModuleBase.Toggleable {
     private void setup() {
         var soundName = getConfig().restartSound;
         var id = ResourceLocation.tryParse(soundName);
+
         if (id == null) {
             Solstice.LOGGER.error("Invalid restart notification sound name {}", soundName);
             sound = SoundEvents.NOTE_BLOCK_BELL.value();
@@ -144,13 +138,7 @@ public class RestartModule extends ModuleBase.Toggleable {
         }
 
         var timeBar = Solstice.modules.getModule(TimeBarModule.class);
-        restartBar = timeBar.startTimeBar(
-                message,
-                seconds,
-                getBarColor(),
-                getBarStyle(),
-                true
-        );
+        restartBar = timeBar.startTimeBar(message, seconds, getBarColor(), getBarStyle(), true);
 
         RestartEvents.SCHEDULED.invoker().onSchedule(restartBar, restartType);
     }
@@ -183,19 +171,24 @@ public class RestartModule extends ModuleBase.Toggleable {
         solstice.broadcast(text);
 
         var pitch = getConfig().restartSoundPitch;
-        server.getPlayerList().getPlayers().forEach(player -> player.playNotifySound(sound, SoundSource.MASTER, 1f, pitch));
+        server.getPlayerList()
+                .getPlayers()
+                .forEach(player -> player.playNotifySound(sound, SoundSource.MASTER, 1f, pitch));
     }
 
     @Nullable
     public Long scheduleNextRestart() {
         var delay = getNextDelay();
-        if (delay == null)
-            return null;
+        if (delay == null) return null;
 
         var barTime = getConfig().restartNotifications.stream().max(Integer::compareTo).orElse(600);
         var barStartTime = delay - barTime;
 
-        currentSchedule = Solstice.scheduler.schedule(() -> schedule(barTime, locale().raw("barLabel"), RestartEvents.RestartType.AUTOMATIC), barStartTime, TimeUnit.SECONDS);
+        currentSchedule = Solstice.scheduler.schedule(
+                () -> schedule(barTime, locale().raw("barLabel"), RestartEvents.RestartType.AUTOMATIC),
+                barStartTime,
+                TimeUnit.SECONDS
+        );
 
         Solstice.LOGGER.info("Restart scheduled for in {} seconds", delay);
         return delay;

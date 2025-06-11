@@ -2,18 +2,13 @@
   "required": true,
   "minVersion": "0.8",
   "package": "me.alexdevs.solstice.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "refmap": "${mod_id}.mixins.json",
   "plugin": "me.alexdevs.solstice.mixin.SolsticeMixinConfigPlugin",
-  "client": [],
-  "server": [],
-  "injectors": {
-    "defaultRequire": 1
-  },
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
     "events.CommandEventsMixin",
     "events.LivingEntityMixin",
     "events.PlayerListMixin",
-    "events.PlayerMixin",
     "events.WorldSaveEventMixin",
     "modules.admin.ConnectionBypassMixin",
     "modules.afk.FixPlayerSleepPercentageMixin",
@@ -33,5 +28,8 @@
     "modules.styling.PlayerDisconnectMixin",
     "modules.tablist.CustomPlayerListNameMixin",
     "modules.tablist.UpdatePlayerListMixin"
-  ]
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

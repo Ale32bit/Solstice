@@ -6,8 +6,7 @@ plugins {
 dependencies {
     minecraft("com.mojang:minecraft:${"minecraft_version"()}")
 
-    @Suppress("UnstableApiUsage")
-    mappings(loom.layered {
+    @Suppress("UnstableApiUsage") mappings(loom.layered {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-${"parchment_minecraft"()}:${"parchment_version"()}@zip")
     })
@@ -29,6 +28,8 @@ dependencies {
 
     modCompileOnly("net.luckperms:api:5.4")
     modLocalRuntime("net.luckperms:api:5.4")
+
+    include("net.kyori:option:1.1.0")
 }
 
 loom {
@@ -38,25 +39,40 @@ loom {
         accessWidenerPath.set(aw)
     }
 
-    mixin {
+    @Suppress("UnstableApiUsage") mixin {
         defaultRefmapName.set("${"mod_id"()}.refmap.json")
+        useLegacyMixinAp = false
     }
 
     runs {
         maybeCreate("client").apply {
             client()
-            setConfigName("Fabric Client")
+            configName = "Fabric Client"
             ideConfigGenerated(true)
             runDir("runs/client")
+            property("mixin.debug.export", "true")
         }
 
         maybeCreate("server").apply {
             server()
-            setConfigName("Fabric Server")
+            configName = "Fabric Server"
             ideConfigGenerated(true)
             runDir("runs/server")
+            property("mixin.debug.export", "true")
         }
     }
+}
+
+tasks.compileJava {
+    source(project(":common").sourceSets["main"].java)
+}
+
+tasks.processResources {
+    from(project(":common").sourceSets["main"].resources)
+}
+
+tasks.remapJar {
+    destinationDirectory.set(rootProject.layout.buildDirectory.dir("artifacts"))
 }
 
 operator fun String.invoke(): String = rootProject.ext[this] as? String ?: error("No property \"$this\"")

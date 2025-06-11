@@ -28,18 +28,6 @@ repositories {
     maven("https://maven.stardustmodding.org/releases")
 }
 
-listOf("apiElements", "runtimeElements", "sourcesElements", "javadocElements").forEach { variant ->
-    configurations[variant].outgoing {
-        capability("${"mod_group_id"()}:${base.archivesName.get()}:${"mod_version"()}")
-        capability("${"mod_group_id"()}:${"mod_id"()}-${project.name}-${"minecraft_version"()}:${"mod_version"()}")
-        capability("${"mod_group_id"()}:${"mod_id"()}:${"mod_version"()}")
-    }
-
-//    publishing.publications.configureEach {
-//        suppressPomMetadataWarningsFor(variant)
-//    }
-}
-
 tasks.named<Jar>("sourcesJar") {
     from(rootProject.file("LICENSE")) {
         rename { "${it}_${"mod_id"()}" }

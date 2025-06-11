@@ -2,21 +2,18 @@ package me.alexdevs.solstice.integrations;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.ServiceLoader;
 
 public abstract class TrinketsApiProxy {
-    private static TrinketsApiProxy INSTANCE;
+    private static final TrinketsApiProxy INSTANCE = ServiceLoader.load(TrinketsApiProxy.class)
+            .findFirst()
+            .orElseThrow();
 
     public static TrinketsApiProxy get() {
         return INSTANCE;
-    }
-
-    @ApiStatus.Internal
-    public static void set(TrinketsApiProxy proxy) {
-        INSTANCE = proxy;
     }
 
     // Basically, this does getTrinketComponent(target).getInventory().mapValues((map) -> map.mapValues(inv -> inv.values()))

@@ -1,11 +1,17 @@
 plugins {
     id("multiloader-loader")
     id("net.neoforged.moddev")
+    id("com.gradleup.shadow")
 }
 
 val localRuntime: Configuration by configurations.creating {
     isCanBeResolved = true
     isCanBeConsumed = false
+}
+
+val shadowDep: Configuration by configurations.creating {
+    isCanBeResolved = true
+    isCanBeConsumed = true
 }
 
 neoForge {
@@ -69,8 +75,23 @@ dependencies {
 
     compileOnly("net.luckperms:api:5.4")
     localRuntime("net.luckperms:api:5.4")
+
+    jarJar("net.kyori:option:1.1.0")
+    shadowDep(project(":common"))
 }
 
+tasks.jar {
+    archiveClassifier = "dev"
+}
+
+tasks.shadowJar {
+    archiveClassifier = ""
+    from(tasks.jarJar)
+    configurations.set(listOf(shadowDep))
+    destinationDirectory.set(rootProject.layout.buildDirectory.dir("artifacts"))
+}
+
+tasks.build.get().finalizedBy(tasks.shadowJar)
 sourceSets.main.get().resources { srcDir("src/generated/resources") }
 configurations.runtimeClasspath.get().extendsFrom(localRuntime)
 

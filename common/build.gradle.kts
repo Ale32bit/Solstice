@@ -34,19 +34,4 @@ dependencies {
     compileOnly("net.luckperms:api:5.4")
 }
 
-val commonJava: Configuration by configurations.creating {
-    isCanBeResolved = false
-    isCanBeConsumed = true
-}
-
-val commonResources: Configuration by configurations.creating {
-    isCanBeResolved = false
-    isCanBeConsumed = true
-}
-
-artifacts {
-    add(commonJava.name, sourceSets.main.get().java.sourceDirectories.singleFile)
-    add(commonResources.name, sourceSets.main.get().resources.sourceDirectories.singleFile)
-}
-
 operator fun String.invoke(): String = rootProject.ext[this] as? String ?: error("No property \"$this\"")

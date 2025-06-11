@@ -24,7 +24,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: ${{ matrix.java }}
-          distribution: 'microsoft'
+          distribution: 'temurin'
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
       - uses: actions/cache@v4
@@ -36,10 +36,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: build
-        run: ./gradlew remapJar
+        run: ./gradlew build
       - name: capture build artifacts
         if: ${{ matrix.java == '21' }} # Only upload artifacts built from latest java
         uses: actions/upload-artifact@v4
         with:
           name: Artifacts
-          path: build/libs/
+          path: build/artifacts/

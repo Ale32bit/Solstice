@@ -61,7 +61,7 @@ public class LuckPermsIntegration {
                 eventBus.subscribe(NodeRemoveEvent.class, Listeners::onNodeRemoved);
                 eventBus.subscribe(NodeClearEvent.class, Listeners::onNodeCleared);
 
-                Solstice.LOGGER.warn("Permissions API is not available. Solstice is now taking over!");
+                Solstice.LOGGER.warn("Fabric Permissions API is not available. Solstice is now taking over!");
 
                 // become the permissions api
                 PermissionCheckEvent.EVENT.register((suggestion, permission) -> {

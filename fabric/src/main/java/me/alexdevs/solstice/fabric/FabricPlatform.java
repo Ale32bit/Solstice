@@ -37,6 +37,7 @@ public class FabricPlatform extends PlatformHelper {
                 .onDisconnect(handler.getPlayer(), server));
 
         EntitySleepEvents.ALLOW_SLEEP_TIME.register(ProxyEntitySleepEvents.ALLOW_SLEEP_TIME.invoker()::allowSleepTime);
+        EntitySleepEvents.ALLOW_RESETTING_TIME.register(ProxyEntitySleepEvents.ALLOW_RESETTING_TIME.invoker()::allowResettingTime);
     }
 
     @Override

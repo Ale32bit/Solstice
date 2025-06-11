@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.mixin.events;
+package me.alexdevs.solstice.neoforge.mixin;
 
 import me.alexdevs.solstice.api.events.proxy.ProxyEntitySleepEvents;
 import net.minecraft.world.entity.player.Player;
