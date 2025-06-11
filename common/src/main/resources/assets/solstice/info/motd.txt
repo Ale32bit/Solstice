@@ -1,0 +1,6 @@
+<yellow><u>Welcome to the server, %player:displayname%!</u></yellow>
+
+<gold>The world time is <yellow>%world:time%</yellow>.</gold>
+<gold>There are <yellow>%server:online%</yellow>/<yellow>%server:max_players%</yellow> online players.</gold>
+
+<gold>Make sure to read the <run_cmd:'/rules'><hover:'Read rules'><blue>/rules</blue></hover></run_cmd>!</gold>

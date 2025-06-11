@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": [
+    {
+      "name": "AlexDevs",
+      "contact": {
+        "email": "solstice@alexdevs.me",
+        "homepage": "https://alexdevs.me"
+      }
+    }
+  ],
+  "contact": {
+    "sources": "https://github.com/Ale32bit/Solstice.git",
+    "issues": "https://github.com/Ale32bit/Solstice/issues",
+    "homepage": "https://solstice.alexdevs.me",
+    "email": "solstice@alexdevs.me"
+  },
+  "license": "${mod_license}",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.alexdevs.solstice.fabric.SolsticeFabric"
+    ]
+  },
+  "mixins": [
+    "solstice.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "recommends": {
+    "luckperms": "*"
+  },
+  "accessWidener": "${mod_id}.accesswidener"
+}

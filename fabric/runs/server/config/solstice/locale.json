@@ -1,0 +1,365 @@
+{
+  "shared": {
+    "unit.months": "${n} months",
+    "buttonSuggest": "<click:suggest_command:'${command}'><hover:show_text:'${hoverText}'><aqua>[</aqua>${label}<aqua>]</aqua></hover></click>",
+    "refuse.hover": "Click to refuse",
+    "unit.day": "${n} day",
+    "unit.year": "${n} year",
+    "unit.hour": "${n} hour",
+    "accept": "<green>Accept</green>",
+    "unit.month": "${n} month",
+    "unit.seconds": "${n} seconds",
+    "button": "<click:run_command:'${command}'><hover:show_text:'${hoverText}'><aqua>[</aqua>${label}<aqua>]</aqua></hover></click>",
+    "unit.years": "${n} years",
+    "refuse": "<red>Refuse</red>",
+    "unit.minutes": "${n} minutes",
+    "unit.weeks": "${n} weeks",
+    "unit.second": "${n} second",
+    "unit.hours": "${n} hours",
+    "unit.week": "${n} week",
+    "unit.minute": "${n} minute",
+    "cooldown": "<gold>You are on cooldown for <yellow>${timespan}</yellow>.</gold>",
+    "accept.hover": "Click to accept",
+    "unit.days": "${n} days",
+    "tooManyTargets": "<red>The provided selector contains too many targets.</red>"
+  },
+  "modules": {
+    "note": {
+      "deleteButton": "<red>Delete</red>",
+      "checkButton": "<gold>Check</gold>",
+      "hoverCheck": "Click to check the note",
+      "addedNotification": "<gold><yellow>${operator}</yellow> added a note to <yellow>${user}</yellow>!</gold> ${checkButton}",
+      "userNotFound": "<red>User <yellow>${user}</yellow> not found!</red>",
+      "hoverDelete": "Click to delete the note",
+      "noteListHeader": "<gold><yellow>${user}</yellow>'s notes:</gold>",
+      "noteAdded": "<gold>Note added!</gold>",
+      "noteDetails": "<gold>From <yellow>${operator}</yellow> on <yellow>${date}</yellow></gold>\n ${message}\n\n ${deleteButton}",
+      "loginInfo": "<gold><yellow>${user}</yellow> has <yellow>${notes}</yellow> notes!</gold> ${checkButton}",
+      "emptyNotes": "<gold>There are no notes for this user.</gold>",
+      "notFound": "<red>Note not found</red>",
+      "noteListEntry": "<gold><gray>[${date}]</gray> <yellow>${operator}</yellow>:</gold> ${message} ${checkButton}",
+      "notesCleared": "<gold>All ${user}'s notes cleared!</gold>",
+      "noteDeleted": "<gold>Note deleted!</gold>"
+    },
+    "miscellaneous": {
+      "noEffects": "<gold>This player has no active effects.</gold>",
+      "infinite": "infinite",
+      "effectHeader": "<gold>Active effects:</gold>",
+      "effect": "<gold><yellow>${effect}</yellow>: <yellow>x${amplifier}</yellow> for <yellow>${duration}</yellow></gold>"
+    },
+    "teleportrequest": {
+      "targetAccepted": "<green>Teleport request accepted.</green>",
+      "playerUnavailable": "<red>The other player is no longer available.</red>",
+      "sourceRefused": "<gold>${player} refused your teleport request!</gold>",
+      "noPending": "<gold>There are no pending teleport requests for you.</gold>",
+      "unavailable": "<red>This request expired or is no longer available.</red>",
+      "teleporting": "<gold>Teleporting...</gold>",
+      "targetRefused": "<gold>Teleport request refused.</gold>",
+      "pendingTeleportHere": "${requesterPlayer} <gold>requested you to teleport to them.</gold>\n ${acceptButton} ${refuseButton}",
+      "requestSent": "<gold>Teleport request sent.</gold>",
+      "sourceAccepted": "<green>${player} accepted your teleport request!</green>",
+      "pendingTeleport": "${requesterPlayer} <gold>requested to teleport to you.</gold>\n ${acceptButton} ${refuseButton}"
+    },
+    "mail": {
+      "deleteButton": "<red>Delete</red>",
+      "mailDeleted": "<gold>Mail deleted!</gold>",
+      "replyButton": "<gold>Reply</gold>",
+      "hoverRead": "Click to read the mail",
+      "playerNotFound": "<red>Player <yellow>${recipient}</yellow> not found!</red>",
+      "mailSent": "<gold>Mail sent!</gold>",
+      "mailPending": "<green>You have pending mails! Run <click:run_command:'/mail'><hover:show_text:Click to read mails><aqua>/mail</aqua></hover></click> to read your mails.</green>",
+      "emptyMailbox": "<gold>Your mailbox is empty.</gold>",
+      "mailListEntry": "<yellow>${index}.</yellow> <gold>From</gold> <yellow>${sender}</yellow> <gold>on</gold> <yellow>${date}</yellow> ${readButton}",
+      "hoverReply": "Click to reply to the mail",
+      "hoverDelete": "Click to delete the mail",
+      "readButton": "<gold>Read</gold>",
+      "mailReceived": "<gold>You received a new mail! Run <click:run_command:'/mail'><hover:show_text:Click to read mails><aqua>/mail</aqua></hover></click> to read the emails!</gold>",
+      "notFound": "<red>Mail not found</red>",
+      "mailListHeader": "<gold>Your mails:</gold>",
+      "mailDetails": "<gold>From</gold> <yellow>${sender}</yellow> <gold>on</gold> <yellow>${date}</yellow>\n ${message}\n\n ${replyButton} ${deleteButton}"
+    },
+    "tell": {
+      "playerNotFound": "<red>Player <yellow>${targetPlayer}</yellow> not found!</red>",
+      "noLastSenderReply": "<red>You have no one to reply to.</red>",
+      "messageSpy": "👁 <gray>[${sourcePlayer} → ${targetPlayer}] ${message}</gray>",
+      "message": "<gold>[</gold>${sourcePlayer} <gray>→</gray> ${targetPlayer}<gold>]</gold> ${message}",
+      "you": "<gray><i>You</i></gray>"
+    },
+    "back": {
+      "teleporting": "<gold>Teleporting to previous position...</gold>",
+      "noPosition": "<red>There is no position to return back to.</red>"
+    },
+    "ban": {
+      "tempBanMessageFormat": "<red>You are temporarily banned from this server:</red>\n\n${reason}\n\n<gray>Expires: ${expiry_date}</gray>",
+      "banMessageFormat": "<red>You are banned from this server:</red>\n\n${reason}"
+    },
+    "seen": {
+      "online": "online",
+      "playerNotFound": "<red>Could not find this player</red>",
+      "extended": " <gold>IP Address:</gold> <yellow>${ipAddress}</yellow>\n <gold>Location:</gold> <yellow>${location}</yellow>",
+      "neverJoined": "Never joined",
+      "unknown": "unknown",
+      "base": "<yellow>${username}</yellow><gold>'s information:</gold>\n <gold>UUID:</gold> <yellow>${uuid}</yellow>\n <gold>First seen:</gold> <yellow>${firstSeenDate}</yellow>\n <gold>Last seen:</gold> <yellow>${lastSeenDate}</yellow>"
+    },
+    "inventorysee": {
+      "offlineNotAllowed": "<gold>You cannot open offline player inventories.</gold>",
+      "openedTrinkets": "<gold>Opened <yellow>${user}</yellow>'s trinkets inventory.</gold>",
+      "trinketsNotInstalled": "<gold>Trinkets not available because the mod is missing.</gold>",
+      "playerNotFound": "<gold>Player not found!</gold>",
+      "exempt": "<gold>You cannot open this inventory because the user is exempt.</gold>",
+      "openedInventory": "<gold>Opened <yellow>${user}</yellow>'s inventory.</gold>"
+    },
+    "kit": {
+      "listAvailableKit": "<run_cmd:'/kit claim ${kit}'><hover:'Click to claim'><yellow>${kit}</yellow></hover></run_cmd>",
+      "noStackInHand": "<gold>You need to hold an item to set a kit icon!</gold>",
+      "edited": "<green>Kit <yellow>${kit}</yellow> edited!</green>",
+      "noPermission": "<gold>You do not have permission to claim this kit!</gold>",
+      "created": "<green>New kit <yellow>${kit}</yellow> created!</green>",
+      "claimed": "<green>Kit <yellow>${kit}</yellow> claimed!</green>",
+      "onCooldown": "<gold>You can claim this kit again in <yellow>${timespan}</yellow>!</gold>",
+      "setCooldown": "<gold>Set cooldown to <yellow>${value}</yellow> for kit <yellow>${kit}</yellow>.</gold>",
+      "listComma": ", ",
+      "listHeader": "<gold>Available kits: ${list}.</gold>",
+      "claimKit": "<green>Click to claim this kit!</green>",
+      "kits": "Kits",
+      "setOneTime": "<gold>Set one time to <yellow>${value}</yellow> for kit <yellow>${kit}</yellow>.</gold>",
+      "setIcon": "<gold>Set icon for kit <yellow>${kit}</yellow>.</gold>",
+      "setFirstJoin": "<gold>Set first join to <yellow>${value}</yellow> for kit <yellow>${kit}</yellow>.</gold>",
+      "deleted": "<gold>Kit <yellow>${kit}</yellow> deleted!</gold>",
+      "newKitTitle": "New kit: ${kit}",
+      "listUnavailableKit": "<hover:'This kit is unavailable'><gray><st>${kit}</st></gray></hover>",
+      "notFound": "<gold>The kit <yellow>${kit}</yellow> does not exist!</gold>",
+      "alreadyClaimed": "<gold>You already claimed this kit!</gold>",
+      "editKitTitle": "Edit kit: ${kit}",
+      "alreadyExists": "<gold>A kit with this name already exists!</gold>",
+      "listNoKits": "<gold>There are no kits available.</gold>"
+    },
+    "helpop": {
+      "helpRequestMessage": "❗ <gold>[%player:displayname%]</gold> <gray>${message}</gray>",
+      "helpRequestFeedback": "<gold>Help request sent: </gold><gray>${message}</gray>"
+    },
+    "ignore": {
+      "blockedPlayer": "<yellow>${targetName}</yellow> <gold>is now ignored.</gold>",
+      "unblockedPlayer": "<yellow>${targetName}</yellow> <green>is no longer ignored.</green>",
+      "ignoreListEmpty": "<gold>You are not ignoring anyone at the moment.</gold>",
+      "ignoreList": "<gold>Ignored players: ${playerList}</gold>",
+      "playerNotFound": "<red>Could not find this player</red>",
+      "ignoreListFormat": "<run_cmd:'/ignore ${player}'><hover:'Click to unblock'><yellow>${player}</yellow></hover></run_cmd>",
+      "ignoreListComma": "<gold>, </gold>",
+      "targetIsSelf": "<red>You cannot ignore yourself.</red>"
+    },
+    "hat": {
+      "success": "<green>Check out your new hat!</green>",
+      "notAllowed": "<gold>You cannot wear this item!</gold>",
+      "emptyStack": "<red>You are not holding any item!</red>"
+    },
+    "near": {
+      "comma": "<gold>, </gold>",
+      "noOne": "<gold>There are no players near you.</gold>",
+      "nearestPlayers": "<gold>Nearest players: ${playerList}</gold>",
+      "format": "${player} <gold>(</gold><yellow>${distance}</yellow><gold>)</gold>"
+    },
+    "info": {
+      "noPages ": "<gold>There are no pages so far.</gold>",
+      "pageNotFound": "<red>This page does not exist!</red>",
+      "pageError": "<red>There was an error opening the info page.</red>",
+      "pagesFormat": "<run_cmd:'/info ${page}'><hover:'Click to read'><yellow>${page}</yellow></hover></run_cmd>",
+      "pageList": "<gold>Available pages: ${pageList}</gold>",
+      "pagesComma": "<gold>, </gold>"
+    },
+    "enderchest": {
+      "opened": "<gold>Opened <yellow>${player}</yellow>'s Ender Chest.</gold>",
+      "exempt": "<red>You cannot open this Ender Chest because the player is exempt.</red>",
+      "title": "${player}'s Ender Chest"
+    },
+    "item": {
+      "noItem": "<gold>You are not holding any item!</gold>",
+      "notRepairable": "<gold>This item is not repairable!</gold>",
+      "alreadyRepaired": "<gold>This item is already repaired!</gold>",
+      "nameSet": "<green>Successfully set the new item name!</green>",
+      "loreCleared": "<gold>Item lore cleared!</gold>",
+      "loreSet": "<green>Successfully set the new item lore!</green>",
+      "nameCleared": "<gold>Item name cleared!</gold>",
+      "repaired": "<green>Item repaired!</green>",
+      "stackRefilled": "<green>Item stack refilled!</green>"
+    },
+    "staffchat": {
+      "disabled": "<gold>Staff chat disabled.</gold>",
+      "message": "🔧 ${name}<gray>: ${message}</gray>",
+      "enabled": "<green>Staff chat enabled. All your messages will be sent to staff chat instead.</green>"
+    },
+    "restart": {
+      "barLabel": "Server restarting in ${remaining_time}",
+      "chatMessage": "<red>The server is restarting in </red><gold>${remaining_time}</gold>",
+      "kickMessage": "The server is restarting!"
+    },
+    "afk": {
+      "leaderboardHeader": "<gold>Active Time Leaderboard:</gold>",
+      "leaderboardEntry": "<gold> <gold>${index}.</gold> <yellow>${player}</yellow>: <gray>${time}</gray></gold>",
+      "yourActiveTime": "<gold>Your active time is <yellow>${activeTime}</yellow>.</gold>",
+      "leaderboardRecalculated": "<gold>Recalculated active time leaderboard!</gold>",
+      "neverPlayed": "<gold>This player never played.</gold>",
+      "returnAfk": "<gray>%player:displayname% is no longer AFK</gray>",
+      "playerActiveTime": "<gold><yellow>${player}</yellow>'s active time is <yellow>${activeTime}</yellow>.</gold>",
+      "notFound": "<gold>Player not found.</gold>",
+      "activeTimeSet": "<gold>Set <yellow>${player}</yellow>'s active time to <yellow>${time}</yellow>!</gold>",
+      "goneAfk": "<gray>%player:displayname% is now AFK</gray>"
+    },
+    "mute": {
+      "youAreMuted": "<gold>You are muted!</gold>"
+    },
+    "jail": {
+      "playerJailedFor": "<red>You have been jailed for <yellow>${duration}</yellow>!</red>",
+      "notJailed": "<gold>This user is not jailed!</gold>",
+      "infoJailReason": "<gold>Reason: <yellow>${reason}</yellow></gold>",
+      "infoJailedBy": "<gold>Jailed by: <yellow>${operator}</yellow></gold>",
+      "jailNotFound": "<gold>This jail does not exist.</gold>",
+      "noJails": "<gold>There are no jails yet.</gold>",
+      "jailedFor": "<gold><yellow>${player}</yellow> has been jailed at <yellow>${jail}</yellow> for <yellow>${duration}</yellow>!</gold>",
+      "jailed": "<gold><yellow>${player}</yellow> has been jailed at <yellow>${jail}</yellow> indefinitely!</gold>",
+      "unjailed": "<gold>Unjailed <yellow>${player}</yellow>!</gold>",
+      "playerUnjailed": "<green>You have been unjailed!</green>",
+      "infoJailedFor": "<gold>Jail time: <yellow>${duration}</yellow></gold>",
+      "cannotUseBlocks": "<red>You are not allowed to use blocks in jail!</red>",
+      "infoJailReasonEmpty": "No reason",
+      "alreadyJailed": "<gold>This player is already jailed!</gold>",
+      "playerJailedForWithReason": "<red>You have been jailed for <yellow>${duration}</yellow> with reason: <yellow>${reason}</yellow></red>",
+      "jailList": "<gold>Jails: ${list}.</gold>",
+      "created": "<green>New jail <yellow>${jail}</yellow> created!</green>",
+      "playerExempt": "<gold>This player is exempt from being jailed!</gold>",
+      "teleporting": "<gold>Teleporting to <yellow>${jail}</yellow>...</gold>",
+      "jailAlreadyExists": "<gold>A jail with this name already exists.</gold>",
+      "infoJailedAt": "<gold>Jailed at: <yellow>${jail}</yellow></gold>",
+      "jailedForWithReason": "<gold><yellow>${player}</yellow> has been jailed at <yellow>${jail}</yellow> for <yellow>${duration}</yellow> with reason: <yellow>${reason}</yellow></gold>",
+      "listEntry": "<yellow>${jail}</yellow>",
+      "cannotAttackEntities": "<red>You are not allowed to attack entities in jail!</red>",
+      "cannotUseEntities": "<red>You are not allowed to interact with entities in jail!</red>",
+      "comma": "<gold>, </gold>",
+      "cannotRunCommands": "<red>You are not allowed to run this command in jail!</red>",
+      "deleted": "<gold>Jail <yellow>${jail}</yellow> deleted!</gold>",
+      "infoJailedOn": "<gold>Jailed on: <yellow>${date}</yellow></gold>",
+      "playerJailed": "<red>You have been jailed!</red>",
+      "cannotSpeak": "<red>You are not allowed to speak in jail!</red>",
+      "cannotBreakBlocks": "<red>You are not allowed to break blocks in jail!</red>",
+      "infoHeader": "<gold><yellow>${player}</yellow> Jail Information:</gold>",
+      "infoJailedForEmpty": "Indefinitely",
+      "cannotUseItems": "<red>You are not allowed to use items in jail!</red>"
+    },
+    "commandspy": {
+      "spyFormat": "👁 <dark_gray>${player}:</dark_gray> <gray>/${command}</gray>"
+    },
+    "trash": {
+      "trash": "Trash Bin"
+    },
+    "home": {
+      "forceSetLabel": "<yellow>Force set home</yellow>",
+      "homeListOther": "<gold><yellow>${owner}</yellow>'s homes: ${homeList}</gold>",
+      "homeNotFound": "<red>The home <yellow>${home}</yellow> does not exist!</red>",
+      "teleporting": "<gold>Teleporting to <yellow>${home}</yellow></gold>",
+      "homeDeleted": "<gold>Home <yellow>${home}</yellow> deleted!</gold>",
+      "homesFormat": "<run_cmd:'/home ${home}'><hover:'Click to teleport'><yellow>${home}</yellow></hover></run_cmd>",
+      "maxHomesReached": "<red>You have reached the maximum amount of homes!</red>",
+      "forceSetHover": "Click to force setting new home",
+      "noHomesOther": "<gold><yellow>${owner}</yellow> did not set any home so far.</gold>",
+      "homeSetSuccess": "<gold>New home <yellow>${home}</yellow> set!</gold>",
+      "homesFormatOther": "<run_cmd:'/homeother ${owner} ${home}'><hover:'Click to teleport'><yellow>${home}</yellow></hover></run_cmd>",
+      "noHomes": "<gold>You did not set any home so far.</gold>",
+      "homesComma": "<gold>, </gold>",
+      "teleportingOther": "<gold>Teleporting to <yellow>${owner}'s ${home}</yellow></gold>",
+      "homeExists": "<gold>You already have set this home.</gold>\n ${forceSetButton}",
+      "homeList": "<gold>Your homes: ${homeList}</gold>"
+    },
+    "rtp": {
+      "noWorldPermission": "<gold>You do not have permission to run this command in this world.</gold>",
+      "noBiomePermission": "<gold>You do not have permission to use this biome.</gold>",
+      "success": "<green>Teleporting to a random location...</green>",
+      "searching": "<yellow>Finding a good spot...</yellow>",
+      "unsafe": "<gold>Could not place you in a safe spot.</gold>",
+      "tooManyAttempts": "<gold>Too many failed attempts at locating a valid spot.</gold>",
+      "timeout": "<gold>Could not find a valid spot in a timely manner.</gold>"
+    },
+    "core": {
+      "stat.uptime": "<gold>Server Uptime: <yellow>${uptime}</yellow></gold>",
+      "ping.self": "<gold>Ping: <yellow>${ping}ms</yellow></gold>",
+      "ping.other": "<gold><yellow>${player}</yellow>'s ping: <yellow>${ping}ms</yellow></gold>",
+      "stat.tps": "<gold>Current TPS: %server:tps_colored%<gray>/20.0</gray></gold>",
+      "stat.dedicatedMemory": "<hover:'${hover}'><gold>Dedicated memory: <yellow>${memory} MB</yellow></gold></hover>",
+      "stat.maxMemory.hover": "How much memory the JVM can take at most in the system.",
+      "stat.title": "<gold>Server Statistics</gold>",
+      "stat.maxMemory": "<hover:'${hover}'><gold>Maximum memory: <yellow>${memory} MB</yellow></gold></hover>",
+      "stat.freeMemory.hover": "How much memory is left free in the dedicated memory.",
+      "stat.freeMemory": "<hover:'${hover}'><gold>Free memory: <yellow>${memory} MB</yellow></gold></hover>",
+      "stat.dedicatedMemory.hover": "How much memory the JVM is using, can expand up to maximum memory."
+    },
+    "fly": {
+      "disabled": "<gold>Flight disabled</gold>",
+      "enabledForOther": "<green>Flight enabled for ${player}</green>",
+      "disabledForOther": "<gold>Flight disabled for ${player}</gold>",
+      "enabled": "<green>Flight enabled</green>"
+    },
+    "powertool": {
+      "checkEntry": "<gold> - <yellow>${action}</yellow>: <gray>${command}</gray></gold>",
+      "allCleared": "<gold>All commands cleared from <yellow>${item}</yellow>!</gold>",
+      "actionCleared": "<gold>Command cleared from <yellow>${item}</yellow> on <yellow>${action}</yellow>.</gold>",
+      "checkEntryNotSet": "<gold> - <yellow>${action}</yellow>: <gray><i>Not set</i></gray></gold>",
+      "check": "<gold>Actions for <yellow>${item}</yellow>:</gold>",
+      "emptyHand": "<gold>You are not holding any item.</gold>",
+      "actionSet": "<green>Command bound to <yellow>${item}</yellow> on <yellow>${action}</yellow>.</green>",
+      "noAction": "<gold>This action is not bound for this item.</gold>"
+    },
+    "spawn": {
+      "noWorldPermission": "<gold>You do not have permission to teleport to this world spawn.</gold>",
+      "noFirstSpawn": "<gold>There is no first spawn yet.</gold>",
+      "worldSpawnSet": "<green><yellow>${world}</yellow> spawn point set to <yellow>${coordinates}</yellow>.</green>",
+      "teleporting": "<gold>Teleporting to spawn...</gold>",
+      "firstSpawnDeleted": "<gold>First spawn deleted!</gold>",
+      "firstSpawnSet": "<green>First spawn set!</green>"
+    },
+    "customname": {
+      "setOther": "<gold><yellow>${player}</yellow>'s nickname set to <yellow>${nickname}</yellow>!</gold>",
+      "clearedOther": "<gold><yellow>${player}</yellow>'s nickname cleared!</gold>",
+      "setSelf": "<gold>Nickname set to <yellow>${nickname}</yellow>!</gold>",
+      "errorEmpty": "<red>Username cannot be empty!</red>",
+      "clearedSelf": "<gold>Nickname cleared!</gold>"
+    },
+    "god": {
+      "disabled": "<gold>Invincibility disabled</gold>",
+      "enabledForOther": "<green>Invincibility enabled for ${player}</green>",
+      "disabledForOther": "<gold>Invincibility disabled for ${player}</gold>",
+      "enabled": "<green>Invincibility enabled</green>"
+    },
+    "notifications": {
+      "getAfkOnly.false": "  <gold>AFK-Only: <red>disabled</red></gold>",
+      "setOnChatEnabled": "<green>Chat pings enabled.</green>",
+      "setAfkOnlyDisabled": "<gold>Notifications always enabled.</gold>",
+      "setVolume": "<gold>Notifications volume set to <yellow>${volume}</yellow>.</gold>",
+      "getAfkOnly.true": "  <gold>AFK-Only: <green>enabled</green></gold>",
+      "getHeader": "<gold>Your notifications settings:</gold>",
+      "getOnChat.false": "  <gold>On chat: <red>disabled</red></gold>",
+      "getOnChat.true": "  <gold>On chat: <green>enabled</green></gold>",
+      "getVolume": "  <gold>Volume: <yellow>${volume}</yellow></gold>",
+      "setAfkOnlyEnabled": "<gold>Notifications enabled only while AFK.</gold>",
+      "getPitch": "  <gold>Pitch: <yellow>${pitch}</yellow></gold>",
+      "setOnChatDisabled": "<gold>Chat pings disabled.</gold>",
+      "toggleDisabled": "<gold>Notifications disabled.</gold>",
+      "setPitch": "<gold>Notifications pitch set to <yellow>${pitch}</yellow>.</gold>",
+      "setSound": "<gold>Notifications sound set to <yellow>${sound}</yellow>.</gold>",
+      "reset": "<gold>Notification settings cleared.</gold>",
+      "getEnabled.true": "  <gold>Enabled: <green>enabled</green></gold>",
+      "getEnabled.false": "  <gold>Enabled: <red>disabled</red></gold>",
+      "toggleEnabled": "<green>Notifications enabled.</green>",
+      "getSound": "  <gold>Sound: <yellow>${sound}</yellow></gold>"
+    },
+    "warp": {
+      "deleted": "<gold>Warp <yellow>${warp}</yellow> deleted!</gold>",
+      "warpsFormat": "<run_cmd:'/warp ${warp}'><hover:'Click to teleport'><yellow>${warp}</yellow></hover></run_cmd>",
+      "noWarps": "<gold>There are no warps so far.</gold>",
+      "noPermission": "<gold>You do not have permission to warp to <yellow>${warp}</yellow>.</gold>",
+      "created": "<green>New warp <yellow>${warp}</yellow> created!<green>",
+      "warpNotFound": "<red>The warp <yellow>${warp}</yellow> does not exist!</red>",
+      "teleporting": "<gold>Warping to <yellow>${warp}</yellow>...</gold>",
+      "warpsComma": "<gold>, </gold>",
+      "warpList": "<gold>Server warps: ${warpList}</gold>"
+    }
+  }
+}
