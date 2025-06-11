@@ -16,7 +16,6 @@ import java.util.List;
 
 /**
  * Implement an improved gradient that can also take in the phase.
- * </p>
  * Most of the code is from <a href="https://github.com/KyoriPowered/adventure">Kyori Adventure</a>.
  *
  * @see <a href="https://github.com/KyoriPowered/adventure/blob/91afed95abf8e5ee9ee51c355629e94b1a2b1997/text-minimessage/src/main/java/net/kyori/adventure/text/minimessage/tag/standard/GradientTag.java">Kyori Adventure GradientTag</a>
