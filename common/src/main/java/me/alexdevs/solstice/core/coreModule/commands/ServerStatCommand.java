@@ -31,13 +31,13 @@ public class ServerStatCommand extends ModCommand<CoreModule> {
                 .executes(context -> {
                     var locale = module.locale();
                     var placeholderContext = PlaceholderContext.of(context.getSource());
-
                     var messages = new ArrayList<Component>();
 
                     messages.add(locale.get("stat.tps", placeholderContext));
 
                     var uptime = Duration.ofMillis(ManagementFactory.getRuntimeMXBean().getUptime());
                     var uptimeFormatted = TimeSpan.toShortString((int)uptime.getSeconds());
+
                     messages.add(locale.get("stat.uptime", placeholderContext, Map.of(
                             "uptime", Component.nullToEmpty(uptimeFormatted)
                     )));
@@ -63,6 +63,7 @@ public class ServerStatCommand extends ModCommand<CoreModule> {
                     )));
 
                     var text = Component.empty();
+
                     text.append(locale.get("stat.title"));
 
                     for(var message : messages) {

@@ -68,15 +68,12 @@ public class CoreModule extends ModuleBase {
             playerData.lastSeenDate = new Date();
             playerData.logoffPosition = new ServerLocation(player);
 
-            Solstice.scheduler.schedule(
-                    () -> {
-                        Solstice.playerData.dispose(player.getUUID());
-                    }, 1, TimeUnit.SECONDS
-            );
+            Solstice.scheduler.schedule(() -> Solstice.playerData.dispose(player.getUUID()), 1, TimeUnit.SECONDS);
         });
 
         WorldSaveCallback.EVENT.register((server, suppressLogs, flush, force) -> {
             var uuids = server.getPlayerList().getPlayers().stream().map(Entity::getUUID).toList();
+
             Solstice.playerData.disposeMissing(uuids);
         });
     }

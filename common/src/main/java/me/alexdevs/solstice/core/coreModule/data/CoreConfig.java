@@ -19,4 +19,7 @@ public class CoreConfig {
 
     @Comment("Format to use when hovering over the link in chat.")
     public String linkHover = "${url}";
+
+    @Comment("Force Minecraft to display the real ping numbers.")
+    public boolean useRealPing = true;
 }
