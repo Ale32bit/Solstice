@@ -44,7 +44,7 @@ public class RTPCommand extends ModCommand<RTPModule> {
                         .suggests((context, builder) -> {
                             if (Permissions.check(context.getSource(), getPermissionNode("exempt.biome"), 2)) {
                                 var biomeRegistry = this.commandRegistry.lookup(Registries.BIOME);
-                                var biomes = RegistryUtils.getBiomes(biomeRegistry.get(), true);
+                                var biomes = RegistryUtils.getBiomes(biomeRegistry.get(), false);
                                 return SharedSuggestionProvider.suggest(biomes, builder);
                             }
 
