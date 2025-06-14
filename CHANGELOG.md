@@ -6,5 +6,5 @@ Patches and support are still provided.
 
 ---
 
-- Bugfix `/setspawn` not working correctly in other dimensions.
-- Added `/activetime recalculate` to force recalculate the leaderboard.
+- Bugfix `/rtp` stack overflow crash.
+- Bugfix `/rtp` biome list not working correctly with mods that add biomes.
