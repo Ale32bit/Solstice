@@ -18,6 +18,6 @@ public abstract class PreTeleportMixin {
     @Inject(method = "teleportTo(Lnet/minecraft/server/level/ServerLevel;DDDLjava/util/Set;FF)Z", at = @At("HEAD"))
     public void solstice$getPreTeleportLocation(ServerLevel world, double destX, double destY, double destZ, Set<RelativeMovement> flags, float yaw, float pitch, CallbackInfoReturnable<Boolean> cir) {
         var player = (ServerPlayer) (Object) this;
-        Solstice.modules.getModule(BackModule.class).lastPlayerPositions.put(player.getUUID(), new ServerLocation(player));
+        Solstice.modules.getModule(BackModule.class).setPlayerLastLocation(player.getUUID(), new ServerLocation(player));
     }
 }

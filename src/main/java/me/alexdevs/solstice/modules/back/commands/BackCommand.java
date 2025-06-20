@@ -31,7 +31,7 @@ public class BackCommand extends ModCommand<BackModule> {
                     var player = context.getSource().getPlayerOrException();
                     var playerContext = PlaceholderContext.of(player);
 
-                    var lastPosition = module.lastPlayerPositions.get(player.getUUID());
+                    var lastPosition = module.getPlayerLastLocation(player.getUUID());
                     if (lastPosition == null) {
                         context.getSource().sendSuccess(() -> locale.get(
                                 "noPosition",

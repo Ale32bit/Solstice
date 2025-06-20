@@ -64,7 +64,7 @@ public class ServerLocation {
     public void teleport(ServerPlayer player, boolean setBackPosition) {
         if (setBackPosition) {
             var currentPosition = new ServerLocation(player);
-            Solstice.modules.getModule(BackModule.class).lastPlayerPositions.put(player.getUUID(), currentPosition);
+            Solstice.modules.getModule(BackModule.class).setPlayerLastLocation(player.getUUID(), currentPosition);
         }
 
         var serverWorld = getWorld(player.getServer());
