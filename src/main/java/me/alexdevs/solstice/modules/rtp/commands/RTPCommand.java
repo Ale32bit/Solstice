@@ -84,13 +84,6 @@ public class RTPCommand extends ModCommand<RTPModule> {
             }
         }
 
-        if (config.cooldown.enable) {
-            if (!Solstice.cooldown.trigger(player, module.getPermissionNode(), config.cooldown.cooldown)) {
-                context.getSource().sendSuccess(() -> Solstice.cooldown.getMessage(player, module.getPermissionNode()), false);
-                return 0;
-            }
-        }
-
         final var server = context.getSource().getServer();
         final var uuid = player.getUUID();
 
@@ -118,10 +111,6 @@ public class RTPCommand extends ModCommand<RTPModule> {
                     default -> Component.nullToEmpty(result.type().toString());
                 };
                 player.sendSystemMessage(text);
-
-                if (config.cooldown.cancelOnFail) {
-                    Solstice.cooldown.clear(player, module.getPermissionNode());
-                }
             }
         });
 
