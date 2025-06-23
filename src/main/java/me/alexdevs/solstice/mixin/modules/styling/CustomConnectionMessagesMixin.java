@@ -1,5 +1,6 @@
 package me.alexdevs.solstice.mixin.modules.styling;
 
+import me.alexdevs.solstice.modules.styling.StylingModule;
 import me.alexdevs.solstice.modules.styling.formatters.ConnectionActivityFormatter;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
@@ -11,7 +12,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerList.class)
@@ -29,15 +30,18 @@ public abstract class CustomConnectionMessagesMixin {
         solstice$player = null;
     }
 
-    @ModifyArg(method = "placeNewPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Z)V"))
-    public Component solstice$getPlayerJoinMessage(Component message) {
+    @Redirect(method = "placeNewPlayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Z)V"))
+    private void solstice$sendJoinMessage(PlayerList list, Component message, boolean bypassHiddenChat) {
         var ogText = (TranslatableContents) message.getContents();
         var args = ogText.getArgs();
 
+        Component formattedMessage;
         if (args.length == 1) {
-            return ConnectionActivityFormatter.onJoin(solstice$player);
+            formattedMessage = ConnectionActivityFormatter.onJoin(solstice$player);
         } else {
-            return ConnectionActivityFormatter.onJoinRenamed(solstice$player, (String) args[1]);
+            formattedMessage = ConnectionActivityFormatter.onJoinRenamed(solstice$player, (String) args[1]);
         }
+
+        StylingModule.broadcastActivity(list, formattedMessage, bypassHiddenChat);
     }
 }
