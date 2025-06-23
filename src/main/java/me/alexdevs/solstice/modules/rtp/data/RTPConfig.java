@@ -66,22 +66,6 @@ public class RTPConfig {
             )
     );
 
-    @Comment("Cooldown configuration")
-    public Cooldown cooldown = new Cooldown();
-
-    @ConfigSerializable
-    public static class Cooldown {
-        @Comment("This setting makes it so players have to wait before running the command a second time.")
-        public boolean enable = true;
-
-        @Comment("Seconds to wait for the cooldown to expire.")
-        public int cooldown = 600;
-
-        @Comment("Cancel the cooldown if /rtp fails.")
-        public boolean cancelOnFail = true;
-    }
-
-
     public List<ResourceKey<Biome>> parseBiomes() {
         return prohibitedBiomes.stream().map(biomeId -> ResourceKey.create(Registries.BIOME, ResourceLocation.parse(biomeId))).toList();
     }

@@ -35,7 +35,6 @@ public class Solstice implements ModInitializer {
     private static final ConcurrentLinkedQueue<Runnable> nextTickRunnables = new ConcurrentLinkedQueue<>();
     public static MinecraftServer server;
     public static Scheduler scheduler = new Scheduler(1, nextTickRunnables);
-    public static final CooldownManager cooldown = new CooldownManager();
     public static final WarmUpManager warmUp = new WarmUpManager();
     private static Solstice INSTANCE;
     private static final UserCache userCache = new UserCache(FabricLoader.getInstance().getGameDir().resolve("usercache.json").toFile());

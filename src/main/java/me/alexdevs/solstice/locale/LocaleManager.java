@@ -114,7 +114,7 @@ public class LocaleManager {
             for (var entry : oldLocale.entrySet()) {
                 var path = getPath(entry.getKey());
                 if (path == null) {
-                    Solstice.LOGGER.warn("Invalid locale path: {}", entry.getKey());
+                    Solstice.LOGGER.warn("Invalid locale node: {}", entry.getKey());
                     continue;
                 }
 

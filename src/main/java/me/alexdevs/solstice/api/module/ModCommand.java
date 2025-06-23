@@ -1,8 +1,13 @@
 package me.alexdevs.solstice.api.module;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.events.ModuleCommandEvents;
+import me.alexdevs.solstice.mixin.CommandNodeAccessor;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -42,8 +47,37 @@ public abstract class ModCommand<T extends ModuleBase> {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    protected void setCommand(CommandNode<CommandSourceStack> node, Command<CommandSourceStack> command) {
+        ((CommandNodeAccessor<CommandSourceStack>)node).setCommand(command);
+    }
+
+    protected void injectPreCommandEvents(CommandNode<CommandSourceStack> command, String node) {
+
+        var commandExecutor = command.getCommand();
+        if(commandExecutor != null) {
+            Solstice.LOGGER.debug("Registering pre-command event for command {}#{}", this.module.getId(), node);
+
+            setCommand(command, (context -> {
+                var isAllowed = ModuleCommandEvents.ALLOW_COMMAND.invoker().allowCommand(node, context, this);
+                if (isAllowed) {
+                    ModuleCommandEvents.COMMAND.invoker().onCommand(node, context, this);
+                    return commandExecutor.run(context);
+                }
+                return 0;
+            }));
+        }
+
+        for(var child : command.getChildren()) {
+            injectPreCommandEvents(child, node + "." + child.getName());
+        }
+    }
+
     public LiteralCommandNode<CommandSourceStack> registerCommand(LiteralArgumentBuilder<CommandSourceStack> command) {
-        return dispatcher.register(command);
+        // inject pre-run events for cooldown and such
+        var node = dispatcher.register(command);
+        injectPreCommandEvents(node, node.getName());
+        return node;
     }
 
     public String getName() {
