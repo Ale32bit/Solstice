@@ -1,10 +1,14 @@
-package me.alexdevs.solstice.core.cooldown;
+package me.alexdevs.solstice.modules.cooldown;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.events.ModuleCommandEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
-import me.alexdevs.solstice.core.coreModule.CoreModule;
+import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.modules.cooldown.commands.CooldownCommand;
+import me.alexdevs.solstice.modules.cooldown.data.CooldownConfig;
+import me.alexdevs.solstice.modules.cooldown.data.CooldownLocale;
+import me.alexdevs.solstice.modules.cooldown.data.CooldownSetting;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.network.chat.Component;
@@ -14,15 +18,26 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class CooldownManager {
+public class CooldownModule extends ModuleBase.Toggleable {
+    public static final String ID = "cooldown";
+    public static final String PERMISSION_BASE = "solstice.cooldown";
+
     private final Map<UUID, Map<String, Integer>> cooldowns = new ConcurrentHashMap<>();
 
     // Map where configured node -> key of the group.
     // This map is replaced every reload and at start.
     private Map<String, String> nodesMap = Map.of();
 
-    public CooldownManager() {
-        Solstice.configManager.registerData("cooldown", CooldownConfig.class, CooldownConfig::new);
+    public CooldownModule() {
+        super(ID);
+    }
+
+    @Override
+    public void init() {
+        Solstice.configManager.registerData(ID, CooldownConfig.class, CooldownConfig::new);
+        Solstice.localeManager.registerModule(ID, CooldownLocale.MODULE);
+
+        commands.add(new CooldownCommand(this));
 
         SolsticeEvents.READY.register((instance, server) -> reloadNodes());
         SolsticeEvents.RELOAD.register(instance -> reloadNodes());
@@ -38,7 +53,7 @@ public class CooldownManager {
             if (!context.getSource().isPlayer())
                 return true;
 
-            Solstice.LOGGER.info("Node: {}", node);
+            Solstice.LOGGER.debug("Node: {}", node);
             var setting = findSetting(node);
             if (setting.isEmpty()) {
                 return true;
@@ -47,6 +62,9 @@ public class CooldownManager {
             var key = setting.get().getKey();
 
             var player = context.getSource().getPlayer();
+            if(isExempt(player, key)) {
+                return true;
+            }
             var isOnCooldown = onCooldown(player, key);
 
             if (isOnCooldown) {
@@ -65,7 +83,14 @@ public class CooldownManager {
                 return;
             }
 
-            trigger(context.getSource().getPlayer(), setting.get().getKey(), setting.get().cooldown);
+            var player = context.getSource().getPlayer();
+            var key = setting.get().getKey();
+
+            if(isExempt(player, key)) {
+                return;
+            }
+
+            trigger(player, key, setting.get().cooldown);
         });
     }
 
@@ -137,25 +162,32 @@ public class CooldownManager {
         }
     }
 
-    public boolean isExempt(ServerPlayer player, String node) {
-        return Permissions.check(player, node + ".exempt.cooldown", 3);
+    public boolean isExempt(ServerPlayer player, String key) {
+        return Permissions.check(player, PERMISSION_BASE + ".exempt." + key, 3);
     }
 
-    public boolean onCooldown(ServerPlayer player, String node) {
-        if (isExempt(player, node))
+    public boolean onCooldown(ServerPlayer player, String key) {
+        if (isExempt(player, key))
             return false;
         var uuid = player.getUUID();
         var cooldown = cooldowns.computeIfAbsent(uuid, k -> new ConcurrentHashMap<>());
-        return cooldown.getOrDefault(node, 0) > 0;
+        return cooldown.getOrDefault(key, 0) > 0;
     }
 
-    public Component getMessage(ServerPlayer player, String node) {
+    public Optional<Integer> getCooldown(ServerPlayer player, String key) {
         var uuid = player.getUUID();
         var cooldown = cooldowns.computeIfAbsent(uuid, k -> new ConcurrentHashMap<>());
-        var value = cooldown.getOrDefault(node, 0);
-        var locale = Solstice.localeManager.getLocale(CoreModule.ID);
-        return locale.get("~cooldown", Map.of(
-                "timespan", Component.nullToEmpty(TimeSpan.toShortString(value))
+        if(!cooldown.containsKey(key)) {
+            return Optional.empty();
+        }
+        var value = cooldown.get(key);
+        return Optional.of(value);
+    }
+
+    public Component getMessage(ServerPlayer player, String key) {
+        var valueOpt = getCooldown(player, key);
+        return locale().get("cooldown", Map.of(
+                "timespan", Component.nullToEmpty(TimeSpan.toShortString(valueOpt.orElse(0)))
         ));
     }
 
@@ -163,22 +195,22 @@ public class CooldownManager {
      * Check and start cooldown if the player is not on cooldown.
      *
      * @param player  Player
-     * @param node    Permission node
+     * @param key    Permission node
      * @param seconds Cooldown seconds
      * @return Whether to execute
      */
-    public boolean trigger(ServerPlayer player, String node, int seconds) {
-        if (onCooldown(player, node)) {
+    public boolean trigger(ServerPlayer player, String key, int seconds) {
+        if (onCooldown(player, key)) {
             return false;
         }
 
-        if (isExempt(player, node)) {
+        if (isExempt(player, key)) {
             return true;
         }
 
         var uuid = player.getUUID();
         var cooldown = cooldowns.get(uuid);
-        cooldown.put(node, seconds);
+        cooldown.put(key, seconds);
 
         return true;
     }
@@ -187,5 +219,9 @@ public class CooldownManager {
         var uuid = player.getUUID();
         var cooldown = cooldowns.get(uuid);
         cooldown.remove(node);
+    }
+
+    public List<String> getKeys() {
+        return getConfig().nodes.keySet().stream().toList();
     }
 }

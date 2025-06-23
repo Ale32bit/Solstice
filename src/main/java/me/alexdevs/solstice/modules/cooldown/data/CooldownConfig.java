@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.core.cooldown;
+package me.alexdevs.solstice.modules.cooldown.data;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;

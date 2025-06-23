@@ -5,6 +5,7 @@ import me.alexdevs.solstice.api.module.ModuleEntrypoint;
 import me.alexdevs.solstice.modules.admin.AdminModule;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.autoAnnouncement.AutoAnnouncementModule;
+import me.alexdevs.solstice.modules.cooldown.CooldownModule;
 import me.alexdevs.solstice.modules.item.ItemModule;
 import me.alexdevs.solstice.modules.jail.JailModule;
 import me.alexdevs.solstice.modules.kit.KitModule;
@@ -71,6 +72,7 @@ public class ModuleProvider implements ModuleEntrypoint {
             new BanModule(),
             new BroadcastModule(),
             new CommandSpyModule(),
+            new CooldownModule(),
             new CustomNameModule(),
             new EnderChestModule(),
             new ExperimentsModule(),

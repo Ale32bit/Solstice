@@ -11,7 +11,6 @@ public class CoreLocale {
             Map.entry("accept.hover", "Click to accept"),
             Map.entry("refuse.hover", "Click to refuse"),
             Map.entry("tooManyTargets", "<red>The provided selector contains too many targets.</red>"),
-            Map.entry("cooldown", "<gold>You are on cooldown for <yellow>${timespan}</yellow>.</gold>"),
             Map.entry("unit.second", "${n} second"),
             Map.entry("unit.seconds", "${n} seconds"),
             Map.entry("unit.minute", "${n} minute"),
