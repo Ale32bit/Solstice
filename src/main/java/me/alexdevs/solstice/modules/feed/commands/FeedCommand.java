@@ -7,12 +7,12 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.feed.FeedModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
@@ -56,6 +56,9 @@ public class FeedCommand extends ModCommand<FeedModule> {
     private void feed(CommandContext<CommandSourceStack> context, ServerPlayer player) {
         player.getFoodData().setFoodLevel(MAX_FOOD_LEVEL);
         player.getFoodData().setSaturation(MAX_FOOD_LEVEL);
-        context.getSource().sendSuccess(() -> Component.literal("Fed ").append(player.getDisplayName()), true);
+        var placeholders = Map.of(
+                "entity", player.getName()
+        );
+        context.getSource().sendSuccess(() -> module.locale().get("fed", placeholders), true);
     }
 }

@@ -7,13 +7,13 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.heal.HealModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
@@ -53,7 +53,7 @@ public class HealCommand extends ModCommand<HealModule> {
             }
 
             if (healedCount == 0) {
-                context.getSource().sendFailure(Component.nullToEmpty("There are no living entities in the selector"));
+                context.getSource().sendFailure(module.locale().get("noLiving"));
             }
             return healedCount;
         }
@@ -61,6 +61,10 @@ public class HealCommand extends ModCommand<HealModule> {
 
     private void heal(CommandContext<CommandSourceStack> context, LivingEntity entity) {
         entity.setHealth(entity.getMaxHealth());
-        context.getSource().sendSuccess(() -> Component.literal("Healed ").append(entity.getDisplayName()), true);
+        var placeholders = Map.of(
+                "entity", entity.getName()
+        );
+
+        context.getSource().sendSuccess(() -> module.locale().get("healed", placeholders), true);
     }
 }
