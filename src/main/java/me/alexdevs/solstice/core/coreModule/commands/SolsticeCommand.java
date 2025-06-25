@@ -1,19 +1,23 @@
 package me.alexdevs.solstice.core.coreModule.commands;
 
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.Debug;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.api.text.Format;
+import me.alexdevs.solstice.core.coreModule.CoreModule;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.SharedConstants;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -117,7 +121,7 @@ public class SolsticeCommand extends ModCommand<CoreModule> {
                                     var text = Component.empty();
                                     text.append(Component.nullToEmpty(entryString));
                                     var tags = itemStack.getTags().iterator();
-                                    while(tags.hasNext()) {
+                                    while (tags.hasNext()) {
                                         var tag = tags.next();
                                         text.append(Component.nullToEmpty("\n"));
                                         text.append(
@@ -133,6 +137,31 @@ public class SolsticeCommand extends ModCommand<CoreModule> {
 
                                     return 1;
                                 }))
+                        .then(Commands.literal("enable")
+                                .then(Commands.argument("enable", BoolArgumentType.bool())
+                                        .requires(require("debug.enable", 4))
+                                        .executes(context -> {
+                                            var enable = BoolArgumentType.getBool(context, "enable");
+
+                                            // Command exception stack traces are not printed anywhere unless this variable is true.
+                                            // Unfortunately, this flag also causes other effects that WILL crash the server, i.e., /reload.
+                                            SharedConstants.IS_RUNNING_IN_IDE = enable;
+
+                                            if (enable) {
+                                                var message = notice("<red><obf>!</obf> WARNING <obf>!</obf></red> <yellow>Debug mode has been enabled. This state may result in instabilities!</yellow>");
+                                                context.getSource().sendSuccess(() -> message, true);
+                                            } else {
+                                                var message = notice("Debug mode has been disabled");
+                                                context.getSource().sendSuccess(() -> message, true);
+                                            }
+
+                                            return 1;
+                                        })
+                                ))
                 );
+    }
+
+    private static Component notice(String text) {
+        return Format.parse("[<gold>Solstice</gold>] " + text);
     }
 }
