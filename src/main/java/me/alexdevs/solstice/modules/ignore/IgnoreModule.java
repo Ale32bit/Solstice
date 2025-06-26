@@ -27,16 +27,14 @@ public class IgnoreModule extends ModuleBase.Toggleable {
         commands.add(new IgnoreListCommand(this));
     }
 
-    @Override
-    public boolean isEnabled() {
-        return super.isEnabled() && Solstice.modules.getModule(StylingModule.class).isEnabled();
-    }
-
     public IgnorePlayerData getPlayerData(UUID playerUuid) {
         return Solstice.playerData.get(playerUuid).getData(IgnorePlayerData.class);
     }
 
     public boolean isIgnoring(ServerPlayer player, ServerPlayer target) {
+        if(!isEnabled())
+            return false;
+
         return getPlayerData(player.getUUID()).ignoredPlayers.contains(target.getUUID()) && !Permissions.check(target, this.getPermissionNode("exempt"), 2);
     }
 }
