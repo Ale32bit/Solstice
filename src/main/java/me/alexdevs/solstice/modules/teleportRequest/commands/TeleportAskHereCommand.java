@@ -37,7 +37,7 @@ public class TeleportAskHereCommand extends ModCommand<TeleportRequestModule> {
         var target = EntityArgument.getPlayer(context, "player");
 
         var ignoreModule = Solstice.modules.getModule(IgnoreModule.class);
-        if (ignoreModule.getPlayerData(target.getUUID()).ignoredPlayers.contains(player.getUUID())) {
+        if (ignoreModule.isEnabled() && ignoreModule.getPlayerData(target.getUUID()).ignoredPlayers.contains(player.getUUID())) {
             return 0;
         }
 
