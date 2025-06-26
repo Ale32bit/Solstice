@@ -7,19 +7,21 @@ import me.alexdevs.solstice.modules.commandSpy.data.CommandSpyConfig;
 import me.alexdevs.solstice.modules.commandSpy.data.CommandSpyLocale;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+
 import java.util.Map;
 
 public class CommandSpyModule extends ModuleBase.Toggleable {
-    public static final String ID = "commandspy";
+    
 
-    public CommandSpyModule() {
-        super(ID);
+    public CommandSpyModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, CommandSpyConfig.class, CommandSpyConfig::new);
-        Solstice.localeManager.registerModule(ID, CommandSpyLocale.MODULE);
+        registerConfig(CommandSpyConfig.class, CommandSpyConfig::new);
+        registerLocale(CommandSpyLocale.MODULE);
 
         CommandEvents.ALLOW_COMMAND.register((source, command) -> {
             if (!source.isPlayer())

@@ -5,20 +5,18 @@ import com.mojang.authlib.properties.PropertyMap;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.skull.commands.SkullCommand;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.StringTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PlayerHeadItem;
 import net.minecraft.world.item.component.ResolvableProfile;
 
 import java.util.Optional;
 import java.util.UUID;
-
 public class SkullModule extends ModuleBase.Toggleable {
-    public static final String ID = "skull";
+    
 
-    public SkullModule() {
-        super(ID);
+    public SkullModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override

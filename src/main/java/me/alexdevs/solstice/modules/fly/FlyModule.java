@@ -6,18 +6,18 @@ import me.alexdevs.solstice.modules.fly.commands.FlyCommand;
 import me.alexdevs.solstice.modules.fly.data.FlyLocale;
 import me.alexdevs.solstice.modules.fly.data.FlyPlayerData;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-
+import net.minecraft.resources.ResourceLocation;
 public class FlyModule extends ModuleBase.Toggleable {
-    public static final String ID = "fly";
+    
 
-    public FlyModule() {
-        super(ID);
+    public FlyModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.localeManager.registerModule(ID, FlyLocale.MODULE);
-        Solstice.playerData.registerData(ID, FlyPlayerData.class, FlyPlayerData::new);
+        registerLocale(FlyLocale.MODULE);
+        registerPlayerData(FlyPlayerData.class, FlyPlayerData::new);
 
         commands.add(new FlyCommand(this));
 

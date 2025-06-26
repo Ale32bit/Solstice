@@ -7,6 +7,7 @@ import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.spawn.SpawnModule;
 import net.minecraft.commands.CommandSourceStack;
+
 import java.util.List;
 
 import static net.minecraft.commands.Commands.literal;

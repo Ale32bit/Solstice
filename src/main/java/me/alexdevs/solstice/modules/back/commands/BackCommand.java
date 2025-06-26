@@ -2,18 +2,15 @@ package me.alexdevs.solstice.modules.back.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.back.BackModule;
 import net.minecraft.commands.CommandSourceStack;
+
 import java.util.List;
 
 import static net.minecraft.commands.Commands.literal;
 
 public class BackCommand extends ModCommand<BackModule> {
-    private final Locale locale = Solstice.localeManager.getLocale(BackModule.ID);
-
     public BackCommand(BackModule module) {
         super(module);
     }
@@ -33,14 +30,14 @@ public class BackCommand extends ModCommand<BackModule> {
 
                     var lastPosition = module.getPlayerLastLocation(player.getUUID());
                     if (lastPosition == null) {
-                        context.getSource().sendSuccess(() -> locale.get(
+                        context.getSource().sendSuccess(() -> module.locale().get(
                                 "noPosition",
                                 playerContext
                         ), false);
                         return 1;
                     }
 
-                    context.getSource().sendSuccess(() -> locale.get(
+                    context.getSource().sendSuccess(() -> module.locale().get(
                             "teleporting",
                             playerContext
                     ), false);

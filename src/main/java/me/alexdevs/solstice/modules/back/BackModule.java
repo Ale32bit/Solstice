@@ -10,6 +10,7 @@ import me.alexdevs.solstice.modules.back.data.BackLocale;
 import me.alexdevs.solstice.modules.back.data.BackPlayerData;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,17 +19,17 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class BackModule extends ModuleBase.Toggleable {
-    public static final String ID = "back";
+    
 
-    public BackModule() {
-        super(ID);
+    public BackModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.localeManager.registerModule(ID, BackLocale.MODULE);
-        Solstice.configManager.registerData(ID, BackConfig.class, BackConfig::new);
-        Solstice.playerData.registerData(ID, BackPlayerData.class, BackPlayerData::new);
+        registerLocale(BackLocale.MODULE);
+        registerConfig(BackConfig.class, BackConfig::new);
+        registerPlayerData(BackPlayerData.class, BackPlayerData::new);
 
         commands.add(new BackCommand(this));
 

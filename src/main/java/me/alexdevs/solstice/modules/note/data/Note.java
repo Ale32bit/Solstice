@@ -2,7 +2,6 @@ package me.alexdevs.solstice.modules.note.data;
 
 import java.util.Date;
 import java.util.UUID;
-import net.minecraft.server.level.ServerPlayer;
 
 public class Note {
     public UUID createdBy;

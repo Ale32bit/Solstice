@@ -15,17 +15,17 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 
 public class NotificationsModule extends ModuleBase.Toggleable {
-    public static final String ID = "notifications";
+    
 
-    public NotificationsModule() {
-        super(ID);
+    public NotificationsModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, NotificationsConfig.class, NotificationsConfig::new);
-        Solstice.localeManager.registerModule(ID, NotificationsLocale.MODULE);
-        Solstice.playerData.registerData(ID, NotificationsPlayerData.class, NotificationsPlayerData::new);
+        registerConfig(NotificationsConfig.class, NotificationsConfig::new);
+        registerLocale(NotificationsLocale.MODULE);
+        registerPlayerData(NotificationsPlayerData.class, NotificationsPlayerData::new);
 
         commands.add(new NotificationsCommand(this));
 
@@ -33,7 +33,7 @@ public class NotificationsModule extends ModuleBase.Toggleable {
             var content = message.decoratedContent().getString().toLowerCase();
 
             sender.getServer().getPlayerList().getPlayers().forEach(player -> {
-                if(player.equals(sender)) {
+                if (player.equals(sender)) {
                     return;
                 }
 

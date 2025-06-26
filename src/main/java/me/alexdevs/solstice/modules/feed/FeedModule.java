@@ -4,12 +4,12 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.feed.commands.FeedCommand;
 import me.alexdevs.solstice.modules.feed.data.FeedLocale;
-
+import net.minecraft.resources.ResourceLocation;
 public class FeedModule extends ModuleBase.Toggleable {
-    public static final String ID = "feed";
+    
 
-    public FeedModule() {
-        super(ID);
+    public FeedModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override

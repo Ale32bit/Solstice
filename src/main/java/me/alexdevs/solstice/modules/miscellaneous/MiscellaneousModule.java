@@ -2,29 +2,33 @@ package me.alexdevs.solstice.modules.miscellaneous;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
-import me.alexdevs.solstice.modules.miscellaneous.commands.*;
+import me.alexdevs.solstice.modules.miscellaneous.commands.EffectsCommand;
+import me.alexdevs.solstice.modules.miscellaneous.commands.NudgeCommand;
+import me.alexdevs.solstice.modules.miscellaneous.commands.SleepCommand;
+import me.alexdevs.solstice.modules.miscellaneous.commands.TopCommand;
 import me.alexdevs.solstice.modules.miscellaneous.data.MiscellaneousLocale;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
+
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 public class MiscellaneousModule extends ModuleBase.Toggleable {
-    public static final String ID = "miscellaneous";
+    
 
     private final Map<UUID, Boolean> commandSleeping = new ConcurrentHashMap<>();
 
-    public MiscellaneousModule() {
-        super(ID);
+    public MiscellaneousModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.localeManager.registerModule(ID, MiscellaneousLocale.MODULE);
+        registerLocale(MiscellaneousLocale.MODULE);
 
         commands.add(new EffectsCommand(this));
         commands.add(new SleepCommand(this));

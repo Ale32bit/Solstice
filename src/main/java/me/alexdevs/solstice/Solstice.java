@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Solstice implements ModInitializer {
     public static final String MOD_ID = "solstice";
     public static final Logger LOGGER = LoggerFactory.getLogger(Solstice.class);
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
 
     public static final HoconDataManager configManager = new HoconDataManager(Paths.configDirectory.resolve("config.conf"));
     public static final LocaleManager localeManager = new LocaleManager(Paths.configDirectory.resolve("locale.json"));

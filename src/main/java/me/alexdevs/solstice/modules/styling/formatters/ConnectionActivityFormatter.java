@@ -2,10 +2,11 @@ package me.alexdevs.solstice.modules.styling.formatters;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.styling.StylingModule;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import me.alexdevs.solstice.api.text.Format;
+
 import java.util.Map;
 
 public class ConnectionActivityFormatter {

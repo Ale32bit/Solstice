@@ -9,22 +9,22 @@ import me.alexdevs.solstice.modules.mail.commands.MailCommand;
 import me.alexdevs.solstice.modules.mail.data.MailLocale;
 import me.alexdevs.solstice.modules.mail.data.MailPlayerData;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
 public class MailModule extends ModuleBase.Toggleable {
-    public static final String ID = "mail";
+    
 
-    public MailModule() {
-        super(ID);
+    public MailModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.localeManager.registerModule(ID, MailLocale.MODULE);
-        Solstice.playerData.registerData(ID, MailPlayerData.class, MailPlayerData::new);
+        registerLocale(MailLocale.MODULE);
+        registerPlayerData(MailPlayerData.class, MailPlayerData::new);
 
         commands.add(new MailCommand(this));
 

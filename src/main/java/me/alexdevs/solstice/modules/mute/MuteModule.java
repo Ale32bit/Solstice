@@ -7,20 +7,20 @@ import me.alexdevs.solstice.modules.mute.commands.UnmuteCommand;
 import me.alexdevs.solstice.modules.mute.data.MuteLocale;
 import me.alexdevs.solstice.modules.mute.data.MutePlayerData;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.UUID;
-
 public class MuteModule extends ModuleBase.Toggleable {
-    public static final String ID = "mute";
+    
 
-    public MuteModule() {
-        super(ID);
+    public MuteModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.localeManager.registerModule(ID, MuteLocale.MODULE);
-        Solstice.playerData.registerData(ID, MutePlayerData.class, MutePlayerData::new);
+        registerLocale(MuteLocale.MODULE);
+        registerPlayerData(MutePlayerData.class, MutePlayerData::new);
 
         commands.add(new MuteCommand(this));
         commands.add(new UnmuteCommand(this));

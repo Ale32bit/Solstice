@@ -5,9 +5,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.broadcast.BroadcastModule;
 import net.minecraft.commands.CommandSourceStack;
-import me.alexdevs.solstice.api.text.Format;
+
 import java.util.List;
 
 import static net.minecraft.commands.Commands.argument;

@@ -8,23 +8,24 @@ import me.alexdevs.solstice.modules.rtp.data.RTPConfig;
 import me.alexdevs.solstice.modules.rtp.data.RTPLocale;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.biome.Biome;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
 public class RTPModule extends ModuleBase.Toggleable {
-    public static final String ID = "rtp";
+    
 
     private final ArrayList<Locator> locators = new ArrayList<>();
 
-    public RTPModule() {
-        super(ID);
+    public RTPModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.localeManager.registerModule(ID, RTPLocale.MODULE);
-        Solstice.configManager.registerData(ID, RTPConfig.class, RTPConfig::new);
+        registerLocale(RTPLocale.MODULE);
+        registerConfig(RTPConfig.class, RTPConfig::new);
 
         commands.add(new RTPCommand(this));
 

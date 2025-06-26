@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import me.alexdevs.solstice.api.Raycast;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.smite.SmiteModule;
 import net.minecraft.commands.CommandSourceStack;
@@ -13,7 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.phys.HitResult;
-import me.alexdevs.solstice.api.Raycast;
+
 import java.util.List;
 
 import static net.minecraft.commands.Commands.argument;

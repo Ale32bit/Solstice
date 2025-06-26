@@ -13,24 +13,25 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.*;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.ItemStack;
-import java.util.UUID;
 
+import java.util.UUID;
 public class PowerToolModule extends ModuleBase.Toggleable {
-    public static final String ID = "powertool";
+    
 
     private CommandDispatcher<CommandSourceStack> dispatcher;
 
-    public PowerToolModule() {
-        super(ID);
+    public PowerToolModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.localeManager.registerModule(ID, PowerToolLocale.MODULE);
-        Solstice.playerData.registerData(ID, PowerToolPlayerData.class, PowerToolPlayerData::new);
+        registerLocale(PowerToolLocale.MODULE);
+        registerPlayerData(PowerToolPlayerData.class, PowerToolPlayerData::new);
 
         commands.add(new PowerToolCommand(this));
 

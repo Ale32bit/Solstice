@@ -3,6 +3,7 @@ package me.alexdevs.solstice.api.data;
 import io.leangen.geantyref.TypeToken;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.data.serializers.DateSerializer;
+import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
@@ -14,7 +15,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class HoconDataManager {
-    protected final Map<String, Class<?>> classMap = new HashMap<>();
+    protected final Map<ResourceLocation, Class<?>> classMap = new HashMap<>();
     protected final Map<Class<?>, Object> data = new HashMap<>();
     protected final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
     protected Path filePath;
@@ -81,7 +82,7 @@ public class HoconDataManager {
         }
     }
 
-    public <T> void registerData(String id, Class<T> clazz, Supplier<T> creator) {
+    public <T> void registerData(ResourceLocation id, Class<T> clazz, Supplier<T> creator) {
         classMap.put(id, clazz);
         providers.put(clazz, creator);
     }
@@ -93,7 +94,11 @@ public class HoconDataManager {
         data.clear();
         for (var entry : classMap.entrySet()) {
             try {
-                data.put(entry.getValue(), get(dataNode.node(entry.getKey()), entry.getValue()));
+                var obj = dataNode.node(entry.getKey().toString());
+                if (obj == null) {
+                    obj = dataNode.node(entry.getKey().getPath());
+                }
+                data.put(entry.getValue(), get(obj, entry.getValue()));
             } catch (Exception e) {
                 Solstice.LOGGER.error("Could not load server data for {}. Using default values.", entry.getKey(), e);
                 this.data.put(entry.getValue(), dataNode.node(entry.getKey()));

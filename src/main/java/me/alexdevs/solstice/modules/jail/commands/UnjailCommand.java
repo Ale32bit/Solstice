@@ -8,6 +8,7 @@ import me.alexdevs.solstice.modules.jail.JailModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+
 import java.util.List;
 import java.util.Map;
 

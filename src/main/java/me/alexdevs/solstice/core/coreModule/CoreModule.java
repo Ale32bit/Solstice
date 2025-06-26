@@ -12,25 +12,23 @@ import me.alexdevs.solstice.core.coreModule.data.CoreConfig;
 import me.alexdevs.solstice.core.coreModule.data.CoreLocale;
 import me.alexdevs.solstice.core.coreModule.data.CorePlayerData;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class CoreModule extends ModuleBase {
-    public static final String ID = "core";
-
-    public CoreModule() {
-        super(ID);
+    public CoreModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, CoreConfig.class, CoreConfig::new);
-        Solstice.localeManager.registerShared(CoreLocale.SHARED);
-        Solstice.localeManager.registerModule(ID, CoreLocale.MODULE);
-
-        Solstice.playerData.registerData(ID, CorePlayerData.class, CorePlayerData::new);
+        registerConfig(CoreConfig.class, CoreConfig::new);
+        registerSharedLocale(CoreLocale.SHARED);
+        registerLocale(CoreLocale.MODULE);
+        registerPlayerData(CorePlayerData.class, CorePlayerData::new);
 
         commands.add(new SolsticeCommand(this));
         commands.add(new ServerStatCommand(this));

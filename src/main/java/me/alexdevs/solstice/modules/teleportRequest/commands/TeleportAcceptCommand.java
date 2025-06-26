@@ -8,6 +8,7 @@ import me.alexdevs.solstice.modules.teleportRequest.TeleportRequestModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.server.level.ServerPlayer;
+
 import java.util.List;
 
 import static net.minecraft.commands.Commands.argument;

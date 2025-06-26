@@ -11,6 +11,7 @@ import me.alexdevs.solstice.modules.near.data.NearConfig;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

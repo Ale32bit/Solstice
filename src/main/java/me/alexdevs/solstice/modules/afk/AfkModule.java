@@ -24,18 +24,21 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class AfkModule extends ModuleBase.Toggleable {
-    public static final String ID = "afk";
-
     public static final double sprintSpeed = 0.280617;
     public static final double walkSpeed = 0.215859;
     public static final double sneakSpeed = 0.0841;
 
     public static final int LEADERBOARD_SIZE = 10;
+
+    public AfkModule(ResourceLocation id) {
+        super(id);
+    }
 
     public enum AfkTriggerReason {
         MANUAL,
@@ -52,16 +55,13 @@ public class AfkModule extends ModuleBase.Toggleable {
 
     private final Map<UUID, PlayerActivityState> activities = new ConcurrentHashMap<>();
 
-    public AfkModule() {
-        super(ID);
-    }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, AfkConfig.class, AfkConfig::new);
-        Solstice.localeManager.registerModule(ID, AfkLocale.MODULE);
-        Solstice.playerData.registerData(ID, AfkPlayerData.class, AfkPlayerData::new);
-        Solstice.serverData.registerData(ID, AfkServerData.class, AfkServerData::new);
+        registerConfig(AfkConfig.class, AfkConfig::new);
+        registerLocale(AfkLocale.MODULE);
+        registerPlayerData(AfkPlayerData.class, AfkPlayerData::new);
+        registerServerData(AfkServerData.class, AfkServerData::new);
 
         this.commands.add(new AfkCommand(this));
         this.commands.add(new ActiveTimeCommand(this));

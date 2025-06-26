@@ -20,20 +20,19 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
-
 public class SpawnModule extends ModuleBase.Toggleable {
-    public static final String ID = "spawn";
+    
 
-    public SpawnModule() {
-        super(ID);
+    public SpawnModule(ResourceLocation id) {
+        super(id);
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public void init() {
-        Solstice.localeManager.registerModule(ID, SpawnLocale.MODULE);
-        Solstice.serverData.registerData(ID, SpawnServerData.class, SpawnServerData::new);
-        Solstice.configManager.registerData(ID, SpawnConfig.class, SpawnConfig::new);
+        registerLocale(SpawnLocale.MODULE);
+        registerServerData(SpawnServerData.class, SpawnServerData::new);
+        registerConfig(SpawnConfig.class, SpawnConfig::new);
 
         commands.add(new SpawnCommand(this));
         commands.add(new SetSpawnCommand(this));

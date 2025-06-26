@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class Components {
     public static Component button(Component label, Component hoverText, String command, boolean suggest) {
-        var locale = Solstice.localeManager.getLocale(CoreModule.ID);
+        var locale = Solstice.localeManager.getShared();
         var format = suggest ? locale.raw("~buttonSuggest") : locale.raw("~button");
         var placeholders = Map.of(
                 "label", label,

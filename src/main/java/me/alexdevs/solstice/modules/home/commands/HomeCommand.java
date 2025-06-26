@@ -10,6 +10,7 @@ import me.alexdevs.solstice.modules.home.HomeModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
+
 import java.util.List;
 import java.util.Map;
 

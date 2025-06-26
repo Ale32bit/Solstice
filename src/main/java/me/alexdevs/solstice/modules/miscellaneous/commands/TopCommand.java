@@ -6,6 +6,7 @@ import me.alexdevs.solstice.modules.miscellaneous.MiscellaneousModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.level.levelgen.Heightmap;
+
 import java.util.List;
 
 public class TopCommand extends ModCommand<MiscellaneousModule> {

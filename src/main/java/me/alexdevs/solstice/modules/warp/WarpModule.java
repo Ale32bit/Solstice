@@ -9,19 +9,20 @@ import me.alexdevs.solstice.modules.warp.commands.WarpsCommand;
 import me.alexdevs.solstice.modules.warp.data.WarpLocale;
 import me.alexdevs.solstice.modules.warp.data.WarpServerData;
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public class WarpModule extends ModuleBase.Toggleable {
-    public static final String ID = "warp";
+    
 
-    public WarpModule() {
-        super(ID);
+    public WarpModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.localeManager.registerModule(ID, WarpLocale.MODULE);
-        Solstice.serverData.registerData(ID, WarpServerData.class, WarpServerData::new);
+        registerLocale(WarpLocale.MODULE);
+        registerServerData(WarpServerData.class, WarpServerData::new);
 
         commands.add(new WarpCommand(this));
         commands.add(new WarpsCommand(this));

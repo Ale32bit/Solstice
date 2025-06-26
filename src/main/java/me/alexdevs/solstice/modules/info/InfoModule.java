@@ -12,6 +12,7 @@ import me.alexdevs.solstice.modules.info.data.InfoConfig;
 import me.alexdevs.solstice.modules.info.data.InfoLocale;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -23,8 +24,6 @@ import java.util.Collection;
 import java.util.Objects;
 
 public class InfoModule extends ModuleBase.Toggleable {
-    public static final String ID = "info";
-
     private static final String[] startingPages = new String[]{
             "motd.txt",
             "rules.txt",
@@ -33,15 +32,15 @@ public class InfoModule extends ModuleBase.Toggleable {
     public final String nameFilterRegex = "[^a-z0-9-]";
     private final Path infoDir;
 
-    public InfoModule() {
-        super(ID);
+    public InfoModule(ResourceLocation id) {
+        super(id);
         infoDir = Paths.configDirectory.resolve("info");
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, InfoConfig.class, InfoConfig::new);
-        Solstice.localeManager.registerModule(ID, InfoLocale.MODULE);
+        registerConfig(InfoConfig.class, InfoConfig::new);
+        registerLocale(InfoLocale.MODULE);
 
         commands.add(new InfoCommand(this));
         commands.add(new MotdCommand(this));
@@ -54,7 +53,7 @@ public class InfoModule extends ModuleBase.Toggleable {
             }
 
             var classLoader = Solstice.class.getClassLoader();
-            var infoDirBase = "assets/" + Solstice.MOD_ID + "/info/";
+            var infoDirBase = "assets/" + this.id.getNamespace() + "/info/";
             for (var name : startingPages) {
                 var outputPath = infoDir.resolve(name);
                 try (var inputStream = classLoader.getResourceAsStream(infoDirBase + name)) {
@@ -116,7 +115,7 @@ public class InfoModule extends ModuleBase.Toggleable {
         var infoFile = infoDir.resolve(name + ".txt");
 
         try {
-            // Use readAllLines instead readString to avoid \r chars; looking at you, Windows.
+            // Use readAllLines instead of readString to avoid \r chars; looking at you, Windows.
             var lines = Files.readAllLines(infoFile, StandardCharsets.UTF_8);
             StringBuilder content = new StringBuilder();
             for (var line : lines) {

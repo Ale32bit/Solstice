@@ -7,24 +7,25 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.autoAnnouncement.data.AutoAnnouncementConfig;
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Random;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class AutoAnnouncementModule extends ModuleBase.Toggleable {
-    public static final String ID = "autoannouncement";
+    
 
     private ScheduledFuture<?> scheduledFuture = null;
     private int currentLine = 0;
 
-    public AutoAnnouncementModule() {
-        super(ID);
+    public AutoAnnouncementModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, AutoAnnouncementConfig.class, AutoAnnouncementConfig::new);
+        registerConfig(AutoAnnouncementConfig.class, AutoAnnouncementConfig::new);
 
         SolsticeEvents.READY.register((instance, server) -> {
             setup();

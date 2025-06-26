@@ -17,6 +17,7 @@ import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.mail.MailModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;

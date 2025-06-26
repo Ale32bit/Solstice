@@ -3,17 +3,19 @@ package me.alexdevs.solstice.api.module;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.core.ToggleableConfig;
 import me.alexdevs.solstice.locale.Locale;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Supplier;
 
 public abstract class ModuleBase implements Comparable<ModuleBase> {
-    protected final String id;
+    protected final ResourceLocation id;
     protected final List<ModCommand<?>> commands = new ArrayList<>();
+    protected Class<?> configClass = null;
+    protected Class<?> playerDataClass = null;
+    protected Class<?> serverDataClass = null;
 
-    public ModuleBase(String id) {
+    public ModuleBase(ResourceLocation id) {
         this.id = id;
     }
 
@@ -28,12 +30,12 @@ public abstract class ModuleBase implements Comparable<ModuleBase> {
         return commands;
     }
 
-    public String getId() {
+    public ResourceLocation getId() {
         return id;
     }
 
     public String getPermissionNode() {
-        return Solstice.MOD_ID + "." + id.toLowerCase();
+        return id.getNamespace() + "." + id.getPath();
     }
 
     public String getPermissionNode(String sub) {
@@ -42,6 +44,26 @@ public abstract class ModuleBase implements Comparable<ModuleBase> {
 
     public Locale locale() {
         return Solstice.localeManager.getLocale(id);
+    }
+
+    public <T> void registerConfig(Class<T> clazz, Supplier<T> creator) {
+        Solstice.configManager.registerData(this.id, clazz, creator);
+    }
+
+    public <T> void registerPlayerData(Class<T> clazz, Supplier<T> creator) {
+        Solstice.playerData.registerData(this.id, clazz, creator);
+    }
+
+    public <T> void registerServerData(Class<T> clazz, Supplier<T> creator) {
+        Solstice.serverData.registerData(this.id, clazz, creator);
+    }
+
+    public void registerLocale(Map<String, String> map) {
+        Solstice.localeManager.registerModule(this.id, map);
+    }
+
+    public void registerSharedLocale(Map<String, String> map) {
+        Solstice.localeManager.registerShared(map);
     }
 
     @Override
@@ -67,12 +89,12 @@ public abstract class ModuleBase implements Comparable<ModuleBase> {
     }
 
     public static abstract class Toggleable extends ModuleBase {
-        public Toggleable(String id) {
+        public Toggleable(ResourceLocation id) {
             super(id);
         }
 
         public boolean isEnabled() {
-            return ToggleableConfig.get().isEnabled(this.id);
+            return ToggleableConfig.get().isEnabled(this.id.toString());
         }
     }
 }

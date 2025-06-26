@@ -10,6 +10,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.Utils;
+import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.ban.BanModule;
 import me.alexdevs.solstice.modules.ban.formatters.BanMessageFormatter;
 import net.minecraft.commands.CommandBuildContext;
@@ -17,9 +18,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.GameProfileArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.server.players.UserBanListEntry;
-import me.alexdevs.solstice.api.text.Format;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;

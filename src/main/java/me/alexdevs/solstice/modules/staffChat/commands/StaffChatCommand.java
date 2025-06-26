@@ -5,6 +5,7 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.staffChat.StaffChatModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.MessageArgument;
+
 import java.util.List;
 
 import static net.minecraft.commands.Commands.argument;

@@ -2,15 +2,13 @@ package me.alexdevs.solstice.modules.kit;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.sgui.api.gui.SimpleGui;
-import java.util.ArrayList;
-import java.util.List;
-
 import me.alexdevs.solstice.Solstice;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Utils {
     public static String serializeItemStack(ItemStack itemStack) {

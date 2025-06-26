@@ -3,11 +3,12 @@ package me.alexdevs.solstice.modules.ban.formatters;
 import com.mojang.authlib.GameProfile;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.text.Format;
+import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.ban.BanModule;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.players.UserBanListEntry;
-import me.alexdevs.solstice.core.coreModule.CoreModule;
-import me.alexdevs.solstice.api.text.Format;
+
 import java.text.SimpleDateFormat;
 import java.util.Map;
 

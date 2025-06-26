@@ -8,6 +8,7 @@ import me.alexdevs.solstice.modules.mute.MuteModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
 import net.minecraft.network.chat.Component;
+
 import java.util.List;
 
 import static net.minecraft.commands.Commands.argument;

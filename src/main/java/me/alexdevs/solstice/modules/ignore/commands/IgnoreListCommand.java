@@ -6,6 +6,7 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+
 import java.util.List;
 import java.util.Map;
 

@@ -7,25 +7,26 @@ import me.alexdevs.solstice.modules.kit.commands.KitCommand;
 import me.alexdevs.solstice.modules.kit.commands.KitsCommand;
 import me.alexdevs.solstice.modules.kit.data.*;
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 public class KitModule extends ModuleBase.Toggleable {
-    public static final String ID = "kit";
+    
 
-    public KitModule() {
-        super(ID);
+    public KitModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, KitConfig.class, KitConfig::new);
-        Solstice.localeManager.registerModule(ID, KitLocale.MODULE);
-        Solstice.playerData.registerData(ID, KitPlayerData.class, KitPlayerData::new);
-        Solstice.serverData.registerData(ID, KitServerData.class, KitServerData::new);
+        registerConfig(KitConfig.class, KitConfig::new);
+        registerLocale(KitLocale.MODULE);
+        registerPlayerData(KitPlayerData.class, KitPlayerData::new);
+        registerServerData(KitServerData.class, KitServerData::new);
 
         commands.add(new KitCommand(this));
         commands.add(new KitsCommand(this));

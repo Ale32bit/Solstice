@@ -16,18 +16,17 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 
 public class StylingModule extends ModuleBase.Toggleable {
-    public static final String ID = "styling";
     public static final String ADVANCED_CHAT_FORMATTING_PERMISSION = "solstice.chat.advanced";
     public static final String SILENT_ACTIVITY_PERMISSION = "solstice.chat.activity.silent";
     public static final ResourceKey<ChatType> CHAT_TYPE = ResourceKey.create(Registries.CHAT_TYPE, ResourceLocation.fromNamespaceAndPath(Solstice.MOD_ID, "chat"));
 
-    public StylingModule() {
-        super(ID);
+    public StylingModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, StylingConfig.class, StylingConfig::new);
+        Solstice.configManager.registerData(getId(), StylingConfig.class, StylingConfig::new);
 
         SolsticeEvents.WELCOME.register((player, server) -> {
             var config = Solstice.configManager.getData(StylingConfig.class);

@@ -6,21 +6,21 @@ import me.alexdevs.solstice.modules.home.commands.*;
 import me.alexdevs.solstice.modules.home.data.HomeConfig;
 import me.alexdevs.solstice.modules.home.data.HomeLocale;
 import me.alexdevs.solstice.modules.home.data.HomePlayerData;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.UUID;
-
 public class HomeModule extends ModuleBase.Toggleable {
-    public static final String ID = "home";
+    
 
-    public HomeModule() {
-        super(ID);
+    public HomeModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, HomeConfig.class, HomeConfig::new);
-        Solstice.playerData.registerData(ID, HomePlayerData.class, HomePlayerData::new);
-        Solstice.localeManager.registerModule(ID, HomeLocale.MODULE);
+        registerConfig(HomeConfig.class, HomeConfig::new);
+        registerPlayerData(HomePlayerData.class, HomePlayerData::new);
+        registerLocale(HomeLocale.MODULE);
 
         commands.add(new HomeCommand(this));
         commands.add(new SetHomeCommand(this));
