@@ -26,11 +26,12 @@ public class LocaleManager {
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")
             .create();
     private static final Pattern sharedRegex = Pattern.compile("^shared\\.(.+)$");
-    private static final Pattern moduleRegex = Pattern.compile("^module\\.(\\w+)\\.(.+)$");
+    private static final Pattern moduleRegex = Pattern.compile("^module\\.(\\w+\\.\\w+)\\.(.+)$");
     private final Path path;
     private final TypeToken<?> oldType = TypeToken.getParameterized(Map.class, String.class, String.class);
     private final LocaleModel defaultMap = new LocaleModel();
     private LocaleModel locale;
+    private Map<String, String> localeMap;
 
 
     public LocaleManager(Path path) {
@@ -55,15 +56,16 @@ public class LocaleManager {
     }
 
     public Locale getLocale(ResourceLocation id) {
-        return new Locale(id, () -> locale);
+        return new Locale(id, () -> localeMap);
     }
 
     public Locale getShared() {
-        return new Locale(Solstice.ID.withPath("shared"), () -> locale);
+        return new Locale(Solstice.ID.withPath("shared"), () -> localeMap);
     }
 
     public void registerModule(ResourceLocation id, Map<String, String> defaults) {
-        this.defaultMap.modules.put(id.toString(), new ConcurrentHashMap<>(defaults));
+        var key = id.toString().replace(":", ".");
+        this.defaultMap.modules.put(key, new ConcurrentHashMap<>(defaults));
     }
 
     public void registerShared(Map<String, String> defaults) {
@@ -85,7 +87,11 @@ public class LocaleManager {
             migrate();
         }
 
+        migrateIdentifier();
+
         prepare();
+
+        localeMap = generateMap();
     }
 
     public void save() throws IOException {
@@ -140,14 +146,28 @@ public class LocaleManager {
         }
     }
 
+    private void migrateIdentifier() {
+        var migrated = false;
+        for (var entry : locale.modules.entrySet()) {
+            var key = entry.getKey();
+            if(key.contains("."))
+                continue;
+
+            var newKey = Solstice.ID.withPath(key).toString().replace(':', '.');
+            locale.modules.put(newKey, entry.getValue());
+            locale.modules.remove(key);
+            migrated = true;
+        }
+    }
+
     public Map<String, String> generateMap() {
         var map = new HashMap<String, String>();
 
-        for (var entry : defaultMap.shared.entrySet()) {
+        for (var entry : locale.shared.entrySet()) {
             map.put("shared." + entry.getKey(), entry.getValue());
         }
 
-        for (var modEntry : defaultMap.modules.entrySet()) {
+        for (var modEntry : locale.modules.entrySet()) {
             for (var entry : modEntry.getValue().entrySet()) {
                 map.put("module." + modEntry.getKey() + "." + entry.getKey(), entry.getValue());
             }
@@ -196,26 +216,8 @@ public class LocaleManager {
     }
 
     public static class LocaleModel {
+        public int version = 3;
         public ConcurrentHashMap<String, String> shared = new ConcurrentHashMap<>();
         public ConcurrentHashMap<String, ConcurrentHashMap<String, String>> modules = new ConcurrentHashMap<>();
-
-        public String get(String fullPath) {
-            var path = getPath(fullPath);
-            if (path == null) {
-                return fullPath;
-            }
-
-            if (path.type() == LocaleType.SHARED) {
-                return shared.getOrDefault(path.key(), fullPath);
-            } else if (path.type() == LocaleType.MODULE) {
-                var module = modules.get(path.moduleId());
-                if (module == null) {
-                    return fullPath;
-                }
-                return module.getOrDefault(path.key(), fullPath);
-            }
-
-            return fullPath;
-        }
     }
 }

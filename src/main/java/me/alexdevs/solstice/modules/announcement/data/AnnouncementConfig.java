@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.modules.autoAnnouncement.data;
+package me.alexdevs.solstice.modules.announcement.data;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ConfigSerializable
-public class AutoAnnouncementConfig {
+public class AnnouncementConfig {
     @Comment("Enable automatic announcements functionality.")
     public boolean enable = true;
     @Comment("Pick the next announcement randomly, else linearly.")

@@ -10,8 +10,8 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "CommandNodeAccessor",
     "events.CommandEventsMixin",
+    "CommandNodeAccessor",
     "events.WorldSaveEventMixin",
     "modules.admin.ConnectionBypassMixin",
     "modules.afk.FixPlayerSleepPercentageMixin",

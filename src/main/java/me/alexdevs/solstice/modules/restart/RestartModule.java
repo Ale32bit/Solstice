@@ -6,6 +6,7 @@ import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.integrations.ConnectorIntegration;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.restart.commands.RestartCommand;
 import me.alexdevs.solstice.modules.restart.data.RestartConfig;
 import me.alexdevs.solstice.modules.restart.data.RestartLocale;
@@ -78,9 +79,9 @@ public class RestartModule extends ModuleBase.Toggleable {
 
     @Override
     public boolean isEnabled() {
-        if (!Solstice.modules.getModule(TimeBarModule.class).isEnabled())
+        if(!ModuleProvider.TIMEBAR.isEnabled())
             return false;
-
+        
         return super.isEnabled();
     }
 

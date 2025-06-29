@@ -5,7 +5,7 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.module.ModuleEntrypoint;
 import me.alexdevs.solstice.modules.admin.AdminModule;
 import me.alexdevs.solstice.modules.afk.AfkModule;
-import me.alexdevs.solstice.modules.autoAnnouncement.AutoAnnouncementModule;
+import me.alexdevs.solstice.modules.announcement.AnnouncementModule;
 import me.alexdevs.solstice.modules.back.BackModule;
 import me.alexdevs.solstice.modules.ban.BanModule;
 import me.alexdevs.solstice.modules.broadcast.BroadcastModule;
@@ -69,7 +69,7 @@ public class ModuleProvider implements ModuleEntrypoint {
 
     public static final AdminModule ADMIN = add(new AdminModule(path("admin")));
     public static final AfkModule AFK = add(new AfkModule(path("afk")));
-    public static final AutoAnnouncementModule ANNOUNCEMENTS = add(new AutoAnnouncementModule(path("autoannouncement")));
+    public static final AnnouncementModule ANNOUNCEMENT = add(new AnnouncementModule(path("autoannouncement")));
     public static final RestartModule RESTART = add(new RestartModule(path("restart")));
     public static final BackModule BACK = add(new BackModule(path("back")));
     public static final BanModule BAN = add(new BanModule(path("ban")));

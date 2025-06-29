@@ -14,7 +14,7 @@ public class FeedModule extends ModuleBase.Toggleable {
 
     @Override
     public void init() {
-        Solstice.localeManager.registerModule(ID, FeedLocale.MODULE);
+        registerLocale(FeedLocale.MODULE);
 
         commands.add(new FeedCommand(this));
     }

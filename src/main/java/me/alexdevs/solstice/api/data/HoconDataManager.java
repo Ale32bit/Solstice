@@ -94,6 +94,7 @@ public class HoconDataManager {
         data.clear();
         for (var entry : classMap.entrySet()) {
             try {
+                // recalling the node requires it to be a string, else it's null
                 var obj = dataNode.node(entry.getKey().toString());
                 if (obj == null) {
                     obj = dataNode.node(entry.getKey().getPath());
@@ -116,6 +117,10 @@ public class HoconDataManager {
         node.set(TypeToken.get(clazz), (T) this.providers.get(clazz).get());
     }
 
+    protected <T> void set(final CommentedConfigurationNode node, final T object) throws ConfigurateException {
+        node.set(object);
+    }
+
     public void prepareData() throws ConfigurateException {
         var node = loader.load();
         var defaults = loader.createNode();
@@ -124,9 +129,45 @@ public class HoconDataManager {
             set(defaults.node(map.getKey()), map.getValue());
         }
 
+        var altered = patchNamespace(node);
+
+        // The config was converted from legacy id to identifier
+        // so back up the original file to avoid loss of data and frustration
+        if(altered) {
+            backup();
+        }
+
         node.mergeFrom(defaults);
         loader.save(node);
         this.dataNode = node;
         loadData(false);
+    }
+
+    private boolean patchNamespace(CommentedConfigurationNode node) throws ConfigurateException {
+        var altered = false;
+        for(var entry : node.childrenMap().entrySet()) {
+            var key = entry.getKey();
+            if(!key.toString().contains(":")) {
+                var newKey = Solstice.ID.withPath(key.toString());
+                var clazz = classMap.get(Solstice.ID.withPath(key.toString()));
+                var child = get(node.node(entry.getKey()), clazz);
+                node.removeChild(entry.getKey());
+                set(node.node(newKey), child);
+                altered = true;
+            }
+        }
+        return altered;
+    }
+
+    private void backup() {
+        var path = getDataPath();
+        var parentDir = path.getParent();
+        var fileName = path.getFileName();
+        var backup = parentDir.resolve(fileName.toString() + "_backup");
+        if(path.toFile().renameTo(backup.toFile())) {
+            Solstice.LOGGER.warn("The configuration file has been migrated and the original {} has been renamed to {}!", path, backup);
+        } else {
+            Solstice.LOGGER.error("Could not create backup of configuration file!");
+        }
     }
 }

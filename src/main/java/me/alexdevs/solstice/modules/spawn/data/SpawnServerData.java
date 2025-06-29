@@ -8,9 +8,9 @@ import java.util.Map;
 
 public class SpawnServerData {
     @Deprecated
-    public @Nullable ServerLocation spawn;
+    public @Nullable ServerLocation spawn = null;
 
-    public @Nullable ServerLocation firstSpawn;
+    public @Nullable ServerLocation firstSpawn = null;
 
     public Map<String, ServerLocation> spawnPoints = new HashMap<>();
 }

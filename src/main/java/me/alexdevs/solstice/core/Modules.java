@@ -23,7 +23,7 @@ public class Modules {
     }
 
     public void register() {
-        modules.add(new CoreModule());
+        modules.add(new CoreModule(Solstice.ID.withPath("core")));
 
         var fabric = FabricLoader.getInstance();
         var moduleContainers = fabric.getEntrypointContainers("solstice", ModuleEntrypoint.class);

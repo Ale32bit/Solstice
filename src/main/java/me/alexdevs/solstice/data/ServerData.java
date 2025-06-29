@@ -3,6 +3,7 @@ package me.alexdevs.solstice.data;
 import com.google.gson.*;
 import me.alexdevs.solstice.Solstice;
 import net.minecraft.Util;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -17,7 +18,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class ServerData {
-    protected final Map<String, Class<?>> classMap = new HashMap<>();
+    protected final Map<ResourceLocation, Class<?>> classMap = new HashMap<>();
     protected final Map<Class<?>, Object> data = new HashMap<>();
     protected final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
     protected final Gson gson = new GsonBuilder()
@@ -54,7 +55,7 @@ public class ServerData {
     public void save() {
         for (var entry : classMap.entrySet()) {
             var obj = data.get(entry.getValue());
-            node.add(entry.getKey(), gson.toJsonTree(obj));
+            node.add(entry.getKey().toString(), gson.toJsonTree(obj));
         }
 
         var parentDir = filePath.getParent();
@@ -74,7 +75,7 @@ public class ServerData {
         }
     }
 
-    public <T> void registerData(String id, Class<T> clazz, Supplier<T> creator) {
+    public <T> void registerData(ResourceLocation id, Class<T> clazz, Supplier<T> creator) {
         classMap.put(id, clazz);
         providers.put(clazz, creator);
     }
@@ -85,17 +86,33 @@ public class ServerData {
         }
         data.clear();
 
+        var migrated = false;
         for (var entry : classMap.entrySet()) {
-            data.put(entry.getValue(), get(node.get(entry.getKey()), entry.getValue()));
+            var key = entry.getKey().toString();
+            var val = node.get(key);
+            if (val == null) {
+                var legacyKey = entry.getKey().getPath();
+                val = node.get(legacyKey);
+                node.remove(legacyKey);
+                node.add(key, val);
+                migrated = true;
+            }
+            data.put(entry.getValue(), get(val, entry.getValue()));
+        }
+
+        if (migrated) {
+            backup();
         }
     }
 
     protected JsonObject loadNode() {
         if (!this.filePath.toFile().exists())
             return new JsonObject();
+
         try (var fr = new FileReader(this.filePath.toFile())) {
             var reader = gson.newJsonReader(fr);
             return JsonParser.parseReader(reader).getAsJsonObject();
+
         } catch (IOException e) {
             Solstice.LOGGER.error("Could not load server data!", e);
             safeMove();
@@ -120,5 +137,17 @@ public class ServerData {
         if (node == null)
             return (T) providers.get(clazz).get();
         return gson.fromJson(node, clazz);
+    }
+
+    protected void backup() {
+        var path = getDataPath();
+        var parentDir = path.getParent();
+        var fileName = path.getFileName();
+        var backup = parentDir.resolve(fileName.toString() + "_backup");
+        if(path.toFile().renameTo(backup.toFile())) {
+            Solstice.LOGGER.warn("The server data file has been migrated and the original {} has been renamed to {}!", path, backup);
+        } else {
+            Solstice.LOGGER.error("Could not create backup of server data file!");
+        }
     }
 }

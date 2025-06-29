@@ -4,17 +4,16 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.helpOp.commands.HelpOpCommand;
 import me.alexdevs.solstice.modules.helpOp.data.HelpOpLocale;
+import net.minecraft.resources.ResourceLocation;
 
 public class HelpOpModule extends ModuleBase.Toggleable {
-    public static final String ID = "helpop";
-
-    public HelpOpModule() {
-        super(ID);
+    public HelpOpModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.localeManager.registerModule(ID, HelpOpLocale.MODULE);
+        registerLocale(HelpOpLocale.MODULE);
 
         commands.add(new HelpOpCommand(this));
     }

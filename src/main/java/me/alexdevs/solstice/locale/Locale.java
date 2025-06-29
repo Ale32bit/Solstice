@@ -11,9 +11,9 @@ import java.util.function.Supplier;
 public class Locale {
     public final ResourceLocation id;
 
-    private final Supplier<LocaleManager.LocaleModel> localeSupplier;
+    private final Supplier<Map<String, String>> localeSupplier;
 
-    public Locale(ResourceLocation id, Supplier<LocaleManager.LocaleModel> localeSupplier) {
+    public Locale(ResourceLocation id, Supplier<Map<String, String>> localeSupplier) {
         this.id = id;
         this.localeSupplier = localeSupplier;
     }
