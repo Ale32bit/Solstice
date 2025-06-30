@@ -1,10 +1,9 @@
 package me.alexdevs.solstice.api.text;
 
-import eu.pb4.placeholders.api.TextParserUtils;
 import eu.pb4.placeholders.api.parsers.NodeParser;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.text.parser.MarkdownParser;
-import me.alexdevs.solstice.core.coreModule.CoreModule;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.styling.StylingModule;
 import me.alexdevs.solstice.modules.styling.data.StylingConfig;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -62,9 +61,7 @@ public class Components {
 
     public static Component chat(String message, boolean allowAdvancedChatFormat) {
         var enableMarkdown = false;
-        var styling = Solstice.modules.getModule(StylingModule.class);
-
-        if(styling.isEnabled()) {
+        if(ModuleProvider.STYLING.isEnabled()) {
             var config = Solstice.configManager.getData(StylingConfig.class);
             enableMarkdown = config.enableMarkdown;
 
