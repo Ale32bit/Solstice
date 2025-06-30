@@ -144,7 +144,7 @@ public class RestartModule extends ModuleBase.Toggleable {
         }
 
         var timeBar = Solstice.modules.getModule(TimeBarModule.class);
-        restartBar = timeBar.startTimeBar(
+        restartBar = ModuleProvider.TIMEBAR.startTimeBar(
                 message,
                 seconds,
                 getBarColor(),
@@ -166,7 +166,7 @@ public class RestartModule extends ModuleBase.Toggleable {
     public void cancel() {
         var timeBar = Solstice.modules.getModule(TimeBarModule.class);
         if (restartBar != null) {
-            timeBar.cancelTimeBar(restartBar);
+            ModuleProvider.TIMEBAR.cancelTimeBar(restartBar);
             RestartEvents.CANCELED.invoker().onCancel(restartBar);
             restartBar = null;
         }

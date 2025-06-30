@@ -5,6 +5,7 @@ import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.events.CommandEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.jail.commands.CheckJailCommand;
 import me.alexdevs.solstice.modules.jail.commands.JailCommand;
 import me.alexdevs.solstice.modules.jail.commands.JailsCommand;
@@ -224,8 +225,7 @@ public class JailModule extends ModuleBase.Toggleable {
             if (data.previousLocation != null) {
                 data.previousLocation.teleport(player);
             } else {
-                var spawnModule = Solstice.modules.getModule(SpawnModule.class);
-                spawnModule.getGlobalSpawnPosition().teleport(player);
+                ModuleProvider.SPAWN.getGlobalSpawnPosition().teleport(player);
             }
         }
     }

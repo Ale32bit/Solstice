@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.api;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.back.BackModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -64,7 +65,7 @@ public class ServerLocation {
     public void teleport(ServerPlayer player, boolean setBackPosition) {
         if (setBackPosition) {
             var currentPosition = new ServerLocation(player);
-            Solstice.modules.getModule(BackModule.class).setPlayerLastLocation(player.getUUID(), currentPosition);
+            ModuleProvider.BACK.setPlayerLastLocation(player.getUUID(), currentPosition);
         }
 
         var serverWorld = getWorld(player.getServer());

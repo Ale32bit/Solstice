@@ -34,10 +34,8 @@ public class MuteCommand extends ModCommand<MuteModule> {
 
                             var names = targets.stream().map(GameProfile::getName).toArray(String[]::new);
 
-                            var muteModule = Solstice.modules.getModule(MuteModule.class);
-
                             targets.forEach(profile -> {
-                                var playerData = muteModule.getPlayerData(profile.getId());
+                                var playerData = module.getPlayerData(profile.getId());
                                 playerData.muted = true;
                             });
 

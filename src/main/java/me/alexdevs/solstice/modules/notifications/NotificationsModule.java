@@ -2,6 +2,7 @@ package me.alexdevs.solstice.modules.notifications;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.notifications.commands.NotificationsCommand;
 import me.alexdevs.solstice.modules.notifications.data.NotificationsConfig;
@@ -15,10 +16,10 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 
 public class NotificationsModule extends ModuleBase.Toggleable {
-    
-
+    private static NotificationsModule instance;
     public NotificationsModule(ResourceLocation id) {
         super(id);
+        instance = this;
     }
 
     @Override
@@ -49,11 +50,10 @@ public class NotificationsModule extends ModuleBase.Toggleable {
     }
 
     public static void notify(ServerPlayer player) {
-        var module = Solstice.modules.getModule(NotificationsModule.class);
-        if (!module.isEnabled())
+        if (!instance.isEnabled())
             return;
 
-        module.notifyPlayer(player);
+        instance.notifyPlayer(player);
     }
 
     public NotificationsConfig getConfig() {
@@ -87,7 +87,7 @@ public class NotificationsModule extends ModuleBase.Toggleable {
         if (!data.enable)
             return false;
 
-        var afkModule = Solstice.modules.getModule(AfkModule.class);
+        var afkModule = ModuleProvider.AFK;
         if (afkModule.isEnabled()) {
             return afkModule.isPlayerAfk(player) || !settings.afkOnly();
         }

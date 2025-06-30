@@ -4,6 +4,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.PlayerMail;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.mail.commands.MailCommand;
 import me.alexdevs.solstice.modules.mail.data.MailLocale;
@@ -41,8 +42,7 @@ public class MailModule extends ModuleBase.Toggleable {
     }
 
     public boolean sendMail(UUID playerUuid, PlayerMail mail) {
-        var ignoreModule = Solstice.modules.getModule(IgnoreModule.class);
-        var playerData = ignoreModule.getPlayerData(playerUuid);
+        var playerData = ModuleProvider.IGNORE.getPlayerData(playerUuid);
         if (playerData.ignoredPlayers.contains(mail.sender)) {
             return false;
         }

@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.mixin.modules.spawn;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.spawn.SpawnModule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -24,7 +25,7 @@ public abstract class OverrideSpawnPointMixin {
 
     @Inject(method = "getRespawnPosition", at = @At("RETURN"), cancellable = true)
     public void solstice$overrideSpawnPos(CallbackInfoReturnable<BlockPos> cir) {
-        var spawnModule = Solstice.modules.getModule(SpawnModule.class);
+        var spawnModule = ModuleProvider.SPAWN;
         var config = spawnModule.getConfig();
         if (config.globalSpawn.onRespawn) {
             var pos = spawnModule.getGlobalSpawnPosition().getBlockPos();
@@ -34,7 +35,7 @@ public abstract class OverrideSpawnPointMixin {
 
     @Inject(method = "getRespawnDimension", at = @At("RETURN"), cancellable = true)
     public void solstice$overrideSpawnDimension(CallbackInfoReturnable<ResourceKey<Level>> cir) {
-        var spawnModule = Solstice.modules.getModule(SpawnModule.class);
+        var spawnModule = ModuleProvider.SPAWN;
         var config = spawnModule.getConfig();
         if (config.globalSpawn.onRespawn) {
             cir.setReturnValue(spawnModule.getGlobalSpawnWorld().dimension());
@@ -43,7 +44,7 @@ public abstract class OverrideSpawnPointMixin {
 
     @Inject(method = "findRespawnPositionAndUseSpawnBlock", at = @At("RETURN"), cancellable = true)
     public void solstice$overrideRespawnTarget(boolean keepInventory, DimensionTransition.PostDimensionTransition postDimensionTransition, CallbackInfoReturnable<DimensionTransition> cir) {
-        var spawnModule = Solstice.modules.getModule(SpawnModule.class);
+        var spawnModule = ModuleProvider.SPAWN;
         var config = spawnModule.getConfig();
         if (config.globalSpawn.onRespawn) {
             var spawn = spawnModule.getGlobalSpawnPosition();

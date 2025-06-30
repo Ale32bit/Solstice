@@ -13,6 +13,7 @@ import net.minecraft.commands.Commands;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 
 public class Modules {
 
@@ -53,13 +54,13 @@ public class Modules {
         return Collections.unmodifiableSet(modules);
     }
 
-    public <T> T getModule(Class<T> classOfModule) {
+    public <T> Optional<T> getModule(Class<T> classOfModule) {
         for (var module : modules) {
             if (classOfModule.isInstance(module)) {
-                return classOfModule.cast(module);
+                return Optional.of(classOfModule.cast(module));
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public Collection<? extends ModuleBase> getEnabledModules() {

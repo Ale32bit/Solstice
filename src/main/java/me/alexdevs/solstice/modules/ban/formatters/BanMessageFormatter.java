@@ -5,6 +5,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.ban.BanModule;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.players.UserBanListEntry;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 public class BanMessageFormatter {
     public static Component format(GameProfile profile, UserBanListEntry entry) {
-        var locale = Solstice.modules.getModule(BanModule.class).locale();
+        var locale = ModuleProvider.BAN.locale();
         var coreConfig = CoreModule.getConfig();
         var df = new SimpleDateFormat(coreConfig.dateTimeFormat);
 
