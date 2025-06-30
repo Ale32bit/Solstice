@@ -24,7 +24,7 @@ public class Components {
                 "command", Component.nullToEmpty(command)
         );
 
-        var text = TextParserUtils.formatText(format);
+        var text = Format.parse(format);
         return Format.parse(text, placeholders);
     }
 
@@ -61,11 +61,16 @@ public class Components {
     }
 
     public static Component chat(String message, boolean allowAdvancedChatFormat) {
-        var config = Solstice.configManager.getData(StylingConfig.class);
-        var enableMarkdown = config.enableMarkdown;
+        var enableMarkdown = false;
+        var styling = Solstice.modules.getModule(StylingModule.class);
 
-        for (var repl : config.replacements.entrySet()) {
-            message = message.replace(repl.getKey(), repl.getValue());
+        if(styling.isEnabled()) {
+            var config = Solstice.configManager.getData(StylingConfig.class);
+            enableMarkdown = config.enableMarkdown;
+
+            for (var repl : config.replacements.entrySet()) {
+                message = message.replace(repl.getKey(), repl.getValue());
+            }
         }
 
         if (!allowAdvancedChatFormat && !enableMarkdown) {
@@ -74,7 +79,11 @@ public class Components {
 
         NodeParser parser;
         if (allowAdvancedChatFormat) {
-            parser = NodeParser.merge(Format.PARSER, MarkdownParser.defaultParser);
+            if(enableMarkdown) {
+                parser = NodeParser.merge(Format.PARSER, MarkdownParser.defaultParser);
+            } else {
+                parser = Format.PARSER;
+            }
         } else {
             parser = MarkdownParser.defaultParser;
         }
