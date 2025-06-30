@@ -150,13 +150,17 @@ public class LocaleManager {
         var migrated = false;
         for (var entry : locale.modules.entrySet()) {
             var key = entry.getKey();
-            if(key.contains("."))
+            if (key.contains("."))
                 continue;
 
             var newKey = Solstice.ID.withPath(key).toString().replace(':', '.');
             locale.modules.put(newKey, entry.getValue());
             locale.modules.remove(key);
             migrated = true;
+        }
+
+        if (migrated) {
+            backup();
         }
     }
 
@@ -179,6 +183,17 @@ public class LocaleManager {
     public void reload() throws IOException {
         load();
         save();
+    }
+
+    protected void backup() {
+        var parentDir = path.getParent();
+        var fileName = path.getFileName();
+        var backup = parentDir.resolve(fileName.toString() + "_backup");
+        if (path.toFile().renameTo(backup.toFile())) {
+            Solstice.LOGGER.warn("The locale file has been migrated and the original {} has been renamed to {}!", path, backup);
+        } else {
+            Solstice.LOGGER.error("Could not create backup of locale file!");
+        }
     }
 
     public enum LocaleType {
