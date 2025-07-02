@@ -1,6 +1,6 @@
 package me.alexdevs.solstice;
 
-import me.alexdevs.solstice.api.data.HoconDataManager;
+import me.alexdevs.solstice.api.data.ConfigDataManager;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSaveCallback;
 import me.alexdevs.solstice.core.*;
@@ -29,7 +29,7 @@ public class Solstice implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(Solstice.class);
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
 
-    public static final HoconDataManager configManager = new HoconDataManager(Paths.configDirectory.resolve("config.conf"));
+    public static final ConfigDataManager configManager = new ConfigDataManager(Paths.configDirectory.resolve("config.conf"));
     public static final LocaleManager localeManager = new LocaleManager(Paths.configDirectory.resolve("locale.json"));
     public static final ServerData serverData = new ServerData();
     public static final PlayerDataManager playerData = new PlayerDataManager();
@@ -71,7 +71,7 @@ public class Solstice implements ModInitializer {
         ToggleableConfig.get().save();
 
         try {
-            configManager.prepareData();
+            configManager.load();
             configManager.save();
 
         } catch (ConfigurateException e) {
