@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.api.data;
+package me.alexdevs.solstice.api.config;
 
 import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.configurate.ConfigurateException;

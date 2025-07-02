@@ -1,6 +1,7 @@
 package me.alexdevs.solstice;
 
-import me.alexdevs.solstice.api.data.ConfigDataManager;
+import me.alexdevs.solstice.api.config.ConfigDataManager;
+import me.alexdevs.solstice.api.config.IConfigDataManager;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSaveCallback;
 import me.alexdevs.solstice.core.*;
@@ -29,7 +30,7 @@ public class Solstice implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(Solstice.class);
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
 
-    public static final ConfigDataManager configManager = new ConfigDataManager(Paths.configDirectory.resolve("config.conf"));
+    public static final IConfigDataManager configManager = new ConfigDataManager(Paths.configDirectory.resolve("config.conf"));
     public static final LocaleManager localeManager = new LocaleManager(Paths.configDirectory.resolve("locale.json"));
     public static final ServerData serverData = new ServerData();
     public static final PlayerDataManager playerData = new PlayerDataManager();

@@ -1,7 +1,7 @@
-package me.alexdevs.solstice.api.data;
+package me.alexdevs.solstice.api.config;
 
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.data.serializers.DateSerializer;
+import me.alexdevs.solstice.api.config.serializers.DateSerializer;
 import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
