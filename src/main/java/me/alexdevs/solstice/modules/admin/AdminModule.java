@@ -4,12 +4,11 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.PlayerConnectionEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.resources.ResourceLocation;
 
 public class AdminModule extends ModuleBase {
-    public static final String ID = "admin";
-
-    public AdminModule() {
-        super(ID);
+    public AdminModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override

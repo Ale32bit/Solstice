@@ -3,12 +3,11 @@ package me.alexdevs.solstice.modules.sudo;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.sudo.commands.DoAsCommand;
 import me.alexdevs.solstice.modules.sudo.commands.SudoCommand;
+import net.minecraft.resources.ResourceLocation;
 
 public class SudoModule extends ModuleBase.Toggleable {
-    public static final String ID = "sudo";
-
-    public SudoModule() {
-        super(ID);
+    public SudoModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override

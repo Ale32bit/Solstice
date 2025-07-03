@@ -9,22 +9,23 @@ import me.alexdevs.solstice.modules.staffChat.data.StaffChatLocale;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 public class StaffChatModule extends ModuleBase.Toggleable {
-    public static final String ID = "staffchat";
+    
     private final ConcurrentHashMap<UUID, Boolean> stickyStaffChat = new ConcurrentHashMap<>();
 
-    public StaffChatModule() {
-        super(ID);
+    public StaffChatModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.localeManager.registerModule(ID, StaffChatLocale.MODULE);
+        registerLocale(StaffChatLocale.MODULE);
 
         commands.add(new StaffChatCommand(this));
 
@@ -48,7 +49,7 @@ public class StaffChatModule extends ModuleBase.Toggleable {
         var formattedMessage = MarkdownParser.defaultParser.parseNode(TextNode.convert(message)).toText();
 
 
-        var text = Solstice.localeManager.getLocale(ID).get("message", Map.of(
+        var text = locale().get("message", Map.of(
                 "name", sourceName,
                 "message", formattedMessage
         ));

@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.mixin.modules.miscellaneous;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.miscellaneous.MiscellaneousModule;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,8 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class BypassSleepingInBedCheckMixin {
     @Inject(method = "checkBedExists", at = @At("HEAD"), cancellable = true)
     private void isSleepingInBed(CallbackInfoReturnable<Boolean> cir) {
-        var module = Solstice.modules.getModule(MiscellaneousModule.class);
-        if (module.isCommandSleep((LivingEntity) (Object) this)) {
+        if (ModuleProvider.MISCELLANEOUS.isCommandSleep((LivingEntity) (Object) this)) {
             cir.setReturnValue(true);
         }
     }

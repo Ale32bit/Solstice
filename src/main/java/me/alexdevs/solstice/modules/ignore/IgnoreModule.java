@@ -2,26 +2,27 @@ package me.alexdevs.solstice.modules.ignore;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.ignore.commands.IgnoreCommand;
 import me.alexdevs.solstice.modules.ignore.commands.IgnoreListCommand;
 import me.alexdevs.solstice.modules.ignore.data.IgnoreLocale;
 import me.alexdevs.solstice.modules.ignore.data.IgnorePlayerData;
-import me.alexdevs.solstice.modules.styling.StylingModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+
 import java.util.UUID;
-
 public class IgnoreModule extends ModuleBase.Toggleable {
-    public static final String ID = "ignore";
 
-    public IgnoreModule() {
-        super(ID);
+
+    public IgnoreModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.localeManager.registerModule(ID, IgnoreLocale.MODULE);
-        Solstice.playerData.registerData(ID, IgnorePlayerData.class, IgnorePlayerData::new);
+        registerLocale(IgnoreLocale.MODULE);
+        registerPlayerData(IgnorePlayerData.class, IgnorePlayerData::new);
 
         commands.add(new IgnoreCommand(this));
         commands.add(new IgnoreListCommand(this));

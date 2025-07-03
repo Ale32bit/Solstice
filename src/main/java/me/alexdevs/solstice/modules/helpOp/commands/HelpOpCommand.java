@@ -3,13 +3,12 @@ package me.alexdevs.solstice.modules.helpOp.commands;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.locale.Locale;
 import me.alexdevs.solstice.modules.helpOp.HelpOpModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+
 import java.util.List;
 import java.util.Map;
 
@@ -17,8 +16,6 @@ import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 public class HelpOpCommand extends ModCommand<HelpOpModule> {
-    private final Locale locale = Solstice.localeManager.getLocale(HelpOpModule.ID);
-
     public HelpOpCommand(HelpOpModule module) {
         super(module);
     }
@@ -42,7 +39,7 @@ public class HelpOpCommand extends ModCommand<HelpOpModule> {
                             var placeholders = Map.of(
                                     "message", Component.nullToEmpty(message)
                             );
-                            var requestMessage = locale.get(
+                            var requestMessage = module.locale().get(
                                     "helpRequestMessage",
                                     sourceContext,
                                     placeholders
@@ -56,7 +53,7 @@ public class HelpOpCommand extends ModCommand<HelpOpModule> {
                                 }
                             });
 
-                            source.sendSuccess(() -> locale.get("helpRequestFeedback", sourceContext, placeholders), false);
+                            source.sendSuccess(() -> module.locale().get("helpRequestFeedback", sourceContext, placeholders), false);
 
                             return 1;
                         }));

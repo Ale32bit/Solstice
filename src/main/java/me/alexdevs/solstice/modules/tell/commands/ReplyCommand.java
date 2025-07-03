@@ -7,6 +7,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.tell.TellModule;
 import net.minecraft.commands.CommandSourceStack;
+
 import java.util.List;
 
 import static net.minecraft.commands.Commands.argument;

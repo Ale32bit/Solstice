@@ -1,5 +1,7 @@
 package me.alexdevs.solstice.api.module;
 
+import net.minecraft.resources.ResourceLocation;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -7,7 +9,7 @@ import java.util.Objects;
 public class Debug {
     public static final HashSet<CommandDebug> commandDebugList = new HashSet<>();
 
-    public record CommandDebug(String module, String command, List<String> commands, String permission) {
+    public record CommandDebug(ResourceLocation module, String command, List<String> commands, String permission) {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;

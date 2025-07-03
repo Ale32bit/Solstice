@@ -15,7 +15,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.GameProfileArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentUtils;
+
 import java.util.Collection;
 import java.util.List;
 

@@ -5,22 +5,23 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.hat.commands.HatCommand;
 import me.alexdevs.solstice.modules.hat.data.HatConfig;
 import me.alexdevs.solstice.modules.hat.data.HatLocale;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+
 import java.util.List;
 import java.util.stream.Stream;
-
 public class HatModule extends ModuleBase.Toggleable {
-    public static final String ID = "hat";
+    
 
-    public HatModule() {
-        super(ID);
+    public HatModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, HatConfig.class, HatConfig::new);
-        Solstice.localeManager.registerModule(ID, HatLocale.MODULE);
+        registerConfig(HatConfig.class, HatConfig::new);
+        registerLocale(HatLocale.MODULE);
 
         commands.add(new HatCommand(this));
     }

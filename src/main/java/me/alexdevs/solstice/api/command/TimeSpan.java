@@ -81,7 +81,7 @@ public class TimeSpan {
 
     public static String toLongString(int total) {
         var builder = new StringBuilder();
-        var locale = Solstice.localeManager.getLocale(CoreModule.ID);
+        var locale = Solstice.localeManager.getShared();
 
         var prependSpace = false;
 

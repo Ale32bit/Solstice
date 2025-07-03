@@ -9,6 +9,7 @@ import me.alexdevs.solstice.api.text.RawPlaceholder;
 import me.alexdevs.solstice.modules.tablist.data.TabListConfig;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.network.protocol.game.ClientboundTabListPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.Map;
@@ -16,18 +17,18 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class TabListModule extends ModuleBase.Toggleable {
-    public static final String ID = "tablist";
+    
 
     private MinecraftServer server;
     private ScheduledFuture<?> scheduledFuture = null;
 
-    public TabListModule() {
-        super(ID);
+    public TabListModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, TabListConfig.class, TabListConfig::new);
+        registerConfig(TabListConfig.class, TabListConfig::new);
 
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             this.server = server;

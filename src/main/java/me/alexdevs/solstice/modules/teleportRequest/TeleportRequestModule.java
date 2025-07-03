@@ -14,7 +14,9 @@ import me.alexdevs.solstice.modules.teleportRequest.data.Request;
 import me.alexdevs.solstice.modules.teleportRequest.data.TeleportConfig;
 import me.alexdevs.solstice.modules.teleportRequest.data.TeleportLocale;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,18 +24,18 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
 public class TeleportRequestModule extends ModuleBase.Toggleable {
-    public static final String ID = "teleportrequest";
+    
 
     private final Map<UUID, ConcurrentLinkedDeque<Request>> requests = new ConcurrentHashMap<>();
 
-    public TeleportRequestModule() {
-        super(ID);
+    public TeleportRequestModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, TeleportConfig.class, TeleportConfig::new);
-        Solstice.localeManager.registerModule(ID, TeleportLocale.MODULE);
+        registerConfig(TeleportConfig.class, TeleportConfig::new);
+        registerLocale(TeleportLocale.MODULE);
 
         commands.add(new TeleportAcceptCommand(this));
         commands.add(new TeleportAskCommand(this));

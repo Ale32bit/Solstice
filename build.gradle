@@ -59,6 +59,7 @@ dependencies {
 
 	include modImplementation("eu.pb4:placeholder-api:${project.placeholderapi_version}")
 	include modImplementation("eu.pb4:sgui:${project.sgui_version}")
+	modImplementation include("eu.pb4:common-economy-api:${project.commoneconomy_version}")
 
 	modCompileOnly "dev.emi:trinkets:${project.trinkets_version}"
 	modRuntimeOnly "dev.emi:trinkets:${project.trinkets_version}"

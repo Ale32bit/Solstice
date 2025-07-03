@@ -12,22 +12,23 @@ import me.alexdevs.solstice.modules.note.data.NotePlayerData;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 public class NoteModule extends ModuleBase.Toggleable {
-    public static final String ID = "note";
+    
 
-    public NoteModule() {
-        super(ID);
+    public NoteModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, NoteConfig.class, NoteConfig::new);
-        Solstice.localeManager.registerModule(ID, NoteLocale.MODULE);
-        Solstice.playerData.registerData(ID, NotePlayerData.class, NotePlayerData::new);
+        registerConfig(NoteConfig.class, NoteConfig::new);
+        registerLocale(NoteLocale.MODULE);
+        registerPlayerData(NotePlayerData.class, NotePlayerData::new);
 
         commands.add(new NotesCommand(this));
 

@@ -2,12 +2,13 @@ package me.alexdevs.solstice.modules.suicide;
 
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.suicide.commands.SuicideCommand;
+import net.minecraft.resources.ResourceLocation;
 
 public class SuicideModule extends ModuleBase.Toggleable {
-    public static final String ID = "suicide";
+    
 
-    public SuicideModule() {
-        super(ID);
+    public SuicideModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override

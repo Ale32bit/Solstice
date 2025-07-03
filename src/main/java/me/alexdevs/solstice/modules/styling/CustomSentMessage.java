@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.modules.styling;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.styling.formatters.ChatFormatter;
 import me.alexdevs.solstice.modules.styling.formatters.EmoteFormatter;
@@ -40,7 +41,7 @@ public interface CustomSentMessage extends OutgoingChatMessage {
 
         @Override
         public void sendToPlayer(ServerPlayer receiver, boolean filterMaskEnabled, ChatType.Bound params) {
-            var ignoreModule = Solstice.modules.getModule(IgnoreModule.class);
+            var ignoreModule = ModuleProvider.IGNORE;
             if (ignoreModule.isEnabled() && ignoreModule.isIgnoring(receiver, sender)) {
                 return;
             }

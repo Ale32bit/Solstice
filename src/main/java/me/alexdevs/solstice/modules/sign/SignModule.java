@@ -3,16 +3,16 @@ package me.alexdevs.solstice.modules.sign;
 import eu.pb4.placeholders.api.parsers.LegacyFormattingParser;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.network.FilteredText;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.SignText;
 import java.util.List;
 
 public class SignModule extends ModuleBase.Toggleable {
-    public static final String ID = "sign";
 
-    public SignModule() {
-        super(ID);
+    public SignModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override

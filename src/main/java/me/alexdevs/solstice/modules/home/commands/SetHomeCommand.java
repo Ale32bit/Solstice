@@ -7,11 +7,12 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.modules.home.HomeModule;
 import me.alexdevs.solstice.api.text.Components;
+import me.alexdevs.solstice.modules.home.HomeModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+
 import java.util.List;
 import java.util.Map;
 

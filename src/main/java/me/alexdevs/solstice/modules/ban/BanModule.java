@@ -1,22 +1,20 @@
 package me.alexdevs.solstice.modules.ban;
 
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.ban.commands.BanCommand;
 import me.alexdevs.solstice.modules.ban.commands.TempBanCommand;
 import me.alexdevs.solstice.modules.ban.commands.UnbanCommand;
 import me.alexdevs.solstice.modules.ban.data.BanLocale;
+import net.minecraft.resources.ResourceLocation;
 
 public class BanModule extends ModuleBase.Toggleable {
-    public static final String ID = "ban";
-
-    public BanModule() {
-        super(ID);
+    public BanModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.localeManager.registerModule(ID, BanLocale.MODULE);
+        registerLocale(BanLocale.MODULE);
 
         commands.add(new BanCommand(this));
         commands.add(new TempBanCommand(this));

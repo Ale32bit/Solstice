@@ -2,6 +2,7 @@ package me.alexdevs.solstice.modules.notifications;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.notifications.commands.NotificationsCommand;
 import me.alexdevs.solstice.modules.notifications.data.NotificationsConfig;
@@ -15,17 +16,17 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 
 public class NotificationsModule extends ModuleBase.Toggleable {
-    public static final String ID = "notifications";
-
-    public NotificationsModule() {
-        super(ID);
+    private static NotificationsModule instance;
+    public NotificationsModule(ResourceLocation id) {
+        super(id);
+        instance = this;
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, NotificationsConfig.class, NotificationsConfig::new);
-        Solstice.localeManager.registerModule(ID, NotificationsLocale.MODULE);
-        Solstice.playerData.registerData(ID, NotificationsPlayerData.class, NotificationsPlayerData::new);
+        registerConfig(NotificationsConfig.class, NotificationsConfig::new);
+        registerLocale(NotificationsLocale.MODULE);
+        registerPlayerData(NotificationsPlayerData.class, NotificationsPlayerData::new);
 
         commands.add(new NotificationsCommand(this));
 
@@ -33,7 +34,7 @@ public class NotificationsModule extends ModuleBase.Toggleable {
             var content = message.decoratedContent().getString().toLowerCase();
 
             sender.getServer().getPlayerList().getPlayers().forEach(player -> {
-                if(player.equals(sender)) {
+                if (player.equals(sender)) {
                     return;
                 }
 
@@ -49,11 +50,10 @@ public class NotificationsModule extends ModuleBase.Toggleable {
     }
 
     public static void notify(ServerPlayer player) {
-        var module = Solstice.modules.getModule(NotificationsModule.class);
-        if (!module.isEnabled())
+        if (!instance.isEnabled())
             return;
 
-        module.notifyPlayer(player);
+        instance.notifyPlayer(player);
     }
 
     public NotificationsConfig getConfig() {
@@ -87,7 +87,7 @@ public class NotificationsModule extends ModuleBase.Toggleable {
         if (!data.enable)
             return false;
 
-        var afkModule = Solstice.modules.getModule(AfkModule.class);
+        var afkModule = ModuleProvider.AFK;
         if (afkModule.isEnabled()) {
             return afkModule.isPlayerAfk(player) || !settings.afkOnly();
         }

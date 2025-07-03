@@ -5,6 +5,7 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.item.ItemModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+
 import java.util.List;
 
 public class MoreCommand extends ModCommand<ItemModule> {

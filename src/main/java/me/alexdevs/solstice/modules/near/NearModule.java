@@ -5,18 +5,18 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.near.commands.NearCommand;
 import me.alexdevs.solstice.modules.near.data.NearConfig;
 import me.alexdevs.solstice.modules.near.data.NearLocale;
-
+import net.minecraft.resources.ResourceLocation;
 public class NearModule extends ModuleBase.Toggleable {
-    public static final String ID = "near";
+    
 
-    public NearModule() {
-        super(ID);
+    public NearModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, NearConfig.class, NearConfig::new);
-        Solstice.localeManager.registerModule(ID, NearLocale.MODULE);
+        registerConfig(NearConfig.class, NearConfig::new);
+        registerLocale(NearLocale.MODULE);
 
         commands.add(new NearCommand(this));
     }

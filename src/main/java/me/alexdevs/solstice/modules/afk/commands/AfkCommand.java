@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import net.minecraft.commands.CommandSourceStack;
+
 import java.util.List;
 
 import static net.minecraft.commands.Commands.literal;

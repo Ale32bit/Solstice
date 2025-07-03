@@ -1,7 +1,8 @@
 package me.alexdevs.solstice.modules.powertool;
 
-import java.util.Arrays;
 import net.minecraft.util.StringRepresentable;
+
+import java.util.Arrays;
 
 public enum Action implements StringRepresentable {
     USE,

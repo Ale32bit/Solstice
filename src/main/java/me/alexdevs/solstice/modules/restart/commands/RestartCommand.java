@@ -57,7 +57,7 @@ public class RestartCommand extends ModCommand<RestartModule> {
         }
 
         if (message == null) {
-            message = Solstice.localeManager.getLocale(RestartModule.ID).raw("barLabel");
+            message = module.locale().raw("barLabel");
         }
         module.schedule(seconds, message, RestartEvents.RestartType.MANUAL);
 

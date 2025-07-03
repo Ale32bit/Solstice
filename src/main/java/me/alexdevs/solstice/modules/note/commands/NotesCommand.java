@@ -15,6 +15,7 @@ import me.alexdevs.solstice.modules.note.data.Note;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;

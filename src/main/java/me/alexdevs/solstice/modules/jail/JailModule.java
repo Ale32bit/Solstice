@@ -5,6 +5,7 @@ import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.events.CommandEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.jail.commands.CheckJailCommand;
 import me.alexdevs.solstice.modules.jail.commands.JailCommand;
 import me.alexdevs.solstice.modules.jail.commands.JailsCommand;
@@ -20,26 +21,28 @@ import net.fabricmc.fabric.api.event.player.*;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class JailModule extends ModuleBase.Toggleable {
-    public static final String ID = "jail";
+    
 
-    public JailModule() {
-        super(ID);
+    public JailModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, JailConfig.class, JailConfig::new);
-        Solstice.localeManager.registerModule(ID, JailLocale.MODULE);
-        Solstice.playerData.registerData(ID, JailPlayerData.class, JailPlayerData::new);
-        Solstice.serverData.registerData(ID, JailServerData.class, JailServerData::new);
+        registerConfig(JailConfig.class, JailConfig::new);
+        registerLocale(JailLocale.MODULE);
+        registerPlayerData(JailPlayerData.class, JailPlayerData::new);
+        registerServerData(JailServerData.class, JailServerData::new);
 
         commands.add(new JailsCommand(this));
         commands.add(new JailCommand(this));
@@ -137,7 +140,7 @@ public class JailModule extends ModuleBase.Toggleable {
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((signedMessage, player, parameters) -> {
             if (isPlayerJailed(player.getUUID())) {
                 var config = getConfig();
-                if(config.mute) {
+                if (config.mute) {
                     player.sendSystemMessage(locale().get("cannotSpeak"));
                     return false;
                 }
@@ -222,8 +225,7 @@ public class JailModule extends ModuleBase.Toggleable {
             if (data.previousLocation != null) {
                 data.previousLocation.teleport(player);
             } else {
-                var spawnModule = Solstice.modules.getModule(SpawnModule.class);
-                spawnModule.getGlobalSpawnPosition().teleport(player);
+                ModuleProvider.SPAWN.getGlobalSpawnPosition().teleport(player);
             }
         }
     }

@@ -8,6 +8,7 @@ import me.alexdevs.solstice.modules.mute.MuteModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
 import net.minecraft.network.chat.Component;
+
 import java.util.List;
 
 import static net.minecraft.commands.Commands.argument;
@@ -33,10 +34,8 @@ public class MuteCommand extends ModCommand<MuteModule> {
 
                             var names = targets.stream().map(GameProfile::getName).toArray(String[]::new);
 
-                            var muteModule = Solstice.modules.getModule(MuteModule.class);
-
                             targets.forEach(profile -> {
-                                var playerData = muteModule.getPlayerData(profile.getId());
+                                var playerData = module.getPlayerData(profile.getId());
                                 playerData.muted = true;
                             });
 

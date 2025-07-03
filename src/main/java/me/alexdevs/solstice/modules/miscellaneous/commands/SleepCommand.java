@@ -7,6 +7,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.world.entity.LivingEntity;
+
 import java.util.List;
 
 public class SleepCommand extends ModCommand<MiscellaneousModule> {

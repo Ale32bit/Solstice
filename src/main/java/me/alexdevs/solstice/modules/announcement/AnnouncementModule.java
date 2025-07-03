@@ -1,30 +1,31 @@
-package me.alexdevs.solstice.modules.autoAnnouncement;
+package me.alexdevs.solstice.modules.announcement;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.text.Format;
-import me.alexdevs.solstice.modules.autoAnnouncement.data.AutoAnnouncementConfig;
+import me.alexdevs.solstice.modules.announcement.data.AnnouncementConfig;
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Random;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class AutoAnnouncementModule extends ModuleBase.Toggleable {
-    public static final String ID = "autoannouncement";
+public class AnnouncementModule extends ModuleBase.Toggleable {
+    
 
     private ScheduledFuture<?> scheduledFuture = null;
     private int currentLine = 0;
 
-    public AutoAnnouncementModule() {
-        super(ID);
+    public AnnouncementModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, AutoAnnouncementConfig.class, AutoAnnouncementConfig::new);
+        registerConfig(AnnouncementConfig.class, AnnouncementConfig::new);
 
         SolsticeEvents.READY.register((instance, server) -> {
             setup();
@@ -45,8 +46,8 @@ public class AutoAnnouncementModule extends ModuleBase.Toggleable {
         }
     }
 
-    public AutoAnnouncementConfig getConfig() {
-        return Solstice.configManager.getData(AutoAnnouncementConfig.class);
+    public AnnouncementConfig getConfig() {
+        return Solstice.configManager.getData(AnnouncementConfig.class);
     }
 
     public void announce() {

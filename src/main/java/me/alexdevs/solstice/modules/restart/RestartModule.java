@@ -6,6 +6,7 @@ import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.integrations.ConnectorIntegration;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.restart.commands.RestartCommand;
 import me.alexdevs.solstice.modules.restart.data.RestartConfig;
 import me.alexdevs.solstice.modules.restart.data.RestartLocale;
@@ -24,9 +25,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
 public class RestartModule extends ModuleBase.Toggleable {
-    public static final String ID = "restart";
+    
 
     private static final BossEvent.BossBarColor fallbackBarColor = BossEvent.BossBarColor.RED;
     private static final BossEvent.BossBarOverlay fallbackBarStyle = BossEvent.BossBarOverlay.NOTCHED_10;
@@ -35,14 +35,14 @@ public class RestartModule extends ModuleBase.Toggleable {
     private SoundEvent sound;
     private ScheduledFuture<?> currentSchedule = null;
 
-    public RestartModule() {
-        super(ID);
+    public RestartModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, RestartConfig.class, RestartConfig::new);
-        Solstice.localeManager.registerModule(ID, RestartLocale.MODULE);
+        registerConfig(RestartConfig.class, RestartConfig::new);
+        registerLocale(RestartLocale.MODULE);
 
         commands.add(new RestartCommand(this));
 
@@ -79,9 +79,9 @@ public class RestartModule extends ModuleBase.Toggleable {
 
     @Override
     public boolean isEnabled() {
-        if (!Solstice.modules.getModule(TimeBarModule.class).isEnabled())
+        if(!ModuleProvider.TIMEBAR.isEnabled())
             return false;
-
+        
         return super.isEnabled();
     }
 
@@ -144,7 +144,7 @@ public class RestartModule extends ModuleBase.Toggleable {
         }
 
         var timeBar = Solstice.modules.getModule(TimeBarModule.class);
-        restartBar = timeBar.startTimeBar(
+        restartBar = ModuleProvider.TIMEBAR.startTimeBar(
                 message,
                 seconds,
                 getBarColor(),
@@ -166,7 +166,7 @@ public class RestartModule extends ModuleBase.Toggleable {
     public void cancel() {
         var timeBar = Solstice.modules.getModule(TimeBarModule.class);
         if (restartBar != null) {
-            timeBar.cancelTimeBar(restartBar);
+            ModuleProvider.TIMEBAR.cancelTimeBar(restartBar);
             RestartEvents.CANCELED.invoker().onCancel(restartBar);
             restartBar = null;
         }

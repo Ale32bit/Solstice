@@ -4,17 +4,17 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.inventorySee.commands.InventorySeeCommand;
 import me.alexdevs.solstice.modules.inventorySee.data.InventorySeeLocale;
-
+import net.minecraft.resources.ResourceLocation;
 public class InventorySeeModule extends ModuleBase.Toggleable {
-    public static final String ID = "inventorysee";
+    
 
-    public InventorySeeModule() {
-        super(ID);
+    public InventorySeeModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.localeManager.registerModule(ID, InventorySeeLocale.MODULE);
+        registerLocale(InventorySeeLocale.MODULE);
 
         commands.add(new InventorySeeCommand(this));
     }

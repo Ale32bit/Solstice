@@ -11,6 +11,7 @@ import me.alexdevs.solstice.modules.customName.data.CustomNameConfig;
 import me.alexdevs.solstice.modules.customName.data.CustomNameLocale;
 import me.alexdevs.solstice.modules.customName.data.CustomNamePlayerData;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,19 +20,17 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class CustomNameModule extends ModuleBase.Toggleable {
-    public static final String ID = "customname";
-
     public static final Pattern BASIC_NICKNAME_FILTER = Pattern.compile("[^a-zA-Zà-üÀ-Ü_ ]");
 
-    public CustomNameModule() {
-        super(ID);
+    public CustomNameModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, CustomNameConfig.class, CustomNameConfig::new);
-        Solstice.localeManager.registerModule(ID, CustomNameLocale.MODULE);
-        Solstice.playerData.registerData(ID, CustomNamePlayerData.class, CustomNamePlayerData::new);
+        registerConfig(CustomNameConfig.class, CustomNameConfig::new);
+        registerLocale(CustomNameLocale.MODULE);
+        registerPlayerData(CustomNamePlayerData.class, CustomNamePlayerData::new);
 
         commands.add(new NicknameCommand(this));
     }

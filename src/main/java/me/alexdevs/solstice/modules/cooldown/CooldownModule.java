@@ -12,14 +12,14 @@ import me.alexdevs.solstice.modules.cooldown.data.CooldownSetting;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-
 public class CooldownModule extends ModuleBase.Toggleable {
-    public static final String ID = "cooldown";
+    
     public static final String PERMISSION_BASE = "solstice.cooldown";
 
     private final Map<UUID, Map<String, Integer>> cooldowns = new ConcurrentHashMap<>();
@@ -28,14 +28,14 @@ public class CooldownModule extends ModuleBase.Toggleable {
     // This map is replaced every reload and at start.
     private Map<String, String> nodesMap = Map.of();
 
-    public CooldownModule() {
-        super(ID);
+    public CooldownModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.configManager.registerData(ID, CooldownConfig.class, CooldownConfig::new);
-        Solstice.localeManager.registerModule(ID, CooldownLocale.MODULE);
+        registerConfig(CooldownConfig.class, CooldownConfig::new);
+        registerLocale(CooldownLocale.MODULE);
 
         commands.add(new CooldownCommand(this));
 

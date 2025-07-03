@@ -13,10 +13,12 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.text.Components;
 import me.alexdevs.solstice.api.text.parser.MarkdownParser;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.mail.MailModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
@@ -176,8 +178,7 @@ public class MailCommand extends ModCommand<MailModule> {
                 return 1;
             }
 
-            var ignoreModule = Solstice.modules.getModule(IgnoreModule.class);
-            if (ignoreModule.isIgnoring(recPlayer, sender))
+            if (ModuleProvider.IGNORE.isIgnoring(recPlayer, sender))
                 return 0;
 
             var recContext = PlaceholderContext.of(recPlayer);

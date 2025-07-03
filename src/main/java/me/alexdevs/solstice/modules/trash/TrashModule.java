@@ -4,17 +4,18 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.trash.commands.TrashCommand;
 import me.alexdevs.solstice.modules.trash.data.TrashLocale;
+import net.minecraft.resources.ResourceLocation;
 
 public class TrashModule extends ModuleBase.Toggleable {
-    public static final String ID = "trash";
+    
 
-    public TrashModule() {
-        super(ID);
+    public TrashModule(ResourceLocation id) {
+        super(id);
     }
 
     @Override
     public void init() {
-        Solstice.localeManager.registerModule(ID, TrashLocale.MODULE);
+        registerLocale(TrashLocale.MODULE);
 
         commands.add(new TrashCommand(this));
     }

@@ -2,6 +2,7 @@ package me.alexdevs.solstice.data;
 
 import com.mojang.authlib.GameProfile;
 import me.alexdevs.solstice.Solstice;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class PlayerDataManager {
-    private final Map<String, Class<?>> classMap = new HashMap<>();
+    private final Map<ResourceLocation, Class<?>> classMap = new HashMap<>();
     private final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
     private final Map<UUID, PlayerData> playerData = new ConcurrentHashMap<>();
     private Path basePath;
@@ -33,7 +34,7 @@ public class PlayerDataManager {
      * @param creator Default values provider
      * @param <T>     Type of class of data
      */
-    public <T> void registerData(String id, Class<T> clazz, Supplier<T> creator) {
+    public <T> void registerData(ResourceLocation id, Class<T> clazz, Supplier<T> creator) {
         classMap.put(id, clazz);
         providers.put(clazz, creator);
     }

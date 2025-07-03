@@ -3,15 +3,17 @@ package me.alexdevs.solstice.locale;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.text.Format;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+
 import java.util.Map;
 import java.util.function.Supplier;
 
 public class Locale {
-    public final String id;
+    public final ResourceLocation id;
 
-    private final Supplier<LocaleManager.LocaleModel> localeSupplier;
+    private final Supplier<Map<String, String>> localeSupplier;
 
-    public Locale(String id, Supplier<LocaleManager.LocaleModel> localeSupplier) {
+    public Locale(ResourceLocation id, Supplier<Map<String, String>> localeSupplier) {
         this.id = id;
         this.localeSupplier = localeSupplier;
     }
@@ -23,7 +25,8 @@ public class Locale {
         } else if (path.startsWith("/")) {
             fullPath = path.substring(1);
         } else {
-            fullPath = "module." + this.id + "." + path;
+            var id = this.id.toString().replace(':', '.');
+            fullPath = "module." + id + "." + path;
         }
 
         return localeSupplier.get().get(fullPath);

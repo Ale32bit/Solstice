@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.mixin.modules.sign;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.sign.SignModule;
 import net.minecraft.server.network.FilteredText;
 import net.minecraft.world.entity.player.Player;
@@ -18,8 +19,7 @@ public abstract class FormatSignMixin {
 
     @Inject(method = "setMessages", at = @At("HEAD"), cancellable = true)
     private void solstice$formatSignText(Player player, List<FilteredText> messages, SignText text, CallbackInfoReturnable<SignText> cir) {
-        var formattableSignsModule = Solstice.modules.getModule(SignModule.class);
-        if (formattableSignsModule.canFormatSign(player)) {
+        if (ModuleProvider.SIGN.canFormatSign(player)) {
             try {
                 text = SignModule.formatSign(messages, text);
                 cir.setReturnValue(text);
