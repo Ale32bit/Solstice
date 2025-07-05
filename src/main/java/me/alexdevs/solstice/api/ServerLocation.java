@@ -1,16 +1,26 @@
 package me.alexdevs.solstice.api;
 
+import com.google.common.collect.ImmutableList;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.ModuleProvider;
-import me.alexdevs.solstice.modules.back.BackModule;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.vehicle.DismountHelper;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.CollisionGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BedBlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Objects;
@@ -23,22 +33,25 @@ public class ServerLocation {
     protected final float pitch;
     protected final String world;
 
+    private static final ImmutableList<Block> unsafeBlocks = ImmutableList.of(
+            Blocks.LAVA,
+            Blocks.MAGMA_BLOCK,
+            Blocks.CACTUS,
+            Blocks.FIRE,
+            Blocks.CAMPFIRE,
+            Blocks.LAVA_CAULDRON,
+            Blocks.SWEET_BERRY_BUSH,
+            Blocks.POWDER_SNOW
+    );
+
+    public static final int SAFE_RANGE = 5;
+
     public ServerLocation(double x, double y, double z, float yaw, float pitch, ServerLevel world) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.yaw = yaw;
-        this.pitch = pitch;
-        this.world = world.dimension().location().toString();
+        this(x, y, z, yaw, pitch, world.dimension().location().toString());
     }
 
     public ServerLocation(ServerPlayer player) {
-        this.x = player.getX();
-        this.y = player.getY();
-        this.z = player.getZ();
-        this.yaw = player.getYRot();
-        this.pitch = player.getXRot();
-        this.world = player.serverLevel().dimension().location().toString();
+        this(player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot(), player.serverLevel().dimension().location().toString());
     }
 
     public ServerLocation(double x, double y, double z, float yaw, float pitch, String worldKey) {
@@ -133,5 +146,69 @@ public class ServerLocation {
 
     public Vec3 getDelta(ServerLocation other) {
         return new Vec3(this.getX() - other.getX(), this.getY() - other.getY(), this.getZ() - other.getZ());
+    }
+
+    public boolean safeTeleport(ServerPlayer player, boolean setBackPosition, int range) {
+        var world = getWorld(player.getServer());
+
+        var horRange = (int)Math.pow(range, 2);
+        var verRange = (int)Math.ceil(range / 2d);
+
+        for (int i = 1; i <= horRange; i++) {
+            var rel = spiral(i);
+            var attemptPos = this.getBlockPos().offset(rel);
+            for (int j = -verRange; j < verRange; j++) {
+                var safePos = DismountHelper.findSafeDismountLocation(EntityType.PLAYER, world, attemptPos.offset(0, j, 0), true);
+                if(safePos != null) {
+                    var safeLocation = new ServerLocation(safePos.x, safePos.y, safePos.z, this.getYaw(), this.getPitch(), this.getWorld());
+                    safeLocation.teleport(player, setBackPosition);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean safeTeleport(ServerPlayer player) {
+        return safeTeleport(player, true, SAFE_RANGE);
+    }
+
+    /// [Algorithm to find a specific element coordinates in a spiral](https://stackoverflow.com/questions/61229890/algorithm-to-find-a-specific-elements-coordinate-in-a-spiral)
+    public static Vec3i spiral(int n) {
+        if( n == 0 ){
+            return Vec3i.ZERO;
+        }
+
+        var k = (int) Math.ceil((Math.sqrt(n) - 1) / 2);
+        var t = 2 * k + 1;
+        var m = (int) Math.pow(t, 2);
+        t = t - 1;
+
+        if (n >= m - t) {
+            var x = k - (m - n);
+            var z = -k;
+            return new Vec3i(x, 0, z);
+        } else {
+            m = m - t;
+        }
+
+        if (n >= m - t) {
+            var x = -k;
+            var z = -k + (m - n);
+            return new Vec3i(x, 0, z);
+        } else {
+            m = m - t;
+        }
+
+        if (n >= m - t) {
+            var x = -k + (m - n);
+            var z = k;
+            return new Vec3i(x, 0, z);
+        } else {
+            var x = k;
+            var z = k - (m - n - t);
+            return new Vec3i(x, 0, z);
+        }
     }
 }
