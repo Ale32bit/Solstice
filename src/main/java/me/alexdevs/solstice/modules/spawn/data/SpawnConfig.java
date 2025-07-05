@@ -17,7 +17,10 @@ public class SpawnConfig {
         @Comment("Send the player to the global spawn instead of the world spawn when using the /spawn command.")
         public boolean onSpawnCommand = false;
 
-        @Comment("Send the player to the global spawn instead of their bed or anchor when respawning.")
+        @Comment("Send the player to the global spawn when respawning, respecting bed and anchor.")
+        public boolean onRespawnSoft = false;
+
+        @Comment("Send the player to the global spawn regardless of their bed or anchor when respawning.")
         public boolean onRespawn = false;
 
         @Comment("Send the player to the global spawn when logging in.")
