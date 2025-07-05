@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Collection;
 import java.util.List;
 public class ExperimentsModule extends ModuleBase {
-    public static final boolean ENABLED = true;
+    public static final boolean ENABLED = false;
     
 
     public ExperimentsModule(ResourceLocation id) {
