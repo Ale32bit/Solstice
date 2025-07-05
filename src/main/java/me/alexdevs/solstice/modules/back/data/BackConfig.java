@@ -1,5 +1,6 @@
 package me.alexdevs.solstice.modules.back.data;
 
+import me.alexdevs.solstice.api.ServerLocation;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 
@@ -13,4 +14,8 @@ public class BackConfig {
 
     @Comment("Clear the /back location of an offline player after the configured seconds. Set to -1 to disable. Default: 300 (5 minutes)")
     public int offlineClearTimeout = -1;
+
+    // It's actually a cuboid and the "range" is the length
+    @Comment("Range for the safe position checks.")
+    public int safeCheckRange = ServerLocation.SAFE_RANGE;
 }
