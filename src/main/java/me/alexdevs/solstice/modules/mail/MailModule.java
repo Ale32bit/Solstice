@@ -2,10 +2,9 @@ package me.alexdevs.solstice.modules.mail;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.api.PlayerMail;
+import me.alexdevs.solstice.modules.mail.data.PlayerMail;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.ModuleProvider;
-import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.mail.commands.MailCommand;
 import me.alexdevs.solstice.modules.mail.data.MailLocale;
 import me.alexdevs.solstice.modules.mail.data.MailPlayerData;
