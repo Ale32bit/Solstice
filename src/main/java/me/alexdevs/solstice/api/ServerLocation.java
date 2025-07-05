@@ -1,10 +1,8 @@
 package me.alexdevs.solstice.api;
 
 import com.google.common.collect.ImmutableList;
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.ModuleProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -14,13 +12,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.DismountHelper;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.CollisionGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BedBlockEntity;
-import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Objects;
