@@ -3,6 +3,7 @@ package me.alexdevs.solstice.api.text;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
 import eu.pb4.placeholders.api.node.TextNode;
+import eu.pb4.placeholders.api.parsers.LegacyFormattingParser;
 import eu.pb4.placeholders.api.parsers.NodeParser;
 import eu.pb4.placeholders.api.parsers.PatternPlaceholderParser;
 import eu.pb4.placeholders.api.parsers.TextParserV1;
@@ -13,6 +14,7 @@ import java.util.regex.Pattern;
 
 public class Format {
     public static final Pattern PLACEHOLDER_PATTERN = PatternPlaceholderParser.PREDEFINED_PLACEHOLDER_PATTERN;
+    public static final NodeParser LEGACY_PARSER = LegacyFormattingParser.ALL;
     public static final NodeParser PARSER;
 
     static {

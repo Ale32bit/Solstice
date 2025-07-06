@@ -14,6 +14,7 @@ import net.minecraft.server.players.PlayerList;
 
 public class StylingModule extends ModuleBase.Toggleable {
     public static final String ADVANCED_CHAT_FORMATTING_PERMISSION = "solstice.chat.advanced";
+    public static final String LEGACY_CHAT_FORMATTING_PERMISSION = "solstice.chat.legacy";
     public static final String SILENT_ACTIVITY_PERMISSION = "solstice.chat.activity.silent";
 
     public StylingModule(ResourceLocation id) {

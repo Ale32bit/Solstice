@@ -1,5 +1,8 @@
 package me.alexdevs.solstice.api.text;
 
+import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.Placeholders;
+import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.parsers.NodeParser;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.text.parser.MarkdownParser;
@@ -11,9 +14,12 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.server.level.ServerPlayer;
-import java.util.Map;
+
+import java.util.*;
 
 public class Components {
+    private static final Random random = new Random();
+
     public static Component button(Component label, Component hoverText, String command, boolean suggest) {
         var locale = Solstice.localeManager.getShared();
         var format = suggest ? locale.raw("~buttonSuggest") : locale.raw("~button");
@@ -49,48 +55,83 @@ public class Components {
 
     public static Component chat(PlayerChatMessage message, ServerPlayer player) {
         var allowAdvancedChatFormat = Permissions.check(player, StylingModule.ADVANCED_CHAT_FORMATTING_PERMISSION);
+        var allowLegacyChatFormat = Permissions.check(player, StylingModule.LEGACY_CHAT_FORMATTING_PERMISSION);
 
-        return chat(message.signedContent(), allowAdvancedChatFormat);
+        var set = EnumSet.noneOf(TextCapabilities.class);
+        if (allowAdvancedChatFormat) {
+            set.add(TextCapabilities.ADVANCED);
+        }
+        if (allowLegacyChatFormat) {
+            set.add(TextCapabilities.LEGACY);
+        }
+
+        return chat(message.signedContent(), set, player.createCommandSourceStack());
     }
 
     public static Component chat(String message, ServerPlayer player) {
         var allowAdvancedChatFormat = Permissions.check(player, StylingModule.ADVANCED_CHAT_FORMATTING_PERMISSION);
+        var allowLegacyChatFormat = Permissions.check(player, StylingModule.LEGACY_CHAT_FORMATTING_PERMISSION);
 
-        return chat(message, allowAdvancedChatFormat);
+        var set = EnumSet.noneOf(TextCapabilities.class);
+        if (allowAdvancedChatFormat) {
+            set.add(TextCapabilities.ADVANCED);
+        }
+        if (allowLegacyChatFormat) {
+            set.add(TextCapabilities.LEGACY);
+        }
+
+        return chat(message, set, player.createCommandSourceStack());
     }
 
-    public static Component chat(String message, boolean allowAdvancedChatFormat) {
-        var enableMarkdown = false;
-        if(ModuleProvider.STYLING.isEnabled()) {
+    public static Component chat(String message, EnumSet<TextCapabilities> capabilities, CommandSourceStack source) {
+        var enableMarkdown = capabilities.contains(TextCapabilities.MARKDOWN);
+        var enableAdvanced = capabilities.contains(TextCapabilities.ADVANCED);
+        var enableLegacy = capabilities.contains(TextCapabilities.LEGACY);
+
+        var placeholders = new HashMap<String, Component>();
+        var context = PlaceholderContext.of(source);
+        if (ModuleProvider.STYLING.isEnabled()) {
             var config = Solstice.configManager.getData(StylingConfig.class);
-            enableMarkdown = config.enableMarkdown;
+            enableMarkdown = enableMarkdown || config.enableMarkdown;
 
             for (var repl : config.replacements.entrySet()) {
-                message = message.replace(repl.getKey(), repl.getValue());
+                if (message.contains(repl.getKey())) {
+                    var key = Integer.toHexString(random.nextInt(16 ^ 8));
+                    message = message.replace(repl.getKey(), String.format("${%s}", key));
+                    var value = repl.getValue().replace("\\", "\\\\");
+                    placeholders.put(key, Format.parse(value, context));
+                }
             }
         }
 
-        if (!allowAdvancedChatFormat && !enableMarkdown) {
-            return Component.nullToEmpty(message);
+
+        if (capabilities.isEmpty()) {
+            return Placeholders.parseText(TextNode.of(message), Format.PLACEHOLDER_PATTERN, placeholders);
         }
 
-        NodeParser parser;
-        if (allowAdvancedChatFormat) {
-            if(enableMarkdown) {
-                parser = NodeParser.merge(Format.PARSER, MarkdownParser.defaultParser);
-            } else {
-                parser = Format.PARSER;
-            }
-        } else {
-            parser = MarkdownParser.defaultParser;
+        var parsers = new ArrayList<NodeParser>();
+        if (enableAdvanced) {
+            parsers.add(Format.PARSER);
         }
 
-        return parser.parseNode(message).toText();
+        if (enableLegacy) {
+            parsers.add(Format.LEGACY_PARSER);
+        }
+
+        if (enableMarkdown) {
+            parsers.add(MarkdownParser.defaultParser);
+        }
+
+        var parser = NodeParser.merge(parsers.toArray(NodeParser[]::new));
+
+        var node = parser.parseNode(message);
+        return Placeholders.parseText(node, Format.PLACEHOLDER_PATTERN, placeholders);
     }
 
     public static Component chat(String message, CommandSourceStack source) {
         if (source.isPlayer())
             return chat(message, source.getPlayer());
-        return chat(message, true);
+
+        return chat(message, EnumSet.allOf(TextCapabilities.class), source);
     }
 }
