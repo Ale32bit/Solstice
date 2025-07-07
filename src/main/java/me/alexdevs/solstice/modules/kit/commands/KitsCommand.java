@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.modules.kit.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.sgui.api.elements.GuiElement;
 import eu.pb4.sgui.api.gui.SimpleGui;
@@ -16,6 +17,7 @@ import net.minecraft.world.item.component.ItemLore;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class KitsCommand extends ModCommand<KitModule> {
     public KitsCommand(KitModule module) {
@@ -28,6 +30,7 @@ public class KitsCommand extends ModCommand<KitModule> {
     }
 
     private static final LinkedHashMap<Integer, MenuType<ChestMenu>> invSizes = new LinkedHashMap<>();
+
     static {
         invSizes.put(9, MenuType.GENERIC_9x1);
         invSizes.put(18, MenuType.GENERIC_9x2);
@@ -45,8 +48,6 @@ public class KitsCommand extends ModCommand<KitModule> {
                     var player = context.getSource().getPlayerOrException();
 
                     var playerAvailableKits = module.getPlayerKitNames(player);
-                    var kits = module.getKits();
-
                     var size = playerAvailableKits.size();
                     MenuType<ChestMenu> handlerType = null;
                     for (var entry : invSizes.entrySet()) {
@@ -58,27 +59,57 @@ public class KitsCommand extends ModCommand<KitModule> {
 
                     var gui = new SimpleGui(handlerType, player, false);
 
-                    for (var i = 0; i < Math.min(size, 54); i++) {
-                        var kitName = playerAvailableKits.get(i);
-                        var kit = kits.get(kitName);
-
-                        var icon = kit.getIcon();
-                        icon.set(DataComponents.CUSTOM_NAME, Component.nullToEmpty(kitName));
-                        icon.set(DataComponents.LORE, new ItemLore(List.of(module.locale().get("claimKit"))));
-
-                        gui.setSlot(0, new GuiElement(icon, (syncId, clickType, slotActionType) -> {
-                            try {
-                                dispatcher.execute("kit claim " + kitName, context.getSource());
-                            } catch (CommandSyntaxException e) {
-                                context.getSource().sendFailure(Component.nullToEmpty(e.getLocalizedMessage()));
-                            }
-                        }));
-                    }
+                    refreshGui(context, gui);
 
                     gui.setTitle(module.locale().get("kits"));
                     gui.open();
 
                     return 1;
                 });
+    }
+
+    private void refreshGui(CommandContext<CommandSourceStack> context, SimpleGui gui) throws CommandSyntaxException {
+        var player = context.getSource().getPlayerOrException();
+
+        var playerAvailableKits = module.getPlayerKitNames(player);
+        var kits = module.getKits();
+
+        var size = playerAvailableKits.size();
+
+        for (var i = 0; i < Math.min(size, 54); i++) {
+            var kitName = playerAvailableKits.get(i);
+            var kit = kits.get(kitName);
+
+            var canClaim = module.couldClaimKit(player, kitName);
+
+            var icon = kit.getIcon();
+
+            var placeholders = Map.of(
+                    "kit", Component.nullToEmpty(kitName)
+            );
+            Component kitNameComponent;
+            Component kitLoreComponent;
+            if (canClaim) {
+                kitNameComponent = Component.nullToEmpty(kitName);
+                kitLoreComponent = module.locale().get("claimKit", placeholders);
+                icon.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+            } else {
+
+                kitNameComponent = module.locale().get("kitsUnavailableName", placeholders);
+                kitLoreComponent = module.locale().get("kitsUnavailableLore", placeholders);
+            }
+
+            icon.set(DataComponents.CUSTOM_NAME, kitNameComponent);
+            icon.set(DataComponents.LORE, new ItemLore(List.of(kitLoreComponent)));
+
+            gui.setSlot(i, new GuiElement(icon, (syncId, clickType, slotActionType) -> {
+                try {
+                    dispatcher.execute("kit claim " + kitName, context.getSource());
+                    refreshGui(context, gui);
+                } catch (CommandSyntaxException e) {
+                    context.getSource().sendFailure(Component.nullToEmpty(e.getLocalizedMessage()));
+                }
+            }));
+        }
     }
 }

@@ -26,6 +26,8 @@ public class KitLocale {
             Map.entry("kits", "Kits"),
             Map.entry("claimKit", "<green>Click to claim this kit!</green>"),
             Map.entry("noStackInHand", "<gold>You need to hold an item to set a kit icon!</gold>"),
-            Map.entry("setIcon", "<gold>Set icon for kit <yellow>${kit}</yellow>.</gold>")
+            Map.entry("setIcon", "<gold>Set icon for kit <yellow>${kit}</yellow>.</gold>"),
+            Map.entry("kitsUnavailableName", "<gray><st>${kit}</st></gray>"),
+            Map.entry("kitsUnavailableLore", "<yellow>This kit is currently unavailable!</yellow>")
     );
 }
