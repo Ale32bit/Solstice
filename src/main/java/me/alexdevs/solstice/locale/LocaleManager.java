@@ -76,6 +76,7 @@ public class LocaleManager {
         if (!path.toFile().exists()) {
             locale = new LocaleModel();
             prepare();
+            localeMap = generateMap();
             return;
         }
         var bf = new BufferedReader(new FileReader(path.toFile(), StandardCharsets.UTF_8));
