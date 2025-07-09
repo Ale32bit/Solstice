@@ -4,6 +4,7 @@ import java.util.Map;
 
 public class FeedLocale {
     public static final Map<String, String> MODULE = Map.ofEntries(
-            Map.entry("fed", "<gold>Fed <yellow>${entity}</yellow>!</gold>")
+            Map.entry("fed", "<gold>Fed <yellow>${entity}</yellow>!</gold>"),
+            Map.entry("fedMultiple", "<gold>Fed <yellow>${count}</yellow> players!</gold>")
     );
 }

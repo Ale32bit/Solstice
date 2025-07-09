@@ -7,6 +7,7 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.feed.FeedModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,23 +43,33 @@ public class FeedCommand extends ModCommand<FeedModule> {
     private int execute(CommandContext<CommandSourceStack> context, @Nullable Collection<ServerPlayer> targets) throws CommandSyntaxException {
         if (targets == null) {
             var player = context.getSource().getPlayerOrException();
-            feed(context, player);
+            feed(context, player, 1);
             return 1;
         } else {
             for (var target : targets) {
-                feed(context, target);
+                feed(context, target, targets.size());
+            }
+
+            if (targets.size() > 1) {
+                var placeholders = Map.of(
+                        "count", Component.nullToEmpty(String.valueOf(targets.size()))
+                );
+                context.getSource().sendSuccess(() -> module.locale().get("fedMultiple", placeholders), true);
             }
 
             return targets.size();
         }
     }
 
-    private void feed(CommandContext<CommandSourceStack> context, ServerPlayer player) {
+    private void feed(CommandContext<CommandSourceStack> context, ServerPlayer player, int count) {
         player.getFoodData().setFoodLevel(MAX_FOOD_LEVEL);
         player.getFoodData().setSaturation(MAX_FOOD_LEVEL);
-        var placeholders = Map.of(
-                "entity", player.getName()
-        );
-        context.getSource().sendSuccess(() -> module.locale().get("fed", placeholders), true);
+
+        if(count == 1) {
+            var placeholders = Map.of(
+                    "entity", player.getName()
+            );
+            context.getSource().sendSuccess(() -> module.locale().get("fed", placeholders), true);
+        }
     }
 }
