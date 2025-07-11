@@ -9,9 +9,11 @@ import me.alexdevs.solstice.modules.mute.data.MutePlayerData;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Date;
 import java.util.UUID;
+
 public class MuteModule extends ModuleBase.Toggleable {
-    
+
 
     public MuteModule(ResourceLocation id) {
         super(id);
@@ -39,7 +41,20 @@ public class MuteModule extends ModuleBase.Toggleable {
     }
 
     public boolean isMuted(UUID playerUuid) {
-        return getPlayerData(playerUuid).muted;
+        if (!isEnabled())
+            return false;
+
+        var data = getPlayerData(playerUuid);
+
+        if (data.mutedUntil != null) {
+            var now = new Date();
+            if (now.after(data.mutedUntil)) {
+                data.mutedUntil = null;
+                data.muted = false;
+            }
+        }
+
+        return data.muted;
     }
 
 
