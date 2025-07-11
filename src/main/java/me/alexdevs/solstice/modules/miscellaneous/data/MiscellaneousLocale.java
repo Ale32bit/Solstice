@@ -7,6 +7,8 @@ public class MiscellaneousLocale {
             Map.entry("noEffects", "<gold>This player has no active effects.</gold>"),
             Map.entry("effectHeader", "<gold>Active effects:</gold>"),
             Map.entry("effect", "<gold><yellow>${effect}</yellow>: <yellow>x${amplifier}</yellow> for <yellow>${duration}</yellow></gold>"),
-            Map.entry("infinite", "infinite")
+            Map.entry("infinite", "infinite"),
+
+            Map.entry("top", "<gold>Whoosh!</gold>")
     );
 }

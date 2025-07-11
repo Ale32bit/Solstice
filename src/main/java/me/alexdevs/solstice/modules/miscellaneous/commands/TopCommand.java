@@ -35,6 +35,8 @@ public class TopCommand extends ModCommand<MiscellaneousModule> {
                     player.setDeltaMovement(player.getDeltaMovement().multiply(1.0, 0.0, 1.0));
                     player.setOnGround(true);
 
+                    context.getSource().sendSuccess(() -> module.locale().get("top"), false);
+
                     return 1;
                 });
     }
