@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.text.Components;
 import me.alexdevs.solstice.modules.home.HomeModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -31,7 +32,7 @@ public class HomeCommand extends ModCommand<HomeModule> {
     public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(true))
-                .executes(context -> execute(context, "home"))
+                .executes(context -> execute(context, "home", false))
                 .then(argument("name", StringArgumentType.word())
                         .suggests((context, builder) -> {
                             if (!context.getSource().isPlayer())
@@ -41,10 +42,13 @@ public class HomeCommand extends ModCommand<HomeModule> {
 
                             return SharedSuggestionProvider.suggest(data.homes.keySet().stream(), builder);
                         })
-                        .executes(context -> execute(context, StringArgumentType.getString(context, "name"))));
+                        .executes(context -> execute(context, StringArgumentType.getString(context, "name"), false))
+                        .then(literal("force")
+                                .executes(context -> execute(context, StringArgumentType.getString(context, "name"), true))
+                        ));
     }
 
-    private int execute(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+    private int execute(CommandContext<CommandSourceStack> context, String name, boolean force) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrException();
         var data = module.getData(player.getUUID());
         var playerContext = PlaceholderContext.of(player);
@@ -72,7 +76,29 @@ public class HomeCommand extends ModCommand<HomeModule> {
                 ), false);
 
         var homePosition = data.homes.get(name);
-        homePosition.teleport(player);
+
+        if (force) {
+            homePosition.teleport(player);
+        } else {
+            var success = homePosition.safeTeleport(player);
+            if (!success) {
+                var safePlaceholders = Map.of(
+                        "forceHomeButton", Components.button(
+                                module.locale().raw("forceLabel"),
+                                module.locale().raw("forceHover"),
+                                "/home " + name + " force"
+                        ),
+                        "home", Component.nullToEmpty(name)
+                );
+
+                context.getSource().sendSuccess(() -> module.locale().get(
+                        "teleportFailed",
+                        playerContext,
+                        safePlaceholders
+                ), false);
+            }
+        }
+
 
         return 1;
     }

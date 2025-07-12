@@ -19,6 +19,9 @@ public class HomeLocale {
             Map.entry("homesFormatOther", "<run_cmd:'/homeother ${owner} ${home}'><hover:'Click to teleport'><yellow>${home}</yellow></hover></run_cmd>"),
             Map.entry("homesComma", "<gold>, </gold>"),
             Map.entry("noHomes", "<gold>You did not set any home so far.</gold>"),
-            Map.entry("noHomesOther", "<gold><yellow>${owner}</yellow> did not set any home so far.</gold>")
+            Map.entry("noHomesOther", "<gold><yellow>${owner}</yellow> did not set any home so far.</gold>"),
+            Map.entry("teleportFailed", "<red>Could not safely teleport to <yellow>${home}</yellow>.</red>\n ${forceHomeButton}"),
+            Map.entry("forceLabel", "<gold>Force home</gold>"),
+            Map.entry("forceHover", "Force teleport to ${home} location. This may be dangerous!")
     );
 }
