@@ -1,8 +1,6 @@
 package me.alexdevs.solstice.modules.styling;
 
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.ModuleProvider;
-import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.styling.formatters.ChatFormatter;
 import me.alexdevs.solstice.modules.styling.formatters.EmoteFormatter;
 import net.minecraft.network.chat.ChatType;
@@ -33,7 +31,23 @@ public interface CustomSentMessage extends OutgoingChatMessage {
         }
     }
 
-    record Chat(PlayerChatMessage message, ServerPlayer sender) implements OutgoingChatMessage {
+    class Chat implements OutgoingChatMessage {
+        private final PlayerChatMessage message;
+
+        @Nullable
+        private final ServerPlayer sender;
+
+        private final Component formattedChatMessage;
+
+        public Chat(PlayerChatMessage message, @Nullable ServerPlayer sender) {
+            this.message = message;
+            this.sender = sender;
+
+            // Instead of building the message for every single player in the server, we create a cache of it.
+            // The chance that this is used as a chat message is much, much higher than the other cases (me, team msg).
+            formattedChatMessage = ChatFormatter.getFormattedMessage(message, sender);
+        }
+
         @Override
         public Component content() {
             return this.message.decoratedContent();
@@ -45,19 +59,22 @@ public interface CustomSentMessage extends OutgoingChatMessage {
             if (ignoreModule.isEnabled() && ignoreModule.isIgnoring(receiver, sender)) {
                 return;
             }
+
             PlayerChatMessage signedMessage = this.message.filter(filterMaskEnabled);
-            if (!signedMessage.isFullyFiltered()) {
-                switch (params.chatType().value().chat().translationKey()) {
-                    case "chat.type.text":
-                        ChatFormatter.sendChatMessage(receiver, message, params, sender);
-                        break;
-                    case "chat.type.emote":
-                        EmoteFormatter.sendEmoteMessage(receiver, message, params, sender);
-                        break;
-                    default:
-                        receiver.connection.sendDisguisedChatMessage(this.message.decoratedContent(), params);
-                        break;
-                }
+            if (signedMessage.isFullyFiltered()) {
+                return;
+            }
+
+            switch (params.chatType().value().chat().translationKey()) {
+                case "chat.type.text":
+                    receiver.sendSystemMessage(this.formattedChatMessage);
+                    break;
+                case "chat.type.emote":
+                    EmoteFormatter.sendEmoteMessage(receiver, message, params, sender);
+                    break;
+                default:
+                    receiver.connection.sendDisguisedChatMessage(this.message.decoratedContent(), params);
+                    break;
             }
 
         }
