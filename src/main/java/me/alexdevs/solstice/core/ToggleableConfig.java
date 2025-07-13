@@ -10,8 +10,11 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class ToggleableConfig {
+    public static final Pattern ENTRY_PATTERN = Pattern.compile("^\\s*(?<key>\\w+(?:[.:]\\w+)?)=(?<value>\\w+)");
+
     private static ToggleableConfig instance = null;
 
     private final Map<String, Boolean> modules = new HashMap<>();
@@ -30,6 +33,10 @@ public class ToggleableConfig {
     }
 
     public boolean isEnabled(String id) {
+        id = id.replace(':', '.');
+        if (!id.contains(".")) {
+            id = "solstice." + id;
+        }
         return modules.computeIfAbsent(id, (i) -> true);
     }
 
@@ -40,14 +47,18 @@ public class ToggleableConfig {
         try (var br = new BufferedReader(new FileReader(this.filePath.toFile()))) {
             String line;
             while ((line = br.readLine()) != null) {
-                var parts = line.split("=");
-                if (parts.length != 2) {
+                var matcher = ENTRY_PATTERN.matcher(line);
+                if (!matcher.matches()) {
+                    if (!line.isBlank() && !line.startsWith("#")) {
+                        System.out.println("Malformed module config entry in solstice/modules.conf: " + line + ". Skipping.");
+                    }
                     continue;
                 }
-
-                var key = parts[0].trim();
-                var value = parts[1].trim();
-
+                var key = matcher.group("key").replace(':', '.');
+                if (!key.contains(".")) {
+                    key = "solstice." + key;
+                }
+                var value = matcher.group("value");
                 var enabled = Boolean.parseBoolean(value);
                 modules.put(key, enabled);
             }
