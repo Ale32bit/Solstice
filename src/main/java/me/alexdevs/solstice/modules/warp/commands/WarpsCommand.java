@@ -31,7 +31,7 @@ public class WarpsCommand extends ModCommand<WarpModule> {
                 .executes(context -> {
                     var source = context.getSource();
                     var serverDate = Solstice.serverData.getData(WarpServerData.class);
-                    var warpList = serverDate.warps.keySet().stream().toList();
+                    var warpList = serverDate.warps.keySet().stream().sorted().toList();
                     var sourceContext = PlaceholderContext.of(source);
 
                     if(source.isPlayer()) {

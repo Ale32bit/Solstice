@@ -42,7 +42,7 @@ public class HomesCommand extends ModCommand<HomeModule> {
     private int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrException();
         var data = module.getData(player.getUUID());
-        var homeList = data.homes.keySet().stream().toList();
+        var homeList = data.homes.keySet().stream().sorted().toList();
         var playerContext = PlaceholderContext.of(player);
 
         if (homeList.isEmpty()) {
@@ -87,7 +87,7 @@ public class HomesCommand extends ModCommand<HomeModule> {
         var playerContext = PlaceholderContext.of(player);
 
         var data = module.getData(profile.getId());
-        var homeList = data.homes.keySet().stream().toList();
+        var homeList = data.homes.keySet().stream().sorted().toList();
 
         if (homeList.isEmpty()) {
             var placeholders = Map.of(

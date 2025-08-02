@@ -33,11 +33,8 @@ public class DeleteWarpCommand extends ModCommand<WarpModule> {
                 .requires(require("set", 2))
                 .then(argument("name", StringArgumentType.word())
                         .suggests((context, builder) -> {
-                            if (!context.getSource().isPlayer())
-                                return SharedSuggestionProvider.suggest(new String[]{}, builder);
-
                             var serverData = Solstice.serverData.getData(WarpServerData.class);
-                            return SharedSuggestionProvider.suggest(serverData.warps.keySet().stream(), builder);
+                            return SharedSuggestionProvider.suggest(serverData.warps.keySet().stream().sorted(), builder);
                         })
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name"))));
     }

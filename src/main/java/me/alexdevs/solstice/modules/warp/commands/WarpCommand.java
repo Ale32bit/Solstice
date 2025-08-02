@@ -35,12 +35,9 @@ public class WarpCommand extends ModCommand<WarpModule> {
                 .requires(require(true))
                 .then(argument("name", StringArgumentType.word())
                         .suggests((context, builder) -> {
-                            if (!context.getSource().isPlayer())
-                                return SharedSuggestionProvider.suggest(new String[]{}, builder);
-
+                            var player = context.getSource().getPlayerOrException();
                             var serverData = Solstice.serverData.getData(WarpServerData.class);
-                            var player = context.getSource().getPlayer();
-                            var warps = serverData.warps.keySet().stream().filter(serverPosition -> module.canUseWarp(player, serverPosition));
+                            var warps = serverData.warps.keySet().stream().filter(serverPosition -> module.canUseWarp(player, serverPosition)).sorted();
                             return SharedSuggestionProvider.suggest(warps, builder);
                         })
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name"))));

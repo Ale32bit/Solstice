@@ -35,12 +35,11 @@ public class HomeCommand extends ModCommand<HomeModule> {
                 .executes(context -> execute(context, "home", false))
                 .then(argument("name", StringArgumentType.word())
                         .suggests((context, builder) -> {
-                            if (!context.getSource().isPlayer())
-                                return SharedSuggestionProvider.suggest(new String[]{}, builder);
+                            var player = context.getSource().getPlayerOrException();
 
-                            var data = module.getData(context.getSource().getPlayer().getUUID());
+                            var data = module.getData(player.getUUID());
 
-                            return SharedSuggestionProvider.suggest(data.homes.keySet().stream(), builder);
+                            return SharedSuggestionProvider.suggest(data.homes.keySet().stream().sorted(), builder);
                         })
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name"), false))
                         .then(literal("force")
