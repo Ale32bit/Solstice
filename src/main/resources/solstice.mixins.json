@@ -10,8 +10,8 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "events.CommandEventsMixin",
     "CommandNodeAccessor",
+    "events.CommandEventsMixin",
     "events.WorldSaveEventMixin",
     "modules.admin.ConnectionBypassMixin",
     "modules.afk.FixPlayerSleepPercentageMixin",
@@ -21,6 +21,7 @@
     "modules.customname.CustomDisplayNameMixin",
     "modules.miscellaneous.BypassSleepingInBedCheckMixin",
     "modules.sign.FormatSignMixin",
+    "modules.spawn.OverrideNewPlayerSpawnPointMixin",
     "modules.spawn.OverrideSpawnPointMixin",
     "modules.styling.CustomAdvancementMixin",
     "modules.styling.CustomChatMessageMixin",

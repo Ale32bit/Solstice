@@ -20,8 +20,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
+
 public class SpawnModule extends ModuleBase.Toggleable {
-    
+
 
     public SpawnModule(ResourceLocation id) {
         super(id);
@@ -41,10 +42,15 @@ public class SpawnModule extends ModuleBase.Toggleable {
 
         SolsticeEvents.WELCOME.register((player, server) -> {
             var firstSpawn = getFirstSpawn();
-            if (firstSpawn != null) {
-                // Send next tick, twice, so it does not conflict with "on-login" spawn setting.
-                Solstice.nextTick(() -> Solstice.nextTick(() -> firstSpawn.teleport(player)));
+            if (firstSpawn == null) {
+                // New player spawn coords is too much of a hassle to mixin. At least the dimension is handled...
+                firstSpawn = getGlobalSpawnPosition();
             }
+            // java moment
+            final var finalSpawn = firstSpawn;
+
+            // Send the next tick, twice, so it does not conflict with the "on-login" spawn setting.
+            Solstice.nextTick(() -> Solstice.nextTick(() -> finalSpawn.teleport(player)));
         });
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
