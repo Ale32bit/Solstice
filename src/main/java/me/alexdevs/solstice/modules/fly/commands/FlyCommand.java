@@ -49,10 +49,15 @@ public class FlyCommand extends ModCommand<FlyModule> {
 
         var abilities = player.getAbilities();
         abilities.mayfly = !abilities.mayfly;
-        player.onUpdateAbilities();
 
         var data = Solstice.playerData.get(player).getData(FlyPlayerData.class);
         data.flightEnabled = abilities.mayfly;
+
+        if(!abilities.mayfly) {
+            abilities.flying = false;
+        }
+
+        player.onUpdateAbilities();
 
         Component text;
         var sourceContext = PlaceholderContext.of(context.getSource());
