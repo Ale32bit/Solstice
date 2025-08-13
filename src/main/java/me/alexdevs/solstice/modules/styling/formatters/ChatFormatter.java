@@ -22,11 +22,11 @@ public class ChatFormatter {
     public static Component getFormattedMessage(PlayerChatMessage message, ServerPlayer player) {
         Component messageText = Components.chat(message, player);
 
-        var config = ModuleProvider.STYLING.getConfig();
+        var chatFormat = ModuleProvider.STYLING.getChatFormat(player);
 
         var playerContext = PlaceholderContext.of(player);
         return Format.parse(
-                config.chatFormat,
+                chatFormat,
                 playerContext,
                 Map.of(
                         "message", messageText

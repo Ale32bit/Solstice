@@ -146,6 +146,19 @@ public class LuckPermsIntegration {
         }
     }
 
+    public static String getPrimaryGroup(ServerPlayer player) {
+        if (!available) {
+            return "default";
+        }
+        try {
+            var user = luckPerms.getPlayerAdapter(ServerPlayer.class).getUser(player);
+            return user.getPrimaryGroup();
+        } catch (IllegalStateException e) {
+            // Fake player may throw with IllegalStateException
+            return "default";
+        }
+    }
+
     public static Tristate checkPermission(Entity entity, String permission) {
         if (!(entity instanceof ServerPlayer)) {
             return Tristate.UNDEFINED;

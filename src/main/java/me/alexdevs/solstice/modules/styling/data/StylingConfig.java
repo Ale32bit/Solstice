@@ -1,5 +1,6 @@
 package me.alexdevs.solstice.modules.styling.data;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 
@@ -28,8 +29,14 @@ public class StylingConfig {
     @Comment("Goal advancement format.")
     public String advancementGoal = "<aqua>\uD83C\uDF96</aqua> %player:displayname% <gray>completed the goal</gray> <hover:'${description}'><aqua>${title}</aqua></hover>";
 
-    @Comment("Player chat format.")
-    public String chatFormat = "%player:displayname%<gray>:</gray> ${message}";
+    @Comment("!! This setting is deprecated. Use chat-formats instead. !!")
+    @Deprecated
+    public @Nullable String chatFormat = null;
+
+    @Comment("Chat format per group. group = format")
+    public Map<String, String> chatFormats = Map.of(
+            "default", "%player:displayname%<gray>:</gray> ${message}"
+    );
 
     @Comment("Emote format (/me)")
     public String emoteFormat = "<gray>\uD83D\uDC64 %player:displayname% <i>${message}</i></gray>";
