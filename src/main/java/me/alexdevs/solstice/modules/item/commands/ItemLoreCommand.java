@@ -13,7 +13,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ItemLoreCommand extends ModCommand<ItemModule> {
@@ -64,7 +63,7 @@ public class ItemLoreCommand extends ModCommand<ItemModule> {
 
                             var playerContext = PlaceholderContext.of(player);
                             var list = new ListTag();
-                            for(var line : itemLore.split("\\\\n")) {
+                            for (var line : itemLore.split("\\\\n")) {
                                 var text = Format.parse(line, playerContext);
                                 list.add(StringTag.valueOf(Component.Serializer.toJson(text)));
                             }

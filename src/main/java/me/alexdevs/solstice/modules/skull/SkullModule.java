@@ -1,7 +1,6 @@
 package me.alexdevs.solstice.modules.skull;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.PropertyMap;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.skull.commands.SkullCommand;
 import net.minecraft.nbt.StringTag;
@@ -10,10 +9,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PlayerHeadItem;
 
-import java.util.Optional;
 import java.util.UUID;
+
 public class SkullModule extends ModuleBase.Toggleable {
-    
+
 
     public SkullModule(ResourceLocation id) {
         super(id);

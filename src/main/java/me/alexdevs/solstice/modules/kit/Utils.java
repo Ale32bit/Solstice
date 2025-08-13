@@ -2,7 +2,6 @@ package me.alexdevs.solstice.modules.kit;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.sgui.api.gui.SimpleGui;
-import me.alexdevs.solstice.Solstice;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.world.inventory.Slot;
@@ -35,7 +34,7 @@ public class Utils {
         var items = new ArrayList<ItemStack>();
         for (var i = 0; i < inventory.getContainerSize(); i++) {
             var stack = inventory.getItem(i);
-            if(!stack.isEmpty()) {
+            if (!stack.isEmpty()) {
                 items.add(stack);
             }
         }
@@ -43,7 +42,7 @@ public class Utils {
     }
 
     public static void redirect(SimpleGui container, KitInventory inventory) {
-        for(var i = 0; i < container.getSize(); i++) {
+        for (var i = 0; i < container.getSize(); i++) {
             container.setSlotRedirect(i, new Slot(inventory, i, 0, 0));
         }
     }
