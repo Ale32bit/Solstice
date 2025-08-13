@@ -24,8 +24,9 @@ public abstract class OverrideNewPlayerSpawnPointMixin {
                     target = "Lnet/minecraft/server/MinecraftServer;getLevel(Lnet/minecraft/resources/ResourceKey;)Lnet/minecraft/server/level/ServerLevel;"
             )
     )
-    public ServerLevel solstice$overrideWorld(MinecraftServer server, ResourceKey<Level> dimension, @Local Optional<CompoundTag> optional) {
-        if (optional.isEmpty()) {
+    public ServerLevel solstice$overrideWorld(MinecraftServer server, ResourceKey<Level> dimension) {
+        var level = server.getLevel(dimension);
+        if (level == null) {
             var spawn = ModuleProvider.SPAWN;
             var firstSpawn = spawn.getFirstSpawn();
             if (firstSpawn != null) {

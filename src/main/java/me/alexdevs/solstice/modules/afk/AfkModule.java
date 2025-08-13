@@ -66,7 +66,7 @@ public class AfkModule extends ModuleBase.Toggleable {
         this.commands.add(new AfkCommand(this));
         this.commands.add(new ActiveTimeCommand(this));
 
-        Placeholders.register(ResourceLocation.fromNamespaceAndPath(Solstice.MOD_ID, "afk"), (context, arg) -> {
+        Placeholders.register(new ResourceLocation(Solstice.MOD_ID, "afk"), (context, arg) -> {
             if (!context.hasPlayer())
                 return PlaceholderResult.invalid("No player!");
 

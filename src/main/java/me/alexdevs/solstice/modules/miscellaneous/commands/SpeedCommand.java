@@ -72,13 +72,18 @@ public class SpeedCommand extends ModCommand<MiscellaneousModule> {
         var map = Map.of(
                 "speed", Component.nullToEmpty(String.valueOf(speedMultiplier))
         );
+
         if (speedMultiplier == 1) {
-            instance.removeModifier(id);
+            var res = instance.getModifiers().stream().filter(x -> x.getName().equals(id.toString())).findFirst();
+            res.ifPresent(instance::removeModifier);
 
             context.getSource().sendSuccess(() -> module.locale().get("walkSpeedReset", map), true);
         } else {
-            var modifier = new AttributeModifier(id, speedMultiplier, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-            instance.addOrUpdateTransientModifier(modifier);
+            var res = instance.getModifiers().stream().filter(x -> x.getName().equals(id.toString())).findFirst();
+            res.ifPresent(instance::removeModifier);
+
+            var modifier = new AttributeModifier(id.toString(), speedMultiplier, AttributeModifier.Operation.MULTIPLY_TOTAL);
+            instance.addTransientModifier(modifier);
 
             context.getSource().sendSuccess(() -> module.locale().get("walkSpeedSet", map), true);
         }

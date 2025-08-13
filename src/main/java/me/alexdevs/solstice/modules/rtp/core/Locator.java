@@ -184,7 +184,7 @@ public class Locator {
         if (holder == null) {
             return Optional.empty();
         } else {
-            var chunk = holder.getFullChunkFuture().getNow(ChunkHolder.UNLOADED_LEVEL_CHUNK).orElse(null);
+            var chunk = holder.getFullChunkFuture().getNow(ChunkHolder.UNLOADED_LEVEL_CHUNK).left().orElse(null);
             if (chunk == null) {
                 return Optional.empty();
             }

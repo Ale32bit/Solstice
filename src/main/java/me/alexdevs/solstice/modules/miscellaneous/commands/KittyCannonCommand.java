@@ -35,7 +35,7 @@ public class KittyCannonCommand extends ModCommand<MiscellaneousModule> {
 
                     final var world = player.serverLevel();
 
-                    BALL.create(world, entity -> {
+                    BALL.create(world, null, entity -> {
                         entity.setDeltaMovement(player.getLookAngle().scale(3.5));
                         entity.setPos(player.getEyePosition().add(player.getLookAngle()));
                         world.addFreshEntity(entity);

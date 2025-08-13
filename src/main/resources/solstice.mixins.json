@@ -22,6 +22,7 @@
     "modules.miscellaneous.BypassSleepingInBedCheckMixin",
     "modules.sign.FormatSignMixin",
     "modules.spawn.OverrideNewPlayerSpawnPointMixin",
+    "modules.spawn.OverrideSpawnPointLevelMixin",
     "modules.spawn.OverrideSpawnPointMixin",
     "modules.styling.CustomAdvancementMixin",
     "modules.styling.CustomChatMessageMixin",

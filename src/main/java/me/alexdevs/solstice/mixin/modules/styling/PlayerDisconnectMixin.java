@@ -16,7 +16,7 @@ public abstract class PlayerDisconnectMixin {
     @Shadow
     public ServerPlayer player;
 
-    @Redirect(method = "removePlayerFromWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Z)V"))
+    @Redirect(method = "onDisconnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Z)V"))
     private void solstice$sendLeaveMessage(PlayerList playerList, Component message, boolean bypassHiddenChat) {
         var formattedMessage = ConnectionActivityFormatter.onLeave(this.player);
         StylingModule.broadcastActivity(playerList, formattedMessage, bypassHiddenChat);

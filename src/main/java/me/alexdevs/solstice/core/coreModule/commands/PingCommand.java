@@ -26,7 +26,7 @@ public class PingCommand extends ModCommand<CoreModule> {
                 .requires(require("ping.base", true))
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrException();
-                    var ping = player.connection.latency();
+                    var ping = player.latency;
                     var map = Map.of(
                             "ping", Component.nullToEmpty(String.valueOf(ping))
                     );
@@ -37,7 +37,7 @@ public class PingCommand extends ModCommand<CoreModule> {
                         .requires(require("ping.others", 1))
                         .executes(context -> {
                             var player = EntityArgument.getPlayer(context, "player");
-                            var ping = player.connection.latency();
+                            var ping = player.latency;
                             var map = Map.of(
                                     "ping", Component.nullToEmpty(String.valueOf(ping)),
                                     "player", player.getName()

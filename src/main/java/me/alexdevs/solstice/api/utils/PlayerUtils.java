@@ -2,7 +2,6 @@ package me.alexdevs.solstice.api.utils;
 
 import com.mojang.authlib.GameProfile;
 import me.alexdevs.solstice.Solstice;
-import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
 import java.util.UUID;
 
@@ -17,7 +16,7 @@ public class PlayerUtils {
         }
 
         var playerManager = Solstice.server.getPlayerList();
-        var player = playerManager.getPlayerForLogin(profile, ClientInformation.createDefault());
+        var player = playerManager.getPlayerForLogin(profile);
         playerManager.load(player);
         return player;
     }

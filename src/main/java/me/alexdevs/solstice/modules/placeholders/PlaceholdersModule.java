@@ -15,7 +15,7 @@ public class PlaceholdersModule extends ModuleBase.Toggleable {
 
     @Override
     public void init() {
-        Placeholders.register(ResourceLocation.fromNamespaceAndPath(ENTITY, "name"), (context, str) -> {
+        Placeholders.register(new ResourceLocation(ENTITY, "name"), (context, str) -> {
             if (!context.hasEntity()) {
                 return PlaceholderResult.invalid("No entity!");
             }
@@ -23,7 +23,7 @@ public class PlaceholdersModule extends ModuleBase.Toggleable {
             return PlaceholderResult.value(entity.getName());
         });
 
-        Placeholders.register(ResourceLocation.fromNamespaceAndPath(ENTITY, "displayname"), (context, str) -> {
+        Placeholders.register(new ResourceLocation(ENTITY, "displayname"), (context, str) -> {
             if (!context.hasEntity()) {
                 return PlaceholderResult.invalid("No entity!");
             }
@@ -31,7 +31,7 @@ public class PlaceholdersModule extends ModuleBase.Toggleable {
             return PlaceholderResult.value(entity.getDisplayName());
         });
 
-        Placeholders.register(ResourceLocation.fromNamespaceAndPath(ENTITY, "uuid"), (context, str) -> {
+        Placeholders.register(new ResourceLocation(ENTITY, "uuid"), (context, str) -> {
             if (!context.hasEntity()) {
                 return PlaceholderResult.invalid("No entity!");
             }

@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules.kit;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.sgui.api.gui.SimpleGui;
 import me.alexdevs.solstice.Solstice;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -12,15 +13,14 @@ import java.util.List;
 
 public class Utils {
     public static String serializeItemStack(ItemStack itemStack) {
-        var registry = Solstice.server.registryAccess();
-        var nbt = itemStack.save(registry);
+        var nbt = new CompoundTag();
+        itemStack.save(nbt);
         return nbt.getAsString();
     }
 
     public static ItemStack deserializeItemStack(String string) throws CommandSyntaxException {
-        var registry = Solstice.server.registryAccess();
         var nbt = TagParser.parseTag(string);
-        return ItemStack.parseOptional(registry, nbt);
+        return ItemStack.of(nbt);
     }
 
     public static KitInventory createInventory(List<ItemStack> items) {

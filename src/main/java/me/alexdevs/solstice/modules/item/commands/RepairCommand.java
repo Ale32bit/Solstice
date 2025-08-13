@@ -4,7 +4,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.item.ItemModule;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.core.component.DataComponents;
 
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class RepairCommand extends ModCommand<ItemModule> {
 
                     if(item.isDamaged()) {
                         // Removes the NBT tag altogether instead of just setting it to 0
-                        item.remove(DataComponents.DAMAGE);
+                        item.removeTagKey("Damage");
                         context.getSource().sendSuccess(() -> module.locale().get("repaired"), false);
                         return 1;
                     } else {

@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Solstice implements ModInitializer {
     public static final String MOD_ID = "solstice";
     public static final Logger LOGGER = LoggerFactory.getLogger(Solstice.class);
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
+    public static final ResourceLocation ID = new ResourceLocation(MOD_ID, "");
 
     public static final IConfigDataManager configManager = new ConfigDataManager(Paths.configDirectory.resolve("config.conf"));
     public static final LocaleManager localeManager = new LocaleManager(Paths.configDirectory.resolve("locale.json"));

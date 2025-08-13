@@ -65,7 +65,7 @@ public interface CustomSentMessage extends OutgoingChatMessage {
                 return;
             }
 
-            switch (params.chatType().value().chat().translationKey()) {
+            switch (params.chatType().chat().translationKey()) {
                 case "chat.type.text":
                     receiver.sendSystemMessage(this.formattedChatMessage);
                     break;

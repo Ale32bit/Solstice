@@ -9,11 +9,11 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.kit.KitModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.component.ItemLore;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -92,15 +92,18 @@ public class KitsCommand extends ModCommand<KitModule> {
             if (canClaim) {
                 kitNameComponent = Component.nullToEmpty(kitName);
                 kitLoreComponent = module.locale().get("claimKit", placeholders);
-                icon.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+                icon.getOrCreateTag().put("Enchantments", new ListTag());
             } else {
 
                 kitNameComponent = module.locale().get("kitsUnavailableName", placeholders);
                 kitLoreComponent = module.locale().get("kitsUnavailableLore", placeholders);
             }
 
-            icon.set(DataComponents.CUSTOM_NAME, kitNameComponent);
-            icon.set(DataComponents.LORE, new ItemLore(List.of(kitLoreComponent)));
+            icon.setHoverName(kitNameComponent);
+            var displayNbt = icon.getOrCreateTagElement("display");
+            var list = new ListTag();
+            list.add(StringTag.valueOf(Component.Serializer.toJson(kitLoreComponent)));
+            displayNbt.put("Lore", list);
 
             gui.setSlot(i, new GuiElement(icon, (syncId, clickType, slotActionType) -> {
                 try {
