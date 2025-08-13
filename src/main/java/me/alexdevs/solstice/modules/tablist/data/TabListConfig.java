@@ -29,4 +29,13 @@ public class TabListConfig {
 
     @Comment("Format to use when displaying the player name in the tab list.")
     public String playerTabName = "%solstice:afk%%player:displayname_visual%";
+
+    /*@Comment("Order of players by group to display in the player list.")
+    public List<String> groupsOrder = List.of(
+            "owner",
+            "admin",
+            "moderator",
+            "helper",
+            "default"
+    );*/
 }

@@ -134,7 +134,7 @@ public class LuckPermsIntegration {
 
     public static boolean isInGroup(ServerPlayer player, String group) {
         if (!available) {
-            return false;
+            return "default".equals(group);
         }
         try {
             var user = luckPerms.getPlayerAdapter(ServerPlayer.class).getUser(player);
