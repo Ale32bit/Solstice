@@ -9,7 +9,7 @@ public class SeenLocale {
     public static final Map<String, String> MODULE;
     private static final ArrayList<String> base = new ArrayList<>(List.of(
             "<yellow>${username}</yellow><gold>'s information:</gold>",
-            " <gold>UUID:</gold> <yellow>${uuid}</yellow>",
+            " <gold>UUID:</gold> <yellow><copy:'${uuid}'>${uuid}</copy></yellow>",
             " <gold>First seen:</gold> <yellow>${firstSeenDate}</yellow>",
             " <gold>Last seen:</gold> <yellow>${lastSeenDate}</yellow>"
     ));
