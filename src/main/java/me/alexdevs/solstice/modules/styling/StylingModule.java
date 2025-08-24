@@ -57,7 +57,11 @@ public class StylingModule extends ModuleBase.Toggleable {
 
         var config = getConfig();
         var primaryGroup = LuckPermsIntegration.getPrimaryGroup(player);
-        format = config.chatFormats.getOrDefault(primaryGroup, format);
+        if (config.chatFormats.containsKey(primaryGroup)) {
+            format = config.chatFormats.get(primaryGroup);
+        } else {
+            format = config.chatFormats.getOrDefault("default", format);
+        }
 
         return format;
     }
