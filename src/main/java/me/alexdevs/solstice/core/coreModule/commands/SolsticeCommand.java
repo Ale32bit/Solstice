@@ -1,9 +1,11 @@
 package me.alexdevs.solstice.core.coreModule.commands;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.Debug;
 import me.alexdevs.solstice.api.module.ModCommand;
@@ -25,6 +27,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 public class SolsticeCommand extends ModCommand<CoreModule> {
@@ -79,6 +82,18 @@ public class SolsticeCommand extends ModCommand<CoreModule> {
 
                             return 1;
                         }))
+                .then(literal("reloaduser")
+                        .requires(require("reloaduser", 3))
+                        .then(argument("player", StringArgumentType.word())
+                                .suggests(LocalGameProfile::suggest)
+                                .executes(context -> {
+                                    var profile = LocalGameProfile.getProfile(context, "player");
+
+                                    context.getSource().sendSuccess(() -> Component.nullToEmpty("Force reloading player data for " + profile.getName()), true);
+
+                                    Solstice.playerData.forceLoad(profile.getId());
+                                    return 0;
+                                })))
                 .then(literal("debug")
                         .requires(require("debug", 4))
                         .then(literal("gen-command-list")
