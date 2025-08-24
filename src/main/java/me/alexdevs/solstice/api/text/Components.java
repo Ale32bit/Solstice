@@ -61,8 +61,16 @@ public class Components {
         if (allowAdvancedChatFormat) {
             set.add(TextCapabilities.ADVANCED);
         }
+
         if (allowLegacyChatFormat) {
             set.add(TextCapabilities.LEGACY);
+        }
+
+        if (ModuleProvider.STYLING.isEnabled()) {
+            var config = Solstice.configManager.getData(StylingConfig.class);
+            if (config.enableMarkdown) {
+                set.add(TextCapabilities.MARKDOWN);
+            }
         }
 
         return chat(message.signedContent(), set, player.createCommandSourceStack());
@@ -76,8 +84,16 @@ public class Components {
         if (allowAdvancedChatFormat) {
             set.add(TextCapabilities.ADVANCED);
         }
+
         if (allowLegacyChatFormat) {
             set.add(TextCapabilities.LEGACY);
+        }
+
+        if (ModuleProvider.STYLING.isEnabled()) {
+            var config = Solstice.configManager.getData(StylingConfig.class);
+            if (config.enableMarkdown) {
+                set.add(TextCapabilities.MARKDOWN);
+            }
         }
 
         return chat(message, set, player.createCommandSourceStack());
@@ -92,8 +108,6 @@ public class Components {
         var context = PlaceholderContext.of(source);
         if (ModuleProvider.STYLING.isEnabled()) {
             var config = Solstice.configManager.getData(StylingConfig.class);
-            enableMarkdown = enableMarkdown || config.enableMarkdown;
-
             for (var repl : config.replacements.entrySet()) {
                 if (message.contains(repl.getKey())) {
                     var key = Integer.toHexString(random.nextInt(16 ^ 8));
