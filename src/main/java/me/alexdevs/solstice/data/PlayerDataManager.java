@@ -93,6 +93,17 @@ public class PlayerDataManager {
         }
     }
 
+    /**
+     * Forces the data for a specific player to be loaded into memory.
+     * If the data is not already loaded, it will load the data from the corresponding file system path.
+     * If the data is already loaded, this method ensures it is refreshed.
+     *
+     * @param uuid The UUID of the player whose data should be force-loaded.
+     */
+    public void forceLoad(UUID uuid) {
+        load(uuid);
+    }
+
     private PlayerData load(UUID uuid) {
         Solstice.LOGGER.debug("Loading player data {}", uuid);
         var data = new PlayerData(this.basePath, uuid, classMap, providers);
