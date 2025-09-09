@@ -145,15 +145,17 @@ public class ServerLocation {
     public boolean safeTeleport(ServerPlayer player, boolean setBackPosition, int range) {
         var world = getWorld(player.getServer());
 
-        var horRange = (int)Math.pow(range, 2);
-        var verRange = (int)Math.ceil(range / 2d);
-
+        var horRange = (int) Math.pow(range, 2);
         for (int i = 1; i <= horRange; i++) {
             var rel = spiral(i);
             var attemptPos = this.getBlockPos().offset(rel);
-            for (int j = -verRange; j < verRange; j++) {
-                var safePos = DismountHelper.findSafeDismountLocation(EntityType.PLAYER, world, attemptPos.offset(0, j, 0), true);
-                if(safePos != null) {
+            for (int j = 0; j < range * 2; j++) {
+
+                // Integer zigzag pattern: 0, 1, -1, 2, -2, 3, -3, ...
+                var y = (j % 2 == 0) ? -j / 2 : j / 2 + 1;
+
+                var safePos = DismountHelper.findSafeDismountLocation(EntityType.PLAYER, world, attemptPos.offset(0, y, 0), true);
+                if (safePos != null) {
                     var safeLocation = new ServerLocation(safePos.x, safePos.y, safePos.z, this.getYaw(), this.getPitch(), this.getWorld());
                     safeLocation.teleport(player, setBackPosition);
                     return true;
@@ -170,7 +172,7 @@ public class ServerLocation {
 
     /// [Algorithm to find a specific element coordinates in a spiral](https://stackoverflow.com/questions/61229890/algorithm-to-find-a-specific-elements-coordinate-in-a-spiral)
     public static Vec3i spiral(int n) {
-        if( n == 0 ){
+        if (n == 0) {
             return Vec3i.ZERO;
         }
 
