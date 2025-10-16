@@ -78,29 +78,20 @@ public class Locator {
     }
 
     private void attempt() {
-        if (this.remainingAttempts <= 0) {
-            failed = true;
-            callback.accept(new Result(Result.Type.TOO_MANY_ATTEMPTS, Optional.empty()));
-            return;
-        }
+        for (var i = config.attempts; i >= 0; i--) {
+            this.remainingAttempts = i;
+            var pos = getRandomPos();
 
-        this.remainingAttempts--;
-        var pos = getRandomPos();
-
-        if (isValid(pos)) {
-            Solstice.LOGGER.info("RTP spot found at attempt {} for {}", config.attempts - remainingAttempts, player.getName());
-            attemptPos = pos;
-            load();
-        } else {
-            try {
-                attempt();
-            } catch(StackOverflowError e) {
-                this.remainingAttempts = 0;
-                Solstice.LOGGER.warn("Stack overflow exception at RTP attempt {}! Try lowering the attempts available!", config.attempts - remainingAttempts);
-                failed = true;
-                callback.accept(new Result(Result.Type.TOO_MANY_ATTEMPTS, Optional.empty()));
+            if (isValid(pos)) {
+                Solstice.LOGGER.info("RTP spot found at attempt {} for {}", config.attempts - remainingAttempts, player.getName());
+                attemptPos = pos;
+                load();
+                return;
             }
         }
+
+        failed = true;
+        callback.accept(new Result(Result.Type.TOO_MANY_ATTEMPTS, Optional.empty()));
     }
 
     public boolean tick() {
@@ -196,7 +187,7 @@ public class Locator {
         if (pos == null)
             return false;
 
-        if(this.biome != null) {
+        if (this.biome != null) {
             return isInBiome(pos, this.biome);
         }
 
