@@ -1,4 +1,2 @@
-- Fix Java 17 requirement in version 1.20.1.
-- Fix chat style formatting not working correctly.
-- Added command to force reload a player data file without saving first.
-- Fix command spy spamming uncompleted commands in 1.20.1.
+- Bugfix safe teleport not working correctly.
+- Bugfix RTP attempt throwing StackOverflowException.
