@@ -4,7 +4,7 @@ import me.alexdevs.solstice.modules.ModuleProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,8 +22,9 @@ public abstract class OverrideSpawnPointMixin {
     @Shadow
     private BlockPos respawnPosition;
 
+
     @Inject(method = "findRespawnPositionAndUseSpawnBlock", at = @At("RETURN"), cancellable = true)
-    public void solstice$overrideRespawnTarget(boolean keepInventory, DimensionTransition.PostDimensionTransition postDimensionTransition, CallbackInfoReturnable<DimensionTransition> cir) {
+    public void solstice$overrideRespawnTarget(boolean useCharge, TeleportTransition.PostTeleportTransition postTeleportTransition, CallbackInfoReturnable<Object> cir) {
         var spawnModule = ModuleProvider.SPAWN;
         var config = spawnModule.getConfig();
 
@@ -35,14 +36,13 @@ public abstract class OverrideSpawnPointMixin {
                 spawn.getZ()
         );
 
-        var transition = new DimensionTransition(
+        var transition = new TeleportTransition(
                 world,
                 pos,
                 Vec3.ZERO,
                 spawn.getYaw(),
                 spawn.getPitch(),
-                false,
-                DimensionTransition.DO_NOTHING
+                TeleportTransition.DO_NOTHING
         );
 
         if (config.globalSpawn.onRespawn) {
@@ -54,4 +54,5 @@ public abstract class OverrideSpawnPointMixin {
             cir.setReturnValue(transition);
         }
     }
+
 }

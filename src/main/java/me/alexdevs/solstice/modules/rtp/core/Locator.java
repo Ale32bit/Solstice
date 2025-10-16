@@ -122,7 +122,7 @@ public class Locator {
     }
 
     private BlockPos getEmptySpace(BlockPos pos) {
-        var bottom = chunk.getMinBuildHeight();
+        var bottom = chunk.getMinY();
         var top = world.getLogicalHeight();
         var blockPos = new BlockPos.MutableBlockPos(pos.getX(), top, pos.getZ());
 
@@ -151,10 +151,10 @@ public class Locator {
 
             var dx = i % 16;
             var dz = i / 16;
-            pos = chunk.getPos().getBlockAt(dx, chunk.getMinBuildHeight(), dz);
+            pos = chunk.getPos().getBlockAt(dx, chunk.getMinY(), dz);
         }
 
-        if (pos.getY() <= chunk.getMinBuildHeight()) {
+        if (pos.getY() <= chunk.getMinY()) {
             callback.accept(new Result(Result.Type.UNSAFE, Optional.empty()));
             return;
         }

@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Objects;
+import java.util.Set;
 
 public class ServerLocation {
     protected final double x;
@@ -80,7 +81,7 @@ public class ServerLocation {
         player.setDeltaMovement(player.getDeltaMovement().multiply(1f, 0f, 1f));
         player.setOnGround(true);
 
-        player.teleportTo(serverWorld, this.getX(), this.getY(), this.getZ(), this.getYaw(), this.getPitch());
+        player.teleportTo(serverWorld, this.getX(), this.getY(), this.getZ(), Set.of(), this.getYaw(), this.getPitch(), false);
 
         // There is a bug (presumably in Fabric's api) that causes experience level to be set to 0 when teleporting between dimensions/worlds.
         // Therefore, this will update the experience client side as a temporary solution.
