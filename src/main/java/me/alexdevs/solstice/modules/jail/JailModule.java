@@ -24,7 +24,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 
 import java.util.Map;
 import java.util.UUID;
@@ -88,24 +87,24 @@ public class JailModule extends ModuleBase.Toggleable {
         });
 
         AttackBlockCallback.EVENT.register((player, world, hand, blockPos, direction) -> {
-            if (isPlayerJailed(player.getUUID())) {
-                player.sendSystemMessage(locale().get("cannotBreakBlocks"));
+            if (isPlayerJailed(player.getUUID()) && player instanceof ServerPlayer) {
+                ((ServerPlayer) player).sendSystemMessage(locale().get("cannotBreakBlocks"));
                 return InteractionResult.FAIL;
             }
             return InteractionResult.PASS;
         });
 
         AttackEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
-            if (isPlayerJailed(player.getUUID())) {
-                player.sendSystemMessage(locale().get("cannotAttackEntities"));
+            if (isPlayerJailed(player.getUUID()) && player instanceof ServerPlayer) {
+                ((ServerPlayer) player).sendSystemMessage(locale().get("cannotAttackEntities"));
                 return InteractionResult.FAIL;
             }
             return InteractionResult.PASS;
         });
 
         PlayerBlockBreakEvents.BEFORE.register((world, player, blockPos, blockState, blockEntity) -> {
-            if (isPlayerJailed(player.getUUID())) {
-                player.sendSystemMessage(locale().get("cannotBreakBlocks"));
+             if (isPlayerJailed(player.getUUID()) && player instanceof ServerPlayer) {
+                ((ServerPlayer) player).sendSystemMessage(locale().get("cannotBreakBlocks"));
                 return false;
             }
 
@@ -113,28 +112,27 @@ public class JailModule extends ModuleBase.Toggleable {
         });
 
         UseBlockCallback.EVENT.register((player, world, hand, blockHitResult) -> {
-            if (isPlayerJailed(player.getUUID())) {
-                player.sendSystemMessage(locale().get("cannotUseBlocks"));
+             if (isPlayerJailed(player.getUUID()) && player instanceof ServerPlayer) {
+                ((ServerPlayer) player).sendSystemMessage(locale().get("cannotUseBlocks"));
                 return InteractionResult.FAIL;
             }
             return InteractionResult.PASS;
         });
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
-            if (isPlayerJailed(player.getUUID())) {
-                player.sendSystemMessage(locale().get("cannotUseEntities"));
+             if (isPlayerJailed(player.getUUID()) && player instanceof ServerPlayer) {
+                ((ServerPlayer) player).sendSystemMessage(locale().get("cannotUseEntities"));
                 return InteractionResult.FAIL;
             }
             return InteractionResult.PASS;
         });
 
         UseItemCallback.EVENT.register((player, world, hand) -> {
-            var stack = player.getItemInHand(hand);
-            if (isPlayerJailed(player.getUUID())) {
-                player.sendSystemMessage(locale().get("cannotUseItems"));
-                return InteractionResultHolder.fail(stack);
+             if (isPlayerJailed(player.getUUID()) && player instanceof ServerPlayer) {
+                ((ServerPlayer) player).sendSystemMessage(locale().get("cannotUseItems"));
+                return InteractionResult.FAIL;
             }
-            return InteractionResultHolder.pass(stack);
+            return InteractionResult.PASS;
         });
 
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((signedMessage, player, parameters) -> {

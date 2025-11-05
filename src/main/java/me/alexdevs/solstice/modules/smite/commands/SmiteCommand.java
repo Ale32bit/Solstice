@@ -12,7 +12,7 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.phys.HitResult;
 
 import java.util.List;
@@ -85,7 +85,7 @@ public class SmiteCommand extends ModCommand<SmiteModule> {
                 world,
                 world::addFreshEntity,
                 pos,
-                MobSpawnType.COMMAND,
+                EntitySpawnReason.COMMAND,
                 false,
                 false);
     }
