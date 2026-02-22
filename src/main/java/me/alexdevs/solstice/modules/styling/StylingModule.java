@@ -10,9 +10,14 @@ import me.alexdevs.solstice.modules.styling.data.StylingConfig;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.scores.Scoreboard;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class StylingModule extends ModuleBase.Toggleable {
     public static final String ADVANCED_CHAT_FORMATTING_PERMISSION = "solstice.chat.advanced";
@@ -49,13 +54,9 @@ public class StylingModule extends ModuleBase.Toggleable {
             }
         });
 
-        SolsticeEvents.RELOAD.register(instance -> {
-            var playerList = Solstice.server.getPlayerList();
-            var scoreboard = Solstice.server.getScoreboard();
-            for (var player : playerList.getPlayers()) {
-                playerList.updateEntireScoreboard(scoreboard, player);
-            }
-        });
+        SolsticeEvents.RELOAD.register(instance -> reloadNameplates(false));
+
+        Solstice.scheduler.scheduleAtFixedRateSync(() -> reloadNameplates(false), 0, 1, TimeUnit.SECONDS);
     }
 
     public StylingConfig getConfig() {
@@ -127,5 +128,23 @@ public class StylingModule extends ModuleBase.Toggleable {
         }
 
         return Format.parse(format, PlaceholderContext.of(player));
+    }
+
+    private void reloadNameplates(boolean add) {
+        var playerList = Solstice.server.getPlayerList();
+        var scoreboard = Solstice.server.getScoreboard();
+        for (var player : playerList.getPlayers()) {
+            sendTeamSetup(player, playerList.getPlayers(), scoreboard, add);
+        }
+    }
+
+    public void sendTeamSetup(ServerPlayer player, List<ServerPlayer> players, Scoreboard scoreboard, boolean add) {
+        for (var otherPlayer : players) {
+            if(otherPlayer == player) {
+                continue;
+            }
+            var team = new CustomPlayerTeam(scoreboard, otherPlayer);
+            player.connection.send(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, add));
+        }
     }
 }

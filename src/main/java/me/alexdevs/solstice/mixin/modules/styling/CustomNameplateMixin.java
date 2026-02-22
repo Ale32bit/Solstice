@@ -1,7 +1,6 @@
 package me.alexdevs.solstice.mixin.modules.styling;
 
-import me.alexdevs.solstice.modules.styling.CustomPlayerTeam;
-import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import net.minecraft.server.ServerScoreboard;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
@@ -23,10 +22,7 @@ public abstract class CustomNameplateMixin {
 
     @Inject(method = "updateEntireScoreboard", at = @At("HEAD"))
     private void solstice$overrideNameplate(ServerScoreboard scoreboard, ServerPlayer player, CallbackInfo ci) {
-        for (var otherPlayer : players) {
-            var team = new CustomPlayerTeam(scoreboard, otherPlayer);
-            player.connection.send(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true));
-        }
+        ModuleProvider.STYLING.sendTeamSetup(player, players, scoreboard, true);
     }
 
 }

@@ -2,17 +2,16 @@ package me.alexdevs.solstice.modules.styling;
 
 import me.alexdevs.solstice.modules.ModuleProvider;
 import net.minecraft.ChatFormatting;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
+@MethodsReturnNonnullByDefault
 public class CustomPlayerTeam extends PlayerTeam {
     private final ServerPlayer player;
 
@@ -23,6 +22,10 @@ public class CustomPlayerTeam extends PlayerTeam {
         super.getPlayers().add(player.getGameProfile().getName());
     }
 
+    @Override
+    public Component getDisplayName() {
+        return player.getDisplayName();
+    }
 
     @Override
     public ChatFormatting getColor() {
