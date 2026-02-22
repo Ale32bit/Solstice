@@ -18,10 +18,13 @@ public class StylingModule extends ModuleBase.Toggleable {
     public static final String LEGACY_CHAT_FORMATTING_PERMISSION = "solstice.chat.legacy";
     public static final String SILENT_ACTIVITY_PERMISSION = "solstice.chat.activity.silent";
 
+    private static final StylingConfig.NameplateFormat DEFAULT_NAMEPLATE = new StylingConfig.NameplateFormat("", "");
+
     public StylingModule(ResourceLocation id) {
         super(id);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void init() {
         Solstice.configManager.registerData(getId(), StylingConfig.class, StylingConfig::new);
@@ -42,6 +45,14 @@ public class StylingModule extends ModuleBase.Toggleable {
                 config.chatFormats.put("default", config.chatFormat);
                 config.chatFormat = null;
                 Solstice.configManager.save();
+            }
+        });
+
+        SolsticeEvents.RELOAD.register(instance -> {
+            var playerList = Solstice.server.getPlayerList();
+            var scoreboard = Solstice.server.getScoreboard();
+            for (var player : playerList.getPlayers()) {
+                playerList.updateEntireScoreboard(scoreboard, player);
             }
         });
     }
@@ -66,15 +77,45 @@ public class StylingModule extends ModuleBase.Toggleable {
         return format;
     }
 
-    public static boolean shouldSendActivityMessage(ServerPlayer player) {
+    public boolean shouldSendActivityMessage(ServerPlayer player) {
         return !Permissions.check(player, SILENT_ACTIVITY_PERMISSION);
     }
 
-    public static void broadcastActivity(PlayerList playerList, Component component, boolean bypassHiddenMessage) {
+    public void broadcastActivity(PlayerList playerList, Component component, boolean bypassHiddenMessage) {
         for (var player : playerList.getPlayers()) {
             if (shouldSendActivityMessage(player)) {
                 player.sendSystemMessage(component, bypassHiddenMessage);
             }
         }
+    }
+
+    public boolean shouldColorNameplate() {
+        return getConfig().doColorNameplate;
+    }
+
+    public Component getNameplatePrefix(ServerPlayer player) {
+        var config = getConfig();
+        var primaryGroup = LuckPermsIntegration.getPrimaryGroup(player);
+        var format = "";
+        if (config.nameplateFormats.containsKey(primaryGroup)) {
+            format = config.nameplateFormats.get(primaryGroup).prefix();
+        } else {
+            format = config.nameplateFormats.getOrDefault("default", DEFAULT_NAMEPLATE).prefix();
+        }
+
+        return Format.parse(format, PlaceholderContext.of(player));
+    }
+
+    public Component getNameplateSuffix(ServerPlayer player) {
+        var config = getConfig();
+        var primaryGroup = LuckPermsIntegration.getPrimaryGroup(player);
+        var format = "";
+        if (config.nameplateFormats.containsKey(primaryGroup)) {
+            format = config.nameplateFormats.get(primaryGroup).suffix();
+        } else {
+            format = config.nameplateFormats.getOrDefault("default", DEFAULT_NAMEPLATE).suffix();
+        }
+
+        return Format.parse(format, PlaceholderContext.of(player));
     }
 }

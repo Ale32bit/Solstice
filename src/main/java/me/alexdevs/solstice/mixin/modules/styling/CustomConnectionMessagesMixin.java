@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.mixin.modules.styling;
 
-import me.alexdevs.solstice.modules.styling.StylingModule;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.styling.formatters.ConnectionActivityFormatter;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
@@ -41,6 +41,6 @@ public abstract class CustomConnectionMessagesMixin {
             formattedMessage = ConnectionActivityFormatter.onJoinRenamed(solstice$player, (String) args[1]);
         }
 
-        StylingModule.broadcastActivity(list, formattedMessage, bypassHiddenChat);
+        ModuleProvider.STYLING.broadcastActivity(list, formattedMessage, bypassHiddenChat);
     }
 }

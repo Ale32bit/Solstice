@@ -4,3 +4,7 @@ accessible method net/minecraft/server/level/ServerChunkCache getVisibleChunkIfP
 
 # Inventory see
 accessible field net/minecraft/server/MinecraftServer playerDataStorage Lnet/minecraft/world/level/storage/PlayerDataStorage;
+
+# Custom Nameplate
+accessible field net/minecraft/network/chat/TextColor NAMED_COLORS Ljava/util/Map;
+accessible method net/minecraft/server/players/PlayerList updateEntireScoreboard (Lnet/minecraft/server/ServerScoreboard;Lnet/minecraft/server/level/ServerPlayer;)V
