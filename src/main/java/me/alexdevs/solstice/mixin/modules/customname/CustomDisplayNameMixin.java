@@ -1,8 +1,6 @@
 package me.alexdevs.solstice.mixin.modules.customname;
 
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.ModuleProvider;
-import me.alexdevs.solstice.modules.customName.CustomNameModule;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;

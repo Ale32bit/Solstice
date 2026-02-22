@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.mixin.modules.styling;
 
-import me.alexdevs.solstice.modules.styling.StylingModule;
+import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.styling.formatters.ConnectionActivityFormatter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,6 +19,6 @@ public abstract class PlayerDisconnectMixin {
     @Redirect(method = "removePlayerFromWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Z)V"))
     private void solstice$sendLeaveMessage(PlayerList playerList, Component message, boolean bypassHiddenChat) {
         var formattedMessage = ConnectionActivityFormatter.onLeave(this.player);
-        StylingModule.broadcastActivity(playerList, formattedMessage, bypassHiddenChat);
+        ModuleProvider.STYLING.broadcastActivity(playerList, formattedMessage, bypassHiddenChat);
     }
 }
