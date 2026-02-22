@@ -14,18 +14,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CustomPlayerTeam extends PlayerTeam {
-    private final static Map<TextColor, ChatFormatting> COLOR_MAP = TextColor.NAMED_COLORS.entrySet().stream().collect(Collectors.toUnmodifiableMap(Map.Entry::getValue, entry -> textColorToFormatting(entry.getKey())));
-
-    private static ChatFormatting textColorToFormatting(String name) {
-        var value = ChatFormatting.getByName(name);
-        if (value == null) return ChatFormatting.WHITE;
-        return value;
-    }
-
-    private static ChatFormatting getFormatting(TextColor color) {
-        return COLOR_MAP.getOrDefault(color, ChatFormatting.WHITE);
-    }
-
     private final ServerPlayer player;
 
     public CustomPlayerTeam(Scoreboard scoreboard, ServerPlayer player) {
@@ -38,10 +26,7 @@ public class CustomPlayerTeam extends PlayerTeam {
 
     @Override
     public ChatFormatting getColor() {
-        if(ModuleProvider.STYLING.shouldColorNameplate()) {
-            return getFormatting(player.getDisplayName().getStyle().getColor());
-        }
-        return super.getColor();
+        return ModuleProvider.STYLING.getNameplateColor(player);
     }
 
     @Override

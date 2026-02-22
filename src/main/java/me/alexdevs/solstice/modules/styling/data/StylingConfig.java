@@ -40,11 +40,8 @@ public class StylingConfig {
 
     @Comment("Nameplate formatting per group. group = format.\nPlaceholders here are not refreshed often.")
     public Map<String, NameplateFormat> nameplateFormats = Map.of(
-            "default", new NameplateFormat("", "")
+            "default", new NameplateFormat("", "", "green")
     );
-
-    @Comment("Whether to color the username part in the nameplate of players.")
-    public boolean doColorNameplate = true;
 
     @Comment("Emote format (/me)")
     public String emoteFormat = "<gray>\uD83D\uDC64 %player:displayname% <i>${message}</i></gray>";
@@ -65,5 +62,5 @@ public class StylingConfig {
     public String welcome = "<light_purple>Welcome %player:displayname% to the server!</light_purple>";
 
     @ConfigSerializable
-    public record NameplateFormat(String prefix, String suffix) { }
+    public record NameplateFormat(String prefix, String suffix, String color) { }
 }

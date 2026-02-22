@@ -8,6 +8,7 @@ import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.modules.styling.data.StylingConfig;
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,7 +19,7 @@ public class StylingModule extends ModuleBase.Toggleable {
     public static final String LEGACY_CHAT_FORMATTING_PERMISSION = "solstice.chat.legacy";
     public static final String SILENT_ACTIVITY_PERMISSION = "solstice.chat.activity.silent";
 
-    private static final StylingConfig.NameplateFormat DEFAULT_NAMEPLATE = new StylingConfig.NameplateFormat("", "");
+    private static final StylingConfig.NameplateFormat DEFAULT_NAMEPLATE = new StylingConfig.NameplateFormat("", "", "WHITE");
 
     public StylingModule(ResourceLocation id) {
         super(id);
@@ -89,8 +90,17 @@ public class StylingModule extends ModuleBase.Toggleable {
         }
     }
 
-    public boolean shouldColorNameplate() {
-        return getConfig().doColorNameplate;
+    public ChatFormatting getNameplateColor(ServerPlayer player) {
+        var config = getConfig();
+        var primaryGroup = LuckPermsIntegration.getPrimaryGroup(player);
+        var color = "WHITE";
+        if (config.nameplateFormats.containsKey(primaryGroup)) {
+            color = config.nameplateFormats.get(primaryGroup).color();
+        } else {
+            color = config.nameplateFormats.getOrDefault("default", DEFAULT_NAMEPLATE).color();
+        }
+
+        return ChatFormatting.getByName(color);
     }
 
     public Component getNameplatePrefix(ServerPlayer player) {
