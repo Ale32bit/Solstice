@@ -88,7 +88,11 @@ public class SpawnModule extends ModuleBase.Toggleable {
     public ServerLevel getGlobalSpawnWorld() {
         var targetWorld = getConfig().globalSpawn.targetSpawnWorld;
 
-        var key = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(targetWorld));
+        //? if >= 1.21.1 {
+        /*var key = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(targetWorld));*/
+        //? } else {
+        var key = ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(targetWorld));
+        //? }
         return Solstice.server.getLevel(key);
     }
 

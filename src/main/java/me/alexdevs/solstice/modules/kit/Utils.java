@@ -2,7 +2,12 @@ package me.alexdevs.solstice.modules.kit;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.sgui.api.gui.SimpleGui;
-import me.alexdevs.solstice.Solstice;
+//? if < 1.21.1 {
+import net.minecraft.nbt.CompoundTag;
+//? }
+//? if >= 1.21.1 {
+/*import me.alexdevs.solstice.Solstice;*/
+//? }
 import net.minecraft.nbt.TagParser;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -12,15 +17,25 @@ import java.util.List;
 
 public class Utils {
     public static String serializeItemStack(ItemStack itemStack) {
-        var registry = Solstice.server.registryAccess();
-        var nbt = itemStack.save(registry);
+        //? if >= 1.21.1 {
+        /*var registry = Solstice.server.registryAccess();
+        var nbt = itemStack.save(registry);*/
+        //? } else {
+        var nbt = new CompoundTag();
+        itemStack.save(nbt);
+        //? }
         return nbt.getAsString();
     }
 
     public static ItemStack deserializeItemStack(String string) throws CommandSyntaxException {
-        var registry = Solstice.server.registryAccess();
+        //? if >= 1.21.1 {
+        /*var registry = Solstice.server.registryAccess();
         var nbt = TagParser.parseTag(string);
-        return ItemStack.parseOptional(registry, nbt);
+        return ItemStack.parseOptional(registry, nbt);*/
+        //? } else {
+        var nbt = TagParser.parseTag(string);
+        return ItemStack.of(nbt);
+        //? }
     }
 
     public static KitInventory createInventory(List<ItemStack> items) {
@@ -35,7 +50,7 @@ public class Utils {
         var items = new ArrayList<ItemStack>();
         for (var i = 0; i < inventory.getContainerSize(); i++) {
             var stack = inventory.getItem(i);
-            if(!stack.isEmpty()) {
+            if (!stack.isEmpty()) {
                 items.add(stack);
             }
         }
@@ -43,7 +58,7 @@ public class Utils {
     }
 
     public static void redirect(SimpleGui container, KitInventory inventory) {
-        for(var i = 0; i < container.getSize(); i++) {
+        for (var i = 0; i < container.getSize(); i++) {
             container.setSlotRedirect(i, new Slot(inventory, i, 0, 0));
         }
     }

@@ -18,6 +18,10 @@ public abstract class CommandEventsMixin<S> {
     public void solstice$interceptCommands(StringReader reader, S sourceGeneric, CallbackInfoReturnable<ParseResults<S>> cir) {
         if (sourceGeneric instanceof CommandSourceStack source) {
             var command = reader.getString();
+            //? if < 1.21.1 {
+            if(command.startsWith("/"))
+                return;
+            //? }
             if (!CommandEvents.ALLOW_COMMAND.invoker().allowCommand(source, command)) {
                 cir.cancel();
             }

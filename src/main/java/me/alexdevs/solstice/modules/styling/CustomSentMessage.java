@@ -65,7 +65,11 @@ public interface CustomSentMessage extends OutgoingChatMessage {
                 return;
             }
 
-            switch (params.chatType().value().chat().translationKey()) {
+            //? if >= 1.21.1 {
+            /*switch (params.chatType().value().chat().translationKey()) {*/
+            //? } else {
+            switch (params.chatType().chat().translationKey()) {
+            //? }
                 case "chat.type.text":
                     receiver.sendSystemMessage(this.formattedChatMessage);
                     break;

@@ -8,7 +8,9 @@ import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.item.ItemModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.component.DataComponents;
+//? if >= 1.21.1 {
+/*import net.minecraft.core.component.DataComponents;*/
+//? }
 
 import java.util.List;
 
@@ -35,7 +37,11 @@ public class ItemNameCommand extends ModCommand<ItemModule> {
                         return 0;
                     }
 
-                    item.remove(DataComponents.CUSTOM_NAME);
+                    //? if >= 1.21.1 {
+                    /*item.remove(DataComponents.CUSTOM_NAME);*/
+                    //? } else {
+                    item.resetHoverName();
+                    //? }
 
                     context.getSource().sendSuccess(() -> module.locale().get("nameCleared"), false);
 
@@ -53,7 +59,11 @@ public class ItemNameCommand extends ModCommand<ItemModule> {
                             }
 
                             var playerContext = PlaceholderContext.of(player);
-                            item.set(DataComponents.CUSTOM_NAME, Format.parse(itemName, playerContext));
+                            //? if >= 1.21.1 {
+                            /*item.set(DataComponents.CUSTOM_NAME, Format.parse(itemName, playerContext));*/
+                            //? } else {
+                            item.setHoverName(Format.parse(itemName, playerContext));
+                            //? }
 
                             context.getSource().sendSuccess(() -> module.locale().get("nameSet"), false);
 

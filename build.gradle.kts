@@ -52,18 +52,27 @@ dependencies {
     modRuntimeOnly("net.luckperms:api:5.4")
 }
 tasks.processResources {
+    val mcConstraint = project.property("minecraft_constraint") as String
+    val javaVer = project.property("java_version") as String
     inputs.property("version", project.version)
+    inputs.property("minecraft_constraint", mcConstraint)
+    inputs.property("java_version", javaVer)
     filesMatching("fabric.mod.json") {
-        expand(mapOf("version" to project.version))
+        expand(mapOf(
+            "version" to project.version,
+            "minecraft_constraint" to mcConstraint,
+            "java_version" to javaVer
+        ))
     }
 }
+val javaVersion = (property("java_version") as String).toInt()
 tasks.withType<JavaCompile>().configureEach {
-    options.release = 17
+    options.release = javaVersion
 }
 java {
     withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.toVersion(javaVersion)
+    targetCompatibility = JavaVersion.toVersion(javaVersion)
 }
 tasks.jar {
     from(rootProject.file("LICENSE")) {

@@ -92,7 +92,11 @@ public class ServerLocation {
     }
 
     public ResourceKey<Level> getWorldKey() {
-        return ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(this.getWorld()));
+        //? if >= 1.21.1 {
+        /*return ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(this.getWorld()));*/
+        //? } else {
+        return ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(this.getWorld()));
+        //? }
     }
 
     public ServerLevel getWorld(MinecraftServer server) {

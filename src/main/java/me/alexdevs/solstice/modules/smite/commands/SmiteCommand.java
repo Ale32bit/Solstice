@@ -83,6 +83,9 @@ public class SmiteCommand extends ModCommand<SmiteModule> {
     private void summon(ServerLevel world, BlockPos pos) {
         entityType.create(
                 world,
+                //? if < 1.21.1 {
+                null,
+                //? }
                 world::addFreshEntity,
                 pos,
                 MobSpawnType.COMMAND,
