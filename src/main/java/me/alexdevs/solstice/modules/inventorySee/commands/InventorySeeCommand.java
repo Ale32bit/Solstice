@@ -13,8 +13,8 @@ import me.alexdevs.solstice.modules.inventorySee.InventorySeeModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.commands.CommandSourceStack;
 //? if >= 1.21.1 {
-/*import net.minecraft.core.component.DataComponents;*/
-//? }
+/*import net.minecraft.core.component.DataComponents;
+*///? }
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.ChestMenu;
@@ -109,8 +109,8 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
 
                             var barrier = new ItemStack(Items.BLACK_STAINED_GLASS_PANE);
                             //? if >= 1.21.1 {
-                            /*barrier.set(DataComponents.CUSTOM_NAME, Component.literal(""));*/
-                            //? } else {
+                            /*barrier.set(DataComponents.CUSTOM_NAME, Component.literal(""));
+                            *///? } else {
                             barrier.setHoverName(Component.literal(""));
                             //? }
                             for (var i = targetInventory.getContainerSize(); i < container.getSize(); i++) {
@@ -203,8 +203,8 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
 
                                     var barrier = new ItemStack(Items.BLACK_STAINED_GLASS_PANE);
                                     //? if >= 1.21.1 {
-                                    /*barrier.set(DataComponents.CUSTOM_NAME, Component.literal(""));*/
-                                    //? } else {
+                                    /*barrier.set(DataComponents.CUSTOM_NAME, Component.literal(""));
+                                    *///? } else {
                                     barrier.setHoverName(Component.literal(""));
                                     //? }
                                     for (var i = size; i < container.getSize(); i++) {

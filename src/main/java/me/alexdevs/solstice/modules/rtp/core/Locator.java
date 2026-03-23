@@ -122,7 +122,11 @@ public class Locator {
     }
 
     private BlockPos getEmptySpace(BlockPos pos) {
+        //? if >= 1.21.4 {
+        /*var bottom = chunk.getMinY();
+        *///? } else {
         var bottom = chunk.getMinBuildHeight();
+        //? }
         var top = world.getLogicalHeight();
         var blockPos = new BlockPos.MutableBlockPos(pos.getX(), top, pos.getZ());
 
@@ -151,10 +155,18 @@ public class Locator {
 
             var dx = i % 16;
             var dz = i / 16;
+            //? if >= 1.21.4 {
+            /*pos = chunk.getPos().getBlockAt(dx, chunk.getMinY(), dz);
+            *///? } else {
             pos = chunk.getPos().getBlockAt(dx, chunk.getMinBuildHeight(), dz);
+            //? }
         }
 
+        //? if >= 1.21.4 {
+        /*if (pos.getY() <= chunk.getMinY()) {
+        *///? } else {
         if (pos.getY() <= chunk.getMinBuildHeight()) {
+        //? }
             callback.accept(new Result(Result.Type.UNSAFE, Optional.empty()));
             return;
         }
@@ -176,8 +188,8 @@ public class Locator {
             return Optional.empty();
         } else {
             //? if >= 1.21.1 {
-            /*var chunk = holder.getFullChunkFuture().getNow(ChunkHolder.UNLOADED_LEVEL_CHUNK).orElse(null);*/
-            //? } else {
+            /*var chunk = holder.getFullChunkFuture().getNow(ChunkHolder.UNLOADED_LEVEL_CHUNK).orElse(null);
+            *///? } else {
             var chunk = holder.getFullChunkFuture().getNow(ChunkHolder.UNLOADED_LEVEL_CHUNK).left().orElse(null);
             //? }
             if (chunk == null) {

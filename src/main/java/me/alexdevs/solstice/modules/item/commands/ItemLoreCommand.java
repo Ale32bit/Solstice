@@ -9,8 +9,8 @@ import me.alexdevs.solstice.modules.item.ItemModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 //? if >= 1.21.1 {
-/*import net.minecraft.core.component.DataComponents;*/
-//? }
+/*import net.minecraft.core.component.DataComponents;
+*///? }
 //? if < 1.21.1 {
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -18,12 +18,12 @@ import net.minecraft.nbt.StringTag;
 //? }
 import net.minecraft.network.chat.Component;
 //? if >= 1.21.1 {
-/*import net.minecraft.world.item.component.ItemLore;*/
-//? }
+/*import net.minecraft.world.item.component.ItemLore;
+*///? }
 
 //? if >= 1.21.1 {
-/*import java.util.ArrayList;*/
-//? }
+/*import java.util.ArrayList;
+*///? }
 import java.util.List;
 
 public class ItemLoreCommand extends ModCommand<ItemModule> {
@@ -50,8 +50,8 @@ public class ItemLoreCommand extends ModCommand<ItemModule> {
                     }
 
                     //? if >= 1.21.1 {
-                    /*item.remove(DataComponents.LORE);*/
-                    //? } else {
+                    /*item.remove(DataComponents.LORE);
+                    *///? } else {
                     CompoundTag nbtCompound = item.getTagElement("display");
                     if (nbtCompound != null) {
                         nbtCompound.remove("Lore");
@@ -82,8 +82,8 @@ public class ItemLoreCommand extends ModCommand<ItemModule> {
                             for (var line : itemLore.split("\\\\n")) {
                                 list.add(Format.parse(line, playerContext));
                             }
-                            item.set(DataComponents.LORE, new ItemLore(list));*/
-                            //? } else {
+                            item.set(DataComponents.LORE, new ItemLore(list));
+                            *///? } else {
                             var list = new ListTag();
                             for (var line : itemLore.split("\\\\n")) {
                                 var text = Format.parse(line, playerContext);

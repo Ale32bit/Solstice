@@ -6,8 +6,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 //? if >= 1.21.1 {
-/*import me.alexdevs.solstice.api.utils.RegistryUtils;*/
-//? }
+/*import me.alexdevs.solstice.api.utils.RegistryUtils;
+*///? }
 import me.alexdevs.solstice.modules.rtp.RTPModule;
 import me.alexdevs.solstice.modules.rtp.core.Locator;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -48,8 +48,8 @@ public class RTPCommand extends ModCommand<RTPModule> {
                             if (Permissions.check(context.getSource(), getPermissionNode("exempt.biome"), 2)) {
                                 //? if >= 1.21.1 {
                                 /*var biomeRegistry = this.commandRegistry.lookup(Registries.BIOME);
-                                var biomes = RegistryUtils.getBiomes(biomeRegistry.get(), false);*/
-                                //? } else {
+                                var biomes = RegistryUtils.getBiomes(biomeRegistry.get(), false);
+                                *///? } else {
                                 var biomeRegistry = this.commandRegistry.holderLookup(Registries.BIOME);
                                 var biomes = biomeRegistry.listElements().map(r -> r.unwrapKey().get().location().toString()).toList();
                                 //? }

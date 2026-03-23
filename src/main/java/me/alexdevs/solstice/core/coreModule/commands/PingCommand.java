@@ -27,8 +27,8 @@ public class PingCommand extends ModCommand<CoreModule> {
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrException();
                     //? if >= 1.21.1 {
-                    /*var ping = player.connection.latency();*/
-                    //? } else {
+                    /*var ping = player.connection.latency();
+                    *///? } else {
                     var ping = player.latency;
                     //? }
                     var map = Map.of(
@@ -42,8 +42,8 @@ public class PingCommand extends ModCommand<CoreModule> {
                         .executes(context -> {
                             var player = EntityArgument.getPlayer(context, "player");
                     //? if >= 1.21.1 {
-                    /*var ping = player.connection.latency();*/
-                    //? } else {
+                    /*var ping = player.connection.latency();
+                    *///? } else {
                     var ping = player.latency;
                     //? }
                     var map = Map.of(

@@ -75,8 +75,8 @@ public class SpeedCommand extends ModCommand<MiscellaneousModule> {
 
         if (speedMultiplier == 1) {
             //? if >= 1.21.1 {
-            /*instance.removeModifier(id);*/
-            //? } else {
+            /*instance.removeModifier(id);
+            *///? } else {
             var res = instance.getModifiers().stream().filter(x -> x.getName().equals(id.toString())).findFirst();
             res.ifPresent(instance::removeModifier);
             //? }
@@ -85,8 +85,8 @@ public class SpeedCommand extends ModCommand<MiscellaneousModule> {
         } else {
             //? if >= 1.21.1 {
             /*var modifier = new AttributeModifier(id, speedMultiplier, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-            instance.addOrUpdateTransientModifier(modifier);*/
-            //? } else {
+            instance.addOrUpdateTransientModifier(modifier);
+            *///? } else {
             var res = instance.getModifiers().stream().filter(x -> x.getName().equals(id.toString())).findFirst();
             res.ifPresent(instance::removeModifier);
 

@@ -30,8 +30,8 @@ public class StylingModule extends ModuleBase.Toggleable {
     public static final String SILENT_ACTIVITY_PERMISSION = "solstice.chat.activity.silent";
 
     //? if >= 1.21.1 {
-    /*private static final StylingConfig.NameplateFormat DEFAULT_NAMEPLATE = new StylingConfig.NameplateFormat("", "");*/
-    //? } else {
+    /*private static final StylingConfig.NameplateFormat DEFAULT_NAMEPLATE = new StylingConfig.NameplateFormat("", "");
+    *///? } else {
     private static final StylingConfig.NameplateFormat DEFAULT_NAMEPLATE = new StylingConfig.NameplateFormat("", "", "WHITE");
     //? }
 
@@ -70,8 +70,8 @@ public class StylingModule extends ModuleBase.Toggleable {
             for (var player : playerList.getPlayers()) {
                 playerList.updateEntireScoreboard(scoreboard, player);
             }
-        });*/
-        //? } else {
+        });
+        *///? } else {
         SolsticeEvents.RELOAD.register(instance -> reloadNameplates(false));
         Solstice.scheduler.scheduleAtFixedRateSync(() -> reloadNameplates(false), 0, 1, TimeUnit.SECONDS);
         //? }
@@ -112,8 +112,8 @@ public class StylingModule extends ModuleBase.Toggleable {
     //? if >= 1.21.1 {
     /*public boolean shouldColorNameplate() {
         return getConfig().doColorNameplate;
-    }*/
-    //? } else {
+    }
+    *///? } else {
     public ChatFormatting getNameplateColor(ServerPlayer player) {
         var config = getConfig();
         var primaryGroup = LuckPermsIntegration.getPrimaryGroup(player);

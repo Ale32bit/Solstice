@@ -4,8 +4,8 @@ import me.alexdevs.solstice.modules.styling.formatters.AdvancementFormatter;
 /*import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.level.ServerPlayer;*/
-//? } else {
+import net.minecraft.server.level.ServerPlayer;
+*///? } else {
 import net.minecraft.advancements.Advancement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.PlayerAdvancements;
@@ -23,8 +23,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 //? }
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 //? if >= 1.21.1 {
-/*@Mixin(AdvancementType.class)*/
-//? } else {
+/*@Mixin(AdvancementType.class)
+*///? } else {
 @Mixin(PlayerAdvancements.class)
 //? }
 public abstract class CustomAdvancementMixin {
@@ -32,8 +32,8 @@ public abstract class CustomAdvancementMixin {
     /*@Inject(method = "createAnnouncement", at = @At("HEAD"), cancellable = true)
     public void solstice$getCustomAnnouncement(AdvancementHolder advancement, ServerPlayer player, CallbackInfoReturnable<MutableComponent> cir) {
         cir.setReturnValue(AdvancementFormatter.getText(player, advancement, (AdvancementType) (Object) this).copy());
-    }*/
-    //? } else {
+    }
+    *///? } else {
     @Shadow private ServerPlayer player;
     @Final @Shadow private PlayerList playerList;
     @Inject(method = "award", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/PlayerList;broadcastSystemMessage(Lnet/minecraft/network/chat/Component;Z)V"), locals = LocalCapture.CAPTURE_FAILSOFT)

@@ -3,8 +3,8 @@ package me.alexdevs.solstice.mixin.modules.styling;
 import me.alexdevs.solstice.modules.ModuleProvider;
 //? if >= 1.21.1 {
 /*import me.alexdevs.solstice.modules.styling.CustomPlayerTeam;
-import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket;*/
-//? }
+import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket;
+*///? }
 import net.minecraft.server.ServerScoreboard;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
@@ -30,8 +30,8 @@ public abstract class CustomNameplateMixin {
         /*for (var otherPlayer : players) {
             var team = new CustomPlayerTeam(scoreboard, otherPlayer);
             player.connection.send(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true));
-        }*/
-        //? } else {
+        }
+        *///? } else {
         ModuleProvider.STYLING.sendTeamSetup(player, players, scoreboard, true);
         //? }
     }

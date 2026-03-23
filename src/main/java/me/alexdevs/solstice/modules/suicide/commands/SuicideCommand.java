@@ -26,7 +26,11 @@ public class SuicideCommand extends ModCommand<SuicideModule> {
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrException();
 
+                    //? if >= 1.21.4 {
+                    /*player.kill(player.serverLevel());
+                    *///? } else {
                     player.kill();
+                    //? }
 
                     return 1;
                 });

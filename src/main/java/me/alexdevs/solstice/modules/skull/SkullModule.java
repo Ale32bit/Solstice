@@ -2,13 +2,13 @@ package me.alexdevs.solstice.modules.skull;
 
 import com.mojang.authlib.GameProfile;
 //? if >= 1.21.1 {
-/*import com.mojang.authlib.properties.PropertyMap;*/
-//? }
+/*import com.mojang.authlib.properties.PropertyMap;
+*///? }
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.skull.commands.SkullCommand;
 //? if >= 1.21.1 {
-/*import net.minecraft.core.component.DataComponents;*/
-//? }
+/*import net.minecraft.core.component.DataComponents;
+*///? }
 //? if < 1.21.1 {
 import net.minecraft.nbt.StringTag;
 //? }
@@ -19,12 +19,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PlayerHeadItem;
 //? }
 //? if >= 1.21.1 {
-/*import net.minecraft.world.item.component.ResolvableProfile;*/
-//? }
+/*import net.minecraft.world.item.component.ResolvableProfile;
+*///? }
 
 //? if >= 1.21.1 {
-/*import java.util.Optional;*/
-//? }
+/*import java.util.Optional;
+*///? }
 import java.util.UUID;
 
 public class SkullModule extends ModuleBase.Toggleable {
@@ -43,8 +43,8 @@ public class SkullModule extends ModuleBase.Toggleable {
         var skull = Items.PLAYER_HEAD.getDefaultInstance();
         name = name.substring(0, Math.min(name.length(), 16));
         //? if >= 1.21.1 {
-        /*skull.set(DataComponents.PROFILE, new ResolvableProfile(Optional.of(name), Optional.empty(), new PropertyMap()));*/
-        //? } else {
+        /*skull.set(DataComponents.PROFILE, new ResolvableProfile(Optional.of(name), Optional.empty(), new PropertyMap()));
+        *///? } else {
         skull.addTagElement(PlayerHeadItem.TAG_SKULL_OWNER, StringTag.valueOf(name));
         //? }
         return skull;
@@ -54,8 +54,8 @@ public class SkullModule extends ModuleBase.Toggleable {
         //? if >= 1.21.1 {
         /*var skull = Items.PLAYER_HEAD.getDefaultInstance();
         skull.set(DataComponents.PROFILE, new ResolvableProfile(Optional.empty(), Optional.of(uuid), new PropertyMap()));
-        return skull;*/
-        //? } else {
+        return skull;
+        *///? } else {
         return createSkull(uuid.toString()); // :shrug:
         //? }
     }
@@ -64,8 +64,8 @@ public class SkullModule extends ModuleBase.Toggleable {
         //? if >= 1.21.1 {
         /*var skull = Items.PLAYER_HEAD.getDefaultInstance();
         skull.set(DataComponents.PROFILE, new ResolvableProfile(profile));
-        return skull;*/
-        //? } else {
+        return skull;
+        *///? } else {
         return createSkull(profile.getName());
         //? }
     }

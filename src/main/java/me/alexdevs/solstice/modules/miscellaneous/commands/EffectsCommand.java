@@ -60,8 +60,8 @@ public class EffectsCommand extends ModCommand<MiscellaneousModule> {
 
             var map = Map.of(
                     //? if >= 1.21.1 {
-                    /*"effect", Component.translatable(effect.value().getDescriptionId()),*/
-                    //? } else {
+                    /*"effect", Component.translatable(effect.value().getDescriptionId()),
+                    *///? } else {
                     "effect", Component.translatable(effect.getDescriptionId()),
                     //? }
                     "amplifier", Component.nullToEmpty(String.valueOf(instance.getAmplifier())),

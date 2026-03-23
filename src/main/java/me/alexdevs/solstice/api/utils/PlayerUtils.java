@@ -3,8 +3,8 @@ package me.alexdevs.solstice.api.utils;
 import com.mojang.authlib.GameProfile;
 import me.alexdevs.solstice.Solstice;
 //? if >= 1.21.1 {
-/*import net.minecraft.server.level.ClientInformation;*/
-//? }
+/*import net.minecraft.server.level.ClientInformation;
+*///? }
 import net.minecraft.server.level.ServerPlayer;
 import java.util.UUID;
 
@@ -20,8 +20,8 @@ public class PlayerUtils {
 
         var playerManager = Solstice.server.getPlayerList();
         //? if >= 1.21.1 {
-        /*var player = playerManager.getPlayerForLogin(profile, ClientInformation.createDefault());*/
-        //? } else {
+        /*var player = playerManager.getPlayerForLogin(profile, ClientInformation.createDefault());
+        *///? } else {
         var player = playerManager.getPlayerForLogin(profile);
         //? }
         playerManager.load(player);

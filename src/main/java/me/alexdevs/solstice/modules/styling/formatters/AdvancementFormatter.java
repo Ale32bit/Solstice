@@ -2,15 +2,15 @@ package me.alexdevs.solstice.modules.styling.formatters;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 //? if >= 1.21.1 {
-/*import me.alexdevs.solstice.Solstice;*/
-//? }
+/*import me.alexdevs.solstice.Solstice;
+*///? }
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.ModuleProvider;
 //? if >= 1.21.1 {
 /*import me.alexdevs.solstice.modules.styling.StylingModule;
 import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.advancements.AdvancementType;*/
-//? } else {
+import net.minecraft.advancements.AdvancementType;
+*///? } else {
 import net.minecraft.advancements.Advancement;
 //? }
 import net.minecraft.network.chat.Component;
@@ -23,8 +23,8 @@ public class AdvancementFormatter {
     /*public static Component getText(ServerPlayer player, AdvancementHolder entry, AdvancementType frame) {
         var title = entry.value().display().get().getTitle();
         var description = entry.value().display().get().getDescription();
-        var frameId = frame.getSerializedName();*/
-    //? } else {
+        var frameId = frame.getSerializedName();
+    *///? } else {
     public static Component getText(ServerPlayer player, Advancement advancement) {
         var frame = advancement.getDisplay().getFrame();
         var frameId = frame.getName();
@@ -39,8 +39,8 @@ public class AdvancementFormatter {
             case GOAL -> config.advancementGoal;
             case CHALLENGE -> config.advancementChallenge;
             case TASK -> config.advancementTask;
-        };*/
-        //? } else {
+        };
+        *///? } else {
         String advancementFormat = switch (frame) {
             case GOAL -> config.advancementGoal;
             case CHALLENGE -> config.advancementChallenge;
@@ -52,8 +52,8 @@ public class AdvancementFormatter {
 
         Map<String, Component> placeholders = Map.of(
                 //? if >= 1.21.1 {
-                /*"frame", frame.getDisplayName(),*/
-                //? } else {
+                /*"frame", frame.getDisplayName(),
+                *///? } else {
                 "frame", frame.getDisplayName(),
                 //? }
                 "title", title,

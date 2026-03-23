@@ -66,8 +66,8 @@ public interface CustomSentMessage extends OutgoingChatMessage {
             }
 
             //? if >= 1.21.1 {
-            /*switch (params.chatType().value().chat().translationKey()) {*/
-            //? } else {
+            /*switch (params.chatType().value().chat().translationKey()) {
+            *///? } else {
             switch (params.chatType().chat().translationKey()) {
             //? }
                 case "chat.type.text":

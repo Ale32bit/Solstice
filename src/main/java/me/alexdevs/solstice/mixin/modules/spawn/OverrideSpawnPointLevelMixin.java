@@ -1,5 +1,5 @@
 //? if < 1.21.1 {
-/*package me.alexdevs.solstice.mixin.modules.spawn;
+package me.alexdevs.solstice.mixin.modules.spawn;
 
 import me.alexdevs.solstice.modules.ModuleProvider;
 import net.minecraft.core.BlockPos;
@@ -47,5 +47,5 @@ public abstract class OverrideSpawnPointLevelMixin {
         }
     }
 }
-*/
+
 //? }

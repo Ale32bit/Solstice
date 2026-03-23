@@ -29,8 +29,8 @@ public class Solstice implements ModInitializer {
     public static final String MOD_ID = "solstice";
     public static final Logger LOGGER = LoggerFactory.getLogger(Solstice.class);
     //? if >= 1.21.1 {
-    /*public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");*/
-    //? } else {
+    /*public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
+    *///? } else {
     public static final ResourceLocation ID = new ResourceLocation(MOD_ID, "");
     //? }
 

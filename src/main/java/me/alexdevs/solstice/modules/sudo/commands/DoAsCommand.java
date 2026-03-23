@@ -75,7 +75,11 @@ public class DoAsCommand extends ModCommand<SudoModule> {
 
                                     CommandSource commandOutput;
                                     if (context.getSource().isPlayer()) {
+                                        //? if >= 1.21.4 {
+                                        /*commandOutput = context.getSource().getPlayer().commandSource();
+                                        *///? } else {
                                         commandOutput = context.getSource().getPlayer();
+                                        //? }
                                     } else {
                                         commandOutput = context.getSource().getServer();
                                     }

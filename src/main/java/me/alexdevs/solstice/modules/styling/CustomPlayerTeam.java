@@ -23,7 +23,7 @@ public class CustomPlayerTeam extends PlayerTeam {
     }
     private final ServerPlayer player;
     public CustomPlayerTeam(Scoreboard scoreboard, ServerPlayer player) {
-        super(scoreboard, player.getGameProfile().getName());
+        super(scoreboard, "sol_" + player.getGameProfile().getName());
         this.player = player;
         super.getPlayers().add(player.getGameProfile().getName());
     }
@@ -46,8 +46,8 @@ public class CustomPlayerTeam extends PlayerTeam {
     public Collection<String> getPlayers() {
         return List.of(player.getGameProfile().getName());
     }
-}*/
-//? } else {
+}
+*///? } else {
 package me.alexdevs.solstice.modules.styling;
 import me.alexdevs.solstice.modules.ModuleProvider;
 import net.minecraft.ChatFormatting;

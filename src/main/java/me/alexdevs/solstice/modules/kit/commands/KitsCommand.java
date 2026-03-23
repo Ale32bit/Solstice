@@ -19,8 +19,8 @@ import java.util.Map;
 
 //? if >= 1.21.1 {
 /*import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.component.ItemLore;*/
-//? }
+import net.minecraft.world.item.component.ItemLore;
+*///? }
 //? if < 1.21.1 {
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -100,8 +100,8 @@ public class KitsCommand extends ModCommand<KitModule> {
                 kitNameComponent = Component.nullToEmpty(kitName);
                 kitLoreComponent = module.locale().get("claimKit", placeholders);
                 //? if >= 1.21.1 {
-                /*icon.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);*/
-                //? } else {
+                /*icon.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+                *///? } else {
                 icon.getOrCreateTag().put("Enchantments", new ListTag());
                 //? }
             } else {
@@ -111,8 +111,8 @@ public class KitsCommand extends ModCommand<KitModule> {
 
             //? if >= 1.21.1 {
             /*icon.set(DataComponents.CUSTOM_NAME, kitNameComponent);
-            icon.set(DataComponents.LORE, new ItemLore(List.of(kitLoreComponent)));*/
-            //? } else {
+            icon.set(DataComponents.LORE, new ItemLore(List.of(kitLoreComponent)));
+            *///? } else {
             icon.setHoverName(kitNameComponent);
             var displayNbt = icon.getOrCreateTagElement("display");
             var list = new ListTag();

@@ -9,7 +9,11 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+//? if >= 1.21.4 {
+/*import net.minecraft.world.entity.EntitySpawnReason;
+*///? } else {
 import net.minecraft.world.entity.MobSpawnType;
+//? }
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -36,8 +40,8 @@ public class KittyCannonCommand extends ModCommand<MiscellaneousModule> {
                     final var world = player.serverLevel();
 
                     //? if >= 1.21.1 {
-                    /*BALL.create(world, entity -> {*/
-                    //? } else {
+                    /*BALL.create(world, entity -> {
+                    *///? } else {
                     BALL.create(world, null, entity -> {
                     //? }
                         entity.setDeltaMovement(player.getLookAngle().scale(3.5));
@@ -49,7 +53,11 @@ public class KittyCannonCommand extends ModCommand<MiscellaneousModule> {
                             DummyExplosion.spawn(world, pos, 0);
                             entity.remove(Entity.RemovalReason.DISCARDED);
                         }, 1, TimeUnit.SECONDS);
+                    //? if >= 1.21.4 {
+                    /*}, player.blockPosition().above(), EntitySpawnReason.COMMAND, true, false);
+                    *///? } else {
                     }, player.blockPosition().above(), MobSpawnType.COMMAND, true, false);
+                    //? }
 
 
                     return 1;

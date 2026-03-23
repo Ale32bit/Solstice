@@ -5,8 +5,8 @@ import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.item.ItemModule;
 import net.minecraft.commands.CommandSourceStack;
 //? if >= 1.21.1 {
-/*import net.minecraft.core.component.DataComponents;*/
-//? }
+/*import net.minecraft.core.component.DataComponents;
+*///? }
 
 import java.util.List;
 
@@ -45,8 +45,8 @@ public class RepairCommand extends ModCommand<ItemModule> {
                     if(item.isDamaged()) {
                         // Removes the NBT tag altogether instead of just setting it to 0
                         //? if >= 1.21.1 {
-                        /*item.remove(DataComponents.DAMAGE);*/
-                        //? } else {
+                        /*item.remove(DataComponents.DAMAGE);
+                        *///? } else {
                         item.removeTagKey("Damage");
                         //? }
                         context.getSource().sendSuccess(() -> module.locale().get("repaired"), false);

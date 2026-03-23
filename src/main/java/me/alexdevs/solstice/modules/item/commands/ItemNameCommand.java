@@ -9,8 +9,8 @@ import me.alexdevs.solstice.modules.item.ItemModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 //? if >= 1.21.1 {
-/*import net.minecraft.core.component.DataComponents;*/
-//? }
+/*import net.minecraft.core.component.DataComponents;
+*///? }
 
 import java.util.List;
 
@@ -38,8 +38,8 @@ public class ItemNameCommand extends ModCommand<ItemModule> {
                     }
 
                     //? if >= 1.21.1 {
-                    /*item.remove(DataComponents.CUSTOM_NAME);*/
-                    //? } else {
+                    /*item.remove(DataComponents.CUSTOM_NAME);
+                    *///? } else {
                     item.resetHoverName();
                     //? }
 
@@ -60,8 +60,8 @@ public class ItemNameCommand extends ModCommand<ItemModule> {
 
                             var playerContext = PlaceholderContext.of(player);
                             //? if >= 1.21.1 {
-                            /*item.set(DataComponents.CUSTOM_NAME, Format.parse(itemName, playerContext));*/
-                            //? } else {
+                            /*item.set(DataComponents.CUSTOM_NAME, Format.parse(itemName, playerContext));
+                            *///? } else {
                             item.setHoverName(Format.parse(itemName, playerContext));
                             //? }
 

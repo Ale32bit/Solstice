@@ -6,8 +6,8 @@ import eu.pb4.sgui.api.gui.SimpleGui;
 import net.minecraft.nbt.CompoundTag;
 //? }
 //? if >= 1.21.1 {
-/*import me.alexdevs.solstice.Solstice;*/
-//? }
+/*import me.alexdevs.solstice.Solstice;
+*///? }
 import net.minecraft.nbt.TagParser;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -19,8 +19,8 @@ public class Utils {
     public static String serializeItemStack(ItemStack itemStack) {
         //? if >= 1.21.1 {
         /*var registry = Solstice.server.registryAccess();
-        var nbt = itemStack.save(registry);*/
-        //? } else {
+        var nbt = itemStack.save(registry);
+        *///? } else {
         var nbt = new CompoundTag();
         itemStack.save(nbt);
         //? }
@@ -31,8 +31,8 @@ public class Utils {
         //? if >= 1.21.1 {
         /*var registry = Solstice.server.registryAccess();
         var nbt = TagParser.parseTag(string);
-        return ItemStack.parseOptional(registry, nbt);*/
-        //? } else {
+        return ItemStack.parseOptional(registry, nbt);
+        *///? } else {
         var nbt = TagParser.parseTag(string);
         return ItemStack.of(nbt);
         //? }

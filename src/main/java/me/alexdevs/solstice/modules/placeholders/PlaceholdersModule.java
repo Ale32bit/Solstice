@@ -16,8 +16,8 @@ public class PlaceholdersModule extends ModuleBase.Toggleable {
     @Override
     public void init() {
         //? if >= 1.21.1 {
-        /*Placeholders.register(ResourceLocation.fromNamespaceAndPath(ENTITY, "name"), (context, str) -> {*/
-        //? } else {
+        /*Placeholders.register(ResourceLocation.fromNamespaceAndPath(ENTITY, "name"), (context, str) -> {
+        *///? } else {
         Placeholders.register(new ResourceLocation(ENTITY, "name"), (context, str) -> {
         //? }
             if (!context.hasEntity()) {
@@ -28,8 +28,8 @@ public class PlaceholdersModule extends ModuleBase.Toggleable {
         });
 
         //? if >= 1.21.1 {
-        /*Placeholders.register(ResourceLocation.fromNamespaceAndPath(ENTITY, "displayname"), (context, str) -> {*/
-        //? } else {
+        /*Placeholders.register(ResourceLocation.fromNamespaceAndPath(ENTITY, "displayname"), (context, str) -> {
+        *///? } else {
         Placeholders.register(new ResourceLocation(ENTITY, "displayname"), (context, str) -> {
         //? }
             if (!context.hasEntity()) {
@@ -40,8 +40,8 @@ public class PlaceholdersModule extends ModuleBase.Toggleable {
         });
 
         //? if >= 1.21.1 {
-        /*Placeholders.register(ResourceLocation.fromNamespaceAndPath(ENTITY, "uuid"), (context, str) -> {*/
-        //? } else {
+        /*Placeholders.register(ResourceLocation.fromNamespaceAndPath(ENTITY, "uuid"), (context, str) -> {
+        *///? } else {
         Placeholders.register(new ResourceLocation(ENTITY, "uuid"), (context, str) -> {
         //? }
             if (!context.hasEntity()) {

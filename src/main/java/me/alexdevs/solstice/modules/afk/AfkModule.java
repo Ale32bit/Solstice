@@ -21,7 +21,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
+//? if < 1.21.4 {
 import net.minecraft.world.InteractionResultHolder;
+//? }
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
@@ -67,8 +69,8 @@ public class AfkModule extends ModuleBase.Toggleable {
         this.commands.add(new ActiveTimeCommand(this));
 
         //? if >= 1.21.1 {
-        /*Placeholders.register(ResourceLocation.fromNamespaceAndPath(Solstice.MOD_ID, "afk"), (context, arg) -> {*/
-        //? } else {
+        /*Placeholders.register(ResourceLocation.fromNamespaceAndPath(Solstice.MOD_ID, "afk"), (context, arg) -> {
+        *///? } else {
         Placeholders.register(new ResourceLocation(Solstice.MOD_ID, "afk"), (context, arg) -> {
         //? }
             if (!context.hasPlayer())
@@ -347,7 +349,11 @@ public class AfkModule extends ModuleBase.Toggleable {
             if (getConfig().triggers.onItemUse) {
                 clearAfk((ServerPlayer) player, AfkTriggerReason.ITEM_USE);
             }
+            //? if >= 1.21.4 {
+            /*return InteractionResult.PASS;
+            *///? } else {
             return InteractionResultHolder.pass(player.getItemInHand(hand));
+            //? }
         });
 
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> {

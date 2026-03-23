@@ -68,8 +68,8 @@ public class RTPConfig {
 
     public List<ResourceKey<Biome>> parseBiomes() {
         //? if >= 1.21.1 {
-        /*return prohibitedBiomes.stream().map(biomeId -> ResourceKey.create(Registries.BIOME, ResourceLocation.parse(biomeId))).toList();*/
-        //? } else {
+        /*return prohibitedBiomes.stream().map(biomeId -> ResourceKey.create(Registries.BIOME, ResourceLocation.parse(biomeId))).toList();
+        *///? } else {
         return prohibitedBiomes.stream().map(biomeId -> ResourceKey.create(Registries.BIOME, ResourceLocation.tryParse(biomeId))).toList();
         //? }
     }
