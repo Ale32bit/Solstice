@@ -62,7 +62,7 @@ import java.util.List;
 public class CustomPlayerTeam extends PlayerTeam {
     private final ServerPlayer player;
     public CustomPlayerTeam(Scoreboard scoreboard, ServerPlayer player) {
-        super(scoreboard, player.getGameProfile().getName());
+        super(scoreboard, "sol_" + player.getGameProfile().getName());
         this.player = player;
         super.getPlayers().add(player.getGameProfile().getName());
     }

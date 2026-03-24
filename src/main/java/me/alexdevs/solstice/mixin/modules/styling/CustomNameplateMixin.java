@@ -1,6 +1,8 @@
 package me.alexdevs.solstice.mixin.modules.styling;
 
+//? if < 1.21.1 {
 import me.alexdevs.solstice.modules.ModuleProvider;
+//? }
 //? if >= 1.21.1 {
 /*import me.alexdevs.solstice.modules.styling.CustomPlayerTeam;
 import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket;

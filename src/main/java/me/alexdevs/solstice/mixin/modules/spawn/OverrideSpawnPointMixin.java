@@ -14,8 +14,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Shadow;*/
-//? } else {
+import org.spongepowered.asm.mixin.Shadow;
+*///? } else {
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -78,8 +78,8 @@ public abstract class OverrideSpawnPointMixin {
         if (config.globalSpawn.onRespawnSoft && respawnPosition == null) {
             cir.setReturnValue(transition);
         }
-    }*/
-    //? } else {
+    }
+    *///? } else {
     @Inject(method = "findRespawnPositionAndUseSpawnBlock", at = @At("RETURN"), cancellable = true)
     private static void solstice$overrideSpawnPos(ServerLevel level, BlockPos pos, float angle, boolean forced, boolean alive, CallbackInfoReturnable<Optional<Vec3>> cir) {
         var spawnModule = ModuleProvider.SPAWN;
