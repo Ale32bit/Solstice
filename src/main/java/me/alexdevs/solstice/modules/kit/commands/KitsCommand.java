@@ -6,6 +6,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.sgui.api.elements.GuiElement;
 import eu.pb4.sgui.api.gui.SimpleGui;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.ItemUtils;
 import me.alexdevs.solstice.modules.kit.KitModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -16,15 +17,6 @@ import net.minecraft.world.inventory.MenuType;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-//? if >= 1.21.1 {
-/*import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.component.ItemLore;
-*///? }
-//? if < 1.21.1 {
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-//? }
 
 public class KitsCommand extends ModCommand<KitModule> {
     public KitsCommand(KitModule module) {
@@ -99,26 +91,13 @@ public class KitsCommand extends ModCommand<KitModule> {
             if (canClaim) {
                 kitNameComponent = Component.nullToEmpty(kitName);
                 kitLoreComponent = module.locale().get("claimKit", placeholders);
-                //? if >= 1.21.1 {
-                /*icon.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
-                *///? } else {
-                icon.getOrCreateTag().put("Enchantments", new ListTag());
-                //? }
+                ItemUtils.setGlint(icon, true);
             } else {
                 kitNameComponent = module.locale().get("kitsUnavailableName", placeholders);
                 kitLoreComponent = module.locale().get("kitsUnavailableLore", placeholders);
             }
-
-            //? if >= 1.21.1 {
-            /*icon.set(DataComponents.CUSTOM_NAME, kitNameComponent);
-            icon.set(DataComponents.LORE, new ItemLore(List.of(kitLoreComponent)));
-            *///? } else {
-            icon.setHoverName(kitNameComponent);
-            var displayNbt = icon.getOrCreateTagElement("display");
-            var list = new ListTag();
-            list.add(StringTag.valueOf(Component.Serializer.toJson(kitLoreComponent)));
-            displayNbt.put("Lore", list);
-            //? }
+            ItemUtils.setCustomName(icon, kitNameComponent);
+            ItemUtils.setLore(icon, List.of(kitLoreComponent));
             gui.setSlot(i, new GuiElement(icon, (syncId, clickType, slotActionType) -> {
                 try {
                     dispatcher.execute("kit claim " + kitName, context.getSource());

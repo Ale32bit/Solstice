@@ -2,11 +2,11 @@ package me.alexdevs.solstice.api;
 
 import com.google.common.collect.ImmutableList;
 import me.alexdevs.solstice.modules.ModuleProvider;
+import me.alexdevs.solstice.api.utils.ResourceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,9 +16,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
-//? if >= 1.21.4 {
-/*import java.util.Set;
-*///? }
+
+//? >= 1.21.4
+//import java.util.Set;
 
 import java.util.Objects;
 
@@ -83,11 +83,10 @@ public class ServerLocation {
         player.setDeltaMovement(player.getDeltaMovement().multiply(1f, 0f, 1f));
         player.setOnGround(true);
 
-        //? if >= 1.21.4 {
-        /*player.teleportTo(serverWorld, this.getX(), this.getY(), this.getZ(), Set.of(), this.getYaw(), this.getPitch(), false);
-        *///? } else {
+        //? >= 1.21.4
+        //player.teleportTo(serverWorld, this.getX(), this.getY(), this.getZ(), Set.of(), this.getYaw(), this.getPitch(), false);
+        //? < 1.21.4
         player.teleportTo(serverWorld, this.getX(), this.getY(), this.getZ(), this.getYaw(), this.getPitch());
-        //? }
 
         // There is a bug (presumably in Fabric's api) that causes experience level to be set to 0 when teleporting between dimensions/worlds.
         // Therefore, this will update the experience client side as a temporary solution.
@@ -99,11 +98,7 @@ public class ServerLocation {
     }
 
     public ResourceKey<Level> getWorldKey() {
-        //? if >= 1.21.1 {
-        /*return ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(this.getWorld()));
-        *///? } else {
-        return ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(this.getWorld()));
-        //? }
+        return ResourceKey.create(Registries.DIMENSION, ResourceUtils.parse(this.getWorld()));
     }
 
     public ServerLevel getWorld(MinecraftServer server) {

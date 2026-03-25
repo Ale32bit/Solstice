@@ -8,32 +8,29 @@ import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.modules.styling.data.StylingConfig;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-//? if < 1.21.1 {
-import net.minecraft.ChatFormatting;
-//? }
+
 import net.minecraft.network.chat.Component;
-//? if < 1.21.1 {
-import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket;
-//? }
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
+
 //? if < 1.21.1 {
+/*import net.minecraft.ChatFormatting;
+import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket;
 import net.minecraft.world.scores.Scoreboard;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-//? }
+*///? }
 
 public class StylingModule extends ModuleBase.Toggleable {
     public static final String ADVANCED_CHAT_FORMATTING_PERMISSION = "solstice.chat.advanced";
     public static final String LEGACY_CHAT_FORMATTING_PERMISSION = "solstice.chat.legacy";
     public static final String SILENT_ACTIVITY_PERMISSION = "solstice.chat.activity.silent";
 
-    //? if >= 1.21.1 {
-    /*private static final StylingConfig.NameplateFormat DEFAULT_NAMEPLATE = new StylingConfig.NameplateFormat("", "");
-    *///? } else {
-    private static final StylingConfig.NameplateFormat DEFAULT_NAMEPLATE = new StylingConfig.NameplateFormat("", "", "WHITE");
-    //? }
+    //? >= 1.21.1
+    private static final StylingConfig.NameplateFormat DEFAULT_NAMEPLATE = new StylingConfig.NameplateFormat("", "");
+    //? < 1.21.1
+    //private static final StylingConfig.NameplateFormat DEFAULT_NAMEPLATE = new StylingConfig.NameplateFormat("", "", "WHITE");
 
     public StylingModule(ResourceLocation id) {
         super(id);
@@ -64,17 +61,17 @@ public class StylingModule extends ModuleBase.Toggleable {
         });
 
         //? if >= 1.21.1 {
-        /*SolsticeEvents.RELOAD.register(instance -> {
+        SolsticeEvents.RELOAD.register(instance -> {
             var playerList = Solstice.server.getPlayerList();
             var scoreboard = Solstice.server.getScoreboard();
             for (var player : playerList.getPlayers()) {
                 playerList.updateEntireScoreboard(scoreboard, player);
             }
         });
-        *///? } else {
-        SolsticeEvents.RELOAD.register(instance -> reloadNameplates(false));
+        //? } else {
+        /*SolsticeEvents.RELOAD.register(instance -> reloadNameplates(false));
         Solstice.scheduler.scheduleAtFixedRateSync(() -> reloadNameplates(false), 0, 1, TimeUnit.SECONDS);
-        //? }
+        *///? }
     }
 
     public StylingConfig getConfig() {
@@ -110,11 +107,11 @@ public class StylingModule extends ModuleBase.Toggleable {
     }
 
     //? if >= 1.21.1 {
-    /*public boolean shouldColorNameplate() {
+    public boolean shouldColorNameplate() {
         return getConfig().doColorNameplate;
     }
-    *///? } else {
-    public ChatFormatting getNameplateColor(ServerPlayer player) {
+    //? } else {
+    /*public ChatFormatting getNameplateColor(ServerPlayer player) {
         var config = getConfig();
         var primaryGroup = LuckPermsIntegration.getPrimaryGroup(player);
         var color = "WHITE";
@@ -125,7 +122,7 @@ public class StylingModule extends ModuleBase.Toggleable {
         }
         return ChatFormatting.getByName(color);
     }
-    //? }
+    *///? }
 
     public Component getNameplatePrefix(ServerPlayer player) {
         var config = getConfig();
@@ -154,7 +151,7 @@ public class StylingModule extends ModuleBase.Toggleable {
     }
 
     //? if < 1.21.1 {
-    private void reloadNameplates(boolean add) {
+    /*private void reloadNameplates(boolean add) {
         var playerList = Solstice.server.getPlayerList();
         var scoreboard = Solstice.server.getScoreboard();
         for (var player : playerList.getPlayers()) {
@@ -171,5 +168,5 @@ public class StylingModule extends ModuleBase.Toggleable {
             player.connection.send(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, add));
         }
     }
-    //? }
+    *///? }
 }

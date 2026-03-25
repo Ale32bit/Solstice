@@ -3,17 +3,13 @@ package me.alexdevs.solstice.modules.miscellaneous.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.EntityUtils;
 import me.alexdevs.solstice.modules.miscellaneous.DummyExplosion;
 import me.alexdevs.solstice.modules.miscellaneous.MiscellaneousModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-//? if >= 1.21.4 {
-/*import net.minecraft.world.entity.EntitySpawnReason;
-*///? } else {
-import net.minecraft.world.entity.MobSpawnType;
-//? }
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -39,11 +35,7 @@ public class KittyCannonCommand extends ModCommand<MiscellaneousModule> {
 
                     final var world = player.serverLevel();
 
-                    //? if >= 1.21.1 {
-                    /*BALL.create(world, entity -> {
-                    *///? } else {
-                    BALL.create(world, null, entity -> {
-                    //? }
+                    EntityUtils.createWithCommand(BALL, world, entity -> {
                         entity.setDeltaMovement(player.getLookAngle().scale(3.5));
                         entity.setPos(player.getEyePosition().add(player.getLookAngle()));
                         world.addFreshEntity(entity);
@@ -53,11 +45,7 @@ public class KittyCannonCommand extends ModCommand<MiscellaneousModule> {
                             DummyExplosion.spawn(world, pos, 0);
                             entity.remove(Entity.RemovalReason.DISCARDED);
                         }, 1, TimeUnit.SECONDS);
-                    //? if >= 1.21.4 {
-                    /*}, player.blockPosition().above(), EntitySpawnReason.COMMAND, true, false);
-                    *///? } else {
-                    }, player.blockPosition().above(), MobSpawnType.COMMAND, true, false);
-                    //? }
+                    }, player.blockPosition().above(), true, false);
 
 
                     return 1;

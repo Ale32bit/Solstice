@@ -30,6 +30,16 @@ public class DoAsCommand extends ModCommand<SudoModule> {
         }
     }
 
+    public static CommandSource getCommandOutput(CommandSourceStack source) {
+        if (source.isPlayer()) {
+            return source.getPlayer()
+            //? >= 1.21.4
+            //.commandSource()
+            ;
+        }
+        return source.getServer();
+    }
+
     public static CommandSourceStack buildPlayerSource(CommandSource commandOutput, MinecraftServer server, ServerPlayer player) {
         var opList = server.getPlayerList().getOps();
         var operator = opList.get(player.getGameProfile());
@@ -73,16 +83,7 @@ public class DoAsCommand extends ModCommand<SudoModule> {
 
                                     context.getSource().sendSuccess(() -> Component.literal(String.format("Executing '%s' as %s", command, stringProfiles)), true);
 
-                                    CommandSource commandOutput;
-                                    if (context.getSource().isPlayer()) {
-                                        //? if >= 1.21.4 {
-                                        /*commandOutput = context.getSource().getPlayer().commandSource();
-                                        *///? } else {
-                                        commandOutput = context.getSource().getPlayer();
-                                        //? }
-                                    } else {
-                                        commandOutput = context.getSource().getServer();
-                                    }
+                                    var commandOutput = getCommandOutput(context.getSource());
 
                                     var server = context.getSource().getServer();
                                     for (var player : players) {

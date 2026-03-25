@@ -10,6 +10,7 @@ import me.alexdevs.solstice.data.ServerData;
 import me.alexdevs.solstice.integrations.ConnectorIntegration;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.locale.LocaleManager;
+import me.alexdevs.solstice.api.utils.ResourceUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -28,11 +29,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Solstice implements ModInitializer {
     public static final String MOD_ID = "solstice";
     public static final Logger LOGGER = LoggerFactory.getLogger(Solstice.class);
-    //? if >= 1.21.1 {
-    /*public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "");
-    *///? } else {
-    public static final ResourceLocation ID = new ResourceLocation(MOD_ID, "");
-    //? }
+    public static final ResourceLocation ID = ResourceUtils.location(MOD_ID, "");
 
     public static final IConfigDataManager configManager = new ConfigDataManager(Paths.configDirectory.resolve("config.conf"));
     public static final LocaleManager localeManager = new LocaleManager(Paths.configDirectory.resolve("locale.json"));

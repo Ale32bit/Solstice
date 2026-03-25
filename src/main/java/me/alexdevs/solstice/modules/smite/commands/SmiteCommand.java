@@ -6,17 +6,13 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.Raycast;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.EntityUtils;
 import me.alexdevs.solstice.modules.smite.SmiteModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
-//? if >= 1.21.4 {
-/*import net.minecraft.world.entity.EntitySpawnReason;
-*///? } else {
-import net.minecraft.world.entity.MobSpawnType;
-//? }
 import net.minecraft.world.phys.HitResult;
 
 import java.util.List;
@@ -85,19 +81,6 @@ public class SmiteCommand extends ModCommand<SmiteModule> {
     }
 
     private void summon(ServerLevel world, BlockPos pos) {
-        entityType.create(
-                world,
-                //? if < 1.21.1 {
-                null,
-                //? }
-                world::addFreshEntity,
-                pos,
-                //? if >= 1.21.4 {
-                /*EntitySpawnReason.COMMAND,
-                *///? } else {
-                MobSpawnType.COMMAND,
-                //? }
-                false,
-                false);
+        EntityUtils.createWithCommand(entityType, world, world::addFreshEntity, pos, false, false);
     }
 }

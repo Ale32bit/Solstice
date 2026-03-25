@@ -50,16 +50,7 @@ public class SudoCommand extends ModCommand<SudoModule> {
 
                             context.getSource().sendSuccess(() -> Component.literal(String.format("Executing '%s' as Server", command)), true);
 
-                            CommandSource commandOutput;
-                            if (context.getSource().isPlayer()) {
-                                //? if >= 1.21.4 {
-                                /*commandOutput = context.getSource().getPlayer().commandSource();
-                                *///? } else {
-                                commandOutput = context.getSource().getPlayer();
-                                //? }
-                            } else {
-                                commandOutput = context.getSource().getServer();
-                            }
+                            var commandOutput = DoAsCommand.getCommandOutput(context.getSource());
 
                             var server = context.getSource().getServer();
                             var source = buildServerSource(commandOutput, server);

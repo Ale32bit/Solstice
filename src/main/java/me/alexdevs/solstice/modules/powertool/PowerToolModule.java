@@ -12,18 +12,21 @@ import me.alexdevs.solstice.modules.powertool.data.PowerToolPlayerData;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.*;
 import net.minecraft.commands.CommandSourceStack;
-//? if >= 1.21.4 {
-/*import net.minecraft.server.level.ServerLevel;
-*///? }
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
-//? if < 1.21.4 {
-import net.minecraft.world.InteractionResultHolder;
-//? }
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.UUID;
+
+//? >= 1.21.4
+//import net.minecraft.server.level.ServerLevel;
+
+//? < 1.21.4
+import net.minecraft.world.InteractionResultHolder;
+
+
 public class PowerToolModule extends ModuleBase.Toggleable {
     
 
@@ -51,11 +54,7 @@ public class PowerToolModule extends ModuleBase.Toggleable {
                 if (data.powerTools.containsKey(itemId)) {
                     var powertool = data.powerTools.get(itemId);
                     if (powertool.containsKey(Action.USE)) {
-                        //? if >= 1.21.4 {
-                        /*var source = player.createCommandSourceStackForNameResolution(((ServerLevel) player.level()));
-                        *///? } else {
-                        var source = player.createCommandSourceStack();
-                        //? }
+                        var source = getSource(player);
                         execute(source, powertool.get(Action.USE), PlaceholderContext.of(player));
 
                         //? if >= 1.21.4 {
@@ -82,11 +81,7 @@ public class PowerToolModule extends ModuleBase.Toggleable {
                 if (data.powerTools.containsKey(itemId)) {
                     var powertool = data.powerTools.get(itemId);
                     if (powertool.containsKey(Action.ATTACK_BLOCK)) {
-                        //? if >= 1.21.4 {
-                        /*var source = player.createCommandSourceStackForNameResolution(((ServerLevel) player.level()));
-                        *///? } else {
-                        var source = player.createCommandSourceStack();
-                        //? }
+                        var source = getSource(player);
                         execute(source, powertool.get(Action.ATTACK_BLOCK), PlaceholderContext.of(player));
 
                         return InteractionResult.CONSUME;
@@ -105,11 +100,7 @@ public class PowerToolModule extends ModuleBase.Toggleable {
                 if (data.powerTools.containsKey(itemId)) {
                     var powertool = data.powerTools.get(itemId);
                     if (powertool.containsKey(Action.ATTACK_ENTITY)) {
-                        //? if >= 1.21.4 {
-                        /*var source = player.createCommandSourceStackForNameResolution(((ServerLevel) player.level()));
-                        *///? } else {
-                        var source = player.createCommandSourceStack();
-                        //? }
+                        var source = getSource(player);
                         execute(source, powertool.get(Action.ATTACK_ENTITY), PlaceholderContext.of(entity));
 
                         return InteractionResult.CONSUME;
@@ -128,11 +119,7 @@ public class PowerToolModule extends ModuleBase.Toggleable {
                 if (data.powerTools.containsKey(itemId)) {
                     var powertool = data.powerTools.get(itemId);
                     if (powertool.containsKey(Action.INTERACT_BLOCK)) {
-                        //? if >= 1.21.4 {
-                        /*var source = player.createCommandSourceStackForNameResolution(((ServerLevel) player.level()));
-                        *///? } else {
-                        var source = player.createCommandSourceStack();
-                        //? }
+                        var source = getSource(player);
                         execute(source, powertool.get(Action.INTERACT_BLOCK), PlaceholderContext.of(player));
 
                         return InteractionResult.CONSUME;
@@ -151,11 +138,7 @@ public class PowerToolModule extends ModuleBase.Toggleable {
                 if (data.powerTools.containsKey(itemId)) {
                     var powertool = data.powerTools.get(itemId);
                     if (powertool.containsKey(Action.INTERACT_ENTITY)) {
-                        //? if >= 1.21.4 {
-                        /*var source = player.createCommandSourceStackForNameResolution(((ServerLevel) player.level()));
-                        *///? } else {
-                        var source = player.createCommandSourceStack();
-                        //? }
+                        var source = getSource(player);
                         execute(source, powertool.get(Action.INTERACT_ENTITY), PlaceholderContext.of(entity));
 
                         return InteractionResult.CONSUME;
@@ -164,6 +147,13 @@ public class PowerToolModule extends ModuleBase.Toggleable {
             }
             return InteractionResult.PASS;
         });
+    }
+
+    private CommandSourceStack getSource(Player player) {
+        //? >= 1.21.4
+        //return player.createCommandSourceStackForNameResolution(((ServerLevel) player.level()));
+        //? < 1.21.4
+        return player.createCommandSourceStack();
     }
 
     public void execute(CommandSourceStack source, String command, PlaceholderContext context) {

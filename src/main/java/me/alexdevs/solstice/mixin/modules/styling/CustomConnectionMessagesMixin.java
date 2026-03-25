@@ -7,8 +7,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerPlayer;
 //? if >= 1.21.1 {
-/*import net.minecraft.server.network.CommonListenerCookie;
-*///? }
+import net.minecraft.server.network.CommonListenerCookie;
+//? }
 import net.minecraft.server.players.PlayerList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -23,20 +23,18 @@ public abstract class CustomConnectionMessagesMixin {
     private ServerPlayer solstice$player = null;
 
     @Inject(method = "placeNewPlayer", at = @At("HEAD"))
-    //? if >= 1.21.1 {
-    /*private void solstice$onJoin(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci) {
-    *///? } else {
-    private void solstice$onJoin(Connection connection, ServerPlayer player, CallbackInfo ci) {
-    //? }
+    //? if >= 1.21.1
+    private void solstice$onJoin(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci) {
+    //? if < 1.21.1
+    //private void solstice$onJoin(Connection connection, ServerPlayer player, CallbackInfo ci) {
         solstice$player = player;
     }
 
     @Inject(method = "placeNewPlayer", at = @At("RETURN"))
-    //? if >= 1.21.1 {
-    /*private void solstice$onJoinReturn(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci) {
-    *///? } else {
-    private void solstice$onJoinReturn(Connection connection, ServerPlayer player, CallbackInfo ci) {
-    //? }
+    //? >= 1.21.1
+    private void solstice$onJoinReturn(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci) {
+    //? < 1.21.1
+    //private void solstice$onJoinReturn(Connection connection, ServerPlayer player, CallbackInfo ci) {
         solstice$player = null;
     }
 
