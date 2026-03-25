@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.mail.data.PlayerMail;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
@@ -158,20 +159,20 @@ public class MailCommand extends ModCommand<MailModule> {
 
     private int sendMail(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var sender = context.getSource().getPlayerOrException();
-        var recipient = LocalGameProfile.getProfile(context, "recipient");
+        var profile = LocalGameProfile.getProfile(context, "recipient");
 
         var message = StringArgumentType.getString(context, "message");
         var server = context.getSource().getServer();
 
         var mail = new PlayerMail(message, sender.getUUID());
-        var actuallySent = module.sendMail(recipient.getId(), mail);
+        var actuallySent = module.sendMail(PlayerUtils.getId(profile), mail);
 
         var senderContext = PlaceholderContext.of(sender);
 
         context.getSource().sendSuccess(() -> module.locale().get("mailSent", senderContext), false);
 
         if (actuallySent) {
-            var recPlayer = server.getPlayerList().getPlayer(recipient.getId());
+            var recPlayer = server.getPlayerList().getPlayer(PlayerUtils.getId(profile));
             if (recPlayer == null) {
                 return 1;
             }

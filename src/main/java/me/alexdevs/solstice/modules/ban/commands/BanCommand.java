@@ -11,6 +11,8 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.Utils;
 import me.alexdevs.solstice.api.text.Format;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
+import me.alexdevs.solstice.api.utils.ProfileOrNameAndId;
 import me.alexdevs.solstice.modules.ban.BanModule;
 import me.alexdevs.solstice.modules.ban.formatters.BanMessageFormatter;
 import net.minecraft.commands.CommandBuildContext;
@@ -35,28 +37,30 @@ public class BanCommand extends ModCommand<BanModule> {
         super(module);
     }
 
-    static int execute(CommandContext<CommandSourceStack> context, Collection<GameProfile> targets, @Nullable String reason, @Nullable Date expiryDate) throws CommandSyntaxException {
+    static int execute(CommandContext<CommandSourceStack> context, Collection<ProfileOrNameAndId> targets, @Nullable String reason, @Nullable Date expiryDate) throws CommandSyntaxException {
         var source = context.getSource();
         var server = source.getServer();
         var banList = server.getPlayerList().getBans();
 
         var banCounter = 0;
-        for (GameProfile target : targets) {
-            if (banList.isBanned(target)) {
+        for (var profile : targets) {
+
+            if (banList.isBanned(profile.getNameAndId())) {
                 continue;
             }
 
-            var banEntry = new UserBanListEntry(target, null, source.getTextName(), expiryDate, reason);
+            var banEntry = new UserBanListEntry(profile.getNameAndId(), null, source.getTextName(), expiryDate, reason);
             banList.add(banEntry);
             banCounter++;
 
-            var playerContext = PlaceholderContext.of(target, server);
+            var playerContext = PlaceholderContext.of(profile.getProfile(), server);
 
-            source.sendSuccess(() -> Component.translatable("commands.ban.success", Component.nullToEmpty(target.getName()), Format.parse(banEntry.getReason(), playerContext)), true);
 
-            var serverPlayerEntity = source.getServer().getPlayerList().getPlayer(target.getId());
+            source.sendSuccess(() -> Component.translatable("commands.ban.success", Component.nullToEmpty(PlayerUtils.getName(profile.getProfile())), Format.parse(banEntry.getReason(), playerContext)), true);
+
+            var serverPlayerEntity = source.getServer().getPlayerList().getPlayer(PlayerUtils.getId(profile.getProfile()));
             if (serverPlayerEntity != null) {
-                serverPlayerEntity.connection.disconnect(BanMessageFormatter.format(target, banEntry));
+                serverPlayerEntity.connection.disconnect(BanMessageFormatter.format(profile, banEntry));
             }
         }
 
@@ -83,9 +87,9 @@ public class BanCommand extends ModCommand<BanModule> {
         return literal(name)
                 .requires(require(3))
                 .then(argument("targets", GameProfileArgument.gameProfile())
-                        .executes(context -> execute(context, GameProfileArgument.getGameProfiles(context, "targets"), null, null))
+                        .executes(context -> execute(context, GameProfileArgument.getGameProfiles(context, "targets").stream().map(ProfileOrNameAndId::new).toList(), null, null))
                         .then(argument("reason", StringArgumentType.greedyString())
-                                .executes(context -> execute(context, GameProfileArgument.getGameProfiles(context, "targets"), StringArgumentType.getString(context, "reason"), null))));
+                                .executes(context -> execute(context, GameProfileArgument.getGameProfiles(context, "targets").stream().map(ProfileOrNameAndId::new).toList(), StringArgumentType.getString(context, "reason"), null))));
 
     }
 }

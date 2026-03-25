@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.core.coreModule.data.CorePlayerData;
 import me.alexdevs.solstice.modules.teleportOffline.TeleportOfflineModule;
 import net.minecraft.commands.CommandSourceStack;
@@ -43,7 +44,7 @@ public class TeleportOfflineCommand extends ModCommand<TeleportOfflineModule> {
                                 return 0;
                             }
 
-                            source.sendSuccess(() -> Component.translatable("commands.teleport.success.entity.single", player.getDisplayName(), Component.nullToEmpty(gameProfile.getName())), true);
+                            source.sendSuccess(() -> Component.translatable("commands.teleport.success.entity.single", player.getDisplayName(), Component.nullToEmpty(PlayerUtils.getName(gameProfile))), true);
 
                             targetData.logoffPosition.teleport(player, true);
                             return 1;

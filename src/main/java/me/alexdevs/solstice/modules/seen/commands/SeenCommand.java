@@ -7,6 +7,7 @@ import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.text.Format;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.seen.SeenModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -59,8 +60,8 @@ public class SeenCommand extends ModCommand<SeenModule> {
                             var config = CoreModule.getConfig();
 
                             var dateFormatter = new SimpleDateFormat(config.dateTimeFormat);
-                            var player = source.getServer().getPlayerList().getPlayer(profile.getId());
-                            var playerData = CoreModule.getPlayerData(profile.getId());
+                            var player = source.getServer().getPlayerList().getPlayer(PlayerUtils.getId(profile));
+                            var playerData = CoreModule.getPlayerData(PlayerUtils.getId(profile));
 
                             if(playerData.firstJoinedDate == null) {
                                 source.sendSuccess(() -> module.locale().get("playerNotFound"), false);
@@ -79,8 +80,8 @@ public class SeenCommand extends ModCommand<SeenModule> {
                             var ipAddress = playerData.ipAddress != null ? playerData.ipAddress : module.locale().raw("unknown");
 
                             Map<String, Component> map = Map.of(
-                                    "username", Component.nullToEmpty(profile.getName()),
-                                    "uuid", Component.nullToEmpty(profile.getId().toString()),
+                                    "username", Component.nullToEmpty(PlayerUtils.getName(profile)),
+                                    "uuid", Component.nullToEmpty(PlayerUtils.getId(profile).toString()),
                                     "firstSeenDate", Component.nullToEmpty(firstSeenDate),
                                     "lastSeenDate", Component.nullToEmpty(player != null ? module.locale().raw("online") : lastSeenDate),
                                     "ipAddress", Component.nullToEmpty(ipAddress),

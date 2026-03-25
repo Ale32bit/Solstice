@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -48,7 +49,7 @@ public class ActiveTimeCommand extends ModCommand<AfkModule> {
                                 .suggests(LocalGameProfile::suggest)
                                 .executes(context -> {
                                     var profile = LocalGameProfile.getProfile(context, "player");
-                                    var activeTime = module.getActiveTime(profile.getId());
+                                    var activeTime = module.getActiveTime(PlayerUtils.getId(profile));
 
                                     if (activeTime == 0) {
                                         context.getSource().sendSuccess(() -> module.locale().get("neverPlayed"), false);
@@ -59,7 +60,7 @@ public class ActiveTimeCommand extends ModCommand<AfkModule> {
 
                                     var map = Map.of(
                                             "activeTime", Component.nullToEmpty(longSpan),
-                                            "player", Component.nullToEmpty(profile.getName())
+                                            "player", Component.nullToEmpty(PlayerUtils.getName(profile))
                                     );
 
                                     context.getSource().sendSuccess(() -> module.locale().get("playerActiveTime", map), false);
@@ -106,11 +107,11 @@ public class ActiveTimeCommand extends ModCommand<AfkModule> {
                                             var profile = LocalGameProfile.getProfile(context, "player");
                                             var time = TimeSpan.getTimeSpan(context, "time");
 
-                                            var data = module.getPlayerData(profile.getId());
+                                            var data = module.getPlayerData(PlayerUtils.getId(profile));
                                             data.activeTime = time;
 
                                             var map = Map.of(
-                                                    "player", Component.nullToEmpty(profile.getName()),
+                                                    "player", Component.nullToEmpty(PlayerUtils.getName(profile)),
                                                     "time", Component.nullToEmpty(TimeSpan.toLongString(time))
                                             );
                                             context.getSource().sendSuccess(() -> module.locale().get("activeTimeSet", map), true);

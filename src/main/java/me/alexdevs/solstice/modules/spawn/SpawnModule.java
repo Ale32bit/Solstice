@@ -11,21 +11,22 @@ import me.alexdevs.solstice.modules.spawn.commands.SpawnCommand;
 import me.alexdevs.solstice.modules.spawn.data.SpawnConfig;
 import me.alexdevs.solstice.modules.spawn.data.SpawnLocale;
 import me.alexdevs.solstice.modules.spawn.data.SpawnServerData;
-import me.alexdevs.solstice.api.utils.ResourceUtils;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.LevelData;
 import org.jetbrains.annotations.Nullable;
 
 public class SpawnModule extends ModuleBase.Toggleable {
 
 
-    public SpawnModule(ResourceLocation id) {
+    public SpawnModule(SolsticeIdentifier id) {
         super(id);
     }
 
@@ -68,28 +69,19 @@ public class SpawnModule extends ModuleBase.Toggleable {
             if (spawnData.spawn != null) {
                 var legacy = spawnData.spawn;
                 var world = legacy.getWorld(server);
+                //? >= 1.21.11
+                //world.setRespawnData(new LevelData.RespawnData(new GlobalPos(world.dimension(),new BlockPos((int) legacy.getX(), (int) legacy.getY(), (int) legacy.getZ())), legacy.getYaw(), legacy.getPitch()));
+                //? < 1.21.11
                 world.setDefaultSpawnPos(new BlockPos((int) legacy.getX(), (int) legacy.getY(), (int) legacy.getZ()), legacy.getYaw());
                 spawnData.spawn = null;
             }
         });
     }
 
-    @Deprecated
-    public ServerLocation getSpawn() {
-        var serverData = getServerData();
-        var spawnPosition = serverData.spawn;
-        if (spawnPosition == null) {
-            var server = Solstice.server;
-            var spawnPos = server.overworld().getSharedSpawnPos();
-            spawnPosition = new ServerLocation(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), 0, 0, server.overworld());
-        }
-        return spawnPosition;
-    }
-
     public ServerLevel getGlobalSpawnWorld() {
         var targetWorld = getConfig().globalSpawn.targetSpawnWorld;
 
-        var key = ResourceKey.create(Registries.DIMENSION, ResourceUtils.parse(targetWorld));
+        var key = ResourceKey.create(Registries.DIMENSION, SolsticeIdentifier.parse(targetWorld).get());
         return Solstice.server.getLevel(key);
     }
 
@@ -98,8 +90,14 @@ public class SpawnModule extends ModuleBase.Toggleable {
     }
 
     public ServerLocation getWorldSpawn(ServerLevel world) {
+
+        //? if >= 1.21.11 {
+        /*var worldSpawnPosition = world.getRespawnData().pos().getCenter();
+        var worldSpawnYaw = world.getRespawnData().yaw();
+        *///? } else {
         var worldSpawnPosition = world.getSharedSpawnPos().getCenter();
         var worldSpawnYaw = world.getSharedSpawnAngle();
+        //? }
         var worldName = world.dimension().location().toString();
 
         if (world.dimension() != Level.OVERWORLD) {
@@ -121,10 +119,6 @@ public class SpawnModule extends ModuleBase.Toggleable {
 
     public SpawnServerData getServerData() {
         return Solstice.serverData.getData(SpawnServerData.class);
-    }
-
-    public void sendToSpawn(ServerPlayer player) {
-        sendToSpawn(player, player.serverLevel());
     }
 
     public void sendToSpawn(ServerPlayer player, ServerLevel world) {

@@ -5,11 +5,11 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.near.commands.NearCommand;
 import me.alexdevs.solstice.modules.near.data.NearConfig;
 import me.alexdevs.solstice.modules.near.data.NearLocale;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 public class NearModule extends ModuleBase.Toggleable {
     
 
-    public NearModule(ResourceLocation id) {
+    public NearModule(SolsticeIdentifier id) {
         super(id);
     }
 

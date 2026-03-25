@@ -6,6 +6,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.utils.ResourceUtils;
 import me.alexdevs.solstice.modules.powertool.commands.PowerToolCommand;
 import me.alexdevs.solstice.modules.powertool.data.PowerToolLocale;
 import me.alexdevs.solstice.modules.powertool.data.PowerToolPlayerData;
@@ -13,7 +14,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.*;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +33,7 @@ public class PowerToolModule extends ModuleBase.Toggleable {
 
     private CommandDispatcher<CommandSourceStack> dispatcher;
 
-    public PowerToolModule(ResourceLocation id) {
+    public PowerToolModule(SolsticeIdentifier id) {
         super(id);
     }
 
@@ -169,7 +170,7 @@ public class PowerToolModule extends ModuleBase.Toggleable {
     }
 
     public String getStackId(ItemStack stack) {
-        return stack.getItemHolder().unwrapKey().get().location().toString();
+        return ResourceUtils.identifier(stack.getItemHolder().unwrapKey().get()).toString();
     }
 
     public PowerToolPlayerData getData(UUID uuid) {

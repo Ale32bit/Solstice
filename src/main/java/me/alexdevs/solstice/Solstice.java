@@ -10,13 +10,12 @@ import me.alexdevs.solstice.data.ServerData;
 import me.alexdevs.solstice.integrations.ConnectorIntegration;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.locale.LocaleManager;
-import me.alexdevs.solstice.api.utils.ResourceUtils;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
 import org.slf4j.Logger;
@@ -29,7 +28,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Solstice implements ModInitializer {
     public static final String MOD_ID = "solstice";
     public static final Logger LOGGER = LoggerFactory.getLogger(Solstice.class);
-    public static final ResourceLocation ID = ResourceUtils.location(MOD_ID, "");
+    public static final SolsticeIdentifier ID = SolsticeIdentifier.of(MOD_ID, "");
 
     public static final IConfigDataManager configManager = new ConfigDataManager(Paths.configDirectory.resolve("config.conf"));
     public static final LocaleManager localeManager = new LocaleManager(Paths.configDirectory.resolve("locale.json"));

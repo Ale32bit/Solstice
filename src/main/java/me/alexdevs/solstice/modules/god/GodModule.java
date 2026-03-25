@@ -6,11 +6,11 @@ import me.alexdevs.solstice.modules.god.commands.GodCommand;
 import me.alexdevs.solstice.modules.god.data.GodLocale;
 import me.alexdevs.solstice.modules.god.data.GodPlayerData;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 public class GodModule extends ModuleBase.Toggleable {
     
 
-    public GodModule(ResourceLocation id) {
+    public GodModule(SolsticeIdentifier id) {
         super(id);
     }
 

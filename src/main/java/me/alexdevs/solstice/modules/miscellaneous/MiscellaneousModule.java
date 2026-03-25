@@ -1,11 +1,12 @@
 package me.alexdevs.solstice.modules.miscellaneous;
 
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.miscellaneous.commands.*;
 import me.alexdevs.solstice.modules.miscellaneous.data.MiscellaneousLocale;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,7 +19,7 @@ public class MiscellaneousModule extends ModuleBase.Toggleable {
 
     private final Map<UUID, Boolean> commandSleeping = new ConcurrentHashMap<>();
 
-    public MiscellaneousModule(ResourceLocation id) {
+    public MiscellaneousModule(SolsticeIdentifier id) {
         super(id);
     }
 
@@ -37,16 +38,11 @@ public class MiscellaneousModule extends ModuleBase.Toggleable {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> commandSleeping.remove(handler.getPlayer().getUUID()));
         EntitySleepEvents.STOP_SLEEPING.register((entity, pos) -> commandSleeping.remove(entity.getUUID()));
 
-        EntitySleepEvents.ALLOW_SLEEP_TIME.register((player, pos, vanillaResult) -> {
-            if (commandSleeping.getOrDefault(player.getUUID(), false)) {
-                return InteractionResult.SUCCESS;
-            }
-
-            return InteractionResult.PASS;
-        });
-
         EntitySleepEvents.ALLOW_RESETTING_TIME.register(player -> {
             if (commandSleeping.getOrDefault(player.getUUID(), false)) {
+                //? >= 1.21.11
+                //return !(!player.level().dimensionType().hasFixedTime() && player.level().getSkyDarken() < 4);
+                //? < 1.21.11
                 return !player.level().isDay();
             }
 
@@ -69,7 +65,7 @@ public class MiscellaneousModule extends ModuleBase.Toggleable {
         commandSleeping.put(entity.getUUID(), true);
         entity.startSleeping(entity.blockPosition());
         if (entity instanceof ServerPlayer player) {
-            player.serverLevel().updateSleepingPlayerList();
+            PlayerUtils.getLevel(player).updateSleepingPlayerList();
         }
     }
 }

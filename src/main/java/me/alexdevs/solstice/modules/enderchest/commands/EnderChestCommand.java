@@ -6,6 +6,7 @@ import eu.pb4.sgui.api.gui.SimpleGui;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
+import me.alexdevs.solstice.api.utils.ProfileOrNameAndId;
 import me.alexdevs.solstice.modules.enderchest.EnderChestModule;
 import me.alexdevs.solstice.modules.inventorySee.ImmutableSlot;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -60,7 +61,7 @@ public class EnderChestCommand extends ModCommand<EnderChestModule> {
                                     return;
                                 }
 
-                                var isOnline = PlayerUtils.isOnline(profile.getId());
+                                var isOnline = PlayerUtils.isOnline(PlayerUtils.getId(profile));
                                 if (!isOnline && !Permissions.check(player, getPermissionNode("offline"), 3)) {
                                     source.sendSuccess(() -> module.locale().get("offlineNotAllowed"), false);
                                     return;
@@ -69,7 +70,7 @@ public class EnderChestCommand extends ModCommand<EnderChestModule> {
                                 ServerPlayer targetPlayer;
 
                                 if (isOnline) {
-                                    targetPlayer = source.getServer().getPlayerList().getPlayer(profile.getId());
+                                    targetPlayer = source.getServer().getPlayerList().getPlayer(PlayerUtils.getId(profile));
                                 } else {
                                     targetPlayer = PlayerUtils.loadOfflinePlayer(profile);
                                 }
@@ -79,7 +80,7 @@ public class EnderChestCommand extends ModCommand<EnderChestModule> {
                                 var canEdit = Permissions.check(player, getPermissionNode("edit"), 3);
 
                                 var map = Map.of(
-                                        "player", Component.nullToEmpty(profile.getName())
+                                        "player", Component.nullToEmpty(PlayerUtils.getName(profile))
                                 );
                                 var title = module.locale().get("title", map);
 

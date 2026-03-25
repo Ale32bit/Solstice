@@ -4,11 +4,11 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.seen.commands.SeenCommand;
 import me.alexdevs.solstice.modules.seen.data.SeenLocale;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 public class SeenModule extends ModuleBase.Toggleable {
     
 
-    public SeenModule(ResourceLocation id) {
+    public SeenModule(SolsticeIdentifier id) {
         super(id);
     }
 

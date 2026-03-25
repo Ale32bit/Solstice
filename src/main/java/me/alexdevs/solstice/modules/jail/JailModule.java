@@ -20,7 +20,7 @@ import net.fabricmc.fabric.api.event.player.*;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -35,7 +35,7 @@ import net.minecraft.world.InteractionResultHolder;
 public class JailModule extends ModuleBase.Toggleable {
     
 
-    public JailModule(ResourceLocation id) {
+    public JailModule(SolsticeIdentifier id) {
         super(id);
     }
 

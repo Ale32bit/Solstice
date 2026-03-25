@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.api.config;
 
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
@@ -15,7 +15,7 @@ public interface IConfigDataManager {
      * @param creator Supplier of the config that contains the default values when creating the initial data.
      * @param <T> Class of the config.
      */
-    <T> void registerData(ResourceLocation id, Class<T> classOfConfig, Supplier<T> creator);
+    <T> void registerData(SolsticeIdentifier id, Class<T> classOfConfig, Supplier<T> creator);
 
     /**
      * Get the object of the configuration data.

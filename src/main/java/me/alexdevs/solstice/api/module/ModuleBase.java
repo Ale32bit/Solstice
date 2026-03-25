@@ -3,19 +3,19 @@ package me.alexdevs.solstice.api.module;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.core.ToggleableConfig;
 import me.alexdevs.solstice.locale.Locale;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 import java.util.*;
 import java.util.function.Supplier;
 
 public abstract class ModuleBase implements Comparable<ModuleBase> {
-    protected final ResourceLocation id;
+    protected final SolsticeIdentifier id;
     protected final List<ModCommand<?>> commands = new ArrayList<>();
     protected Class<?> configClass = null;
     protected Class<?> playerDataClass = null;
     protected Class<?> serverDataClass = null;
 
-    public ModuleBase(ResourceLocation id) {
+    public ModuleBase(SolsticeIdentifier id) {
         this.id = id;
     }
 
@@ -30,7 +30,7 @@ public abstract class ModuleBase implements Comparable<ModuleBase> {
         return commands;
     }
 
-    public ResourceLocation getId() {
+    public SolsticeIdentifier getId() {
         return id;
     }
 
@@ -89,7 +89,7 @@ public abstract class ModuleBase implements Comparable<ModuleBase> {
     }
 
     public static abstract class Toggleable extends ModuleBase {
-        public Toggleable(ResourceLocation id) {
+        public Toggleable(SolsticeIdentifier id) {
             super(id);
         }
 

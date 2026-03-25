@@ -2,18 +2,18 @@ package me.alexdevs.solstice.locale;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.text.Format;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
 import java.util.function.Supplier;
 
 public class Locale {
-    public final ResourceLocation id;
+    public final SolsticeIdentifier id;
 
     private final Supplier<Map<String, String>> localeSupplier;
 
-    public Locale(ResourceLocation id, Supplier<Map<String, String>> localeSupplier) {
+    public Locale(SolsticeIdentifier id, Supplier<Map<String, String>> localeSupplier) {
         this.id = id;
         this.localeSupplier = localeSupplier;
     }

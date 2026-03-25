@@ -26,7 +26,7 @@ public class TopCommand extends ModCommand<MiscellaneousModule> {
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrException();
 
-                    var world = player.serverLevel();
+                    var world = player.level();
                     var top = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, player.blockPosition());
                     var pos = top.getCenter();
 

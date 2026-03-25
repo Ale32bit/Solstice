@@ -27,11 +27,11 @@ public class PlayerConnectionEvents {
 
     @FunctionalInterface
     public interface WhitelistBypass {
-        boolean bypassWhitelist(GameProfile profile);
+        boolean bypassWhitelist(com.mojang.authlib.GameProfile profile);
     }
 
     @FunctionalInterface
     public interface FullServerBypass {
-        boolean bypassFullServer(GameProfile profile);
+        boolean bypassFullServer(com.mojang.authlib.GameProfile profile);
     }
 }

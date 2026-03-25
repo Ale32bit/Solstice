@@ -2,10 +2,10 @@ package me.alexdevs.solstice.modules.utilities;
 
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.utilities.commands.*;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 public class UtilitiesModule extends ModuleBase.Toggleable {
-    public UtilitiesModule(ResourceLocation id) {
+    public UtilitiesModule(SolsticeIdentifier id) {
         super(id);
     }
 

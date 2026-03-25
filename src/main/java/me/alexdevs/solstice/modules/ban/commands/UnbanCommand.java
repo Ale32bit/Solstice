@@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.Utils;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.ban.BanModule;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -48,15 +49,18 @@ public class UnbanCommand extends ModCommand<BanModule> {
                         .executes(context -> execute(context, GameProfileArgument.getGameProfiles(context, "targets"))));
     }
 
+    //? < 1.21.11
     private int execute(CommandContext<CommandSourceStack> context, Collection<GameProfile> targets) throws CommandSyntaxException {
+    //? >= 1.21.11
+    //private int execute(CommandContext<CommandSourceStack> context, Collection<net.minecraft.server.players.NameAndId> targets) throws CommandSyntaxException {
         var banList = context.getSource().getServer().getPlayerList().getBans();
         var source = context.getSource();
         var pardonCount = 0;
-        for (GameProfile profile : targets) {
+        for (var profile : targets) {
             if (banList.isBanned(profile)) {
                 banList.remove(profile);
                 pardonCount++;
-                source.sendSuccess(() -> Component.translatable("commands.pardon.success", Component.nullToEmpty(profile.getName())), true);
+                source.sendSuccess(() -> Component.translatable("commands.pardon.success", Component.nullToEmpty(PlayerUtils.getName(profile))), true);
             }
         }
 

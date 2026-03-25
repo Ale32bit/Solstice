@@ -2,12 +2,12 @@ package me.alexdevs.solstice.modules.teleportOffline;
 
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.teleportOffline.commands.TeleportOfflineCommand;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 public class TeleportOfflineModule extends ModuleBase.Toggleable {
     
 
-    public TeleportOfflineModule(ResourceLocation id) {
+    public TeleportOfflineModule(SolsticeIdentifier id) {
         super(id);
     }
 

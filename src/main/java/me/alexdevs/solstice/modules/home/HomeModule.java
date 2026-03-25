@@ -6,13 +6,13 @@ import me.alexdevs.solstice.modules.home.commands.*;
 import me.alexdevs.solstice.modules.home.data.HomeConfig;
 import me.alexdevs.solstice.modules.home.data.HomeLocale;
 import me.alexdevs.solstice.modules.home.data.HomePlayerData;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 import java.util.UUID;
 public class HomeModule extends ModuleBase.Toggleable {
     
 
-    public HomeModule(ResourceLocation id) {
+    public HomeModule(SolsticeIdentifier id) {
         super(id);
     }
 

@@ -9,13 +9,13 @@ import me.alexdevs.solstice.modules.warp.commands.WarpsCommand;
 import me.alexdevs.solstice.modules.warp.data.WarpLocale;
 import me.alexdevs.solstice.modules.warp.data.WarpServerData;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 
 public class WarpModule extends ModuleBase.Toggleable {
     
 
-    public WarpModule(ResourceLocation id) {
+    public WarpModule(SolsticeIdentifier id) {
         super(id);
     }
 

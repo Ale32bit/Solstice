@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.jail.JailModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -31,17 +32,17 @@ public class UnjailCommand extends ModCommand<JailModule> {
                         .executes(context -> {
                             var profile = LocalGameProfile.getProfile(context, "user");
 
-                            var data = module.getPlayer(profile.getId());
+                            var data = module.getPlayer(PlayerUtils.getId(profile));
 
                             if (!data.jailed) {
                                 context.getSource().sendSuccess(() -> module.locale().get("notJailed"), false);
                                 return 0;
                             }
 
-                            module.unjailPlayer(profile.getId());
+                            module.unjailPlayer(PlayerUtils.getId(profile));
 
                             var map = Map.of(
-                                    "player", Component.nullToEmpty(profile.getName())
+                                    "player", Component.nullToEmpty(PlayerUtils.getName(profile))
                             );
                             context.getSource().sendSuccess(() -> module.locale().get("unjailed", map), false);
 

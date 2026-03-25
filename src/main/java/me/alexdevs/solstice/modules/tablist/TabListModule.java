@@ -11,7 +11,7 @@ import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.modules.tablist.data.TabListConfig;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.network.protocol.game.ClientboundTabListPacket;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -23,7 +23,7 @@ public class TabListModule extends ModuleBase.Toggleable {
     private MinecraftServer server;
     private ScheduledFuture<?> scheduledFuture = null;
 
-    public TabListModule(ResourceLocation id) {
+    public TabListModule(SolsticeIdentifier id) {
         super(id);
     }
 

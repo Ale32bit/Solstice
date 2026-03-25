@@ -2,8 +2,12 @@ package me.alexdevs.solstice.modules.hat.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.ResourceUtils;
 import me.alexdevs.solstice.modules.hat.HatModule;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
 
 import java.util.List;
 
@@ -35,7 +39,7 @@ public class HatCommand extends ModCommand<HatModule> {
 
                     var config = module.getConfig();
 
-                    var itemId = handStack.getItemHolder().unwrapKey().get().location().toString();
+                    var itemId = ResourceUtils.identifier(handStack.getItemHolder().unwrapKey().get()).toString();
                     var tags = handStack.getTags();
                     if (config.whitelistFilter) {
                         if(!module.isInFilter(itemId) && !module.isInFilter(tags)) {
@@ -52,9 +56,14 @@ public class HatCommand extends ModCommand<HatModule> {
                     //handStack.streamTags().toList().get(0).id().toString();
 
                     var inventory = player.getInventory();
+
+                    //? if < 1.21.11 {
                     var oldHeadStack = inventory.armor.get(3); // head slot
-                    inventory.setItem(inventory.selected, oldHeadStack.copyAndClear());
-                    inventory.armor.set(3, handStack.copyAndClear());
+                    //inventory.setItem(inventory.selected, oldHeadStack.copyAndClear());
+                    //? } else {
+                    /*var oldHeadStack = player.getItemBySlot(EquipmentSlot.HEAD);
+                    inventory.setItem(inventory.getSelectedSlot(), oldHeadStack.copyAndClear());
+                    *///? }
 
                     context.getSource().sendSuccess(() -> module.locale().get("success"), false);
 

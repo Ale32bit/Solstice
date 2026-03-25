@@ -8,14 +8,14 @@ import me.alexdevs.solstice.modules.ignore.commands.IgnoreListCommand;
 import me.alexdevs.solstice.modules.ignore.data.IgnoreLocale;
 import me.alexdevs.solstice.modules.ignore.data.IgnorePlayerData;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
 public class IgnoreModule extends ModuleBase.Toggleable {
 
 
-    public IgnoreModule(ResourceLocation id) {
+    public IgnoreModule(SolsticeIdentifier id) {
         super(id);
     }
 

@@ -4,7 +4,7 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.timeBar.commands.TimeBarCommand;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
 
@@ -17,7 +17,7 @@ public class TimeBarModule extends ModuleBase.Toggleable {
     
     private static final ConcurrentLinkedDeque<TimeBar> timeBars = new ConcurrentLinkedDeque<>();
 
-    public TimeBarModule(ResourceLocation id) {
+    public TimeBarModule(SolsticeIdentifier id) {
         super(id);
     }
 

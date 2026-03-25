@@ -2,8 +2,11 @@ package me.alexdevs.solstice.data;
 
 import com.google.gson.*;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
+//? < 1.21.11
 import net.minecraft.Util;
-import net.minecraft.resources.ResourceLocation;
+//? >= 1.21.11
+//import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -18,7 +21,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class ServerData {
-    protected final Map<ResourceLocation, Class<?>> classMap = new HashMap<>();
+    protected final Map<SolsticeIdentifier, Class<?>> classMap = new HashMap<>();
     protected final Map<Class<?>, Object> data = new HashMap<>();
     protected final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
     protected final Gson gson = new GsonBuilder()
@@ -75,7 +78,7 @@ public class ServerData {
         }
     }
 
-    public <T> void registerData(ResourceLocation id, Class<T> clazz, Supplier<T> creator) {
+    public <T> void registerData(SolsticeIdentifier id, Class<T> clazz, Supplier<T> creator) {
         classMap.put(id, clazz);
         providers.put(clazz, creator);
     }

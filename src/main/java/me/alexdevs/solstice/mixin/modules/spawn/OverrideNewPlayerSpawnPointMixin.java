@@ -18,20 +18,23 @@ import java.util.Optional;
 
 @Mixin(PlayerList.class)
 public abstract class OverrideNewPlayerSpawnPointMixin {
-    @Redirect(
+    //? if < 1.21.1 {
+    /*@Redirect(
             method = "placeNewPlayer",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/server/MinecraftServer;getLevel(Lnet/minecraft/resources/ResourceKey;)Lnet/minecraft/server/level/ServerLevel;"
             )
     )
-    //? if >= 1.21.1 {
+    *///? }
+    //? if >= 1.21.1 && < 1.21.11 {
     public ServerLevel solstice$overrideWorld(MinecraftServer server, ResourceKey<Level> dimension, @Local Optional<CompoundTag> optional) {
         if (optional.isEmpty()) {
-    //? } else {
+    //? } else if < 1.21.1 {
     /*public ServerLevel solstice$overrideWorld(MinecraftServer server, ResourceKey<Level> dimension) {
         if (server.getLevel(dimension) == null) {
     *///? }
+    //? if < 1.21.11 {
             var spawn = ModuleProvider.SPAWN;
             var firstSpawn = spawn.getFirstSpawn();
             if (firstSpawn != null) {
@@ -41,4 +44,5 @@ public abstract class OverrideNewPlayerSpawnPointMixin {
         }
         return server.getLevel(dimension);
     }
+    //? }
 }

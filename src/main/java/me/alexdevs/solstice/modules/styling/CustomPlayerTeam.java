@@ -1,4 +1,5 @@
 package me.alexdevs.solstice.modules.styling;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.ModuleProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -23,9 +24,9 @@ public class CustomPlayerTeam extends PlayerTeam {
     private final ServerPlayer player;
 
     public CustomPlayerTeam(Scoreboard scoreboard, ServerPlayer player) {
-        super(scoreboard, "sol_" + player.getGameProfile().getName());
+        super(scoreboard, "sol_" + PlayerUtils.getName(player.getGameProfile()));
         this.player = player;
-        super.getPlayers().add(player.getGameProfile().getName());
+        super.getPlayers().add(PlayerUtils.getName(player.getGameProfile()));
     }
 //? if >= 1.21.1 {
 
@@ -74,6 +75,6 @@ public class CustomPlayerTeam extends PlayerTeam {
 
     @Override
     public Collection<String> getPlayers() {
-        return List.of(player.getGameProfile().getName());
+        return List.of(PlayerUtils.getName(player.getGameProfile()));
     }
 }

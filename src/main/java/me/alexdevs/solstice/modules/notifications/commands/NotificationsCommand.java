@@ -7,10 +7,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.IdUtils;
 import me.alexdevs.solstice.modules.notifications.NotificationsModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.synchronization.SuggestionProviders;
 import net.minecraft.network.chat.Component;
 
@@ -34,7 +34,10 @@ public class NotificationsCommand extends ModCommand<NotificationsModule> {
                 .requires(require(true))
                 .then(Commands.literal("set")
                         .then(Commands.literal("sound")
-                                .then(Commands.argument("sound", ResourceLocationArgument.id())
+                                .then(Commands.argument("sound", IdUtils.idArgument())
+                                        //? >= 1.21.11
+                                        //.suggests(SuggestionProviders.cast(SuggestionProviders.AVAILABLE_SOUNDS))
+                                        //? < 1.21.11
                                         .suggests(SuggestionProviders.AVAILABLE_SOUNDS)
                                         .executes(this::setSound)
                                 )
@@ -70,7 +73,7 @@ public class NotificationsCommand extends ModCommand<NotificationsModule> {
 
     private int setSound(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrException();
-        var soundId = ResourceLocationArgument.getId(context, "sound");
+        var soundId = IdUtils.getIdArgument(context, "sound");
 
         var data = module.getPlayerData(player);
         data.soundId = soundId.toString();

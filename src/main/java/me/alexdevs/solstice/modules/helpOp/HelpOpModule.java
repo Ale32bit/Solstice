@@ -4,10 +4,10 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.helpOp.commands.HelpOpCommand;
 import me.alexdevs.solstice.modules.helpOp.data.HelpOpLocale;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 public class HelpOpModule extends ModuleBase.Toggleable {
-    public HelpOpModule(ResourceLocation id) {
+    public HelpOpModule(SolsticeIdentifier id) {
         super(id);
     }
 

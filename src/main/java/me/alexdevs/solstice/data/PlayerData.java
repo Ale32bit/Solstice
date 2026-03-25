@@ -2,8 +2,11 @@ package me.alexdevs.solstice.data;
 
 import com.google.gson.*;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
+//? < 1.21.11
 import net.minecraft.Util;
-import net.minecraft.resources.ResourceLocation;
+//? >= 1.21.11
+//import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -23,7 +26,7 @@ public class PlayerData {
     protected final Path filePath;
     protected final Path basePath;
 
-    protected final Map<ResourceLocation, Class<?>> classMap = new HashMap<>();
+    protected final Map<SolsticeIdentifier, Class<?>> classMap = new HashMap<>();
     protected final Map<Class<?>, Object> data = new HashMap<>();
     protected final Map<Class<?>, Supplier<?>> providers = new HashMap<>();
     protected final Gson gson = new GsonBuilder()
@@ -34,7 +37,7 @@ public class PlayerData {
             .create();
     protected JsonObject node;
 
-    public PlayerData(Path basePath, UUID uuid, Map<ResourceLocation, Class<?>> classMap, Map<Class<?>, Supplier<?>> providers) {
+    public PlayerData(Path basePath, UUID uuid, Map<SolsticeIdentifier, Class<?>> classMap, Map<Class<?>, Supplier<?>> providers) {
         this.uuid = uuid;
         this.classMap.putAll(classMap);
         this.providers.putAll(providers);
@@ -89,7 +92,7 @@ public class PlayerData {
         }
     }
 
-    public <T> void registerData(ResourceLocation id, Class<T> clazz, Supplier<T> creator) {
+    public <T> void registerData(SolsticeIdentifier id, Class<T> clazz, Supplier<T> creator) {
         classMap.put(id, clazz);
         providers.put(clazz, creator);
     }

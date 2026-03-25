@@ -8,6 +8,7 @@ import me.alexdevs.solstice.api.module.ModCommand;
 //? if >= 1.21.1 {
 import me.alexdevs.solstice.api.utils.RegistryUtils;
 //? }
+import me.alexdevs.solstice.api.utils.ResourceUtils;
 import me.alexdevs.solstice.modules.rtp.RTPModule;
 import me.alexdevs.solstice.modules.rtp.core.Locator;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -51,7 +52,7 @@ public class RTPCommand extends ModCommand<RTPModule> {
                                 var biomes = RegistryUtils.getBiomes(biomeRegistry.get(), false);
                                 //? } else {
                                 /*var biomeRegistry = this.commandRegistry.holderLookup(Registries.BIOME);
-                                var biomes = biomeRegistry.listElements().map(r -> r.unwrapKey().get().location().toString()).toList();
+                                var biomes = biomeRegistry.listElements().map(r -> ResourceUtils.identifier(r.unwrapKey().get()).toString()).toList();
                                 *///? }
                                 return SharedSuggestionProvider.suggest(biomes, builder);
                             }
@@ -68,7 +69,7 @@ public class RTPCommand extends ModCommand<RTPModule> {
         var config = module.getConfig();
 
         if (config.requireWorldPermission) {
-            var worldName = player.serverLevel().dimension().location().toString();
+            var worldName = player.level().dimension().location().toString();
             if (!Permissions.check(context.getSource(), getPermissionNode("worlds." + worldName), 2)) {
                 context.getSource().sendSuccess(() -> module.locale().get("noWorldPermission", Map.of("world", Component.nullToEmpty(worldName))), false);
                 return 0;
@@ -82,7 +83,7 @@ public class RTPCommand extends ModCommand<RTPModule> {
 
             if (biomeEntry.unwrapKey().isPresent()) {
                 if (!Permissions.check(context.getSource(), getPermissionNode("exempt.biome"), 2)) {
-                    var biomeId = biome.location().toString();
+                    var biomeId = ResourceUtils.identifier(biome).toString();
                     var allowedBiomes = getAllowedBiomes(context.getSource(), context.getSource().getLevel());
                     if (!allowedBiomes.contains(biomeId)) {
                         context.getSource().sendSuccess(() -> module.locale().get("noBiomePermission"), false);

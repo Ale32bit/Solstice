@@ -7,13 +7,15 @@ import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.ResolvableProfile;
 import java.util.Optional;
 //? } else {
-/*import net.minecraft.nbt.ListTag;
+/*import com.mojang.authlib.properties.PropertyMap;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.world.item.PlayerHeadItem;
 *///? }
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 public class ItemUtils {
     public static void setCustomName(ItemStack stack, Component name) {
@@ -69,21 +71,14 @@ public class ItemUtils {
         *///? }
     }
     public static void setProfileByName(ItemStack stack, String name) {
+        //? >= 1.21.11
+        //var profile = ResolvableProfile.createUnresolved(name);
+        //? < 1.21.11 && >= 1.21.1
+        var profile = new ResolvableProfile(Optional.of(name), Optional.empty(), new PropertyMap());
+
         //? >= 1.21.1
-        stack.set(DataComponents.PROFILE,new ResolvableProfile(Optional.of(name), Optional.empty(), new PropertyMap()));
+        stack.set(DataComponents.PROFILE, profile);
         //? < 1.21.1
         //stack.addTagElement(PlayerHeadItem.TAG_SKULL_OWNER, StringTag.valueOf(name));
-    }
-    public static void setProfileByUUID(ItemStack stack, UUID uuid) {
-        //? >= 1.21.1
-        stack.set(DataComponents.PROFILE,new ResolvableProfile(Optional.empty(), Optional.of(uuid), new PropertyMap()));
-        //? < 1.21.1
-        //stack.addTagElement(PlayerHeadItem.TAG_SKULL_OWNER, StringTag.valueOf(uuid.toString()));
-    }
-    public static void setProfile(ItemStack stack, GameProfile profile) {
-        //? >= 1.21.1
-        stack.set(DataComponents.PROFILE, new ResolvableProfile(profile));
-        //? < 1.21.1
-        //stack.addTagElement(PlayerHeadItem.TAG_SKULL_OWNER, StringTag.valueOf(profile.getName()));
     }
 }

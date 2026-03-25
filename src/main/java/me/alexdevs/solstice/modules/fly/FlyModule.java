@@ -6,11 +6,11 @@ import me.alexdevs.solstice.modules.fly.commands.FlyCommand;
 import me.alexdevs.solstice.modules.fly.data.FlyLocale;
 import me.alexdevs.solstice.modules.fly.data.FlyPlayerData;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 public class FlyModule extends ModuleBase.Toggleable {
     
 
-    public FlyModule(ResourceLocation id) {
+    public FlyModule(SolsticeIdentifier id) {
         super(id);
     }
 

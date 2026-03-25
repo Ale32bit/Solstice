@@ -7,7 +7,7 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.announcement.data.AnnouncementConfig;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 import java.util.Random;
 import java.util.concurrent.ScheduledFuture;
@@ -19,7 +19,7 @@ public class AnnouncementModule extends ModuleBase.Toggleable {
     private ScheduledFuture<?> scheduledFuture = null;
     private int currentLine = 0;
 
-    public AnnouncementModule(ResourceLocation id) {
+    public AnnouncementModule(SolsticeIdentifier id) {
         super(id);
     }
 

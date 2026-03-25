@@ -11,6 +11,7 @@ import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.core.coreModule.data.CorePlayerData;
 import me.alexdevs.solstice.modules.jail.JailModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -60,8 +61,8 @@ public class JailCommand extends ModCommand<JailModule> {
         var source = context.getSource();
         var profile = LocalGameProfile.getProfile(context, "user");
 
-        var data = module.getPlayer(profile.getId());
-        var coreData = Solstice.playerData.get(profile.getId()).getData(CorePlayerData.class);
+        var data = module.getPlayer(PlayerUtils.getId(profile));
+        var coreData = Solstice.playerData.get(PlayerUtils.getId(profile)).getData(CorePlayerData.class);
 
         if (data.jailed) {
             source.sendSuccess(() -> module.locale().get("alreadyJailed"), false);
@@ -82,7 +83,7 @@ public class JailCommand extends ModCommand<JailModule> {
                 return;
             }
 
-            var player = source.getServer().getPlayerList().getPlayer(profile.getId());
+            var player = source.getServer().getPlayerList().getPlayer(PlayerUtils.getId(profile));
 
             data.jailed = true;
             data.jailedBy = source.isPlayer() ? source.getPlayer().getUUID() : new UUID(0L, 0L);
@@ -98,7 +99,7 @@ public class JailCommand extends ModCommand<JailModule> {
             }
 
             var map = Map.of(
-                    "player", Component.nullToEmpty(profile.getName()),
+                    "player", Component.nullToEmpty(PlayerUtils.getName(profile)),
                     "jail", Component.nullToEmpty(jailName),
                     "duration", Component.nullToEmpty(TimeSpan.toLongString(seconds)),
                     "reason", Component.nullToEmpty(reason)

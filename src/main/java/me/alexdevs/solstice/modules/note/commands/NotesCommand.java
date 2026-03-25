@@ -9,6 +9,7 @@ import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.text.Components;
 import me.alexdevs.solstice.api.text.Format;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.note.NoteModule;
 import me.alexdevs.solstice.modules.note.data.Note;
@@ -61,8 +62,8 @@ public class NotesCommand extends ModCommand<NoteModule> {
     }
 
     private int listNotes(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        var user = LocalGameProfile.getProfile(context, "user");
-        var notes = module.getNotes(user.getId());
+        var profile = LocalGameProfile.getProfile(context, "user");
+        var notes = module.getNotes(PlayerUtils.getId(profile));
 
         if (notes.isEmpty()) {
             context.getSource().sendSuccess(() -> module.locale().get("emptyNotes"), false);
@@ -71,7 +72,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
 
         var output = Component.empty()
                 .append(module.locale().get("noteListHeader", Map.of(
-                        "user", Component.nullToEmpty(user.getName())
+                        "user", Component.nullToEmpty(PlayerUtils.getName(profile))
                 )))
                 .append(Component.nullToEmpty("\n"));
 
@@ -84,7 +85,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
             var checkButton = Components.button(
                     module.locale().raw("checkButton"),
                     module.locale().raw("hoverCheck"),
-                    "/notes " + user.getName() + " check " + i
+                    "/notes " + PlayerUtils.getName(profile) + " check " + i
             );
 
             var senderName = CoreModule.getUsername(note.createdBy);
@@ -108,7 +109,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
 
     private int checkNote(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var user = LocalGameProfile.getProfile(context, "user");
-        var notes = module.getNotes(user.getId());
+        var notes = module.getNotes(PlayerUtils.getId(user));
         var index = IntegerArgumentType.getInteger(context, "index");
 
         if (index < 0 || index >= notes.size()) {
@@ -121,7 +122,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
         var deleteButton = Components.button(
                 module.locale().raw("deleteButton"),
                 module.locale().raw("hoverDelete"),
-                "/note " + user.getName() + " delete " + index
+                "/note " + PlayerUtils.getName(user) + " delete " + index
         );
 
         var operator = CoreModule.getUsername(note.createdBy);
@@ -140,7 +141,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
 
     private int deleteNote(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var user = LocalGameProfile.getProfile(context, "user");
-        var notes = module.getNotes(user.getId());
+        var notes = module.getNotes(PlayerUtils.getId(user));
         var index = IntegerArgumentType.getInteger(context, "index");
 
         if (index < notes.size()) {
@@ -164,7 +165,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
         var message = StringArgumentType.getString(context, "message");
 
         var note = new Note(message, operatorId);
-        var notes = module.getNotes(user.getId());
+        var notes = module.getNotes(PlayerUtils.getId(user));
 
         notes.add(note);
         var index = notes.size() - 1;
@@ -174,11 +175,11 @@ public class NotesCommand extends ModCommand<NoteModule> {
         var checkButton = Components.button(
                 module.locale().raw("checkButton"),
                 module.locale().raw("hoverCheck"),
-                "/notes " + user.getName() + " check " + index
+                "/notes " + PlayerUtils.getName(user) + " check " + index
         );
         final var text = module.locale().get("addedNotification", Map.of(
                 "operator", context.getSource().getDisplayName(),
-                "user", Component.nullToEmpty(user.getName()),
+                "user", Component.nullToEmpty(PlayerUtils.getName(user)),
                 "checkButton", checkButton
         ));
 
@@ -194,11 +195,11 @@ public class NotesCommand extends ModCommand<NoteModule> {
     private int clearNotes(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var user = LocalGameProfile.getProfile(context, "user");
 
-        var notes = module.getNotes(user.getId());
+        var notes = module.getNotes(PlayerUtils.getId(user));
         notes.clear();
 
         context.getSource().sendSuccess(() -> module.locale().get("notesCleared", Map.of(
-                "user", Component.nullToEmpty(user.getName())
+                "user", Component.nullToEmpty(PlayerUtils.getName(user))
         )), true);
 
         return 1;

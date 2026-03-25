@@ -5,7 +5,7 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.text.Format;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.bossevents.CustomBossEvent;
 import net.minecraft.world.BossEvent;
 
@@ -21,7 +21,7 @@ public class TimeBar {
     private int elapsedSeconds = 0;
 
     public TimeBar(String label, int time, boolean countdown, BossEvent.BossBarColor color, BossEvent.BossBarOverlay style) {
-        this.bossBar = new CustomBossEvent(ResourceLocation.tryBuild(Solstice.MOD_ID, uuid.toString()), Component.nullToEmpty(label));
+        this.bossBar = new CustomBossEvent(SolsticeIdentifier.of(Solstice.MOD_ID, uuid.toString()).get(), Component.nullToEmpty(label));
         this.bossBar.setColor(color);
         this.bossBar.setOverlay(style);
         this.label = label;

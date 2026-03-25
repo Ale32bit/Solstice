@@ -10,6 +10,9 @@ import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.Debug;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.text.Format;
+import me.alexdevs.solstice.api.utils.ComponentUtils;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
+import me.alexdevs.solstice.api.utils.ResourceUtils;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.SharedConstants;
@@ -89,9 +92,9 @@ public class SolsticeCommand extends ModCommand<CoreModule> {
                                 .executes(context -> {
                                     var profile = LocalGameProfile.getProfile(context, "player");
 
-                                    context.getSource().sendSuccess(() -> Component.nullToEmpty("Force reloading player data for " + profile.getName()), true);
+                                    context.getSource().sendSuccess(() -> Component.nullToEmpty("Force reloading player data for " + PlayerUtils.getName(profile)), true);
 
-                                    Solstice.playerData.forceLoad(profile.getId());
+                                    Solstice.playerData.forceLoad(PlayerUtils.getId(profile));
                                     return 0;
                                 })))
                 .then(literal("debug")
@@ -131,7 +134,7 @@ public class SolsticeCommand extends ModCommand<CoreModule> {
                                     var itemStack = player.getItemInHand(hand);
 
                                     var entry = itemStack.getItemHolder().unwrapKey().get();
-                                    var entryString = String.format("Tags for [%s / %s]:", entry.registry(), entry.location());
+                                    var entryString = String.format("Tags for [%s / %s]:", entry.registry(), ResourceUtils.identifier(entry));
 
                                     var text = Component.empty();
                                     text.append(Component.nullToEmpty(entryString));
@@ -142,8 +145,8 @@ public class SolsticeCommand extends ModCommand<CoreModule> {
                                         text.append(
                                                 Component.literal(" #" + tag.location())
                                                         .setStyle(Style.EMPTY
-                                                                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.nullToEmpty("Click to copy")))
-                                                                .withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, "#" + tag.location()))
+                                                                .withHoverEvent(ComponentUtils.showTextHoverEvent(Component.nullToEmpty("Click to copy")))
+                                                                .withClickEvent(ComponentUtils.clickCopyToClipboardEvent("#" + tag.location()))
                                                         )
                                         );
                                     }

@@ -5,6 +5,7 @@ import me.alexdevs.solstice.api.events.RestartEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.integrations.ConnectorIntegration;
 import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.restart.commands.RestartCommand;
@@ -12,7 +13,7 @@ import me.alexdevs.solstice.modules.restart.data.RestartConfig;
 import me.alexdevs.solstice.modules.restart.data.RestartLocale;
 import me.alexdevs.solstice.modules.timeBar.TimeBar;
 import me.alexdevs.solstice.modules.timeBar.TimeBarModule;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -35,7 +36,7 @@ public class RestartModule extends ModuleBase.Toggleable {
     private SoundEvent sound;
     private ScheduledFuture<?> currentSchedule = null;
 
-    public RestartModule(ResourceLocation id) {
+    public RestartModule(SolsticeIdentifier id) {
         super(id);
     }
 
@@ -128,12 +129,12 @@ public class RestartModule extends ModuleBase.Toggleable {
 
     private void setup() {
         var soundName = getConfig().restartSound;
-        var id = ResourceLocation.tryParse(soundName);
+        var id = SolsticeIdentifier.tryParse(soundName);
         if (id == null) {
             Solstice.LOGGER.error("Invalid restart notification sound name {}", soundName);
             sound = SoundEvents.NOTE_BLOCK_BELL.value();
         } else {
-            sound = SoundEvent.createVariableRangeEvent(id);
+            sound = SoundEvent.createVariableRangeEvent(id.get());
         }
     }
 
@@ -183,7 +184,7 @@ public class RestartModule extends ModuleBase.Toggleable {
         solstice.broadcast(text);
 
         var pitch = getConfig().restartSoundPitch;
-        server.getPlayerList().getPlayers().forEach(player -> player.playNotifySound(sound, SoundSource.MASTER, 1f, pitch));
+        server.getPlayerList().getPlayers().forEach(player -> PlayerUtils.playSound(player,sound, 1f, pitch));
     }
 
     @Nullable

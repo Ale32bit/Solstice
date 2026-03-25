@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.Raycast;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.utils.EntityUtils;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.smite.SmiteModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -57,7 +58,7 @@ public class SmiteCommand extends ModCommand<SmiteModule> {
             return 0;
         }
 
-        summon(player.serverLevel(), result.getBlockPos().above());
+        summon(PlayerUtils.getLevel(player), result.getBlockPos().above());
 
         return 1;
     }
@@ -73,7 +74,7 @@ public class SmiteCommand extends ModCommand<SmiteModule> {
         }
         for (var i = 0; i < times; i++) {
             targets.forEach(target ->
-                    summon(player.serverLevel(), target.blockPosition())
+                    summon(PlayerUtils.getLevel(player), target.blockPosition())
             );
         }
 

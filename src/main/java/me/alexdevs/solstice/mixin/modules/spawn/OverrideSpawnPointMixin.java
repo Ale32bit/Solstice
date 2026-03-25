@@ -30,7 +30,30 @@ import java.util.Optional;
 //? < 1.21.1
 //@Mixin(Player.class)
 public abstract class OverrideSpawnPointMixin {
-    //? if >= 1.21.4 {
+    //? if >= 1.21.11 {
+    /*@Shadow @Final public MinecraftServer server;
+    @Shadow private ServerPlayer.RespawnConfig respawnConfig;
+    @Inject(method = "findRespawnPositionAndUseSpawnBlock", at = @At("RETURN"), cancellable = true)
+    public void solstice$overrideRespawnTarget(boolean useCharge, TeleportTransition.PostTeleportTransition postTeleportTransition, CallbackInfoReturnable<Object> cir) {
+        var spawnModule = ModuleProvider.SPAWN;
+        var config = spawnModule.getConfig();
+        var spawn = spawnModule.getGlobalSpawnPosition();
+        var world = spawn.getWorld(this.server);
+        var pos = new Vec3(spawn.getX(), spawn.getY(), spawn.getZ());
+        var transition = new TeleportTransition(
+                world, pos, Vec3.ZERO,
+                spawn.getYaw(), spawn.getPitch(),
+                TeleportTransition.DO_NOTHING
+        );
+        if (config.globalSpawn.onRespawn) {
+            cir.setReturnValue(transition);
+            return;
+        }
+        if (config.globalSpawn.onRespawnSoft && respawnConfig == null) {
+            cir.setReturnValue(transition);
+        }
+    }
+    *///? } else if >= 1.21.4 {
     /*@Shadow @Final public MinecraftServer server;
     @Shadow private BlockPos respawnPosition;
     @Inject(method = "findRespawnPositionAndUseSpawnBlock", at = @At("RETURN"), cancellable = true)

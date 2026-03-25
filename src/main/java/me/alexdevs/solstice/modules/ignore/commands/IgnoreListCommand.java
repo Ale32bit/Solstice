@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules.ignore.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
@@ -47,9 +48,9 @@ public class IgnoreListCommand extends ModCommand<IgnoreModule> {
                         }
 
                         String playerName;
-                        var gameProfile = context.getSource().getServer().getProfileCache().get(ignoreList.get(i));
+                        var gameProfile = PlayerUtils.getProfile(context.getSource().getServer(),ignoreList.get(i));
                         if (gameProfile.isPresent()) {
-                            playerName = gameProfile.get().getName();
+                            playerName = PlayerUtils.getName(gameProfile.get());
                         } else {
                             playerName = ignoreList.get(i).toString();
                         }

@@ -2,11 +2,11 @@ package me.alexdevs.solstice.modules.extinguish;
 
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.extinguish.commands.ExtinguishCommand;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 public class ExtinguishModule extends ModuleBase.Toggleable {
     
 
-    public ExtinguishModule(ResourceLocation id) {
+    public ExtinguishModule(SolsticeIdentifier id) {
         super(id);
     }
 

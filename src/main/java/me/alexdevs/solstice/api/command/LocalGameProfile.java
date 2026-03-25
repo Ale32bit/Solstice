@@ -14,16 +14,16 @@ import net.minecraft.commands.arguments.GameProfileArgument;
 import java.util.concurrent.CompletableFuture;
 
 public class LocalGameProfile {
-    public static GameProfile getGameProfile(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
-        var profiles = GameProfileArgument.getGameProfiles(context, name);
-        if (profiles.size() > 1) {
-            throw EntityArgument.ERROR_NOT_SINGLE_PLAYER.create();
-        }
+//    public static GameProfile getGameProfile(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+//        var profiles = GameProfileArgument.getGameProfiles(context, name);
+//        if (profiles.size() > 1) {
+//            throw EntityArgument.ERROR_NOT_SINGLE_PLAYER.create();
+//        }
+//
+//        return profiles.iterator().next();
+//    }
 
-        return profiles.iterator().next();
-    }
-
-    public static GameProfile getProfile(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+    public static com.mojang.authlib.GameProfile getProfile(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
         var profileName = StringArgumentType.getString(context, name);
         var profile = Solstice.getUserCache().getByName(profileName);
         if(profile.isEmpty())

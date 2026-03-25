@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.sudo.SudoModule;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
@@ -42,16 +43,26 @@ public class DoAsCommand extends ModCommand<SudoModule> {
 
     public static CommandSourceStack buildPlayerSource(CommandSource commandOutput, MinecraftServer server, ServerPlayer player) {
         var opList = server.getPlayerList().getOps();
+        //? < 1.21.11
         var operator = opList.get(player.getGameProfile());
+        //? >= 1.21.11
+        //var operator = opList.get(new net.minecraft.server.players.NameAndId(player.getGameProfile()));
+        //? < 1.21.11
         int opLevel = 0;
+        //? >= 1.21.11
+        //var opLevel = net.minecraft.server.permissions.LevelBasedPermissionSet.ALL;
+
         if (operator != null) {
+            //? < 1.21.11
             opLevel = operator.getLevel();
+            //? >= 1.21.11
+            //opLevel = operator.permissions();
         }
         return new CommandSourceStack(
                 commandOutput,
                 player.position(),
                 player.getRotationVector(),
-                player.serverLevel(),
+                PlayerUtils.getLevel(player),
                 opLevel,
                 player.getScoreboardName(),
                 player.getDisplayName(),
