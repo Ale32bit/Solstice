@@ -59,7 +59,7 @@ public class HatCommand extends ModCommand<HatModule> {
 
                     //? if < 1.21.11 {
                     var oldHeadStack = inventory.armor.get(3); // head slot
-                    //inventory.setItem(inventory.selected, oldHeadStack.copyAndClear());
+                    inventory.setItem(inventory.selected, oldHeadStack.copyAndClear());
                     //? } else {
                     /*var oldHeadStack = player.getItemBySlot(EquipmentSlot.HEAD);
                     inventory.setItem(inventory.getSelectedSlot(), oldHeadStack.copyAndClear());

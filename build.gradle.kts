@@ -25,6 +25,10 @@ repositories {
         name = "Ladysnake Libs"
         url = uri("https://maven.ladysnake.org/releases")
     }
+    maven {
+        name = "Modrinth"
+        url = uri("https://api.modrinth.com/maven")
+    }
 }
 val accessWidener = rootProject.file("src/main/resources/solstice.accesswidener")
 loom {
@@ -50,6 +54,7 @@ dependencies {
     modCompileOnly("dev.emi:trinkets:${property("trinkets_version")}")
     modCompileOnly("net.luckperms:api:5.4")
     modRuntimeOnly("net.luckperms:api:5.4")
+    modCompileOnly("maven.modrinth:vanish:${project.property("vanish_version")}")
 }
 tasks.processResources {
     val mcConstraint = project.property("minecraft_constraint") as String
