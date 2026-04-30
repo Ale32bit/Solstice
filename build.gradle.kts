@@ -1,6 +1,6 @@
 import com.modrinth.minotaur.dependencies.ModDependency
 plugins {
-    id("fabric-loom") version "1.9-SNAPSHOT"
+    id("fabric-loom") version "1.14-SNAPSHOT"
     id("maven-publish")
     id("com.modrinth.minotaur") version "2.+"
     id("dev.kikugie.stonecutter")
