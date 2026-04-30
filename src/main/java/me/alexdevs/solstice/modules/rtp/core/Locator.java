@@ -121,8 +121,15 @@ public class Locator {
         return world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos);
     }
 
+    private static int getChunkMinY(ChunkAccess chunk) {
+        //? >= 1.21.4
+        //return chunk.getMinY();
+        //? < 1.21.4
+        return chunk.getMinBuildHeight();
+    }
+
     private BlockPos getEmptySpace(BlockPos pos) {
-        var bottom = chunk.getMinBuildHeight();
+        var bottom = getChunkMinY(chunk);
         var top = world.getLogicalHeight();
         var blockPos = new BlockPos.MutableBlockPos(pos.getX(), top, pos.getZ());
 
@@ -151,10 +158,10 @@ public class Locator {
 
             var dx = i % 16;
             var dz = i / 16;
-            pos = chunk.getPos().getBlockAt(dx, chunk.getMinBuildHeight(), dz);
+            pos = chunk.getPos().getBlockAt(dx, getChunkMinY(chunk), dz);
         }
 
-        if (pos.getY() <= chunk.getMinBuildHeight()) {
+        if (pos.getY() <= getChunkMinY(chunk)) {
             callback.accept(new Result(Result.Type.UNSAFE, Optional.empty()));
             return;
         }
@@ -175,7 +182,10 @@ public class Locator {
         if (holder == null) {
             return Optional.empty();
         } else {
+            //? >= 1.21.1
             var chunk = holder.getFullChunkFuture().getNow(ChunkHolder.UNLOADED_LEVEL_CHUNK).orElse(null);
+            //? < 1.21.1
+            //var chunk = holder.getFullChunkFuture().getNow(ChunkHolder.UNLOADED_LEVEL_CHUNK).left().orElse(null);
             if (chunk == null) {
                 return Optional.empty();
             }

@@ -6,13 +6,13 @@ import dev.emi.trinkets.api.TrinketsApi;
 import eu.pb4.sgui.api.gui.SimpleGui;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.ItemUtils;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.integrations.TrinketsIntegration;
 import me.alexdevs.solstice.modules.inventorySee.ImmutableSlot;
 import me.alexdevs.solstice.modules.inventorySee.InventorySeeModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.ChestMenu;
@@ -48,6 +48,12 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
         invSizes.put(36, MenuType.GENERIC_9x4);
         invSizes.put(45, MenuType.GENERIC_9x5);
         invSizes.put(54, MenuType.GENERIC_9x6);
+    }
+
+    private static ItemStack createBarrierItem() {
+        var barrier = new ItemStack(Items.BLACK_STAINED_GLASS_PANE);
+        ItemUtils.setCustomName(barrier, Component.literal(""));
+        return barrier;
     }
 
     @Override
@@ -105,8 +111,7 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                                 container.setSlotRedirect(i, slot);
                             }
 
-                            var barrier = new ItemStack(Items.BLACK_STAINED_GLASS_PANE);
-                            barrier.set(DataComponents.CUSTOM_NAME, Component.literal(""));
+                            var barrier = createBarrierItem();
                             for (var i = targetInventory.getContainerSize(); i < container.getSize(); i++) {
                                 container.setSlot(i, barrier);
                             }
@@ -195,8 +200,7 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                                         container.setSlotRedirect(i, slot);
                                     }
 
-                                    var barrier = new ItemStack(Items.BLACK_STAINED_GLASS_PANE);
-                                    barrier.set(DataComponents.CUSTOM_NAME, Component.literal(""));
+                                    var barrier = createBarrierItem();
                                     for (var i = size; i < container.getSize(); i++) {
                                         container.setSlot(i, barrier);
                                     }

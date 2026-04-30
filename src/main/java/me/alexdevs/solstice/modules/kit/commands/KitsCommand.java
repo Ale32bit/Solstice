@@ -6,14 +6,13 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.sgui.api.elements.GuiElement;
 import eu.pb4.sgui.api.gui.SimpleGui;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.ItemUtils;
 import me.alexdevs.solstice.modules.kit.KitModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.component.ItemLore;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -92,16 +91,13 @@ public class KitsCommand extends ModCommand<KitModule> {
             if (canClaim) {
                 kitNameComponent = Component.nullToEmpty(kitName);
                 kitLoreComponent = module.locale().get("claimKit", placeholders);
-                icon.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+                ItemUtils.setGlint(icon, true);
             } else {
-
                 kitNameComponent = module.locale().get("kitsUnavailableName", placeholders);
                 kitLoreComponent = module.locale().get("kitsUnavailableLore", placeholders);
             }
-
-            icon.set(DataComponents.CUSTOM_NAME, kitNameComponent);
-            icon.set(DataComponents.LORE, new ItemLore(List.of(kitLoreComponent)));
-
+            ItemUtils.setCustomName(icon, kitNameComponent);
+            ItemUtils.setLore(icon, List.of(kitLoreComponent));
             gui.setSlot(i, new GuiElement(icon, (syncId, clickType, slotActionType) -> {
                 try {
                     dispatcher.execute("kit claim " + kitName, context.getSource());

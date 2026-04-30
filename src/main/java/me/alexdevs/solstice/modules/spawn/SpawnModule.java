@@ -11,6 +11,7 @@ import me.alexdevs.solstice.modules.spawn.commands.SpawnCommand;
 import me.alexdevs.solstice.modules.spawn.data.SpawnConfig;
 import me.alexdevs.solstice.modules.spawn.data.SpawnLocale;
 import me.alexdevs.solstice.modules.spawn.data.SpawnServerData;
+import me.alexdevs.solstice.api.utils.ResourceUtils;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -88,7 +89,7 @@ public class SpawnModule extends ModuleBase.Toggleable {
     public ServerLevel getGlobalSpawnWorld() {
         var targetWorld = getConfig().globalSpawn.targetSpawnWorld;
 
-        var key = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(targetWorld));
+        var key = ResourceKey.create(Registries.DIMENSION, ResourceUtils.parse(targetWorld));
         return Solstice.server.getLevel(key);
     }
 

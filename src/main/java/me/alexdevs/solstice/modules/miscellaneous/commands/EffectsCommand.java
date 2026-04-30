@@ -59,7 +59,10 @@ public class EffectsCommand extends ModCommand<MiscellaneousModule> {
             }
 
             var map = Map.of(
+                    //? >= 1.21.1
                     "effect", Component.translatable(effect.value().getDescriptionId()),
+                    //? < 1.21.1
+                    //"effect", Component.translatable(effect.getDescriptionId()),
                     "amplifier", Component.nullToEmpty(String.valueOf(instance.getAmplifier())),
                     "duration", Component.nullToEmpty(duration)
             );

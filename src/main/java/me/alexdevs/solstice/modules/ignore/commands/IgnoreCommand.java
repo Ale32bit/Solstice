@@ -41,7 +41,11 @@ public class IgnoreCommand extends ModCommand<IgnoreModule> {
 
                             var targetName = StringArgumentType.getString(context, "target");
 
+                            //? >= 1.21.1
                             context.getSource().getServer().getProfileCache().getAsync(targetName).thenAcceptAsync(profileOpt -> {
+                            //? < 1.21.1
+                            //context.getSource().getServer().getProfileCache().getAsync(targetName, profileOpt -> {
+
                                 var playerContext = PlaceholderContext.of(player);
 
                                 if (profileOpt.isEmpty()) {

@@ -5,13 +5,11 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.text.Format;
+import me.alexdevs.solstice.api.utils.ItemUtils;
 import me.alexdevs.solstice.modules.item.ItemModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.component.ItemLore;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,9 +35,7 @@ public class ItemLoreCommand extends ModCommand<ItemModule> {
                         context.getSource().sendSuccess(() -> module.locale().get("noItem"), false);
                         return 0;
                     }
-
-                    item.remove(DataComponents.LORE);
-
+                    ItemUtils.removeLore(item);
                     context.getSource().sendSuccess(() -> module.locale().get("loreCleared"), false);
 
                     return 1;
@@ -56,13 +52,11 @@ public class ItemLoreCommand extends ModCommand<ItemModule> {
                             }
 
                             var playerContext = PlaceholderContext.of(player);
-                            var list = new ArrayList<Component>();
-                            for(var line : itemLore.split("\\\\n")) {
-                                list.add(Format.parse(line, playerContext));
+                            var lines = new ArrayList<Component>();
+                            for (var line : itemLore.split("\\\\n")) {
+                                lines.add(Format.parse(line, playerContext));
                             }
-
-                            item.set(DataComponents.LORE, new ItemLore(list));
-
+                            ItemUtils.setLore(item, lines);
                             context.getSource().sendSuccess(() -> module.locale().get("loreSet"), false);
 
                             return 1;

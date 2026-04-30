@@ -7,6 +7,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import java.util.List;
 import java.util.Map;
 
@@ -20,13 +21,20 @@ public class PingCommand extends ModCommand<CoreModule> {
         return List.of("ping");
     }
 
+    private static int getLatency(ServerPlayer player) {
+        //? >= 1.21.1
+        return player.connection.latency();
+        //? < 1.21.1
+        //return player.latency;
+    }
+
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return Commands.literal(name)
                 .requires(require("ping.base", true))
                 .executes(context -> {
                     var player = context.getSource().getPlayerOrException();
-                    var ping = player.connection.latency();
+                    var ping = getLatency(player);
                     var map = Map.of(
                             "ping", Component.nullToEmpty(String.valueOf(ping))
                     );
@@ -37,7 +45,7 @@ public class PingCommand extends ModCommand<CoreModule> {
                         .requires(require("ping.others", 1))
                         .executes(context -> {
                             var player = EntityArgument.getPlayer(context, "player");
-                            var ping = player.connection.latency();
+                            var ping = getLatency(player);
                             var map = Map.of(
                                     "ping", Component.nullToEmpty(String.valueOf(ping)),
                                     "player", player.getName()

@@ -2,7 +2,9 @@ package me.alexdevs.solstice.api.utils;
 
 import com.mojang.authlib.GameProfile;
 import me.alexdevs.solstice.Solstice;
+//? if >= 1.21.1 {
 import net.minecraft.server.level.ClientInformation;
+//? }
 import net.minecraft.server.level.ServerPlayer;
 import java.util.UUID;
 
@@ -17,7 +19,12 @@ public class PlayerUtils {
         }
 
         var playerManager = Solstice.server.getPlayerList();
-        var player = playerManager.getPlayerForLogin(profile, ClientInformation.createDefault());
+        var player =
+        //? >= 1.21.1
+        playerManager.getPlayerForLogin(profile, ClientInformation.createDefault());
+        //? < 1.21.1
+        //playerManager.getPlayerForLogin(profile);
+
         playerManager.load(player);
         return player;
     }

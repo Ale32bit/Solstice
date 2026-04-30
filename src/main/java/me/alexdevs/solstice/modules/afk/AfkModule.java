@@ -13,6 +13,7 @@ import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.afk.commands.ActiveTimeCommand;
 import me.alexdevs.solstice.modules.afk.commands.AfkCommand;
 import me.alexdevs.solstice.modules.afk.data.*;
+import me.alexdevs.solstice.api.utils.ResourceUtils;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.*;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
@@ -21,13 +22,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+
+//? if < 1.21.4 {
+import net.minecraft.world.InteractionResultHolder;
+//? }
+
 
 public class AfkModule extends ModuleBase.Toggleable {
     public static final double sprintSpeed = 0.280617;
@@ -66,7 +71,7 @@ public class AfkModule extends ModuleBase.Toggleable {
         this.commands.add(new AfkCommand(this));
         this.commands.add(new ActiveTimeCommand(this));
 
-        Placeholders.register(ResourceLocation.fromNamespaceAndPath(Solstice.MOD_ID, "afk"), (context, arg) -> {
+        Placeholders.register(ResourceUtils.location(Solstice.MOD_ID, "afk"), (context, arg) -> {
             if (!context.hasPlayer())
                 return PlaceholderResult.invalid("No player!");
 
@@ -343,6 +348,9 @@ public class AfkModule extends ModuleBase.Toggleable {
             if (getConfig().triggers.onItemUse) {
                 clearAfk((ServerPlayer) player, AfkTriggerReason.ITEM_USE);
             }
+            //? >= 1.21.4
+            //return InteractionResult.PASS;
+            //? < 1.21.4
             return InteractionResultHolder.pass(player.getItemInHand(hand));
         });
 

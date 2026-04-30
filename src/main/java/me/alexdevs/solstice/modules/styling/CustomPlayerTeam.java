@@ -1,19 +1,34 @@
 package me.alexdevs.solstice.modules.styling;
-
 import me.alexdevs.solstice.modules.ModuleProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
-
 import java.util.Collection;
 import java.util.List;
+
+
+//? if >= 1.21.1 {
+import net.minecraft.network.chat.TextColor;
 import java.util.Map;
 import java.util.stream.Collectors;
+//? } else {
+/*import net.minecraft.MethodsReturnNonnullByDefault;
+@MethodsReturnNonnullByDefault
+*///? }
 
 public class CustomPlayerTeam extends PlayerTeam {
+
+    private final ServerPlayer player;
+
+    public CustomPlayerTeam(Scoreboard scoreboard, ServerPlayer player) {
+        super(scoreboard, "sol_" + player.getGameProfile().getName());
+        this.player = player;
+        super.getPlayers().add(player.getGameProfile().getName());
+    }
+//? if >= 1.21.1 {
+
     private final static Map<TextColor, ChatFormatting> COLOR_MAP = TextColor.NAMED_COLORS.entrySet().stream().collect(Collectors.toUnmodifiableMap(Map.Entry::getValue, entry -> textColorToFormatting(entry.getKey())));
 
     private static ChatFormatting textColorToFormatting(String name) {
@@ -26,23 +41,26 @@ public class CustomPlayerTeam extends PlayerTeam {
         return COLOR_MAP.getOrDefault(color, ChatFormatting.WHITE);
     }
 
-    private final ServerPlayer player;
-
-    public CustomPlayerTeam(Scoreboard scoreboard, ServerPlayer player) {
-        super(scoreboard, "sol_" + player.getGameProfile().getName());
-        this.player = player;
-
-        super.getPlayers().add(player.getGameProfile().getName());
-    }
-
-
     @Override
     public ChatFormatting getColor() {
-        if(ModuleProvider.STYLING.shouldColorNameplate()) {
+        if (ModuleProvider.STYLING.shouldColorNameplate()) {
             return getFormatting(player.getDisplayName().getStyle().getColor());
         }
         return super.getColor();
     }
+
+//? } else {
+    /*@Override
+    public Component getDisplayName() {
+        return player.getDisplayName();
+    }
+
+    @Override
+    public ChatFormatting getColor() {
+        return ModuleProvider.STYLING.getNameplateColor(player);
+    }
+
+*///? }
 
     @Override
     public Component getPlayerPrefix() {

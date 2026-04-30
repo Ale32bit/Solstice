@@ -1,8 +1,8 @@
 package me.alexdevs.solstice.modules.rtp.data;
 
+import me.alexdevs.solstice.api.utils.ResourceUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
@@ -67,6 +67,8 @@ public class RTPConfig {
     );
 
     public List<ResourceKey<Biome>> parseBiomes() {
-        return prohibitedBiomes.stream().map(biomeId -> ResourceKey.create(Registries.BIOME, ResourceLocation.parse(biomeId))).toList();
+        return prohibitedBiomes.stream()
+                .map(biomeId -> ResourceKey.create(Registries.BIOME, ResourceUtils.parse(biomeId)))
+                .toList();
     }
 }

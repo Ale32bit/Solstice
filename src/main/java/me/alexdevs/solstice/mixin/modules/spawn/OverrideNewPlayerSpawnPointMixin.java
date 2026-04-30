@@ -1,8 +1,6 @@
 package me.alexdevs.solstice.mixin.modules.spawn;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import me.alexdevs.solstice.modules.ModuleProvider;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -12,11 +10,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+//? if >= 1.21.1 {
+import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.nbt.CompoundTag;
 import java.util.Optional;
+//? }
 
 @Mixin(PlayerList.class)
 public abstract class OverrideNewPlayerSpawnPointMixin {
-    // Lnet/minecraft/server/MinecraftServer;getLevel(Lnet/minecraft/resources/ResourceKey;)Lnet/minecraft/server/level/ServerLevel;
     @Redirect(
             method = "placeNewPlayer",
             at = @At(
@@ -24,8 +25,13 @@ public abstract class OverrideNewPlayerSpawnPointMixin {
                     target = "Lnet/minecraft/server/MinecraftServer;getLevel(Lnet/minecraft/resources/ResourceKey;)Lnet/minecraft/server/level/ServerLevel;"
             )
     )
+    //? if >= 1.21.1 {
     public ServerLevel solstice$overrideWorld(MinecraftServer server, ResourceKey<Level> dimension, @Local Optional<CompoundTag> optional) {
         if (optional.isEmpty()) {
+    //? } else {
+    /*public ServerLevel solstice$overrideWorld(MinecraftServer server, ResourceKey<Level> dimension) {
+        if (server.getLevel(dimension) == null) {
+    *///? }
             var spawn = ModuleProvider.SPAWN;
             var firstSpawn = spawn.getFirstSpawn();
             if (firstSpawn != null) {
