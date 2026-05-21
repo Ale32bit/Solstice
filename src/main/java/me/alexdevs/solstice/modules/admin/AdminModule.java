@@ -3,11 +3,12 @@ package me.alexdevs.solstice.modules.admin;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.PlayerConnectionEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 public class AdminModule extends ModuleBase {
-    public AdminModule(ResourceLocation id) {
+    public AdminModule(SolsticeIdentifier id) {
         super(id);
     }
 
@@ -17,7 +18,7 @@ public class AdminModule extends ModuleBase {
             try {
                 return Permissions.check(profile, getWhitelistBypassPermission(), false).get();
             } catch (Exception e) {
-                Solstice.LOGGER.error("Error checking whitelist bypass for profile {}", profile.getId(), e);
+                Solstice.LOGGER.error("Error checking whitelist bypass for profile {}", PlayerUtils.getId(profile), e);
             }
             return false;
         });
@@ -26,7 +27,7 @@ public class AdminModule extends ModuleBase {
             try {
                 return Permissions.check(profile, getFullServerBypassPermission(), false).get();
             } catch (Exception e) {
-                Solstice.LOGGER.error("Error checking full server bypass for profile {}", profile.getId(), e);
+                Solstice.LOGGER.error("Error checking full server bypass for profile {}", PlayerUtils.getId(profile), e);
             }
             return false;
         });

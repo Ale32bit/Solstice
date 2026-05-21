@@ -5,7 +5,7 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.experiments.commands.FlagsCommand;
 import me.alexdevs.solstice.modules.experiments.commands.SafeTeleportCommand;
 import me.alexdevs.solstice.modules.experiments.commands.TimeSpanCommand;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 import java.util.Collection;
 import java.util.List;
@@ -13,7 +13,7 @@ public class ExperimentsModule extends ModuleBase {
     public static final boolean ENABLED = false;
     
 
-    public ExperimentsModule(ResourceLocation id) {
+    public ExperimentsModule(SolsticeIdentifier id) {
         super(id);
     }
 

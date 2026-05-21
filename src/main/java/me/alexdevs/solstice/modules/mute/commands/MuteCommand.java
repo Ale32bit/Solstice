@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.mute.MuteModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
@@ -49,7 +50,7 @@ public class MuteCommand extends ModCommand<MuteModule> {
         var date = calendar.getTime();
 
         targets.forEach(profile -> {
-            var playerData = module.getPlayerData(profile.getId());
+            var playerData = module.getPlayerData(PlayerUtils.getId(profile));
             playerData.muted = true;
             if (timespan != 0) {
                 playerData.mutedUntil = date;
@@ -76,7 +77,7 @@ public class MuteCommand extends ModCommand<MuteModule> {
 
         var placeholders = Map.of(
                 "count", Component.nullToEmpty(String.valueOf(targets.size())),
-                "player", Component.nullToEmpty(targets.stream().findFirst().get().getName()),
+                "player", Component.nullToEmpty(PlayerUtils.getName(targets.stream().findFirst().get())),
                 "timespan", Component.nullToEmpty(TimeSpan.toLongString(timespan))
         );
 

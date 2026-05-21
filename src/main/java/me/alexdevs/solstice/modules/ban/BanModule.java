@@ -5,10 +5,10 @@ import me.alexdevs.solstice.modules.ban.commands.BanCommand;
 import me.alexdevs.solstice.modules.ban.commands.TempBanCommand;
 import me.alexdevs.solstice.modules.ban.commands.UnbanCommand;
 import me.alexdevs.solstice.modules.ban.data.BanLocale;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 public class BanModule extends ModuleBase.Toggleable {
-    public BanModule(ResourceLocation id) {
+    public BanModule(SolsticeIdentifier id) {
         super(id);
     }
 

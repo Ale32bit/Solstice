@@ -6,6 +6,8 @@ import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.parsers.NodeParser;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+
+import me.alexdevs.solstice.api.utils.ComponentUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -44,10 +46,8 @@ public class CodeParser implements NodeParser {
                 var text = Component.empty()
                         .append(display)
                         .setStyle(Style.EMPTY
-                                .withHoverEvent(
-                                        new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover)
-                                )
-                                .withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, content))
+                                .withHoverEvent(ComponentUtils.showTextHoverEvent(hover))
+                                .withClickEvent(ComponentUtils.clickCopyToClipboardEvent(content))
                         );
 
                 list.add(new DirectTextNode(text));

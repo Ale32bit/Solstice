@@ -5,13 +5,15 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.api.text.RawPlaceholder;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
+import me.alexdevs.solstice.api.utils.ProfileOrNameAndId;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.modules.customName.commands.NicknameCommand;
 import me.alexdevs.solstice.modules.customName.data.CustomNameConfig;
 import me.alexdevs.solstice.modules.customName.data.CustomNameLocale;
 import me.alexdevs.solstice.modules.customName.data.CustomNamePlayerData;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +24,7 @@ import java.util.regex.Pattern;
 public class CustomNameModule extends ModuleBase.Toggleable {
     public static final Pattern BASIC_NICKNAME_FILTER = Pattern.compile("[^a-zA-Zà-üÀ-Ü_ ]");
 
-    public CustomNameModule(ResourceLocation id) {
+    public CustomNameModule(SolsticeIdentifier id) {
         super(id);
     }
 
@@ -46,7 +48,7 @@ public class CustomNameModule extends ModuleBase.Toggleable {
             }
         }
 
-        var isOperator = player.getServer().getPlayerList().isOp(player.getGameProfile());
+        var isOperator = player.getServer().getPlayerList().isOp(new ProfileOrNameAndId(player.getGameProfile()).getNameAndId());
 
         if (format == null) {
             format = "${username}";
@@ -69,7 +71,7 @@ public class CustomNameModule extends ModuleBase.Toggleable {
     public String getResolvedUsername(ServerPlayer player) {
         var format = fetchUsernameFormat(player);
         var playerData = Solstice.playerData.get(player).getData(CustomNamePlayerData.class);
-        var name = playerData.nickname == null ? player.getGameProfile().getName() : playerData.nickname;
+        var name = playerData.nickname == null ? PlayerUtils.getName(player.getGameProfile()) : playerData.nickname;
 
         var prefix = LuckPermsIntegration.getPrefix(player);
         var suffix = LuckPermsIntegration.getSuffix(player);

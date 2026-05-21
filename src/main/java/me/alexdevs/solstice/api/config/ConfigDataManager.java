@@ -2,7 +2,7 @@ package me.alexdevs.solstice.api.config;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.config.serializers.DateSerializer;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  */
 public class ConfigDataManager implements IConfigDataManager {
     public static final int CONFIG_VERSION = 2;
-    private final Map<ResourceLocation, Class<?>> classMap = new HashMap<>();
+    private final Map<SolsticeIdentifier, Class<?>> classMap = new HashMap<>();
     private final Map<Class<?>, Supplier<?>> defaultSuppliers = new HashMap<>();
     private final Map<Class<?>, Object> dataMap = new HashMap<>();
 
@@ -48,7 +48,7 @@ public class ConfigDataManager implements IConfigDataManager {
     }
 
     @Override
-    public <T> void registerData(ResourceLocation id, Class<T> classOfConfig, Supplier<T> creator) {
+    public <T> void registerData(SolsticeIdentifier id, Class<T> classOfConfig, Supplier<T> creator) {
         if (classMap.containsKey(id) || defaultSuppliers.containsKey(classOfConfig)) {
             throw new IllegalArgumentException("Config with identifier " + id + " already registered");
         }
@@ -75,7 +75,7 @@ public class ConfigDataManager implements IConfigDataManager {
         return (T) data;
     }
 
-    private Map<String, List<Map.Entry<ResourceLocation, Class<?>>>> getSections() {
+    private Map<String, List<Map.Entry<SolsticeIdentifier, Class<?>>>> getSections() {
         return classMap.entrySet().stream()
                 .collect(Collectors
                         .groupingBy(entry -> entry.getKey().getNamespace()));

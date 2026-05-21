@@ -10,7 +10,7 @@ import me.alexdevs.solstice.modules.back.data.BackLocale;
 import me.alexdevs.solstice.modules.back.data.BackPlayerData;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class BackModule extends ModuleBase.Toggleable {
     
 
-    public BackModule(ResourceLocation id) {
+    public BackModule(SolsticeIdentifier id) {
         super(id);
     }
 

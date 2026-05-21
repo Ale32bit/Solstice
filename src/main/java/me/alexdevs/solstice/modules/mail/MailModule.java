@@ -9,7 +9,7 @@ import me.alexdevs.solstice.modules.mail.commands.MailCommand;
 import me.alexdevs.solstice.modules.mail.data.MailLocale;
 import me.alexdevs.solstice.modules.mail.data.MailPlayerData;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class MailModule extends ModuleBase.Toggleable {
     
 
-    public MailModule(ResourceLocation id) {
+    public MailModule(SolsticeIdentifier id) {
         super(id);
     }
 

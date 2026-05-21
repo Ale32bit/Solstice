@@ -5,7 +5,7 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.hat.commands.HatCommand;
 import me.alexdevs.solstice.modules.hat.data.HatConfig;
 import me.alexdevs.solstice.modules.hat.data.HatLocale;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 public class HatModule extends ModuleBase.Toggleable {
     
 
-    public HatModule(ResourceLocation id) {
+    public HatModule(SolsticeIdentifier id) {
         super(id);
     }
 

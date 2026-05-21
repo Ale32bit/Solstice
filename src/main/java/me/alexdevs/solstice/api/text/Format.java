@@ -1,12 +1,10 @@
 package me.alexdevs.solstice.api.text;
 
+import eu.pb4.placeholders.api.ParserContext;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
 import eu.pb4.placeholders.api.node.TextNode;
-import eu.pb4.placeholders.api.parsers.LegacyFormattingParser;
-import eu.pb4.placeholders.api.parsers.NodeParser;
-import eu.pb4.placeholders.api.parsers.PatternPlaceholderParser;
-import eu.pb4.placeholders.api.parsers.TextParserV1;
+import eu.pb4.placeholders.api.parsers.*;
 import me.alexdevs.solstice.api.text.tag.PhaseGradientTag;
 import net.minecraft.network.chat.Component;
 import java.util.Map;
@@ -24,7 +22,7 @@ public class Format {
     }
 
     public static Component parse(String text) {
-        return PARSER.parseNode(text).toText(null, true);
+        return PARSER.parseNode(text).toText();
     }
 
     public static Component parse(TextNode textNode, PlaceholderContext context, Map<String, Component> placeholders) {

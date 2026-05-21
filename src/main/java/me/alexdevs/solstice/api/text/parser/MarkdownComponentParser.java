@@ -17,7 +17,11 @@ public class MarkdownComponentParser {
                 TextNode.array(
                         new FormattingNode(TextNode.array(TextNode.of("\u258C".repeat(text.toText().getString().length()))), ChatFormatting.DARK_GRAY)
                 ),
-                HoverNode.Action.TEXT, text);
+                //? >= 1.21.11
+                //HoverNode.Action.TEXT_NODE,
+                //? < 1.21.11
+                HoverNode.Action.TEXT,
+                text);
     }
 
     public static TextNode quoteFormatting(TextNode[] textNodes) {
@@ -25,7 +29,11 @@ public class MarkdownComponentParser {
                 TextNode.array(
                         new HoverNode<>(
                                 TextNode.array(new FormattingNode(textNodes, ChatFormatting.GRAY)),
-                                HoverNode.Action.TEXT, TextNode.of("Click to copy"))
+                                //? >= 1.21.11
+                                //HoverNode.Action.TEXT_NODE,
+                                //? < 1.21.11
+                                HoverNode.Action.TEXT,
+                                TextNode.of("Click to copy"))
                 ),
                 ClickEvent.Action.COPY_TO_CLIPBOARD, TextNode.asSingle(textNodes)
         );
@@ -46,7 +54,11 @@ public class MarkdownComponentParser {
                                 TextNode.convert(text)
                         ),
                         ClickEvent.Action.OPEN_URL, url)),
-                HoverNode.Action.TEXT, TextNode.convert(hover)
+                //? >= 1.21.11
+                //HoverNode.Action.TEXT_NODE,
+                //? < 1.21.11
+                HoverNode.Action.TEXT,
+                TextNode.convert(hover)
         );
     }
 }

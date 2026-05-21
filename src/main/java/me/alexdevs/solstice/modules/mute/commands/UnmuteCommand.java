@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules.mute.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.mute.MuteModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.GameProfileArgument;
@@ -33,7 +34,7 @@ public class UnmuteCommand extends ModCommand<MuteModule> {
                             var targets = GameProfileArgument.getGameProfiles(context, "targets");
 
                             targets.forEach(profile -> {
-                                var playerData = module.getPlayerData(profile.getId());
+                                var playerData = module.getPlayerData(PlayerUtils.getId(profile));
                                 playerData.muted = false;
                                 playerData.mutedUntil = null;
                             });
@@ -49,7 +50,10 @@ public class UnmuteCommand extends ModCommand<MuteModule> {
 
                             var placeholders = Map.of(
                                     "count", Component.nullToEmpty(String.valueOf(targets.size())),
+                                    //? < 1.21.11
                                     "player", Component.nullToEmpty(targets.stream().findFirst().get().getName())
+                                    //? >= 1.21.11
+                                    //"player", Component.nullToEmpty(targets.stream().findFirst().get().name())
                             );
 
                             context.getSource().sendSuccess(() -> module.locale().get(localeKey, placeholders), true);

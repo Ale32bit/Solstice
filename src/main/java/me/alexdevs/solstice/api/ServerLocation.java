@@ -2,7 +2,7 @@ package me.alexdevs.solstice.api;
 
 import com.google.common.collect.ImmutableList;
 import me.alexdevs.solstice.modules.ModuleProvider;
-import me.alexdevs.solstice.api.utils.ResourceUtils;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
@@ -48,7 +48,7 @@ public class ServerLocation {
     }
 
     public ServerLocation(ServerPlayer player) {
-        this(player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot(), player.serverLevel().dimension().location().toString());
+        this(player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot(), player.level().dimension().location().toString());
     }
 
     public ServerLocation(double x, double y, double z, float yaw, float pitch, String worldKey) {
@@ -98,7 +98,7 @@ public class ServerLocation {
     }
 
     public ResourceKey<Level> getWorldKey() {
-        return ResourceKey.create(Registries.DIMENSION, ResourceUtils.parse(this.getWorld()));
+        return ResourceKey.create(Registries.DIMENSION, SolsticeIdentifier.parse(this.getWorld()).get());
     }
 
     public ServerLevel getWorld(MinecraftServer server) {

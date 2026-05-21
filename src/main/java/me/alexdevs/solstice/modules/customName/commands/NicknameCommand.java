@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.customName.CustomNameModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.commands.CommandSourceStack;
@@ -107,14 +108,14 @@ public class NicknameCommand extends ModCommand<CustomNameModule> {
         }
 
         module.setCustomName(
-                profile.getId(),
+                PlayerUtils.getId(profile),
                 nickname,
                 hasAdvancedPermissionOthers(context.getSource())
         );
 
         var map = Map.of(
-                "player", Component.nullToEmpty(profile.getName()),
-                "nickname", Component.nullToEmpty(module.getCustomName(profile.getId()))
+                "player", Component.nullToEmpty(PlayerUtils.getName(profile)),
+                "nickname", Component.nullToEmpty(module.getCustomName(PlayerUtils.getId(profile)))
         );
         context.getSource().sendSuccess(() -> module.locale().get("setOther", map), true);
 
@@ -124,11 +125,11 @@ public class NicknameCommand extends ModCommand<CustomNameModule> {
     private int executeClearOthers(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var profile = LocalGameProfile.getProfile(context, "player");
 
-        module.clearCustomName(profile.getId());
+        module.clearCustomName(PlayerUtils.getId(profile));
 
         var map = Map.of(
-                "player", Component.nullToEmpty(profile.getName()),
-                "nickname", Component.nullToEmpty(module.getCustomName(profile.getId()))
+                "player", Component.nullToEmpty(PlayerUtils.getName(profile)),
+                "nickname", Component.nullToEmpty(module.getCustomName(PlayerUtils.getId(profile)))
         );
         context.getSource().sendSuccess(() -> module.locale().get("clearedOther", map), true);
 

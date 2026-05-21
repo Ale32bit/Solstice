@@ -2,13 +2,14 @@ package me.alexdevs.solstice.modules.rtp;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.rtp.commands.RTPCommand;
 import me.alexdevs.solstice.modules.rtp.core.Locator;
 import me.alexdevs.solstice.modules.rtp.data.RTPConfig;
 import me.alexdevs.solstice.modules.rtp.data.RTPLocale;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.biome.Biome;
 
@@ -18,7 +19,7 @@ public class RTPModule extends ModuleBase.Toggleable {
 
     private final ArrayList<Locator> locators = new ArrayList<>();
 
-    public RTPModule(ResourceLocation id) {
+    public RTPModule(SolsticeIdentifier id) {
         super(id);
     }
 
@@ -37,13 +38,13 @@ public class RTPModule extends ModuleBase.Toggleable {
     }
 
     public Locator createLocator(ServerPlayer player) {
-        var locator = new Locator(player, player.serverLevel(), getConfig());
+        var locator = new Locator(player, PlayerUtils.getLevel(player), getConfig());
         locators.add(locator);
         return locator;
     }
 
     public Locator createLocatorWithBiome(ServerPlayer player, ResourceKey<Biome> biome) {
-        var locator = new Locator(player, player.serverLevel(), getConfig(), biome);
+        var locator = new Locator(player, PlayerUtils.getLevel(player), getConfig(), biome);
         locators.add(locator);
         return locator;
     }

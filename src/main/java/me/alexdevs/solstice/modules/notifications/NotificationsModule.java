@@ -2,6 +2,7 @@ package me.alexdevs.solstice.modules.notifications;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.notifications.commands.NotificationsCommand;
@@ -10,14 +11,14 @@ import me.alexdevs.solstice.modules.notifications.data.NotificationsLocale;
 import me.alexdevs.solstice.modules.notifications.data.NotificationsPlayerData;
 import me.alexdevs.solstice.modules.notifications.data.PlayerNotificationSettings;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 
 public class NotificationsModule extends ModuleBase.Toggleable {
     private static NotificationsModule instance;
-    public NotificationsModule(ResourceLocation id) {
+    public NotificationsModule(SolsticeIdentifier id) {
         super(id);
         instance = this;
     }
@@ -30,15 +31,15 @@ public class NotificationsModule extends ModuleBase.Toggleable {
 
         commands.add(new NotificationsCommand(this));
 
-        ServerMessageEvents.CHAT_MESSAGE.register((message, sender, parameters) -> {
+        ServerMessageEvents.CHAT_MESSAGE.register((message, sourcePlayer, parameters) -> {
             var content = message.decoratedContent().getString().toLowerCase();
 
-            sender.getServer().getPlayerList().getPlayers().forEach(player -> {
-                if (player.equals(sender)) {
+            sourcePlayer.getServer().getPlayerList().getPlayers().forEach(player -> {
+                if (player.equals(sourcePlayer)) {
                     return;
                 }
 
-                var playerName = player.getGameProfile().getName().toLowerCase();
+                var playerName = PlayerUtils.getName(player.getGameProfile()).toLowerCase();
                 if (content.contains(playerName)) {
                     var settings = getPlayerSettings(player);
                     if (settings.onChat()) {
@@ -100,11 +101,11 @@ public class NotificationsModule extends ModuleBase.Toggleable {
             return;
 
         var settings = getPlayerSettings(player);
-        var id = ResourceLocation.tryParse(settings.soundId());
+        var id = SolsticeIdentifier.tryParse(settings.soundId());
         if (id == null) {
             return;
         }
 
-        player.playNotifySound(SoundEvent.createVariableRangeEvent(id), SoundSource.MASTER, settings.volume(), settings.pitch());
+        PlayerUtils.playSound(player,SoundEvent.createVariableRangeEvent(id.get()),settings.volume(),settings.pitch());
     }
 }

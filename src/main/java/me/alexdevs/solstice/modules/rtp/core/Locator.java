@@ -7,6 +7,8 @@ import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.modules.rtp.data.RTPConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ServerLevel;
@@ -27,8 +29,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class Locator {
-
+    //? < 1.21.11
     public static final TicketType<BlockPos> RTP_TICKET = TicketType.create("rtp", Comparator.comparingLong(ChunkPos::asLong), 300);
+    //? >= 1.21.11
+    //public static final TicketType RTP_TICKET = Registry.register(BuiltInRegistries.TICKET_TYPE, "RTP", new TicketType(300, TicketType.FLAG_LOADING));
+
 
     public final ServerPlayer player;
     public final ServerLevel world;
@@ -174,6 +179,9 @@ public class Locator {
     }
 
     private void load() {
+        //? >= 1.21.11
+        //world.getChunkSource().addTicketWithRadius(RTP_TICKET, new ChunkPos(attemptPos),0);
+        //? < 1.21.11
         world.getChunkSource().addRegionTicket(RTP_TICKET, new ChunkPos(attemptPos), 0, attemptPos);
     }
 

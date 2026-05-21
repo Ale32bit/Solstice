@@ -7,7 +7,7 @@ import me.alexdevs.solstice.modules.kit.commands.KitCommand;
 import me.alexdevs.solstice.modules.kit.commands.KitsCommand;
 import me.alexdevs.solstice.modules.kit.data.*;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
@@ -17,7 +17,7 @@ import java.util.Map;
 public class KitModule extends ModuleBase.Toggleable {
     
 
-    public KitModule(ResourceLocation id) {
+    public KitModule(SolsticeIdentifier id) {
         super(id);
     }
 

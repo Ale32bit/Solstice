@@ -8,7 +8,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class Raycast {
     public static BlockHitResult cast(ServerPlayer player, double maxDistance) {
-        var world = player.serverLevel();
+        var world = player.level();
         var eyePos = player.getEyePosition();
         var rotVec = player.getLookAngle();
 

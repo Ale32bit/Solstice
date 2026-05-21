@@ -2,6 +2,7 @@ package me.alexdevs.solstice.modules.teleportHere.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.teleportHere.TeleportHereModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -31,7 +32,7 @@ public class TeleportHereCommand extends ModCommand<TeleportHereModule> {
                         .executes(context -> {
                             var source = context.getSource();
                             var player = source.getPlayerOrException();
-                            var world = player.serverLevel();
+                            var world = PlayerUtils.getLevel(player);
                             var vec3d = player.position();
                             var yaw = player.getYRot();
                             var pitch = player.getXRot();

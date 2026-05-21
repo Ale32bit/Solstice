@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.ComponentUtils;
 import me.alexdevs.solstice.modules.sudo.SudoModule;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.commands.CommandSource;
@@ -43,7 +44,7 @@ public class SudoCommand extends ModCommand<SudoModule> {
                         .executes(context -> {
                             if (!Permissions.check(context.getSource(), getPermissionNode("sudo"), 4)) {
                                 context.getSource().sendFailure(Component.literal(String.format("%s is not in the sudoers file. This incident will be reported.", context.getSource().getTextName()))
-                                        .setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://xkcd.com/838/"))));
+                                        .setStyle(Style.EMPTY.withClickEvent(ComponentUtils.openUrlClickEvent( "https://xkcd.com/838/"))));
                                 return 1;
                             }
                             var command = StringArgumentType.getString(context, "command");
@@ -64,9 +65,15 @@ public class SudoCommand extends ModCommand<SudoModule> {
     public CommandSourceStack buildServerSource(CommandSource commandOutput, MinecraftServer server) {
         return new CommandSourceStack(
                 commandOutput,
+                //? >= 1.21.11
+                //server.overworld().getRespawnData().pos().getCenter(),
+                //? < 1.21.11
                 server.overworld().getSharedSpawnPos().getCenter(),
                 Vec2.ZERO,
                 server.overworld(),
+                //? >= 1.21.11
+                //net.minecraft.server.permissions.PermissionSet.ALL_PERMISSIONS,
+                //? < 1.21.11
                 4,
                 "Server",
                 Component.nullToEmpty("Server"),

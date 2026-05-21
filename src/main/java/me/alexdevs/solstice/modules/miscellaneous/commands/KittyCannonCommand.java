@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.utils.EntityUtils;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.miscellaneous.DummyExplosion;
 import me.alexdevs.solstice.modules.miscellaneous.MiscellaneousModule;
 import net.minecraft.commands.CommandSourceStack;
@@ -33,7 +34,7 @@ public class KittyCannonCommand extends ModCommand<MiscellaneousModule> {
                 .executes(context -> {
                     final var player = context.getSource().getPlayerOrException();
 
-                    final var world = player.serverLevel();
+                    final var world = PlayerUtils.getLevel(player);
 
                     EntityUtils.createWithCommand(BALL, world, entity -> {
                         entity.setDeltaMovement(player.getLookAngle().scale(3.5));

@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import me.alexdevs.solstice.Solstice;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
@@ -55,7 +55,7 @@ public class LocaleManager {
         return null;
     }
 
-    public Locale getLocale(ResourceLocation id) {
+    public Locale getLocale(SolsticeIdentifier id) {
         return new Locale(id, () -> localeMap);
     }
 
@@ -63,7 +63,7 @@ public class LocaleManager {
         return new Locale(Solstice.ID.withPath("shared"), () -> localeMap);
     }
 
-    public void registerModule(ResourceLocation id, Map<String, String> defaults) {
+    public void registerModule(SolsticeIdentifier id, Map<String, String> defaults) {
         var key = id.toString().replace(":", ".");
         this.defaultMap.modules.put(key, new ConcurrentHashMap<>(defaults));
     }

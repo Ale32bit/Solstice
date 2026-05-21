@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.home.HomeModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
@@ -44,11 +45,11 @@ public class HomeOtherCommand extends ModCommand<HomeModule> {
         var playerContext = PlaceholderContext.of(context.getSource().getPlayer());
 
 
-        var data = module.getData(profile.getId());
+        var data = module.getData(PlayerUtils.getId(profile));
 
         var placeholders = Map.of(
                 "home", Component.nullToEmpty(name),
-                "owner", Component.nullToEmpty(profile.getName())
+                "owner", Component.nullToEmpty(PlayerUtils.getName(profile))
         );
 
         if (!data.homes.containsKey(name)) {

@@ -9,7 +9,7 @@ import me.alexdevs.solstice.modules.staffChat.data.StaffChatLocale;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Map;
@@ -19,7 +19,7 @@ public class StaffChatModule extends ModuleBase.Toggleable {
     
     private final ConcurrentHashMap<UUID, Boolean> stickyStaffChat = new ConcurrentHashMap<>();
 
-    public StaffChatModule(ResourceLocation id) {
+    public StaffChatModule(SolsticeIdentifier id) {
         super(id);
     }
 

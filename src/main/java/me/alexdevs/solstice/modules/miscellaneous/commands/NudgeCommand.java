@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.miscellaneous.MiscellaneousModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -59,7 +60,7 @@ public class NudgeCommand extends ModCommand<MiscellaneousModule> {
                 if (!quiet) {
                     if (entity instanceof ServerPlayer player) {
                         var pitch = (float) (Math.sin(random.nextDouble() * Math.PI * 2) / 10 + 1);
-                        player.playNotifySound(SoundEvents.PLAYER_ATTACK_NODAMAGE, SoundSource.MASTER, 1f, pitch);
+                        PlayerUtils.playSound(player, SoundEvents.PLAYER_ATTACK_NODAMAGE, 1f, pitch);
                     }
                 }
             }

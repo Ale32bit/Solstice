@@ -3,18 +3,19 @@ package me.alexdevs.solstice.modules.commandSpy;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.CommandEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.commandSpy.data.CommandSpyConfig;
 import me.alexdevs.solstice.modules.commandSpy.data.CommandSpyLocale;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 import java.util.Map;
 
 public class CommandSpyModule extends ModuleBase.Toggleable {
     
 
-    public CommandSpyModule(ResourceLocation id) {
+    public CommandSpyModule(SolsticeIdentifier id) {
         super(id);
     }
 
@@ -40,7 +41,7 @@ public class CommandSpyModule extends ModuleBase.Toggleable {
             var player = source.getPlayer();
 
             var players = source.getServer().getPlayerList().getPlayers();
-            var placeholders = Map.of("player", Component.nullToEmpty(player.getGameProfile().getName()), "command", Component.nullToEmpty(command));
+            var placeholders = Map.of("player", Component.nullToEmpty(PlayerUtils.getName(player.getGameProfile())), "command", Component.nullToEmpty(command));
             var message = locale().get("spyFormat", placeholders);
             for (var pl : players) {
                 var commandSpyEnabled = Permissions.check(pl, this.getPermissionNode("base"));

@@ -4,6 +4,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.text.Components;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.notifications.NotificationsModule;
@@ -13,7 +14,7 @@ import me.alexdevs.solstice.modules.tell.data.TellLocale;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class TellModule extends ModuleBase.Toggleable {
     
     public final HashMap<String, String> lastSender = new HashMap<>();
 
-    public TellModule(ResourceLocation id) {
+    public TellModule(SolsticeIdentifier id) {
         super(id);
     }
 
@@ -131,7 +132,7 @@ public class TellModule extends ModuleBase.Toggleable {
         }
 
         source.getServer().getPlayerList().getPlayers().forEach(player -> {
-            var playerName = player.getGameProfile().getName();
+            var playerName = PlayerUtils.getName(player.getGameProfile());
             if (playerName.equals(targetName) || playerName.equals(source.getTextName())) {
                 return;
             }

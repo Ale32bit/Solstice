@@ -7,6 +7,7 @@ import com.google.common.io.Files;
 import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -49,7 +50,7 @@ public class UserCache {
         return this.accessCount.incrementAndGet();
     }
 
-    public Optional<GameProfile> getByName(String name) {
+    public Optional<com.mojang.authlib.GameProfile> getByName(String name) {
         name = name.toLowerCase(Locale.ROOT);
         var entry = byName.get(name);
 
@@ -60,7 +61,7 @@ public class UserCache {
         }
     }
 
-    public Optional<GameProfile> getByUUID(UUID uuid) {
+    public Optional<com.mojang.authlib.GameProfile> getByUUID(UUID uuid) {
         var entry = byUUID.get(uuid);
         if (entry == null) {
             return Optional.empty();
@@ -73,7 +74,7 @@ public class UserCache {
         return ImmutableList.copyOf(this.byName.keySet());
     }
 
-    public void add(GameProfile profile) {
+    public void add(com.mojang.authlib.GameProfile profile) {
         var calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.MONTH, 1);
@@ -84,14 +85,14 @@ public class UserCache {
     }
 
     private void add(Entry entry) {
-        var gameProfile = entry.getProfile();
+        var profile = entry.getProfile();
         entry.setLastAccessed(this.incrementAndGetAccessCount());
-        var name = gameProfile.getName();
+        var name = PlayerUtils.getName(profile);
         if (name != null) {
             this.byName.put(name.toLowerCase(Locale.ROOT), entry);
         }
 
-        var uuid = gameProfile.getId();
+        var uuid = PlayerUtils.getId(profile);
         if (uuid != null) {
             byUUID.put(uuid, entry);
         }
@@ -99,8 +100,8 @@ public class UserCache {
 
     private static JsonElement entryToJson(Entry entry, DateFormat dateFormat) {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("name", entry.getProfile().getName());
-        UUID uUID = entry.getProfile().getId();
+        jsonObject.addProperty("name", PlayerUtils.getName(entry.getProfile()));
+        UUID uUID = PlayerUtils.getId(entry.getProfile());
         jsonObject.addProperty("uuid", uUID == null ? "" : uUID.toString());
         jsonObject.addProperty("expiresOn", dateFormat.format(entry.getExpirationDate()));
         return jsonObject;
@@ -136,7 +137,7 @@ public class UserCache {
                 return Optional.empty();
             }
 
-            return Optional.of(new Entry(new GameProfile(uUID, name), date));
+            return Optional.of(new Entry(new com.mojang.authlib.GameProfile(uUID, name), date));
         }
         return Optional.empty();
     }
@@ -208,16 +209,16 @@ public class UserCache {
     }
 
     public static class Entry {
-        private final GameProfile profile;
+        private final com.mojang.authlib.GameProfile profile;
         final Date expirationDate;
         private volatile long lastAccessed;
 
-        Entry(GameProfile profile, Date expirationDate) {
+        Entry(com.mojang.authlib.GameProfile profile, Date expirationDate) {
             this.profile = profile;
             this.expirationDate = expirationDate;
         }
 
-        public GameProfile getProfile() {
+        public com.mojang.authlib.GameProfile getProfile() {
             return this.profile;
         }
 

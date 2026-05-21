@@ -4,12 +4,12 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.trash.commands.TrashCommand;
 import me.alexdevs.solstice.modules.trash.data.TrashLocale;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 public class TrashModule extends ModuleBase.Toggleable {
     
 
-    public TrashModule(ResourceLocation id) {
+    public TrashModule(SolsticeIdentifier id) {
         super(id);
     }
 

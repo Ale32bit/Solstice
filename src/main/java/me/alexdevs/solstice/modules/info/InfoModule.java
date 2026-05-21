@@ -12,7 +12,7 @@ import me.alexdevs.solstice.modules.info.data.InfoConfig;
 import me.alexdevs.solstice.modules.info.data.InfoLocale;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class InfoModule extends ModuleBase.Toggleable {
     public final String nameFilterRegex = "[^a-z0-9-]";
     private final Path infoDir;
 
-    public InfoModule(ResourceLocation id) {
+    public InfoModule(SolsticeIdentifier id) {
         super(id);
         infoDir = Paths.configDirectory.resolve("info");
     }

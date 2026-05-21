@@ -5,6 +5,7 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.text.Components;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.notifications.NotificationsModule;
 import me.alexdevs.solstice.modules.teleportRequest.commands.TeleportAcceptCommand;
 import me.alexdevs.solstice.modules.teleportRequest.commands.TeleportAskCommand;
@@ -14,7 +15,7 @@ import me.alexdevs.solstice.modules.teleportRequest.data.Request;
 import me.alexdevs.solstice.modules.teleportRequest.data.TeleportConfig;
 import me.alexdevs.solstice.modules.teleportRequest.data.TeleportLocale;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Map;
@@ -28,7 +29,7 @@ public class TeleportRequestModule extends ModuleBase.Toggleable {
 
     private final Map<UUID, ConcurrentLinkedDeque<Request>> requests = new ConcurrentHashMap<>();
 
-    public TeleportRequestModule(ResourceLocation id) {
+    public TeleportRequestModule(SolsticeIdentifier id) {
         super(id);
     }
 
@@ -119,11 +120,11 @@ public class TeleportRequestModule extends ModuleBase.Toggleable {
                 "acceptButton", Components.button(
                         locale().raw("~accept"),
                         locale().raw("~accept.hover"),
-                        "/tpaccept " + source.getGameProfile().getName()),
+                        "/tpaccept " + PlayerUtils.getName(source.getGameProfile())),
                 "refuseButton", Components.button(
                         locale().raw("~refuse"),
                         locale().raw("~refuse.hover"),
-                        "/tpdeny " + source.getGameProfile().getName())
+                        "/tpdeny " + PlayerUtils.getName(source.getGameProfile()))
         );
 
         target.sendSystemMessage(locale().get(
@@ -151,11 +152,11 @@ public class TeleportRequestModule extends ModuleBase.Toggleable {
                 "acceptButton", Components.button(
                         locale().raw("~accept"),
                         locale().raw("~accept.hover"),
-                        "/tpaccept " + source.getGameProfile().getName()),
+                        "/tpaccept " + PlayerUtils.getName(source.getGameProfile())),
                 "refuseButton", Components.button(
                         locale().raw("~refuse"),
                         locale().raw("~refuse.hover"),
-                        "/tpdeny " + source.getGameProfile().getName())
+                        "/tpdeny " + PlayerUtils.getName(source.getGameProfile()))
         );
 
         target.sendSystemMessage(locale().get(

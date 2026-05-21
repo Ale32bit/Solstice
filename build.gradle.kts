@@ -105,3 +105,13 @@ publishing {
         }
     }
 }
+
+stonecutter {
+    replacements.string(current.parsed >= "1.21.11") {
+//        replace("player.level()", "player.serverLevel()")
+//        replace("sourcePlayer.serverLevel()", "sourcePlayer.level()")
+        replace("player.getServer()", "player.level().getServer()")
+        replace("sourcePlayer.getServer()", "sourcePlayer.level().getServer()")
+        replace("dimension().location()", "dimension().identifier()")
+    }
+}

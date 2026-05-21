@@ -12,7 +12,7 @@ import me.alexdevs.solstice.modules.cooldown.data.CooldownSetting;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.*;
@@ -28,7 +28,7 @@ public class CooldownModule extends ModuleBase.Toggleable {
     // This map is replaced every reload and at start.
     private Map<String, String> nodesMap = Map.of();
 
-    public CooldownModule(ResourceLocation id) {
+    public CooldownModule(SolsticeIdentifier id) {
         super(id);
     }
 

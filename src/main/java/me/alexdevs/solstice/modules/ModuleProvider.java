@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.module.ModuleEntrypoint;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import me.alexdevs.solstice.modules.admin.AdminModule;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.announcement.AnnouncementModule;
@@ -59,7 +60,6 @@ import me.alexdevs.solstice.modules.timeBar.TimeBarModule;
 import me.alexdevs.solstice.modules.trash.TrashModule;
 import me.alexdevs.solstice.modules.utilities.UtilitiesModule;
 import me.alexdevs.solstice.modules.warp.WarpModule;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -124,7 +124,7 @@ public class ModuleProvider implements ModuleEntrypoint {
     public static final UtilitiesModule UTILITIES = add(new UtilitiesModule(path("utilities")));
     public static final WarpModule WARP = add(new WarpModule(path("warp")));
 
-    private static ResourceLocation path(String path) {
+    private static SolsticeIdentifier path(String path) {
         return Solstice.ID.withPath(path);
     }
 

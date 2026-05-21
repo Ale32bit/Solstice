@@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.home.HomeModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
@@ -86,12 +87,12 @@ public class HomesCommand extends ModCommand<HomeModule> {
         var player = context.getSource().getPlayerOrException();
         var playerContext = PlaceholderContext.of(player);
 
-        var data = module.getData(profile.getId());
+        var data = module.getData(PlayerUtils.getId(profile));
         var homeList = data.homes.keySet().stream().sorted().toList();
 
         if (homeList.isEmpty()) {
             var placeholders = Map.of(
-                    "owner", Component.nullToEmpty(profile.getName())
+                    "owner", Component.nullToEmpty(PlayerUtils.getName(profile))
             );
             context.getSource().sendSuccess(() -> module.locale().get(
                     "noHomesOther",
@@ -109,7 +110,7 @@ public class HomesCommand extends ModCommand<HomeModule> {
             }
             var placeholders = Map.of(
                     "home", Component.nullToEmpty(homeList.get(i)),
-                    "owner", Component.nullToEmpty(profile.getName())
+                    "owner", Component.nullToEmpty(PlayerUtils.getName(profile))
             );
 
             listText = listText.append(module.locale().get(
@@ -121,7 +122,7 @@ public class HomesCommand extends ModCommand<HomeModule> {
 
         var placeholders = Map.of(
                 "homeList", listText,
-                "owner", Component.nullToEmpty(profile.getName())
+                "owner", Component.nullToEmpty(PlayerUtils.getName(profile))
         );
         context.getSource().sendSuccess(() -> module.locale().get(
                 "homeListOther",

@@ -5,6 +5,7 @@ import eu.pb4.placeholders.api.node.LiteralNode;
 import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.node.parent.ParentNode;
 import eu.pb4.placeholders.api.parsers.NodeParser;
+import me.alexdevs.solstice.api.utils.ComponentUtils;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -64,10 +65,8 @@ public class LinkParser implements NodeParser {
                 var text = Component.empty()
                         .append(display)
                         .setStyle(Style.EMPTY
-                                .withHoverEvent(
-                                        new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover)
-                                )
-                                .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link))
+                                .withHoverEvent(ComponentUtils.showTextHoverEvent(hover))
+                                .withClickEvent(ComponentUtils.openUrlClickEvent(link))
                         );
 
                 list.add(new DirectTextNode(text));

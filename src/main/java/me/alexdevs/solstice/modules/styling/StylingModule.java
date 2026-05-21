@@ -10,7 +10,7 @@ import me.alexdevs.solstice.modules.styling.data.StylingConfig;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 
@@ -32,7 +32,7 @@ public class StylingModule extends ModuleBase.Toggleable {
     //? < 1.21.1
     //private static final StylingConfig.NameplateFormat DEFAULT_NAMEPLATE = new StylingConfig.NameplateFormat("", "", "WHITE");
 
-    public StylingModule(ResourceLocation id) {
+    public StylingModule(SolsticeIdentifier id) {
         super(id);
     }
 

@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.skull.SkullModule;
 import net.minecraft.commands.CommandSourceStack;
 
@@ -27,7 +28,7 @@ public class SkullCommand extends ModCommand<SkullModule> {
     public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
                 .requires(require(2))
-                .executes(context -> execute(context, context.getSource().getPlayerOrException().getGameProfile().getName()))
+                .executes(context -> execute(context, PlayerUtils.getName(context.getSource().getPlayerOrException().getGameProfile())))
                 .then(argument("name", StringArgumentType.word())
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name"))));
     }

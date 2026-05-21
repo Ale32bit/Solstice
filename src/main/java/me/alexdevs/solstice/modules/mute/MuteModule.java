@@ -7,7 +7,7 @@ import me.alexdevs.solstice.modules.mute.commands.UnmuteCommand;
 import me.alexdevs.solstice.modules.mute.data.MuteLocale;
 import me.alexdevs.solstice.modules.mute.data.MutePlayerData;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 import java.util.Date;
 import java.util.UUID;
@@ -15,7 +15,7 @@ import java.util.UUID;
 public class MuteModule extends ModuleBase.Toggleable {
 
 
-    public MuteModule(ResourceLocation id) {
+    public MuteModule(SolsticeIdentifier id) {
         super(id);
     }
 

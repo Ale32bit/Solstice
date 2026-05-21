@@ -2,11 +2,11 @@ package me.alexdevs.solstice.modules.teleportPosition;
 
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.teleportPosition.commands.TeleportPositionCommand;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 public class TeleportPositionModule extends ModuleBase.Toggleable {
     
-    public TeleportPositionModule(ResourceLocation id) {
+    public TeleportPositionModule(SolsticeIdentifier id) {
         super(id);
     }
 

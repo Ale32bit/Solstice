@@ -9,6 +9,7 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.ComponentUtils;
 import me.alexdevs.solstice.modules.timeBar.TimeBarModule;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -107,8 +108,8 @@ public class TimeBarCommand extends ModCommand<TimeBarModule> {
         context.getSource().sendSuccess(() -> Component
                 .literal("New time bar created with UUID ")
                 .append(Component.literal(bar.getUuid().toString()).setStyle(Style.EMPTY
-                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.nullToEmpty("Click to copy")))
-                        .withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, bar.getUuid().toString())))), true);
+                        .withHoverEvent(ComponentUtils.showTextHoverEvent(Component.nullToEmpty("Click to copy")))
+                        .withClickEvent(ComponentUtils.clickCopyToClipboardEvent(bar.getUuid().toString())))), true);
 
         return 1;
     }

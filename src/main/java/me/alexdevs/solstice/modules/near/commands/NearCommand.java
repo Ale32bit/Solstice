@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.near.NearModule;
 import me.alexdevs.solstice.modules.near.data.NearConfig;
 import net.minecraft.commands.CommandSourceStack;
@@ -44,7 +45,7 @@ public class NearCommand extends ModCommand<NearModule> {
         var list = new ArrayList<ClosePlayers>();
 
         var sourcePos = sourcePlayer.position();
-        sourcePlayer.serverLevel().players().forEach(targetPlayer -> {
+        PlayerUtils.getLevel(sourcePlayer).players().forEach(targetPlayer -> {
             var targetPos = targetPlayer.position();
             if (!sourcePlayer.getUUID().equals(targetPlayer.getUUID()) && sourcePos.closerThan(targetPos, range)) {
                 var distance = sourcePos.distanceTo(targetPos);

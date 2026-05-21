@@ -7,10 +7,10 @@ import me.alexdevs.solstice.modules.item.commands.ItemNameCommand;
 import me.alexdevs.solstice.modules.item.commands.MoreCommand;
 import me.alexdevs.solstice.modules.item.commands.RepairCommand;
 import me.alexdevs.solstice.modules.item.data.ItemLocale;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 public class ItemModule extends ModuleBase.Toggleable {
     
-    public ItemModule(ResourceLocation id) {
+    public ItemModule(SolsticeIdentifier id) {
         super(id);
     }
 

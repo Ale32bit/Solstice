@@ -5,11 +5,11 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.broadcast.commands.BroadcastCommand;
 import me.alexdevs.solstice.modules.broadcast.commands.PlainBroadcastCommand;
 import me.alexdevs.solstice.modules.broadcast.data.BroadcastConfig;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 public class BroadcastModule extends ModuleBase.Toggleable {
     
 
-    public BroadcastModule(ResourceLocation id) {
+    public BroadcastModule(SolsticeIdentifier id) {
         super(id);
     }
 

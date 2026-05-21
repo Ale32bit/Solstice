@@ -4,6 +4,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.text.Components;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.note.commands.NotesCommand;
 import me.alexdevs.solstice.modules.note.data.Note;
 import me.alexdevs.solstice.modules.note.data.NoteConfig;
@@ -12,7 +13,7 @@ import me.alexdevs.solstice.modules.note.data.NotePlayerData;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ import java.util.UUID;
 public class NoteModule extends ModuleBase.Toggleable {
     
 
-    public NoteModule(ResourceLocation id) {
+    public NoteModule(SolsticeIdentifier id) {
         super(id);
     }
 
@@ -48,10 +49,10 @@ public class NoteModule extends ModuleBase.Toggleable {
             var checkButton = Components.button(
                     locale().raw("checkButton"),
                     locale().raw("hoverCheck"),
-                    "/notes " + player.getGameProfile().getName()
+                    "/notes " + PlayerUtils.getName(player.getGameProfile())
             );
             final var text = locale().get("loginInfo", context, Map.of(
-                    "user", Component.nullToEmpty(player.getGameProfile().getName()),
+                    "user", Component.nullToEmpty(PlayerUtils.getName(player.getGameProfile())),
                     "notes", Component.nullToEmpty(String.valueOf(notes.size())),
                     "checkButton", checkButton
             ));

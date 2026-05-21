@@ -4,11 +4,11 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.inventorySee.commands.InventorySeeCommand;
 import me.alexdevs.solstice.modules.inventorySee.data.InventorySeeLocale;
-import net.minecraft.resources.ResourceLocation;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 public class InventorySeeModule extends ModuleBase.Toggleable {
     
 
-    public InventorySeeModule(ResourceLocation id) {
+    public InventorySeeModule(SolsticeIdentifier id) {
         super(id);
     }
 

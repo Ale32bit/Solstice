@@ -55,11 +55,11 @@ public class RocketCommand extends ModCommand<MiscellaneousModule> {
         }
 
         var count = 0;
-        for (var target : targets) {
+        for (var player : targets) {
             count++;
             if (explode) {
-                var world = (ServerLevel) target.level();
-                var pos = target.position();
+                var world = (ServerLevel) player.level();
+                var pos = player.position();
                 DummyExplosion.spawn(world, pos, power * 2);
                 world.playSound(null,
                         pos.x, pos.y, pos.z,
@@ -67,8 +67,8 @@ public class RocketCommand extends ModCommand<MiscellaneousModule> {
                         2, 1);
             }
 
-            target.push(0, power, 0);
-            target.hurtMarked = true;
+            player.push(0, power, 0);
+            player.hurtMarked = true;
         }
 
 

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class RegistryUtils {
     public static List<String> getBiomes(HolderLookup.RegistryLookup<Biome> registry, boolean includeTags) {
-        var biomes = new ArrayList<>(registry.listElementIds().map(q -> q.location().toString()).toList());
+        var biomes = new ArrayList<>(registry.listElementIds().map(q -> ResourceUtils.identifier(q).toString()).toList());
         if (includeTags) {
             biomes.addAll(registry.listTagIds().map(q -> '#' + q.location().toString()).toList());
         }
