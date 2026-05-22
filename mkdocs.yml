@@ -1,0 +1,94 @@
+site_name: Solstice Essentials
+site_url: https://solstice.alexdevs.me
+theme:
+  name: material
+
+  logo: assets/sol.png
+  favicon: assets/favicon.png
+
+  icon:
+    repo: fontawesome/brands/github
+
+  nav:
+    - Home: index.md
+    - Features: features/index.md
+
+  features:
+    - navigation.tabs
+    - navigation.path
+    - navigation.expand
+    - navigation.instant
+    - navigation.top
+    
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+      primary: orange
+      accent: deep orange
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+      primary: orange
+      accent: deep orange
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+
+      primary: black
+      accent: deep orange
+
+repo_url: https://github.com/Ale32bit/Solstice
+repo_name: Ale32bit/Solstice
+
+copyright:  <a property="dct:title" rel="cc:attributionURL" href="https://solstice.alexdevs.me">Solstice Documentation</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://alexdevs.me/">Alessandro Proto</a> is licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt=""></a>
+
+markdown_extensions:
+  - admonition
+  - md_in_html
+  - toc:
+      permalink: true
+  - tables
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences 
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.inlinehilite
+
+plugins:
+  - search
+  - privacy
+  - awesome-pages
+
+extra:
+  version:
+    provider: mike
+    default:
+      - stable
+    alias: true
+  social:
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/PYzP4XjzH4
+
+extra_css:
+  - stylesheets/extra.css

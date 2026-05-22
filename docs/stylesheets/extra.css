@@ -1,0 +1,68 @@
+:root {
+    --md-admonition-icon--command: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m7 21 7.9-18H17L9.1 21z"/></svg>');
+    --md-admonition-icon--config: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M495.9 166.6c3.2 8.7.5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4l-55.6 17.8c-8.8 2.8-18.6.3-24.5-6.8-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4c-1.1-8.4-1.7-16.9-1.7-25.5s.6-17.1 1.7-25.4l-43.3-39.4c-6.9-6.2-9.6-15.9-6.4-24.6 4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2 5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8 8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160"/></svg>');
+    --md-admonition-icon--locale: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3c5.5 0 10 3.58 10 8s-4.5 8-10 8c-1.24 0-2.43-.18-3.53-.5C5.55 21 2 21 2 21c2.33-2.33 2.7-3.9 2.75-4.5C3.05 15.07 2 13.13 2 11c0-4.42 4.5-8 10-8"/></svg>');
+}
+
+.md-typeset .command>.admonition-title,
+.md-typeset .config>.admonition-title,
+.md-typeset .locale>.admonition-title {
+    font-size: .8rem;
+}
+
+/* COMMAND */
+
+.md-typeset .admonition.command,
+.md-typeset details.pid-pipcommander {
+    border-color: #2094f3;
+}
+
+.md-typeset .command>.admonition-title,
+.md-typeset .command>summary {
+    background-color: rgba(43, 78, 155, 0.1);
+}
+
+.md-typeset .command>.admonition-title::before,
+.md-typeset .command>summary::before {
+    background-color: #1975d2;
+    -webkit-mask-image: var(--md-admonition-icon--command);
+    mask-image: var(--md-admonition-icon--command);
+}
+
+/* CONFIG */
+
+.md-typeset .admonition.config,
+.md-typeset details.pid-pipcommander {
+    border-color: #546d78;
+}
+
+.md-typeset .config>.admonition-title,
+.md-typeset .config>summary {
+    background-color: #546d782b;
+}
+
+.md-typeset .config>.admonition-title::before,
+.md-typeset .config>summary::before {
+    background-color: #546d78;
+    -webkit-mask-image: var(--md-admonition-icon--config);
+    mask-image: var(--md-admonition-icon--config);
+}
+
+/* LOCALE */
+
+.md-typeset .admonition.locale,
+.md-typeset details.pid-pipcommander {
+    border-color: #4cae4f;
+}
+
+.md-typeset .locale>.admonition-title,
+.md-typeset .locale>summary {
+    background-color: #4cae4f2b;
+}
+
+.md-typeset .locale>.admonition-title::before,
+.md-typeset .locale>summary::before {
+    background-color: #4cae4f;
+    -webkit-mask-image: var(--md-admonition-icon--locale);
+    mask-image: var(--md-admonition-icon--locale);
+}
