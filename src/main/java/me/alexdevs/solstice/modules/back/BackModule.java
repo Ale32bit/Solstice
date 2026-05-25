@@ -4,13 +4,13 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.events.PlayerTeleportCallback;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import me.alexdevs.solstice.modules.back.commands.BackCommand;
 import me.alexdevs.solstice.modules.back.data.BackConfig;
 import me.alexdevs.solstice.modules.back.data.BackLocale;
 import me.alexdevs.solstice.modules.back.data.BackPlayerData;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +19,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class BackModule extends ModuleBase.Toggleable {
-    
+
 
     public BackModule(SolsticeIdentifier id) {
         super(id);
@@ -59,7 +59,7 @@ public class BackModule extends ModuleBase.Toggleable {
 
     public void clearOfflinePlayerLastLocation(UUID uuid) {
         var isOnline = Solstice.server.getPlayerList().getPlayer(uuid) != null;
-        if(isOnline)
+        if (isOnline)
             return;
 
         var data = getPlayerData(uuid);
@@ -68,6 +68,9 @@ public class BackModule extends ModuleBase.Toggleable {
     }
 
     public void setPlayerLastLocation(UUID uuid, ServerLocation location) {
+        if (!isEnabled())
+            return;
+
         var data = getPlayerData(uuid);
         data.lastTeleportLocation = location;
         data.lastTeleportDate = new Date();
