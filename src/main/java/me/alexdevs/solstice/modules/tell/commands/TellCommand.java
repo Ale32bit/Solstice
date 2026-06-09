@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.Utils;
+import me.alexdevs.solstice.integrations.VanishIntegration;
 import me.alexdevs.solstice.modules.tell.TellModule;
 import me.drex.vanish.api.VanishAPI;
 import net.fabricmc.loader.api.FabricLoader;
@@ -45,12 +46,8 @@ public class TellCommand extends ModCommand<TellModule> {
                             var playerManager = context.getSource().getServer().getPlayerList();
                             final String[] playerNamesArray;
 
-                            final boolean hasVanish = FabricLoader.getInstance().isModLoaded("melius-vanish");
-
-                            if (hasVanish) {
-                                playerNamesArray = VanishAPI.getVisiblePlayers(context.getSource()).stream()
-                                        .map(player -> player.getName().getString())
-                                        .toList().toArray(String[]::new);
+                            if (VanishIntegration.isAvailable()) {
+                                playerNamesArray = VanishIntegration.getVisiblePlayersAsString(context.getSource());
                             }
                             else {
                                 playerNamesArray = playerManager.getPlayerNamesArray();
