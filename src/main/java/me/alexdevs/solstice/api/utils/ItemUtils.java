@@ -57,7 +57,7 @@ public class ItemUtils {
     }
     public static void removeDamage(ItemStack stack) {
         //? >= 1.21.1
-        stack.remove(DataComponents.DAMAGE);
+        stack.set(DataComponents.DAMAGE, 0);
         //? < 1.21.1
         //stack.removeTagKey("Damage");
     }
