@@ -72,15 +72,17 @@ public class TabListModule extends ModuleBase.Toggleable {
                 "phase", String.valueOf(phase)
         );
 
-        server.getPlayerList().getPlayers().forEach(player -> {
-            var playerContext = PlaceholderContext.of(player);
-            var header = RawPlaceholder.parse(String.join("\n", config.header), placeholders);
-            var footer = RawPlaceholder.parse(String.join("\n", config.footer), placeholders);
-            player.connection.send(new ClientboundTabListPacket(
-                    Format.parse(header, playerContext),
-                    Format.parse(footer, playerContext)
-            ));
-        });
+        server.execute(() ->
+            server.getPlayerList().getPlayers().forEach(player -> {
+                var playerContext = PlaceholderContext.of(player);
+                var header = RawPlaceholder.parse(String.join("\n", config.header), placeholders);
+                var footer = RawPlaceholder.parse(String.join("\n", config.footer), placeholders);
+                player.connection.send(new ClientboundTabListPacket(
+                        Format.parse(header, playerContext),
+                        Format.parse(footer, playerContext)
+                ));
+            })
+        );
     }
 
     /*public List<String> getGroupsOrder() {

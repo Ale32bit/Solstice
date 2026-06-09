@@ -6,7 +6,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.Utils;
+import me.alexdevs.solstice.integrations.VanishIntegration;
 import me.alexdevs.solstice.modules.tell.TellModule;
+import me.drex.vanish.api.VanishAPI;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -41,8 +44,17 @@ public class TellCommand extends ModCommand<TellModule> {
                 .then(argument("player", StringArgumentType.word())
                         .suggests((context, builder) -> {
                             var playerManager = context.getSource().getServer().getPlayerList();
+                            final String[] playerNamesArray;
+
+                            if (VanishIntegration.isAvailable()) {
+                                playerNamesArray = VanishIntegration.getVisiblePlayersAsString(context.getSource());
+                            }
+                            else {
+                                playerNamesArray = playerManager.getPlayerNamesArray();
+                            }
+
                             return SharedSuggestionProvider.suggest(
-                                    playerManager.getPlayerNamesArray(),
+                                    playerNamesArray,
                                     builder);
                         })
                         .then(argument("message", StringArgumentType.greedyString())
