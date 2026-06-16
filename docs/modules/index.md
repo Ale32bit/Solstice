@@ -20,6 +20,10 @@ Some modules depend on other modules and will be disabled as well.
 
 ## Default permission values
 
+!!! warning
+
+    Do not grant `*` or `solstice.*` wildcard permission nodes. Some features rely on a permission being **unset** to determine default behaviour, and granting a wildcard will cause undesired effects, for example, join and leave messages will stop appearing for players with those permissions.
+
 All permissions hold a default value when the permission check returns a non-existant value (is not set).
 
 If the default value is `true`, the permission is granted to everyone, if it's `false` then the permission is denied by default to everyone.

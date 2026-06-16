@@ -6,6 +6,10 @@ Also you can replace chunks of text with something else.
 
 Players with the `solstice.chat.advanced` permission node also unlock the full capabilities of the text formatting. See [Text Formatting](../textformatting.md).
 
+Players with `solstice.chat.legacy` can use legacy color codes (`&0`–`&9`, `&a`–`&f`, `&k`–`&r`) in chat messages.
+
+Players with `solstice.chat.activity.silent` do not receive join, leave, or death messages.
+
 ## Configuring
 
 These options can be configured in the `styling` section of the config file.
