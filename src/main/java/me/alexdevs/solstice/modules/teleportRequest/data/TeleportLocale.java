@@ -6,6 +6,7 @@ public class TeleportLocale {
     public static final Map<String, String> MODULE = Map.ofEntries(
             Map.entry("teleporting", "<gold>Teleporting...</gold>"),
             Map.entry("requestSent", "<gold>Teleport request sent.</gold>"),
+            Map.entry("requestSentAll", "<gold>Teleport request sent to all players online.</gold>"),
             Map.entry("pendingTeleport", "${requesterPlayer} <gold>requested to teleport to you.</gold>\n ${acceptButton} ${refuseButton}"),
             Map.entry("pendingTeleportHere", "${requesterPlayer} <gold>requested you to teleport to them.</gold>\n ${acceptButton} ${refuseButton}"),
             Map.entry("noPending", "<gold>There are no pending teleport requests for you.</gold>"),

@@ -38,12 +38,11 @@ public class TeleportAskHereCommand extends ModCommand<TeleportRequestModule> {
         var player = context.getSource().getPlayerOrException();
         var target = EntityArgument.getPlayer(context, "player");
 
-        var ignoreModule = ModuleProvider.IGNORE;
-        if (ignoreModule.isEnabled() && ignoreModule.getPlayerData(target.getUUID()).ignoredPlayers.contains(player.getUUID())) {
+        if (ModuleProvider.IGNORE.isIgnoring(target, player)) {
             return 0;
         }
 
-        module.requestToHere(player, target);
+        module.requestToHere(player, target, true);
 
         return 1;
     }

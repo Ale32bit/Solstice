@@ -6,16 +6,13 @@ import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.text.Components;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import me.alexdevs.solstice.modules.notifications.NotificationsModule;
-import me.alexdevs.solstice.modules.teleportRequest.commands.TeleportAcceptCommand;
-import me.alexdevs.solstice.modules.teleportRequest.commands.TeleportAskCommand;
-import me.alexdevs.solstice.modules.teleportRequest.commands.TeleportAskHereCommand;
-import me.alexdevs.solstice.modules.teleportRequest.commands.TeleportDenyCommand;
+import me.alexdevs.solstice.modules.teleportRequest.commands.*;
 import me.alexdevs.solstice.modules.teleportRequest.data.Request;
 import me.alexdevs.solstice.modules.teleportRequest.data.TeleportConfig;
 import me.alexdevs.solstice.modules.teleportRequest.data.TeleportLocale;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Map;
@@ -25,7 +22,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
 public class TeleportRequestModule extends ModuleBase.Toggleable {
-    
+
 
     private final Map<UUID, ConcurrentLinkedDeque<Request>> requests = new ConcurrentHashMap<>();
 
@@ -42,6 +39,7 @@ public class TeleportRequestModule extends ModuleBase.Toggleable {
         commands.add(new TeleportAskCommand(this));
         commands.add(new TeleportAskHereCommand(this));
         commands.add(new TeleportDenyCommand(this));
+        commands.add(new TeleportAskAllHereCommand(this));
 
         Solstice.scheduler.scheduleAtFixedRate(this::tickDown, 0, 1, TimeUnit.SECONDS);
 
@@ -141,7 +139,7 @@ public class TeleportRequestModule extends ModuleBase.Toggleable {
         NotificationsModule.notify(target);
     }
 
-    public void requestToHere(ServerPlayer source, ServerPlayer target) {
+    public void requestToHere(ServerPlayer source, ServerPlayer target, boolean sendFeedback) {
         var request = new Request(source, getConfig().teleportRequestTimeout, Request.Direction.TARGET_TO_SOURCE);
         requests.computeIfAbsent(target.getUUID(), uuid -> new ConcurrentLinkedDeque<>()).add(request);
 
@@ -165,10 +163,12 @@ public class TeleportRequestModule extends ModuleBase.Toggleable {
                 placeholders
         ));
 
-        source.sendSystemMessage(locale().get(
-                "requestSent",
-                sourceContext
-        ));
+        if (sendFeedback) {
+            source.sendSystemMessage(locale().get(
+                    "requestSent",
+                    sourceContext
+            ));
+        }
 
         NotificationsModule.notify(target);
     }

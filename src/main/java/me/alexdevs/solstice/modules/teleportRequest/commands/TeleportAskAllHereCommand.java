@@ -3,47 +3,54 @@ package me.alexdevs.solstice.modules.teleportRequest.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import me.alexdevs.solstice.Solstice;
+import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.ModuleProvider;
-import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.teleportRequest.TeleportRequestModule;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.arguments.EntityArgument;
 
 import java.util.List;
 
-import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
-public class TeleportAskCommand extends ModCommand<TeleportRequestModule> {
-    public TeleportAskCommand(TeleportRequestModule module) {
+public class TeleportAskAllHereCommand extends ModCommand<TeleportRequestModule> {
+    public TeleportAskAllHereCommand(TeleportRequestModule module) {
         super(module);
     }
 
     @Override
     public List<String> getNames() {
-        return List.of("tpa", "tpask");
+        return List.of("tpaall", "tpaskall");
     }
 
     @Override
     public LiteralArgumentBuilder<CommandSourceStack> command(String name) {
         return literal(name)
-                .requires(require("ask", true))
-                .then(argument("player", EntityArgument.player())
-                        .executes(this::execute));
+                .requires(require("here.all", 2))
+                .executes(this::execute);
     }
 
     private int execute(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         var player = context.getSource().getPlayerOrException();
-        var target = EntityArgument.getPlayer(context, "player");
 
-        if (ModuleProvider.IGNORE.isIgnoring(target, player)) {
-            return 0;
+        int sent = 0;
+
+        var targets = context.getSource().getServer().getPlayerList().getPlayers();
+        for (var target : targets) {
+            if (ModuleProvider.IGNORE.isIgnoring(target, player) || target.equals(player)) {
+                continue;
+            }
+
+            module.requestToHere(player, target, false);
+            sent++;
         }
 
-        module.requestTo(player, target);
+        var sourceContext = PlaceholderContext.of(player);
+        player.sendSystemMessage(module.locale().get(
+                "requestSentAll",
+                sourceContext
+        ));
 
-        return 1;
+        return sent;
     }
 }
