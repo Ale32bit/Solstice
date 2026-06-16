@@ -39,6 +39,10 @@ The file `modules.conf` contains the key-value pairs of modules that can be disa
 
 Server and player data are stored in JSON in the directory `<world>/data/solstice/`, player data being in the `players` subfolder.
 
+## NeoForge
+
+Solstice is a Fabric mod. It can run on NeoForge servers via [Sinytra Connector](https://modrinth.com/mod/connector) and [Forgified Fabric API](https://modrinth.com/mod/forgified-fabric-api), but full compatibility is not guaranteed. Some features may not work correctly or at all.
+
 ## Reporting issues
 
 The issue tracker is available on the [GitHub repository](https://github.com/Ale32bit/Solstice/issues).
