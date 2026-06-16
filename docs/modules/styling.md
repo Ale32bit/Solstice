@@ -78,15 +78,45 @@ These options can be configured in the `styling` section of the config file.
         - `${title}` - Title of the advancement.
         - `${description}` - Description of the advancement.
 
-!!! config "chat-format"
+!!! config "chat-formats"
 
-    Player chat format.
+    Chat format per LuckPerms group. The map key is the group name and the value is the format string.
+
+    ```hocon
+    chat-formats {
+        default="%player:displayname%<gray>:</gray> ${message}"
+        admin="<red>[Admin]</red> %player:displayname%<gray>:</gray> ${message}"
+    }
+    ```
 
     **Placeholders**
 
     * `${message}` - Message after formatting.
 
+    The highest-priority group the player belongs to is used. Falls back to `default`.
+
     ![Chat message](../assets/text_formatting/chat.webp)
+
+!!! config "nameplate-formats"
+
+    Scoreboard nameplate format per LuckPerms group. Controls the prefix and suffix displayed above players' heads.
+
+    ```hocon
+    nameplate-formats {
+        default {
+            prefix=""
+            suffix=""
+        }
+    }
+    ```
+
+    !!! warning
+
+        Nameplate placeholders are not refreshed frequently. Avoid placeholders that change often.
+
+!!! config "do-color-nameplate"
+
+    Whether to color the username part in the scoreboard nameplate. Default: `true`.
 
 !!! config "emote-format"
 

@@ -41,3 +41,12 @@ This module adds features that feel like they should not be in their own module.
     **Permissions**
 
     * `solstice.miscellaneous.top.base` - Default: 2
+
+!!! command "speed [walk|fly] [speed]"
+
+    Set your walk or fly speed as a multiplier. Omitting the mode sets whichever is currently active (fly if flying, walk otherwise). Omitting the speed resets it to the default (1.0).
+
+    **Permissions**
+
+    * `solstice.miscellaneous.speed.base` - Default: 2
+

@@ -15,15 +15,20 @@ Check out the [modules](./modules/index.md) for detailed information.
 | Module          | Command        | Aliases              | Permission                     |
 | --------------- | -------------- | -------------------- | ------------------------------ |
 | afk             | afk            | afk                  | solstice.afk.base              |
+| afk             | activetime     | activetime           | solstice.afk.base              |
 | back            | back           | back                 | solstice.back.base             |
 | ban             | ban            | ban                  | solstice.ban.base              |
 | ban             | unban          | unban pardon         | solstice.ban.base              |
 | ban             | tempban        | tempban              | solstice.ban.tempban           |
 | broadcast       | broadcast      | broadcast bc         | solstice.broadcast.base        |
 | broadcast       | plainbroadcast | plainbroadcast pbc   | solstice.broadcast.plain       |
+| cooldown        | cooldown       | cooldown             | solstice.cooldown.check        |
+| cooldown        | cooldown       | cooldown             | solstice.cooldown.clear        |
+| core            | ping           | ping                 | solstice.core.ping.base        |
 | core            | solstice       | solstice sol         | solstice.core.debug            |
 | core            | solstice       | solstice sol         | solstice.core.base             |
 | core            | solstice       | solstice sol         | solstice.core.reload           |
+| core            | solstice       | solstice sol         | solstice.core.reloaduser       |
 | customname      | nickname       | nickname nick        | solstice.customname.others     |
 | customname      | nickname       | nickname nick        | solstice.customname.base       |
 | enderchest      | enderchest     | enderchest ec        | solstice.enderchest.others     |
@@ -56,6 +61,7 @@ Check out the [modules](./modules/index.md) for detailed information.
 | kit             | kit            | kit                  | solstice.kit.set               |
 | kit             | kit            | kit                  | solstice.kit.base              |
 | mail            | mail           | mail                 | solstice.mail.base             |
+| miscellaneous   | speed          | speed                | solstice.miscellaneous.speed.base    |
 | mute            | mute           | mute                 | solstice.mute.base             |
 | mute            | unmute         | unmute               | solstice.mute.base             |
 | near            | near           | near                 | solstice.near.base             |
@@ -74,7 +80,9 @@ Check out the [modules](./modules/index.md) for detailed information.
 | suicide         | suicide        | suicide              | solstice.suicide.base          |
 | teleporthere    | tphere         | tphere               | solstice.teleporthere.base     |
 | teleportoffline | tpoffline      | tpoffline tpoff      | solstice.teleportoffline.base  |
+| teleportposition | tppos         | tppos                | solstice.teleportposition.base |
 | teleportrequest | tpa            | tpa tpask            | solstice.teleportrequest.ask   |
+| teleportrequest | tpaall         | tpaall tpaskall      | solstice.teleportrequest.here.all |
 | teleportrequest | tpahere        | tpahere tpaskhere    | solstice.teleportrequest.here  |
 | teleportrequest | tpdeny         | tpdeny tpno tprefuse | solstice.teleportrequest.base  |
 | teleportrequest | tpaccept       | tpaccept tpyes       | solstice.teleportrequest.base  |

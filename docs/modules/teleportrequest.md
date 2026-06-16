@@ -66,3 +66,17 @@ Players can ask other players to teleport to or be teleported to.
 
     * tpno
     * tprefuse
+
+!!! command "tpaall"
+
+    Ask all online players to teleport to your position.
+
+    Players that are ignoring you are skipped.
+
+    **Permissions**
+
+    * `solstice.teleportrequest.here.all` - Default: 2
+
+    **Aliases**
+
+    * tpaskall

@@ -127,3 +127,11 @@ AFK can be configured in the `afk` section in the config file.
     **Permissions**
 
     * `solstice.afk.set` - Default: 3
+
+!!! command "activetime recalculate"
+
+    Force a recalculation of the active time leaderboard.
+
+    **Permissions**
+
+    * `solstice.afk.recalculate` - Default: 2

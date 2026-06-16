@@ -21,6 +21,10 @@ This section defines whether `/spawn` and respawning work on a per world or glob
 
     Send the player to the global spawn instead of the world spawn when using the /spawn command.
 
+!!! config "on-respawn-soft"
+
+    Send the player to the global spawn when respawning, but only if they have no bed or anchor set. Beds and anchors still take priority.
+
 !!! config "on-respawn"
 
     Send the player to the global spawn instead of their bed or anchor when respawning.

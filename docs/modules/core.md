@@ -62,6 +62,14 @@ These formats apply to both the Markdown link style (`[label](url)`) and URLs (`
 
     * `solstice.core.reload` - Default: 3<br>
 
+!!! command "solstice reloaduser &lt;player&gt;"
+
+    Force reload the stored player data for a specific player.
+
+    **Permissions**
+
+    * `solstice.core.reloaduser` - Default: 3
+
 !!! command "solstice debug gen-command-list"
 
     Generate a list of all Solstice commands with permissions.
@@ -77,6 +85,15 @@ These formats apply to both the Markdown link style (`[label](url)`) and URLs (`
     **Permissions**
 
     * `solstice.core.debug` - Default: 4
+
+!!! command "ping [player]"
+
+    Show your own latency in milliseconds. With the `player` argument, show another player's latency.
+
+    **Permissions**
+
+    * `solstice.core.ping.base` - Default: true
+    * `solstice.core.ping.others` - Default: 1
 
 !!! command "serverstat"
 
