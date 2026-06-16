@@ -20,7 +20,7 @@ This module adds various commands to open the GUIs of many functional stateless 
 
     * `solstice.utilities.cartography` - Default: 2
 
-!!! command "gridstone"
+!!! command "grindstone"
 
     Open a grindstone.
 

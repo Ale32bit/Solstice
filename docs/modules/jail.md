@@ -46,6 +46,8 @@ Jailed players cannot build, break blocks, attack entities, interact with entiti
 
     Teleport to a jail.
 
+    **Permissions**
+
     * `solstice.jail.tp` - Default: 2
 
 !!! command "jail &lt;user&gt; &lt;jail&gt; [duration] [reason]"

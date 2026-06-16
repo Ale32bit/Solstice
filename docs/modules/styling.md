@@ -82,6 +82,10 @@ These options can be configured in the `styling` section of the config file.
         - `${title}` - Title of the advancement.
         - `${description}` - Description of the advancement.
 
+!!! warning "Deprecated: `chat-format`"
+
+    The `chat-format` setting is deprecated. If present in your config it will be automatically migrated to `chat-formats` on next server start and removed.
+
 !!! config "chat-formats"
 
     Chat format per LuckPerms group. The map key is the group name and the value is the format string.

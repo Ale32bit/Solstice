@@ -10,8 +10,6 @@ Here is a list of all the commands implemented by Solstice, along the permission
 
 Check out the [modules](./modules/index.md) for detailed information.
 
-> :octicons-info-24: This list is auto-generated and may lack some information.
-
 | Module          | Command        | Aliases              | Permission                     |
 | --------------- | -------------- | -------------------- | ------------------------------ |
 | afk             | afk            | afk                  | solstice.afk.base              |
@@ -25,6 +23,7 @@ Check out the [modules](./modules/index.md) for detailed information.
 | cooldown        | cooldown       | cooldown             | solstice.cooldown.check        |
 | cooldown        | cooldown       | cooldown             | solstice.cooldown.clear        |
 | core            | ping           | ping                 | solstice.core.ping.base        |
+| core            | serverstat     | serverstat tps       | solstice.core.serverstat       |
 | core            | solstice       | solstice sol         | solstice.core.debug            |
 | core            | solstice       | solstice sol         | solstice.core.base             |
 | core            | solstice       | solstice sol         | solstice.core.reload           |
@@ -57,17 +56,37 @@ Check out the [modules](./modules/index.md) for detailed information.
 | info            | motd           | motd                 | solstice.info.motd             |
 | info            | rules          | rules                | solstice.info.rules            |
 | inventorysee    | invsee         | invsee inventorysee  | solstice.inventorysee.base     |
+| item            | itemname       | itemname             | solstice.item.name             |
+| item            | lore           | lore itemlore        | solstice.item.lore             |
+| item            | more           | more stack           | solstice.item.more             |
+| item            | repair         | repair repairitem    | solstice.item.repair           |
+| jail            | checkjail      | checkjail            | solstice.jail.base             |
+| jail            | jail           | jail                 | solstice.jail.jail             |
+| jail            | jails          | jails                | solstice.jail.base             |
+| jail            | jails delete   | jails delete         | solstice.jail.delete           |
+| jail            | jails set      | jails set            | solstice.jail.set              |
+| jail            | jails tp       | jails tp             | solstice.jail.tp               |
+| jail            | unjail         | unjail               | solstice.jail.unjail           |
 | kick            | kick           | kick                 | solstice.kick.base             |
 | kit             | kit            | kit                  | solstice.kit.set               |
 | kit             | kit            | kit                  | solstice.kit.base              |
+| kit             | kits           | kits                 | solstice.kit.base              |
 | mail            | mail           | mail                 | solstice.mail.base             |
+| miscellaneous   | effects        | effects              | solstice.miscellaneous.effects.base  |
+| miscellaneous   | nudge          | nudge                | solstice.miscellaneous.nudge.base    |
+| miscellaneous   | sleep          | sleep                | solstice.miscellaneous.sleep.base    |
 | miscellaneous   | speed          | speed                | solstice.miscellaneous.speed.base    |
+| miscellaneous   | top            | top                  | solstice.miscellaneous.top.base      |
 | mute            | mute           | mute                 | solstice.mute.base             |
 | mute            | unmute         | unmute               | solstice.mute.base             |
 | near            | near           | near                 | solstice.near.base             |
+| note            | note           | note notes           | solstice.note.base             |
+| notifications   | notifications  | notifications        | solstice.notifications.base    |
+| powertool       | powertool      | powertool pt         | solstice.powertool.base        |
 | restart         | restart        | restart              | solstice.restart.base          |
 | rtp             | rtp            | rtp                  | solstice.rtp.base              |
 | seen            | seen           | seen playerinfo      | solstice.seen.base             |
+| skull           | skull          | skull                | solstice.skull.base            |
 | smite           | smite          | smite                | solstice.smite.base            |
 | spawn           | firstspawn     | firstspawn           | solstice.spawn.firstspawn      |
 | spawn           | setfirstspawn  | setfirstspawn        | solstice.spawn.firstspawn.set  |
@@ -77,6 +96,7 @@ Check out the [modules](./modules/index.md) for detailed information.
 | spawn           | spawn          | spawn                | solstice.spawn.others          |
 | staffchat       | staffchat      | staffchat sc         | solstice.staffchat.base        |
 | sudo            | doas           | doas                 | solstice.sudo.doas             |
+| sudo            | sudo           | sudo                 | solstice.sudo.sudo             |
 | suicide         | suicide        | suicide              | solstice.suicide.base          |
 | teleporthere    | tphere         | tphere               | solstice.teleporthere.base     |
 | teleportoffline | tpoffline      | tpoffline tpoff      | solstice.teleportoffline.base  |
