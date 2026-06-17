@@ -1,2 +1,2 @@
-- Bugfix safe teleport not working correctly.
-- Bugfix RTP attempt throwing StackOverflowException.
+- Added /tpaall command
+- Bugfix nameplate logic
