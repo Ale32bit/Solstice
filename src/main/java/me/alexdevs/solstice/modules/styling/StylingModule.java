@@ -5,14 +5,20 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.text.Format;
+import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.modules.styling.data.StylingConfig;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
+import net.minecraft.server.ServerScoreboard;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.scores.PlayerTeam;
 
 //? if < 1.21.1 {
 /*import net.minecraft.ChatFormatting;
@@ -27,10 +33,7 @@ public class StylingModule extends ModuleBase.Toggleable {
     public static final String LEGACY_CHAT_FORMATTING_PERMISSION = "solstice.chat.legacy";
     public static final String SILENT_ACTIVITY_PERMISSION = "solstice.chat.activity.silent";
 
-    //? >= 1.21.1
-    private static final StylingConfig.NameplateFormat DEFAULT_NAMEPLATE = new StylingConfig.NameplateFormat("", "");
-    //? < 1.21.1
-    //private static final StylingConfig.NameplateFormat DEFAULT_NAMEPLATE = new StylingConfig.NameplateFormat("", "", "WHITE");
+    private static final StylingConfig.NameplateFormat DEFAULT_NAMEPLATE = new StylingConfig.NameplateFormat("", "", "WHITE");
 
     public StylingModule(SolsticeIdentifier id) {
         super(id);
@@ -58,20 +61,39 @@ public class StylingModule extends ModuleBase.Toggleable {
                 config.chatFormat = null;
                 Solstice.configManager.save();
             }
-        });
 
-        //? if >= 1.21.1 {
-        SolsticeEvents.RELOAD.register(instance -> {
-            var playerList = Solstice.server.getPlayerList();
-            var scoreboard = Solstice.server.getScoreboard();
-            for (var player : playerList.getPlayers()) {
-                playerList.updateEntireScoreboard(scoreboard, player);
+            // Cleanup
+            var scoreboard = server.getScoreboard();
+            for (var team : scoreboard.getPlayerTeams()) {
+                if (team.getName().startsWith("sol_")) {
+                    scoreboard.removePlayerTeam(team);
+                }
             }
         });
-        //? } else {
-        /*SolsticeEvents.RELOAD.register(instance -> reloadNameplates(false));
-        Solstice.scheduler.scheduleAtFixedRateSync(() -> reloadNameplates(false), 0, 1, TimeUnit.SECONDS);
-        *///? }
+
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            var player = handler.getPlayer();
+            if (player.getTeam() == null) {
+                ServerScoreboard scoreboard = server.getScoreboard();
+                var username = PlayerUtils.getName(player.getGameProfile());
+                PlayerTeam team = scoreboard.addPlayerTeam("sol_" + username);
+                team.setDisplayName(player.getDisplayName());
+                team.setColor(this.getNameplateColor(player));
+                team.setPlayerPrefix(this.getNameplatePrefix(player));
+                team.setPlayerSuffix(this.getNameplateSuffix(player));
+                scoreboard.addPlayerToTeam(username, team);
+            }
+        });
+
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+            var player = handler.getPlayer();
+            var username = PlayerUtils.getName(player.getGameProfile());
+            var scoreboard = server.getScoreboard();
+            var team = scoreboard.getPlayerTeam("sol_" + username);
+            if (team != null) {
+                scoreboard.removePlayerTeam(team);
+            }
+        });
     }
 
     public StylingConfig getConfig() {
@@ -106,13 +128,8 @@ public class StylingModule extends ModuleBase.Toggleable {
         }
     }
 
-    //? if >= 1.21.1 {
-    public boolean shouldColorNameplate() {
-        return getConfig().doColorNameplate;
-    }
-    //? } else {
-    /*public ChatFormatting getNameplateColor(ServerPlayer player) {
-        var config = getConfig();
+    public ChatFormatting getNameplateColor(ServerPlayer player) {
+        var config = this.getConfig();
         var primaryGroup = LuckPermsIntegration.getPrimaryGroup(player);
         var color = "WHITE";
         if (config.nameplateFormats.containsKey(primaryGroup)) {
@@ -120,9 +137,9 @@ public class StylingModule extends ModuleBase.Toggleable {
         } else {
             color = config.nameplateFormats.getOrDefault("default", DEFAULT_NAMEPLATE).color();
         }
+
         return ChatFormatting.getByName(color);
     }
-    *///? }
 
     public Component getNameplatePrefix(ServerPlayer player) {
         var config = getConfig();
@@ -149,24 +166,4 @@ public class StylingModule extends ModuleBase.Toggleable {
 
         return Format.parse(format, PlaceholderContext.of(player));
     }
-
-    //? if < 1.21.1 {
-    /*private void reloadNameplates(boolean add) {
-        var playerList = Solstice.server.getPlayerList();
-        var scoreboard = Solstice.server.getScoreboard();
-        for (var player : playerList.getPlayers()) {
-            sendTeamSetup(player, playerList.getPlayers(), scoreboard, add);
-        }
-    }
-
-    public void sendTeamSetup(ServerPlayer player, List<ServerPlayer> players, Scoreboard scoreboard, boolean add) {
-        for (var otherPlayer : players) {
-            if(otherPlayer == player) {
-                continue;
-            }
-            var team = new CustomPlayerTeam(scoreboard, otherPlayer);
-            player.connection.send(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, add));
-        }
-    }
-    *///? }
 }

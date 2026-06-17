@@ -34,7 +34,6 @@
     "modules.styling.CustomChatMessageMixin",
     "modules.styling.CustomConnectionMessagesMixin",
     "modules.styling.CustomDeathMessageMixin",
-    "modules.styling.CustomNameplateMixin",
     "modules.styling.CustomSentMessageMixin",
     "modules.styling.InjectCustomChatMessageMixin",
     "modules.styling.PlayerDisconnectMixin",
