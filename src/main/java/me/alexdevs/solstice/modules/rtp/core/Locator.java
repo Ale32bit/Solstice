@@ -7,8 +7,6 @@ import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.modules.rtp.data.RTPConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ServerLevel;
@@ -23,6 +21,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.jetbrains.annotations.Nullable;
 
+import java.security.SecureRandom;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +47,8 @@ public class Locator {
     private BlockPos attemptPos;
     private boolean failed = false;
     private int remainingAttempts = 0;
+
+    private final SecureRandom rng = new SecureRandom();
 
     private static final ImmutableList<Block> unsafeBlocks = ImmutableList.of(
             Blocks.LAVA,
@@ -220,41 +221,36 @@ public class Locator {
 
     public BlockPos getRandomPos() {
         var worldBorder = world.getWorldBorder();
-        var size = worldBorder.getSize();
+        var size = (int) worldBorder.getSize() / 2;
 
-        double centerX, centerZ;
+        int centerX, centerZ;
         if (config.aroundPlayer) {
-            centerX = player.getX();
-            centerZ = player.getZ();
+            centerX = (int) player.getX();
+            centerZ = (int) player.getZ();
         } else {
-            centerX = worldBorder.getCenterX();
-            centerZ = worldBorder.getCenterZ();
+            centerX = (int) worldBorder.getCenterX();
+            centerZ = (int) worldBorder.getCenterZ();
         }
 
-        var maxDiameter = config.maxRadius * 2;
-        var minDiameter = config.minRadius * 2;
+        var effectiveMax = Math.min(size, config.maxRadius);
+        var effectiveMin = Math.max(0, config.minRadius);
 
-        var max = Math.min((int) size, maxDiameter);
-        var min = Math.max(0, minDiameter);
-
-        int x = 0;
-        int z = 0;
         var limit = 256;
+
         for (var i = 0; i <= limit; i++) {
-            var dist = world.getRandom().nextDouble() * (max - min) + min;
-            var angle = world.getRandom().nextDouble() * Math.PI * 2d;
-            x = (int) (Math.cos(angle) * dist + centerX);
-            z = (int) (Math.sin(angle) * dist + centerZ);
+            int offset = rng.nextInt(effectiveMin, effectiveMax);
+            int sign = rng.nextBoolean() ? 1 : -1;
+            int x = centerX + (offset * sign);
+
+            offset = rng.nextInt(effectiveMin, effectiveMax);
+            sign = rng.nextBoolean() ? 1 : -1;
+            int z = centerZ + (offset * sign);
 
             if (worldBorder.isWithinBounds(x, z))
-                break;
-
-            if (i == limit) {
-                return null;
-            }
+                return new BlockPos(x, world.getLogicalHeight(), z);
         }
 
-        return new BlockPos(x, world.getLogicalHeight(), z);
+        return null;
     }
 
     public record Result(Type type, Optional<ServerLocation> position) {
