@@ -8,6 +8,7 @@ public class CustomNameLocale {
             Map.entry("clearedSelf", "<gold>Nickname cleared!</gold>"),
             Map.entry("setOther", "<gold><yellow>${player}</yellow>'s nickname set to <yellow>${nickname}</yellow>!</gold>"),
             Map.entry("clearedOther", "<gold><yellow>${player}</yellow>'s nickname cleared!</gold>"),
-            Map.entry("errorEmpty", "<red>Username cannot be empty!</red>")
+            Map.entry("errorEmpty", "<red>Nickname cannot be empty!</red>"),
+            Map.entry("errorInvalid", "<red>This nickname is invalid!</red>")
     );
 }

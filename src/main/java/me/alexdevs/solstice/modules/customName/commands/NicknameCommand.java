@@ -64,16 +64,21 @@ public class NicknameCommand extends ModCommand<CustomNameModule> {
 
         var nickname = StringArgumentType.getString(context, "nickname");
 
-        if(nickname.isEmpty()) {
+        if (nickname.isEmpty()) {
             context.getSource().sendFailure(module.locale().get("errorEmpty"));
             return 0;
         }
 
-        module.setCustomName(
+        var success = module.setCustomName(
                 player,
                 nickname,
                 hasAdvancedPermission(context.getSource())
         );
+
+        if (!success) {
+            context.getSource().sendFailure(module.locale().get("errorInvalid"));
+            return 0;
+        }
 
         var map = Map.of(
                 "player", player.getName(),
@@ -102,16 +107,21 @@ public class NicknameCommand extends ModCommand<CustomNameModule> {
 
         var nickname = StringArgumentType.getString(context, "nickname");
 
-        if(nickname.isEmpty()) {
+        if (nickname.isEmpty()) {
             context.getSource().sendFailure(module.locale().get("errorEmpty"));
             return 0;
         }
 
-        module.setCustomName(
+        var success = module.setCustomName(
                 PlayerUtils.getId(profile),
                 nickname,
                 hasAdvancedPermissionOthers(context.getSource())
         );
+
+        if (!success) {
+            context.getSource().sendFailure(module.locale().get("errorInvalid"));
+            return 0;
+        }
 
         var map = Map.of(
                 "player", Component.nullToEmpty(PlayerUtils.getName(profile)),

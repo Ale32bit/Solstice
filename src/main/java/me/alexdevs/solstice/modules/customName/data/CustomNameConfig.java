@@ -14,6 +14,15 @@ public class CustomNameConfig {
             new NameFormat("default", "${prefix}<green>${name}</green>${suffix}")
     ));
 
+    @Comment("Minimum length of the nickname in basic mode.")
+    public int minSafeNicknameLength = 3;
+
+    @Comment("Maximum length of the nickname in basic mode. Exceeding characters are truncated.")
+    public int maxSafeNicknameLength = 16;
+
+    @Comment("Regular Expression to filter out invalid characters from the nickname in basic mode. Default value allows only letters, numbers, and underscores.")
+    public String basicFilter = "[^a-zA-Zà-üÀ-Ü_]";
+
     @ConfigSerializable
     public record NameFormat(String group, String format) {
     }

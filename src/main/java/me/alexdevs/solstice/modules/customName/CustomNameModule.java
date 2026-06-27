@@ -22,8 +22,6 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class CustomNameModule extends ModuleBase.Toggleable {
-    public static final Pattern BASIC_NICKNAME_FILTER = Pattern.compile("[^a-zA-Zà-üÀ-Ü_ ]");
-
     public CustomNameModule(SolsticeIdentifier id) {
         super(id);
     }
@@ -37,8 +35,16 @@ public class CustomNameModule extends ModuleBase.Toggleable {
         commands.add(new NicknameCommand(this));
     }
 
+    public CustomNameConfig getConfig() {
+        return Solstice.configManager.getData(CustomNameConfig.class);
+    }
+
+    public Pattern getNicknameFilter() {
+        return Pattern.compile(getConfig().basicFilter);
+    }
+
     public String fetchUsernameFormat(ServerPlayer player) {
-        var formats = Solstice.configManager.getData(CustomNameConfig.class).nameFormats;
+        var formats = getConfig().nameFormats;
 
         String format = null;
         for (var f : formats) {
@@ -104,21 +110,28 @@ public class CustomNameModule extends ModuleBase.Toggleable {
         return playerData.nickname;
     }
 
-    public void setCustomName(ServerPlayer player, String name) {
-        setCustomName(player, name, true);
+    public boolean setCustomName(ServerPlayer player, String name, boolean advancedFormatting) {
+        return setCustomName(player.getUUID(), name, advancedFormatting);
     }
 
-    public void setCustomName(ServerPlayer player, String name, boolean advancedFormatting) {
-        setCustomName(player.getUUID(), name, advancedFormatting);
-    }
-
-    public void setCustomName(UUID uuid, String name, boolean advancedFormatting) {
+    public boolean setCustomName(UUID uuid, String name, boolean advancedFormatting) {
         if (!advancedFormatting) {
-            name = BASIC_NICKNAME_FILTER.matcher(name).replaceAll("");
+            var config = getConfig();
+            name = getNicknameFilter().matcher(name).replaceAll("");
+
+            if (name.length() < config.minSafeNicknameLength) {
+                return false;
+            }
+
+            if (name.length() > config.maxSafeNicknameLength) {
+                name = name.substring(0, config.maxSafeNicknameLength);
+            }
         }
 
         var playerData = Solstice.playerData.get(uuid).getData(CustomNamePlayerData.class);
         playerData.nickname = name;
+
+        return true;
     }
 
     public void clearCustomName(ServerPlayer player) {
