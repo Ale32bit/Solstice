@@ -55,8 +55,6 @@ The issue tracker is available on the [GitHub repository](https://github.com/Ale
 
 Solstice is open-source! You can contribute from the GitHub repo [Ale32bit/Solstice](https://github.com/Ale32bit/Solstice).
 
-This documentation is also open-source! You can find me in the GitHub repo [Ale32bit/Solstice-Docs](https://github.com/Ale32bit/Solstice-Docs)!
-
 ## Donate!
 
 [![Support me through GitHub Sponsors](assets/buttons/ghsponsors.svg)](https://github.com/sponsors/Ale32bit/)

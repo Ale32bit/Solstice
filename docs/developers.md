@@ -18,11 +18,11 @@ maven {
 modImplementation "me.alexdevs:solstice:VERSION"
 ```
 
-Replace `VERSION` with the preferred version. eg. `1.5.0+1.20.1` (without `v`).
+Replace `VERSION` with the preferred version. E.g. `1.5.0+1.20.1` (without `v`).
 
 ## Adding modules
 
-This section explains how you can setup the integration of custom modules to Solstice.
+This section explains how you can set up the integration of custom modules to Solstice.
 
 Create a class that implements `me.alexdevs.solstice.api.module.ModuleEntrypoint`.
 
@@ -42,7 +42,7 @@ public class ModuleProvider implements ModuleEntrypoint {
     // Add module instances here
     private static final List<? extends ModuleBase> modules = List.of(
             new MyModule(),
-            new MyCoolModule(),
+            new MyCoolModule()
     );
 
     // Return a HashSet of the list of modules.
@@ -55,7 +55,7 @@ public class ModuleProvider implements ModuleEntrypoint {
 ```
 To make the class discoverable by Solstice, add the `"solstice"` entry point to your `fabric.mod.json`, under the `"entrypoints"` field, along the `"main"` entry point:
 
-```json
+```jsonc
 "entrypoints": {
     // Main entrypoint of your Fabric mod
     "main": [
@@ -72,7 +72,7 @@ To make the class discoverable by Solstice, add the `"solstice"` entry point to 
 
 ### Module example
 
-All Solstice modules extends the abstract class `me.alexdevs.solstice.api.module.ModuleBase`.
+All Solstice modules extend the abstract class `me.alexdevs.solstice.api.module.ModuleBase`.
 
 Modules need to provide a String ID to the super constructor, ideally all lowercase, this ID is used to differentiate between modules and is also used to make permission nodes.
 

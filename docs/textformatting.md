@@ -17,7 +17,7 @@ Solstice introduces new tags to be used within the mod itself.
 
 This tag improves upon Placeholder's gradient tags to fix its issues and implement the phase argument to shift the gradient.
 
-The tag accepts any amount of colors in its arguments and the phase argument, a decimal number between -1.0 and 1.0, can be used to shift the gradient around.
+The tag accepts any number of colors in its arguments, and the phase argument, a decimal number between -1.0 and 1.0, can be used to shift the gradient around.
 
 * `#!xml <phase_gradient:[colors 1]:[color 2]:...:[phase]>`
 
