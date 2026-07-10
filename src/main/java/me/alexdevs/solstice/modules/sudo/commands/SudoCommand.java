@@ -65,10 +65,13 @@ public class SudoCommand extends ModCommand<SudoModule> {
     public CommandSourceStack buildServerSource(CommandSource commandOutput, MinecraftServer server) {
         return new CommandSourceStack(
                 commandOutput,
-                //? >= 1.21.11
-                //server.overworld().getRespawnData().pos().getCenter(),
-                //? < 1.21.11
+                //? if >= 26.1 {
+                /*net.minecraft.world.phys.Vec3.atCenterOf(server.overworld().getRespawnData().pos()),
+                *///? } elif >= 1.21.11 {
+                /*server.overworld().getRespawnData().pos().getCenter(),
+                *///? } else {
                 server.overworld().getSharedSpawnPos().getCenter(),
+                //? }
                 Vec2.ZERO,
                 server.overworld(),
                 //? >= 1.21.11

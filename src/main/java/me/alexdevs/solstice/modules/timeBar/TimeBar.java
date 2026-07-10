@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.modules.timeBar;
 
-import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.api.utils.PlaceholderUtils;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.text.Format;
@@ -21,6 +21,9 @@ public class TimeBar {
     private int elapsedSeconds = 0;
 
     public TimeBar(String label, int time, boolean countdown, BossEvent.BossBarColor color, BossEvent.BossBarOverlay style) {
+        //? if >= 26.1
+        //this.bossBar = new CustomBossEvent(uuid, SolsticeIdentifier.of(Solstice.MOD_ID, uuid.toString()).get(), Component.nullToEmpty(label), () -> {});
+        //? if < 26.1
         this.bossBar = new CustomBossEvent(SolsticeIdentifier.of(Solstice.MOD_ID, uuid.toString()).get(), Component.nullToEmpty(label));
         this.bossBar.setColor(color);
         this.bossBar.setOverlay(style);
@@ -49,7 +52,7 @@ public class TimeBar {
                 "remaining_time", Component.nullToEmpty(remainingTime)
         );
 
-        var serverContext = PlaceholderContext.of(Solstice.server);
+        var serverContext = PlaceholderUtils.of(Solstice.server);
 
         return Format.parse(labelString, serverContext, placeholders);
     }
@@ -97,10 +100,9 @@ public class TimeBar {
             progress = 1f - progress;
         }
 
-        bossBar.setProgress(Math.min(
-                Math.max(
-                        progress,
-                        0f),
+        bossBar.setProgress(Math.clamp(
+                progress,
+                0f,
                 1f));
     }
 }

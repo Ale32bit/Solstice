@@ -3,7 +3,7 @@ package me.alexdevs.solstice.modules.tell.commands;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.api.utils.PlaceholderUtils;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.tell.TellModule;
 import net.minecraft.commands.CommandSourceStack;
@@ -38,7 +38,7 @@ public class ReplyCommand extends ModCommand<TellModule> {
         var message = StringArgumentType.getString(context, "message");
 
         if (!module.lastSender.containsKey(senderName)) {
-            var playerContext = PlaceholderContext.of(context.getSource());
+            var playerContext = PlaceholderUtils.of(context.getSource());
             source.sendSuccess(() -> module.locale().get(
                     "noLastSenderReply",
                     playerContext

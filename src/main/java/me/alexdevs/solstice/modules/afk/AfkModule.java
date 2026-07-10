@@ -75,7 +75,11 @@ public class AfkModule extends ModuleBase.Toggleable {
             if (!context.hasPlayer())
                 return PlaceholderResult.invalid("No player!");
 
+            //? if >= 26.1 {
+            /*var player = (net.minecraft.server.level.ServerPlayer) context.player();
+            *///? } elif >= 1.21.1 {
             var player = context.player();
+            //? }
 
             if (isPlayerAfk(player))
                 return PlaceholderResult.value(Format.parse(getConfig().tag));

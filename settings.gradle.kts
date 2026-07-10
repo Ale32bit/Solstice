@@ -19,9 +19,13 @@ plugins {
 }
 
 stonecutter {
-    create(rootProject) {
-        versions("1.21.1", "1.21.4", "1.21.11")
-        vcsVersion = "1.21.1"
+    shared {
+        versions("1.21.1", "1.21.4", "1.21.11", "26.2")
+        mapBuilds { _, node ->
+            if (node.parsed >= "26.1") "build-unobfuscated.gradle.kts" else "build.gradle.kts"
+        }
+        vcsVersion.set("1.21.1")
     }
+    create(rootProject)
 }
 

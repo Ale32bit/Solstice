@@ -1,12 +1,11 @@
 package me.alexdevs.solstice.modules.tell;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.utils.PlaceholderUtils;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.text.Components;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.ModuleProvider;
-import me.alexdevs.solstice.modules.ignore.IgnoreModule;
 import me.alexdevs.solstice.modules.notifications.NotificationsModule;
 import me.alexdevs.solstice.modules.tell.commands.ReplyCommand;
 import me.alexdevs.solstice.modules.tell.commands.TellCommand;
@@ -47,7 +46,7 @@ public class TellModule extends ModuleBase.Toggleable {
                 var placeholders = Map.of(
                         "targetPlayer", Component.nullToEmpty(targetName)
                 );
-                var sourceContext = PlaceholderContext.of(source);
+                var sourceContext = PlaceholderUtils.of(source);
 
                 source.sendSuccess(() -> locale().get(
                         "playerNotFound",
@@ -61,8 +60,8 @@ public class TellModule extends ModuleBase.Toggleable {
 
         var parsedMessage = Components.chat(message, source);
 
-        var serverContext = PlaceholderContext.of(source.getServer());
-        var sourceContext = PlaceholderContext.of(source);
+        var serverContext = PlaceholderUtils.of(source.getServer());
+        var sourceContext = PlaceholderUtils.of(source);
         PlaceholderContext targetContext;
         if (targetPlayer == null) {
             targetContext = serverContext;

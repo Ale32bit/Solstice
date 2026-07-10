@@ -223,6 +223,10 @@ public class JailModule extends ModuleBase.Toggleable {
                 } else {
                     text = locale().get("playerJailed", map);
                 }
+
+                //? if >= 26.1
+                //player.sendSystemMessage(text, false);
+                //? if < 26.1
                 player.displayClientMessage(text, false);
             }
         });

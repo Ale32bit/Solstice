@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules.seen.commands;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.api.utils.PlaceholderUtils;
 import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
@@ -98,7 +99,7 @@ public class SeenCommand extends ModCommand<SeenModule> {
                             if (player != null) {
                                 source.sendSuccess(() -> Format.parse(finalOutput, PlaceholderContext.of(player), map), false);
                             } else {
-                                source.sendSuccess(() -> Format.parse(finalOutput, PlaceholderContext.of(source.getServer()), map), false);
+                                source.sendSuccess(() -> Format.parse(finalOutput, PlaceholderUtils.of(source.getServer()), map), false);
                             }
 
                             return 1;

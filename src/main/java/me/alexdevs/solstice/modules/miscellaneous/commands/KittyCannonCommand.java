@@ -20,6 +20,9 @@ public class KittyCannonCommand extends ModCommand<MiscellaneousModule> {
         super(module);
     }
 
+    //? if >= 26.1
+    //public static final EntityType<?> BALL = net.minecraft.world.entity.EntityTypes.CAT;
+    //? if < 26.1
     public static final EntityType<?> BALL = EntityType.CAT;
 
     @Override

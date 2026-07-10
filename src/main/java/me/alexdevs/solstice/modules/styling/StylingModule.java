@@ -69,6 +69,9 @@ public class StylingModule extends ModuleBase.Toggleable {
                 var username = PlayerUtils.getName(player.getGameProfile());
                 PlayerTeam team = scoreboard.addPlayerTeam("sol_" + username);
                 team.setDisplayName(player.getDisplayName());
+                //? if >= 26.1
+                //team.setColor(java.util.Optional.ofNullable(this.getNameplateColor(player)).map(c -> net.minecraft.world.scores.TeamColor.valueOf(c.name())));
+                //? if < 26.1
                 team.setColor(this.getNameplateColor(player));
                 team.setPlayerPrefix(this.getNameplatePrefix(player));
                 team.setPlayerSuffix(this.getNameplateSuffix(player));
@@ -129,6 +132,9 @@ public class StylingModule extends ModuleBase.Toggleable {
             color = config.nameplateFormats.getOrDefault("default", DEFAULT_NAMEPLATE).color();
         }
 
+        //? if >= 26.1
+        //return ChatFormatting.valueOf(color);
+        //? if < 26.1
         return ChatFormatting.getByName(color);
     }
 

@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.core.coreModule.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.api.utils.PlaceholderUtils;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
@@ -30,7 +30,7 @@ public class ServerStatCommand extends ModCommand<CoreModule> {
                 .requires(require("serverstat", 3))
                 .executes(context -> {
                     var locale = module.locale();
-                    var placeholderContext = PlaceholderContext.of(context.getSource());
+                    var placeholderContext = PlaceholderUtils.of(context.getSource());
 
                     var messages = new ArrayList<Component>();
 

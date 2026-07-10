@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.modules.ban.formatters;
 
-import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.api.utils.PlaceholderUtils;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.api.utils.ProfileOrNameAndId;
@@ -17,7 +17,7 @@ public class BanMessageFormatter {
         var locale = ModuleProvider.BAN.locale();
         var coreConfig = CoreModule.getConfig();
         var df = new SimpleDateFormat(coreConfig.dateTimeFormat);
-        var context = PlaceholderContext.of(profile.getProfile(), Solstice.server);
+        var context = PlaceholderUtils.of(profile.getProfile(), Solstice.server);
         var expiryDate = Component.nullToEmpty(entry.getExpires() != null ? df.format(entry.getExpires()) : "never");
         Map<String, Component> placeholders = Map.of(
                 "reason", Format.parse(entry.getReason(), context),

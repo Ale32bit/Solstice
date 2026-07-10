@@ -133,12 +133,20 @@ public class SolsticeCommand extends ModCommand<CoreModule> {
                                     var hand = player.getUsedItemHand();
                                     var itemStack = player.getItemInHand(hand);
 
+                                    //? if >= 26.1 {
+                                    /*var entry = itemStack.typeHolder().unwrapKey().get();
+                                    *///? } elif >= 1.21.1 {
                                     var entry = itemStack.getItemHolder().unwrapKey().get();
+                                    //? }
                                     var entryString = String.format("Tags for [%s / %s]:", entry.registry(), ResourceUtils.identifier(entry));
 
                                     var text = Component.empty();
                                     text.append(Component.nullToEmpty(entryString));
+                                    //? if >= 26.1 {
+                                    /*var tags = itemStack.typeHolder().tags().iterator();
+                                    *///? } elif >= 1.21.1 {
                                     var tags = itemStack.getTags().iterator();
+                                    //? }
                                     while (tags.hasNext()) {
                                         var tag = tags.next();
                                         text.append(Component.nullToEmpty("\n"));

@@ -30,10 +30,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class Locator {
-    //? < 1.21.11
-    public static final TicketType<BlockPos> RTP_TICKET = TicketType.create("rtp", Comparator.comparingLong(ChunkPos::asLong), 300);
     //? >= 1.21.11
     //public static final TicketType RTP_TICKET = Registry.register(BuiltInRegistries.TICKET_TYPE, "RTP", new TicketType(300, TicketType.FLAG_LOADING));
+    //? < 1.21.11
+    public static final TicketType<BlockPos> RTP_TICKET = TicketType.create("rtp", Comparator.comparingLong(ChunkPos::asLong), 300);
+
 
 
     public final ServerPlayer player;
@@ -115,6 +116,9 @@ public class Locator {
             return false;
         }
 
+        //? if >= 26.1
+        //var chunk = getChunk(ChunkPos.containing(attemptPos));
+        //? if < 26.1
         var chunk = getChunk(new ChunkPos(attemptPos));
         if (chunk.isPresent()) {
             this.chunk = chunk.get();
@@ -174,6 +178,9 @@ public class Locator {
             return;
         }
 
+        //? if >= 26.1
+        //var vec = net.minecraft.world.phys.Vec3.atCenterOf(pos);
+        //? if < 26.1
         var vec = pos.getCenter();
 
         callback.accept(new Result(Result.Type.SUCCESS, Optional.of(new ServerLocation(
@@ -182,18 +189,23 @@ public class Locator {
     }
 
     private void load() {
-        //? >= 1.21.11
+        //? if >= 26.1 {
+        /*world.getChunkSource().addTicketWithRadius(RTP_TICKET, ChunkPos.containing(attemptPos), 0);
+        *///? } elif >= 1.21.11 {
         //world.getChunkSource().addTicketWithRadius(RTP_TICKET, new ChunkPos(attemptPos),0);
-        //? < 1.21.11
+        //? } else {
         world.getChunkSource().addRegionTicket(RTP_TICKET, new ChunkPos(attemptPos), 0, attemptPos);
+        //? }
     }
 
     private Optional<LevelChunk> getChunk(ChunkPos pos) {
+        //? if >= 26.1
+        //var holder = world.getChunkSource().getVisibleChunkIfPresent(pos.pack());
+        //? if < 26.1
         var holder = world.getChunkSource().getVisibleChunkIfPresent(pos.toLong());
         if (holder == null) {
             return Optional.empty();
         } else {
-            //? >= 1.21.1
             var chunk = holder.getFullChunkFuture().getNow(ChunkHolder.UNLOADED_LEVEL_CHUNK).orElse(null);
             if (chunk == null) {
                 return Optional.empty();

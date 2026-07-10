@@ -28,6 +28,9 @@ public class TopCommand extends ModCommand<MiscellaneousModule> {
 
                     var world = player.level();
                     var top = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, player.blockPosition());
+                    //? if >= 26.1
+                    //var pos = net.minecraft.world.phys.Vec3.atCenterOf(top);
+                    //? if < 26.1
                     var pos = top.getCenter();
 
                     player.teleportTo(pos.x(), pos.y(), pos.z());
