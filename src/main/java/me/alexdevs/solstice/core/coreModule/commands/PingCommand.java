@@ -24,8 +24,6 @@ public class PingCommand extends ModCommand<CoreModule> {
     private static int getLatency(ServerPlayer player) {
         //? >= 1.21.1
         return player.connection.latency();
-        //? < 1.21.1
-        //return player.latency;
     }
 
     @Override

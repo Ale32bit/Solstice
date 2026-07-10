@@ -3,9 +3,7 @@ package me.alexdevs.solstice.api.utils;
 import com.mojang.authlib.GameProfile;
 import me.alexdevs.solstice.Solstice;
 import net.minecraft.server.MinecraftServer;
-//? if >= 1.21.1 {
 import net.minecraft.server.level.ClientInformation;
-//? }
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -38,11 +36,10 @@ public class PlayerUtils {
             );
             player.load(input);
         });
-        *///? } else if >= 1.21.1 {
-        var player = playerManager.getPlayerForLogin(profile, ClientInformation.createDefault());
-        //? } else {
-        /*var player = playerManager.getPlayerForLogin(profile);
         *///? }
+        //? if >= 1.21.1 && < 1.21.11 {
+        var player = playerManager.getPlayerForLogin(profile, ClientInformation.createDefault());
+        //? }
 
 
         //? if >= 1.21.11

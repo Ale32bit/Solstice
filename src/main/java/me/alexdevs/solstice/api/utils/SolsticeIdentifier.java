@@ -46,9 +46,7 @@ public final class SolsticeIdentifier implements Comparable<SolsticeIdentifier> 
         /*return new SolsticeIdentifier(Identifier.fromNamespaceAndPath(namespace, path));
         *///? } elif >= 1.21.1 {
         return new SolsticeIdentifier(ResourceLocation.fromNamespaceAndPath(namespace, path));
-        //? } elif < 1.21.1 {
-        /*return new SolsticeIdentifier(new ResourceLocation(namespace, path));
-        *///? }
+        //? }
 
     }
 
@@ -60,11 +58,7 @@ public final class SolsticeIdentifier implements Comparable<SolsticeIdentifier> 
         /*return new SolsticeIdentifier(Identifier.parse(value));
         *///? } elif >= 1.21.1 {
         return new SolsticeIdentifier(ResourceLocation.parse(value));
-         //? } elif < 1.21.1 {
-        /*var loc = ResourceLocation.tryParse(value);
-        if (loc == null) throw new IllegalArgumentException("Invalid resource location: " + value);
-        return new SolsticeIdentifier(loc);
-        *///? }
+         //? }
     }
 
     /**

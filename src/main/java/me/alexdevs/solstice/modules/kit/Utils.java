@@ -2,12 +2,7 @@ package me.alexdevs.solstice.modules.kit;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.sgui.api.gui.SimpleGui;
-//? if < 1.21.1 {
-/*import net.minecraft.nbt.CompoundTag;
-*///? }
-//? if >= 1.21.1 {
 import me.alexdevs.solstice.Solstice;
-//? }
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.TagParser;
@@ -24,17 +19,9 @@ public class Utils {
 
 
     public static String serializeItemStack(ItemStack itemStack) {
-        //? if >= 1.21.1 {
         var registry = Solstice.server.registryAccess();
         var registryOps = RegistryOps.create(NbtOps.INSTANCE, registry);
         return ItemStack.CODEC.encodeStart(registryOps, itemStack).getOrThrow().toString();
-        //? } elif >= 1.21.1 {
-        /*var registry = Solstice.server.registryAccess();
-        return itemStack.save(registry).getAsString();
-        *///? } else {
-        /*var nbt = new CompoundTag();
-        return itemStack.save(nbt).getAsString();
-        *///? }
     }
 
     public static ItemStack deserializeItemStack(String string) throws CommandSyntaxException {
@@ -46,10 +33,7 @@ public class Utils {
         *///? } elif >= 1.21.1 {
         var registry = Solstice.server.registryAccess();
         return ItemStack.parseOptional(registry, TagParser.parseTag(string));
-        //? } else {
-        /*var nbt = TagParser.parseTag(string);
-        return ItemStack.of(nbt);
-        *///? }
+        //? }
     }
 
     public static KitInventory createInventory(List<ItemStack> items) {

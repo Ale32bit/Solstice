@@ -24,8 +24,6 @@ public class EntityUtils {
         MobSpawnType.COMMAND;
 
         return type.create(world,
-                //? < 1.21.1
-                //null,
                 consumer, pos, spawnReason, particleEffects, limitedLifespan);
     }
 }

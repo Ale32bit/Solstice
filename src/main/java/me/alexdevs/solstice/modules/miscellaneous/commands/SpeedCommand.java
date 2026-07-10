@@ -74,23 +74,12 @@ public class SpeedCommand extends ModCommand<MiscellaneousModule> {
         );
 
         if (speedMultiplier == 1) {
-            //? >= 1.21.1
             instance.removeModifier(id.get());
-            //? < 1.21.1
-            //instance.getModifiers().stream().filter(x -> x.getName().equals(id.toString())).findFirst().ifPresent(instance::removeModifier);
 
             context.getSource().sendSuccess(() -> module.locale().get("walkSpeedReset", map), true);
         } else {
-            //? if >= 1.21.1 {
             var modifier = new AttributeModifier(id.get(), speedMultiplier, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
             instance.addOrUpdateTransientModifier(modifier);
-            //? } else {
-            /*var res = instance.getModifiers().stream().filter(x -> x.getName().equals(id.toString())).findFirst();
-            res.ifPresent(instance::removeModifier);
-
-            var modifier = new AttributeModifier(id.toString(), speedMultiplier, AttributeModifier.Operation.MULTIPLY_TOTAL);
-            instance.addTransientModifier(modifier);
-            *///? }
 
             context.getSource().sendSuccess(() -> module.locale().get("walkSpeedSet", map), true);
         }

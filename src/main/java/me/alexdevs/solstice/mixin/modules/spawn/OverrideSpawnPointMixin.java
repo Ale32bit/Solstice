@@ -6,29 +6,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-//? if >= 1.21.1 {
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Shadow;
-//? }
 
 //? if >= 1.21.4 {
 /*import net.minecraft.world.level.portal.TeleportTransition;
 *///? } else if >= 1.21.1 {
 import net.minecraft.world.level.portal.DimensionTransition;
-//? } else {
-/*import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
-import java.util.Optional;
-*///? }
+//? }
 
-//? >= 1.21.1
 @Mixin(ServerPlayer.class)
-//? < 1.21.1
-//@Mixin(Player.class)
 public abstract class OverrideSpawnPointMixin {
     //? if >= 1.21.11 {
     /*@Shadow @Final public MinecraftServer server;
@@ -99,20 +89,5 @@ public abstract class OverrideSpawnPointMixin {
             cir.setReturnValue(transition);
         }
     }
-    //? } else {
-    /*@Inject(method = "findRespawnPositionAndUseSpawnBlock", at = @At("RETURN"), cancellable = true)
-    private static void solstice$overrideSpawnPos(ServerLevel level, BlockPos pos, float angle, boolean forced, boolean alive, CallbackInfoReturnable<Optional<Vec3>> cir) {
-        var spawnModule = ModuleProvider.SPAWN;
-        var config = spawnModule.getConfig();
-        var spawn = spawnModule.getGlobalSpawnPosition();
-        if (config.globalSpawn.onRespawnSoft && pos == null) {
-            pos = spawn.getBlockPos();
-            cir.setReturnValue(Optional.of(pos.getCenter()));
-        }
-        if (config.globalSpawn.onRespawn) {
-            pos = spawn.getBlockPos();
-            cir.setReturnValue(Optional.of(pos.getCenter()));
-        }
-    }
-    *///? }
+    //? }
 }

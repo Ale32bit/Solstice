@@ -49,14 +49,10 @@ public class PhaseGradientTag {
                             var parsedColor = TextColor.parseColor(arg);
                             //? >= 1.21.1
                             if (parsedColor.isError()) {
-                            //? < 1.21.1
-                            //if (parsedColor == null) {
                                 textColors.add(TextColor.fromRgb(0));
                             } else {
                                 //? >= 1.21.1
                                 textColors.add(parsedColor.getOrThrow());
-                                //? < 1.21.1
-                                //textColors.add(parsedColor);
                             }
                         }
 
