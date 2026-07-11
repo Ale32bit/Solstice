@@ -8,25 +8,14 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Map;
 
-//? if >= 1.21.1 {
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
-//? } else {
-/*import net.minecraft.advancements.Advancement;
-*///? }
 
 
 public class AdvancementFormatter {
-    //? if >= 1.21.1 {
     public static Component getText(ServerPlayer player, AdvancementHolder entry, AdvancementType frame) {
         var title = entry.value().display().get().getTitle();
         var description = entry.value().display().get().getDescription();
-    //? } else {
-    /*public static Component getText(ServerPlayer player, Advancement advancement) {
-        var frame = advancement.getDisplay().getFrame();
-        var title = advancement.getDisplay().getTitle();
-        var description = advancement.getDisplay().getDescription();
-    *///? }
 
         var config = ModuleProvider.STYLING.getConfig();
 

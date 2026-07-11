@@ -18,7 +18,7 @@ maven {
 modImplementation "me.alexdevs:solstice:VERSION"
 ```
 
-Replace `VERSION` with the preferred version. E.g. `1.5.0+1.20.1` (without `v`).
+Replace `VERSION` with the preferred version. E.g. `1.5.0+1.21.1` (without `v`).
 
 ## Adding modules
 

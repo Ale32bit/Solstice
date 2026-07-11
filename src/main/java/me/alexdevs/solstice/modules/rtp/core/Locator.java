@@ -195,8 +195,6 @@ public class Locator {
         } else {
             //? >= 1.21.1
             var chunk = holder.getFullChunkFuture().getNow(ChunkHolder.UNLOADED_LEVEL_CHUNK).orElse(null);
-            //? < 1.21.1
-            //var chunk = holder.getFullChunkFuture().getNow(ChunkHolder.UNLOADED_LEVEL_CHUNK).left().orElse(null);
             if (chunk == null) {
                 return Optional.empty();
             }

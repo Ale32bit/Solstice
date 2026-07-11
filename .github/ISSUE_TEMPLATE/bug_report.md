@@ -24,8 +24,8 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Versions**
-- Minecraft: (e.g. 1.20.1)
-- Solstice: (e.g. 0.4.0+1.20.1)
+- Minecraft: (e.g. 1.21.1)
+- Solstice: (e.g. 0.4.0+1.21.1)
 
 **Additional context**
 Add any other context about the problem here.
