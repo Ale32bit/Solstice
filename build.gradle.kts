@@ -1,126 +1,233 @@
 import com.modrinth.minotaur.dependencies.ModDependency
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
 plugins {
-    id("fabric-loom") version "1.17-SNAPSHOT"
+    id("dev.kikugie.loom-back-compat")
     id("maven-publish")
     id("com.modrinth.minotaur") version "2.+"
-    id("dev.kikugie.stonecutter")
+    id("net.darkhax.curseforgegradle") version "1.2.30"
 }
-version = "${property("mod_version")}+${property("minecraft_version")}"
-group = property("maven_group") as String
-base {
-    archivesName.set(property("archives_base_name") as String)
+
+// DO NOT set group = ...! Loom/Stonecutter manage it per-subproject; set groupId on the publication instead.
+version = "${property("mod.version")}+${sc.current.version}"
+base.archivesName = property("mod.id") as String
+
+// Snapshot/alpha versions are marked with a `-alpha` or `-SNAPSHOT` pre-release tag in `mod.version`
+// (e.g. "1.10.0-alpha.1"). Presence of that tag drives Modrinth's versionType and the Maven repo used.
+val isAlpha: Boolean = (property("mod.version") as String).let {
+    it.contains("-alpha") || it.contains("-SNAPSHOT")
 }
+
+val mvnVersion = if (isAlpha) {
+    version.toString()
+        .replaceFirst("-alpha", "") + "-SNAPSHOT"
+}
+else {
+    version as String
+}
+
+
+val requiredJava: JavaVersion = when {
+    sc.current.parsed >= "26.1" -> JavaVersion.VERSION_25
+    else                        -> JavaVersion.VERSION_21
+}
+
+// This can be used for publishing on Modrinth and Curseforge
+val compatibleVersions = sc.properties.rawOrNull("mod", "mc_releases")
+    ?.asList()
+    .orEmpty()
+    .map { it.toString() }
+    .toSet()
+
 repositories {
     mavenLocal()
-    maven {
-        name = "ParchmentMC"
-        url = uri("https://maven.parchmentmc.org")
-    }
+    maven { url = uri("https://maven.parchmentmc.org") }
     maven { url = uri("https://maven.nucleoid.xyz") }
-    maven {
-        name = "TerraformersMC"
-        url = uri("https://maven.terraformersmc.com/")
-    }
-    maven {
-        name = "Ladysnake Libs"
-        url = uri("https://maven.ladysnake.org/releases")
-    }
-    maven {
-        name = "Modrinth"
-        url = uri("https://api.modrinth.com/maven")
-    }
+    maven { url = uri("https://maven.terraformersmc.com/") }
+    maven { url = uri("https://maven.ladysnake.org/releases") }
+    maven { url = uri("https://api.modrinth.com/maven") }
 }
-val accessWidener = rootProject.file("src/main/resources/solstice.accesswidener")
-loom {
-    accessWidenerPath = accessWidener
-}
+
 dependencies {
-    minecraft("com.mojang:minecraft:${property("minecraft_version")}")
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${property("minecraft_version")}:${property("parchment_mappings")}@zip")
-    })
-    modImplementation("net.fabricmc:fabric-loader:${property("loader_version")}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_version")}")
-    include(implementation("org.spongepowered:configurate-core:${property("configurate_version")}")!!)
-    include(implementation("org.spongepowered:configurate-hocon:${property("configurate_version")}")!!)
-    include(implementation("org.spongepowered:configurate-gson:${property("configurate_version")}")!!)
+
+    minecraft("com.mojang:minecraft:${sc.current.version}")
+    if (sc.current.parsed >= "26.1") {
+        loomx.applyMojangMappings()
+    }
+    else {
+        mappings(loom.layered {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-${sc.current.version}:${property("parchment")}@zip")
+        })
+    }
+
+    modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
+
+    modImplementation(include("org.spongepowered:configurate-core:${property("deps.configurate")}")!!)
+    modImplementation(include("org.spongepowered:configurate-hocon:${property("deps.configurate")}")!!)
+    modImplementation(include("org.spongepowered:configurate-gson:${property("deps.configurate")}")!!)
     include("com.typesafe:config:1.4.3")
     include("io.leangen.geantyref:geantyref:1.3.16")
-    include(modImplementation("me.lucko:fabric-permissions-api:${property("permissions_api_version")}")!!)
-    include(modImplementation("eu.pb4:placeholder-api:${property("placeholderapi_version")}")!!)
-    include(modImplementation("eu.pb4:sgui:${property("sgui_version")}")!!)
-    modImplementation(include("eu.pb4:common-economy-api:${property("commoneconomy_version")}")!!)
-    modCompileOnly("dev.emi:trinkets:${property("trinkets_version")}")
-    modCompileOnly("net.luckperms:api:5.4")
-    modRuntimeOnly("net.luckperms:api:5.4")
-    modCompileOnly("maven.modrinth:vanish:${project.property("vanish_version")}")
+
+    modImplementation(include("me.lucko:fabric-permissions-api:${property("deps.permissions_api")}")!!)
+    modImplementation(include("eu.pb4:placeholder-api:${property("deps.placeholderapi")}")!!)
+    modImplementation(include("eu.pb4:sgui:${property("deps.sgui")}")!!)
+    modImplementation(include("eu.pb4:common-economy-api:${property("deps.commoneconomy")}")!!)
+
+    if (sc.current.parsed >= "26.2") {
+        modCompileOnly("maven.modrinth:trinkets-updated:${property("deps.trinkets")}")
+    }
+    else {
+        modCompileOnly("dev.emi:trinkets:${property("deps.trinkets")}")
+    }
+    modCompileOnly("net.luckperms:api:${project.property("deps.luckperms")}")
+    modRuntimeOnly("net.luckperms:api:${project.property("deps.luckperms")}")
+    modCompileOnly("maven.modrinth:vanish:${project.property("deps.vanish")}")
 }
-tasks.processResources {
-    val mcConstraint = project.property("minecraft_constraint") as String
-    val javaVer = project.property("java_version") as String
-    inputs.property("version", project.version)
-    inputs.property("minecraft_constraint", mcConstraint)
-    inputs.property("java_version", javaVer)
-    filesMatching("fabric.mod.json") {
-        expand(mapOf(
-            "version" to project.version,
-            "minecraft_constraint" to mcConstraint,
-            "java_version" to javaVer
-        ))
+
+val accessWidener = if (sc.current.parsed >= "26.1") {
+    layout.buildDirectory.file("solstice-official.accesswidener")
+        .get().asFile.apply {
+            parentFile.mkdirs()
+            writeText(
+                rootProject.file("src/main/resources/solstice.accesswidener")
+                    .readText()
+                    .replaceFirst("accessWidener v2 named", "accessWidener v2 official")
+            )
+        }
+}
+else rootProject.file("src/main/resources/solstice.accesswidener")
+
+loom {
+    fabricModJsonPath = rootProject.file("src/main/resources/fabric.mod.json") // Useful for interface injection
+    accessWidenerPath = accessWidener
+    decompilerOptions.named("vineflower") {
+        options.put("mark-corresponding-synthetics", "1") // Adds names to lambdas - useful for mixins
+    }
+
+    runConfigs.all {
+        preferGradleTask = true
+        generateRunConfig = true
+        runDirectory = rootProject.file("run") // Shares the run directory between versions
+        jvmArguments.add("-Dmixin.debug.export=true") // Exports transformed classes for debugging
     }
 }
-val javaVersion = (property("java_version") as String).toInt()
-tasks.withType<JavaCompile>().configureEach {
-    options.release = javaVersion
-}
+
 java {
     withSourcesJar()
-    sourceCompatibility = JavaVersion.toVersion(javaVersion)
-    targetCompatibility = JavaVersion.toVersion(javaVersion)
+    targetCompatibility = requiredJava
+    sourceCompatibility = requiredJava
 }
+
+
+tasks {
+    processResources {
+        fun MutableMap<String, String>.register(key: String, property: String) {
+            val value: String = sc.properties[property]
+            inputs.property(key, value)
+            set(key, value)
+        }
+
+        val props = buildMap {
+            register("id", "mod.id")
+            register("name", "mod.name")
+            register("version", "mod.version")
+            register("minecraft", "mod.mc_compat")
+        }
+
+        filesMatching("fabric.mod.json") { expand(props) }
+
+        val mixinJava = "JAVA_${requiredJava.majorVersion}"
+        filesMatching("*.mixins.json") { expand("java" to mixinJava) }
+    }
+
+    register<Copy>("buildAndCollect") {
+        group = "build"
+        description = "Builds mod jars and copies results to `build/libs/{mod version}/`"
+
+        inputs.property("version", project.property("mod.version"))
+        // loomx.mod(Sources)Jar returns the jar task for the applied loom variant
+        from(loomx.modJar.flatMap { it.archiveFile }, loomx.modSourcesJar.flatMap { it.archiveFile })
+        into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
+    }
+
+}
+
+
 tasks.jar {
+    val archivesName = base.archivesName.get()
     from(rootProject.file("LICENSE")) {
-        rename { "${it}_${base.archivesName.get()}" }
+        rename { "${it}_${archivesName}" }
     }
 }
+
+// if -PprebuiltJar is set then directly point to the jars so we don't run tasks, this is useful for parallel deploys
+val prebuiltJar = providers.gradleProperty("prebuiltJar").isPresent
+val modJarFile: Any = if (prebuiltJar) {
+    layout.buildDirectory.file("libs/${base.archivesName.get()}-${version}.jar").get().asFile
+}
+else {
+    loomx.modJar.flatMap { it.archiveFile }
+}
+
 modrinth {
-    token = System.getenv("MODRINTH_TOKEN")
+    token.set(providers.environmentVariable("MODRINTH_TOKEN"))
     projectId = "uIvrDZas"
-    uploadFile = tasks["remapJar"]
-    gameVersions = listOf(property("minecraft_version") as String)
+    uploadFile.set(modJarFile)
+    changelog.set(providers.fileContents(rootProject.layout.projectDirectory.file("CHANGELOG.md")).asText)
+    versionType.set(if (isAlpha) "alpha" else "release")
+    gameVersions = compatibleVersions
     loaders = listOf("fabric")
     dependencies = listOf(ModDependency("P7dR8mSH", "required"))
+    // P7dR8mSH - fabric-api
 }
+
+tasks.register<TaskPublishCurseForge>("curseforge") {
+    description = "Curseforge upload"
+    group = "publishing"
+    apiToken = providers.environmentVariable("CURSEFORGE_TOKEN").orNull
+
+    disableVersionDetection()
+
+    val mainFile = upload("1149875", modJarFile)
+    mainFile.changelog = providers.fileContents(rootProject.layout.projectDirectory.file("CHANGELOG.md")).asText.orElse("")
+    mainFile.changelogType = "markdown"
+    mainFile.releaseType = if (isAlpha) "alpha" else "release"
+    mainFile.addModLoader("Fabric")
+    mainFile.addEnvironment("Server")
+    mainFile.addRequirement("fabric-api")
+    mainFile.gameVersions = compatibleVersions
+}
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
-            artifactId = property("archives_base_name") as String
-            from(components["java"])
+            groupId = property("mod.group") as String
+            artifactId = property("mod.id") as String
+            version = mvnVersion
+            if (prebuiltJar) {
+                artifact(modJarFile)
+            }
+            else {
+                from(components["java"])
+            }
         }
     }
     repositories {
         maven {
             name = "AlexDevsRepo"
-            url = uri("https://maven.alexdevs.me/releases")
+            url = uri(if (isAlpha) "https://maven.alexdevs.me/snapshots" else "https://maven.alexdevs.me/releases")
             credentials {
-                username = System.getenv("MAVEN_USERNAME")
-                password = System.getenv("MAVEN_PASSWORD")
+                username = providers.environmentVariable("MAVEN_USERNAME").orNull
+                password = providers.environmentVariable("MAVEN_PASSWORD").orNull
             }
         }
     }
 }
 
-stonecutter {
-    replacements.string(current.parsed >= "26.2") {
-        replace("Placeholders.register(", "Placeholders.registerCommon(")
-        replace("dev.emi.trinkets", "eu.pb4.trinkets")
-
-    }
-    replacements.string(current.parsed >= "1.21.11") {
-        replace("player.getServer()", "player.level().getServer()")
-        replace("sourcePlayer.getServer()", "sourcePlayer.level().getServer()")
-        replace("dimension().location()", "dimension().identifier()")
-    }
-
+tasks.register("maven") {
+    group = "publishing"
+    description = "Alias for publish"
+    dependsOn(tasks.named("publish"))
 }

@@ -1,0 +1,75 @@
+# See https://stonecutter.kikugie.dev/wiki/config/properties#centralized-properties
+mod.id = "solstice"
+mod.name = "Solstice Essentials"
+mod.group = "me.alexdevs"
+mod.version = "1.9.5-alpha"
+
+loomx.loom_version = "1.17-SNAPSHOT"
+
+deps.luckperms = "5.4"
+
+["1.21.1"]
+mod.mc_releases = ["1.21.1"]
+mod.mc_compat = "~1.21.1"
+
+parchment = "2024.11.17"
+
+deps.fabric_loader = "0.16.14"
+deps.fabric_api = "0.116.4+1.21.1"
+
+deps.configurate = "4.1.2"
+deps.permissions_api = "0.2-SNAPSHOT"
+deps.placeholderapi = "2.4.2+1.21"
+deps.sgui = "1.6.1+1.21.1"
+deps.commoneconomy = "1.1.1"
+deps.trinkets = "3.10.0"
+deps.vanish = "1.6.6+1.21.1"
+
+["1.21.4"]
+mod.mc_releases = ["1.21.4"]
+mod.mc_compat = "~1.21.4"
+
+parchment = "2025.03.23"
+
+deps.fabric_loader = "0.17.2"
+deps.fabric_api = "0.119.4+1.21.4"
+
+deps.configurate = "4.1.2"
+deps.permissions_api = "0.3.3"
+deps.placeholderapi = "2.5.2+1.21.3"
+deps.sgui = "1.8.2+1.21.4"
+deps.commoneconomy = "1.2.0"
+deps.trinkets = "3.10.0"
+deps.vanish = "1.6.6+1.21.4"
+
+["1.21.11"]
+mod.mc_releases = ["1.21.11"]
+mod.mc_compat = "~1.21.11"
+
+parchment = "2025.12.20"
+
+deps.fabric_loader = "0.18.4"
+deps.fabric_api = "0.141.3+1.21.11"
+
+deps.configurate = "4.1.2"
+deps.permissions_api = "0.6.1"
+deps.placeholderapi = "2.8.2+1.21.10"
+deps.sgui = "1.12.0+1.21.11"
+deps.commoneconomy = "2.0.0"
+deps.trinkets = "3.10.0"
+deps.vanish = "1.6.6+1.21.11"
+
+["26.2"]
+mod.mc_releases = ["26.2"]
+mod.mc_compat = "~26.2"
+
+deps.fabric_loader = "0.19.3"
+deps.fabric_api = "0.154.0+26.2"
+
+deps.configurate = "4.1.2"
+deps.permissions_api = "0.7.0"
+deps.placeholderapi = "3.1.0-beta.1+26.2"
+deps.sgui = "2.1.0+26.2"
+deps.commoneconomy = "2.0.0"
+deps.trinkets = "4.1.0-beta.2+26.2"
+deps.vanish = "1.6.15+26.2"

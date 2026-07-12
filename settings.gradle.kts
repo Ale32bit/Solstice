@@ -5,9 +5,8 @@ pluginManagement {
             url = uri("https://maven.fabricmc.net/")
         }
         maven {
-            name = "Stonecutter"
-            url = uri("https://maven.kikugie.dev/snapshots")
-            content { includeGroup("dev.kikugie") }
+            name = "KikuGie Releases"
+            url = uri("https://maven.kikugie.dev/releases")
         }
         mavenCentral()
         gradlePluginPortal()
@@ -15,17 +14,14 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.9"
+    id("dev.kikugie.stonecutter") version "0.9.6"
+    id("dev.kikugie.loom-back-compat") version "0.4"
 }
 
 stonecutter {
-    shared {
+    create(rootProject) {
         versions("1.21.1", "1.21.4", "1.21.11", "26.2")
-        mapBuilds { _, node ->
-            if (node.parsed >= "26.1") "build-unobfuscated.gradle.kts" else "build.gradle.kts"
-        }
-        vcsVersion.set("1.21.1")
+        vcsVersion = "1.21.1"
     }
-    create(rootProject)
 }
 
