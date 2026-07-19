@@ -99,7 +99,7 @@ public class SeenCommand extends ModCommand<SeenModule> {
                             if (player != null) {
                                 source.sendSuccess(() -> Format.parse(finalOutput, PlaceholderContext.of(player), map), false);
                             } else {
-                                source.sendSuccess(() -> Format.parse(finalOutput, PlaceholderUtils.of(source.getServer()), map), false);
+                                source.sendSuccess(() -> Format.parse(finalOutput, PlaceholderUtils.of(source), map), false);
                             }
 
                             return 1;

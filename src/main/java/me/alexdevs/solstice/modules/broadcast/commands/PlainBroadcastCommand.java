@@ -32,7 +32,7 @@ public class PlainBroadcastCommand extends ModCommand<BroadcastModule> {
                 .then(argument("message", StringArgumentType.greedyString())
                         .executes(context -> {
                             var message = StringArgumentType.getString(context, "message");
-                            var serverContext = PlaceholderUtils.of(context.getSource().getServer());
+                            var serverContext = PlaceholderUtils.of(context.getSource());
 
                             Solstice.getInstance().broadcast(Format.parse(message, serverContext));
 

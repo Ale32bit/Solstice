@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.modules.info.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.utils.PlaceholderUtils;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.info.InfoModule;

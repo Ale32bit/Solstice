@@ -60,11 +60,10 @@ public class TellModule extends ModuleBase.Toggleable {
 
         var parsedMessage = Components.chat(message, source);
 
-        var serverContext = PlaceholderUtils.of(source.getServer());
         var sourceContext = PlaceholderUtils.of(source);
         PlaceholderContext targetContext;
         if (targetPlayer == null) {
-            targetContext = serverContext;
+            targetContext = sourceContext;
         } else {
             targetContext = PlaceholderContext.of(targetPlayer);
         }
@@ -101,12 +100,12 @@ public class TellModule extends ModuleBase.Toggleable {
         );
         var genericText = locale().get(
                 "message",
-                serverContext,
+                sourceContext,
                 placeholders
         );
         var spyText = locale().get(
                 "messageSpy",
-                serverContext,
+                sourceContext,
                 placeholders
         );
 

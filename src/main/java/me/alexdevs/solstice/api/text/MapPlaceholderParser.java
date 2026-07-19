@@ -52,7 +52,7 @@ public record MapPlaceholderParser(Pattern pattern, Map<String, Component> place
             for (var child : parentNode.getChildren()) {
                 out.add(TextNode.asSingle(this.parseNodes(child)));
             }
-            return new TextNode[]{parentNode.copyWith(out.toArray(new TextNode[0]))};
+            return new TextNode[]{parentNode.copyWith(out.toArray(new TextNode[0]), this)};
         }
 
         return new TextNode[]{text};

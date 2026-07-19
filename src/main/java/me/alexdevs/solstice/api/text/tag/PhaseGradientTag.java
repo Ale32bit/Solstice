@@ -2,10 +2,6 @@ package me.alexdevs.solstice.api.text.tag;
 
 import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.node.parent.GradientNode;
-//? < 26.1
-import eu.pb4.placeholders.api.parsers.TextParserV1;
-//? < 26.1
-import eu.pb4.placeholders.impl.textparser.TextParserImpl;
 import me.alexdevs.solstice.api.utils.MathUtils;
 import net.minecraft.network.chat.TextColor;
 import me.alexdevs.solstice.api.color.Gradient;
@@ -25,8 +21,7 @@ import java.util.List;
  */
 public class PhaseGradientTag {
 
-    //? if >= 26.1 {
-    /*public static eu.pb4.placeholders.api.parsers.tag.TextTag createTag() {
+    public static eu.pb4.placeholders.api.parsers.tag.TextTag createTag() {
     return eu.pb4.placeholders.api.parsers.tag.TextTag.enclosing("phase_gradient", List.of("pgr", "sgr"), "gradient", true,
             (children, args, parser) -> {
                 var rawArgs = args.input().split(":");
@@ -66,49 +61,6 @@ public class PhaseGradientTag {
                 return PhaseGradientTag.smoother(textColors, phase, children);
             });
     }
-    *///? } elif >= 1.21.1 {
-    public static TextParserV1.TextTag createTag() {
-        return TextParserV1.TextTag.of("phase_gradient", List.of("pgr", "sgr"), "gradient", true,
-                (tag, data, input, handlers, endAt) -> {
-                    var rawArgs = data.split(":");
-                    var out = TextParserImpl.recursiveParsing(input, handlers, endAt);
-
-                    double phase = 0;
-                    final List<TextColor> textColors;
-
-                    var args = Arrays.stream(rawArgs).iterator();
-
-                    if (args.hasNext()) {
-                        textColors = new ArrayList<>();
-                        while (args.hasNext()) {
-                            var arg = args.next();
-                            if (!args.hasNext()) {
-                                final var possiblePhase = MathUtils.parseDouble(arg);
-                                if (possiblePhase.isPresent()) {
-                                    phase = MathUtils.clamp(possiblePhase.get(), -1d, 1d);
-                                    break;
-                                }
-                            }
-
-                            var parsedColor = TextColor.parseColor(arg);
-                            if (parsedColor.isError()) {
-                                textColors.add(TextColor.fromRgb(0));
-                            } else {
-                                textColors.add(parsedColor.getOrThrow());
-                            }
-                        }
-
-                        if (textColors.size() == 1) {
-                            return out.value(GradientNode.colors(textColors, out.nodes()));
-                        }
-                    } else {
-                        textColors = List.of();
-                    }
-
-                    return out.value(PhaseGradientTag.smoother(textColors, phase, out.nodes()));
-                });
-    }
-    //? }
 
     public static GradientNode smoother(List<TextColor> colors, double phase, TextNode... nodes) {
         if (colors.isEmpty()) {

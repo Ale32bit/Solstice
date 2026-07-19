@@ -192,8 +192,8 @@ public class Locator {
         //? if >= 26.1 {
         /*world.getChunkSource().addTicketWithRadius(RTP_TICKET, ChunkPos.containing(attemptPos), 0);
         *///? } elif >= 1.21.11 {
-        //world.getChunkSource().addTicketWithRadius(RTP_TICKET, new ChunkPos(attemptPos),0);
-        //? } else {
+        /*world.getChunkSource().addTicketWithRadius(RTP_TICKET, new ChunkPos(attemptPos),0);
+        *///? } else {
         world.getChunkSource().addRegionTicket(RTP_TICKET, new ChunkPos(attemptPos), 0, attemptPos);
         //? }
     }

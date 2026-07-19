@@ -43,5 +43,5 @@
   "suggests" : {
     "vanish": "*"
   },
-  "accessWidener": "solstice.accesswidener"
+  "accessWidener": "solstice.ct"
 }

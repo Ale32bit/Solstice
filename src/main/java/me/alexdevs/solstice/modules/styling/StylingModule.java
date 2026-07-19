@@ -19,6 +19,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.scores.PlayerTeam;
 
+import java.util.Locale;
+
 public class StylingModule extends ModuleBase.Toggleable {
     public static final String ADVANCED_CHAT_FORMATTING_PERMISSION = "solstice.chat.advanced";
     public static final String LEGACY_CHAT_FORMATTING_PERMISSION = "solstice.chat.legacy";
@@ -133,7 +135,7 @@ public class StylingModule extends ModuleBase.Toggleable {
         }
 
         //? if >= 26.1
-        //return ChatFormatting.valueOf(color);
+        //return ChatFormatting.valueOf(color.toUpperCase(Locale.ROOT));
         //? if < 26.1
         return ChatFormatting.getByName(color);
     }

@@ -36,7 +36,7 @@ public class BroadcastCommand extends ModCommand<BroadcastModule> {
                             var config = Solstice.configManager.getData(BroadcastConfig.class);
 
                             var message = StringArgumentType.getString(context, "message");
-                            var serverContext = PlaceholderUtils.of(context.getSource().getServer());
+                            var serverContext = PlaceholderUtils.of(context.getSource());
 
                             var placeholders = Map.of(
                                     "message", Format.parse(message, serverContext)

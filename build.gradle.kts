@@ -86,22 +86,14 @@ dependencies {
     modCompileOnly("maven.modrinth:vanish:${project.property("deps.vanish")}")
 }
 
-val accessWidener = if (sc.current.parsed >= "26.1") {
-    layout.buildDirectory.file("solstice-official.accesswidener")
-        .get().asFile.apply {
-            parentFile.mkdirs()
-            writeText(
-                rootProject.file("src/main/resources/solstice.accesswidener")
-                    .readText()
-                    .replaceFirst("accessWidener v2 named", "accessWidener v2 official")
-            )
-        }
-}
-else rootProject.file("src/main/resources/solstice.accesswidener")
-
 loom {
     fabricModJsonPath = rootProject.file("src/main/resources/fabric.mod.json") // Useful for interface injection
-    accessWidenerPath = accessWidener
+
+    accessWidenerPath = sc.process(
+        rootProject.file("src/main/resources/solstice.ct"),
+        ".gradle/processed.ct"
+    )
+
     decompilerOptions.named("vineflower") {
         options.put("mark-corresponding-synthetics", "1") // Adds names to lambdas - useful for mixins
     }
@@ -141,17 +133,6 @@ tasks {
         val mixinJava = "JAVA_${requiredJava.majorVersion}"
         filesMatching("*.mixins.json") { expand("java" to mixinJava) }
     }
-
-    register<Copy>("buildAndCollect") {
-        group = "build"
-        description = "Builds mod jars and copies results to `build/libs/{mod version}/`"
-
-        inputs.property("version", project.property("mod.version"))
-        // loomx.mod(Sources)Jar returns the jar task for the applied loom variant
-        from(loomx.modJar.flatMap { it.archiveFile }, loomx.modSourcesJar.flatMap { it.archiveFile })
-        into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
-    }
-
 }
 
 
