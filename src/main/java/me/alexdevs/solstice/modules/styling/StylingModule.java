@@ -4,6 +4,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
@@ -19,15 +20,15 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.scores.PlayerTeam;
 
-public class StylingModule extends ModuleBase.Toggleable {
+public class StylingModule extends ModuleBase {
     public static final String ADVANCED_CHAT_FORMATTING_PERMISSION = "solstice.chat.advanced";
     public static final String LEGACY_CHAT_FORMATTING_PERMISSION = "solstice.chat.legacy";
     public static final String SILENT_ACTIVITY_PERMISSION = "solstice.chat.activity.silent";
 
     private static final StylingConfig.NameplateFormat DEFAULT_NAMEPLATE = new StylingConfig.NameplateFormat("", "", "WHITE");
 
-    public StylingModule(SolsticeIdentifier id) {
-        super(id);
+    public StylingModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @SuppressWarnings("deprecation")

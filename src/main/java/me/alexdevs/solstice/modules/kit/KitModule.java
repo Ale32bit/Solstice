@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules.kit;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.modules.kit.commands.KitCommand;
 import me.alexdevs.solstice.modules.kit.commands.KitsCommand;
 import me.alexdevs.solstice.modules.kit.data.*;
@@ -14,11 +15,11 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-public class KitModule extends ModuleBase.Toggleable {
+public class KitModule extends ModuleBase {
     
 
-    public KitModule(SolsticeIdentifier id) {
-        super(id);
+    public KitModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

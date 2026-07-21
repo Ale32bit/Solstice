@@ -4,7 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.modules.ModuleProvider;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import me.alexdevs.solstice.modules.teleportRequest.TeleportRequestModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -36,7 +36,7 @@ public class TeleportAskHereCommand extends ModCommand<TeleportRequestModule> {
         var player = context.getSource().getPlayerOrException();
         var target = EntityArgument.getPlayer(context, "player");
 
-        if (ModuleProvider.IGNORE.isIgnoring(target, player)) {
+        if (ModModuleProvider.IGNORE.isIgnoring(target, player)) {
             return 0;
         }
 

@@ -2,6 +2,7 @@ package me.alexdevs.solstice.modules.sign;
 
 import eu.pb4.placeholders.api.parsers.LegacyFormattingParser;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.network.FilteredText;
@@ -9,10 +10,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.SignText;
 import java.util.List;
 
-public class SignModule extends ModuleBase.Toggleable {
+public class SignModule extends ModuleBase {
 
-    public SignModule(SolsticeIdentifier id) {
-        super(id);
+    public SignModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

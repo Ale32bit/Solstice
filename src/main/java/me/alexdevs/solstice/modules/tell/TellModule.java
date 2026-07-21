@@ -1,12 +1,11 @@
 package me.alexdevs.solstice.modules.tell;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.text.Components;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
-import me.alexdevs.solstice.modules.ModuleProvider;
-import me.alexdevs.solstice.modules.ignore.IgnoreModule;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import me.alexdevs.solstice.modules.notifications.NotificationsModule;
 import me.alexdevs.solstice.modules.tell.commands.ReplyCommand;
 import me.alexdevs.solstice.modules.tell.commands.TellCommand;
@@ -20,12 +19,12 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TellModule extends ModuleBase.Toggleable {
+public class TellModule extends ModuleBase {
     
     public final HashMap<String, String> lastSender = new HashMap<>();
 
-    public TellModule(SolsticeIdentifier id) {
-        super(id);
+    public TellModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override
@@ -118,7 +117,7 @@ public class TellModule extends ModuleBase.Toggleable {
             source.sendSystemMessage(sourceText);
         }
         if (targetPlayer != null) {
-            if (!source.isPlayer() || !ModuleProvider.IGNORE.isIgnoring(targetPlayer, source.getPlayer())) {
+            if (!source.isPlayer() || !ModModuleProvider.IGNORE.isIgnoring(targetPlayer, source.getPlayer())) {
                 targetPlayer.sendSystemMessage(targetText);
                 NotificationsModule.notify(targetPlayer);
             }

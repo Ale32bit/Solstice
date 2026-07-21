@@ -2,9 +2,9 @@ package me.alexdevs.solstice.modules.notifications;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
-import me.alexdevs.solstice.modules.ModuleProvider;
-import me.alexdevs.solstice.modules.afk.AfkModule;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import me.alexdevs.solstice.modules.notifications.commands.NotificationsCommand;
 import me.alexdevs.solstice.modules.notifications.data.NotificationsConfig;
 import me.alexdevs.solstice.modules.notifications.data.NotificationsLocale;
@@ -14,12 +14,11 @@ import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 
-public class NotificationsModule extends ModuleBase.Toggleable {
+public class NotificationsModule extends ModuleBase {
     private static NotificationsModule instance;
-    public NotificationsModule(SolsticeIdentifier id) {
-        super(id);
+    public NotificationsModule(ModuleProperties properties) {
+        super(properties);
         instance = this;
     }
 
@@ -88,7 +87,7 @@ public class NotificationsModule extends ModuleBase.Toggleable {
         if (!data.enable)
             return false;
 
-        var afkModule = ModuleProvider.AFK;
+        var afkModule = ModModuleProvider.AFK;
         if (afkModule.isEnabled()) {
             return afkModule.isPlayerAfk(player) || !settings.afkOnly();
         }

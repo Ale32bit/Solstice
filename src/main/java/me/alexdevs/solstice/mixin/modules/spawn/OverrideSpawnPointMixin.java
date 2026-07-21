@@ -1,5 +1,5 @@
 package me.alexdevs.solstice.mixin.modules.spawn;
-import me.alexdevs.solstice.modules.ModuleProvider;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import net.minecraft.core.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -71,7 +71,7 @@ public abstract class OverrideSpawnPointMixin {
     @Shadow private BlockPos respawnPosition;
     @Inject(method = "findRespawnPositionAndUseSpawnBlock", at = @At("RETURN"), cancellable = true)
     public void solstice$overrideRespawnTarget(boolean keepInventory, DimensionTransition.PostDimensionTransition postDimensionTransition, CallbackInfoReturnable<DimensionTransition> cir) {
-        var spawnModule = ModuleProvider.SPAWN;
+        var spawnModule = ModModuleProvider.SPAWN;
         var config = spawnModule.getConfig();
         var spawn = spawnModule.getGlobalSpawnPosition();
         var world = spawn.getWorld(this.server);

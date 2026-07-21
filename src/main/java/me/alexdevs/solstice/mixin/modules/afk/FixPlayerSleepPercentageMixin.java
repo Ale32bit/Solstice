@@ -1,8 +1,6 @@
 package me.alexdevs.solstice.mixin.modules.afk;
 
-import me.alexdevs.solstice.Solstice;
-import me.alexdevs.solstice.modules.ModuleProvider;
-import me.alexdevs.solstice.modules.afk.AfkModule;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.SleepStatus;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,6 +11,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class FixPlayerSleepPercentageMixin {
     @Redirect(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;isSpectator()Z"))
     public boolean solstice$fixTotalPlayers(ServerPlayer player) {
-        return player.isSpectator() || ModuleProvider.AFK.isPlayerAfk(player);
+        return player.isSpectator() || ModModuleProvider.AFK.isPlayerAfk(player);
     }
 }

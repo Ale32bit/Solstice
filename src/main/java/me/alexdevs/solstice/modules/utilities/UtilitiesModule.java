@@ -1,12 +1,13 @@
 package me.alexdevs.solstice.modules.utilities;
 
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.modules.utilities.commands.*;
 import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
-public class UtilitiesModule extends ModuleBase.Toggleable {
-    public UtilitiesModule(SolsticeIdentifier id) {
-        super(id);
+public class UtilitiesModule extends ModuleBase {
+    public UtilitiesModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

@@ -5,6 +5,7 @@ import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.WorldSaveCallback;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.core.coreModule.commands.PingCommand;
 import me.alexdevs.solstice.core.coreModule.commands.ServerStatCommand;
@@ -22,8 +23,8 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class CoreModule extends ModuleBase {
-    public CoreModule(SolsticeIdentifier id) {
-        super(id);
+    public CoreModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

@@ -2,6 +2,7 @@ package me.alexdevs.solstice.modules.mute;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.modules.mute.commands.MuteCommand;
 import me.alexdevs.solstice.modules.mute.commands.UnmuteCommand;
 import me.alexdevs.solstice.modules.mute.data.MuteLocale;
@@ -12,11 +13,11 @@ import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import java.util.Date;
 import java.util.UUID;
 
-public class MuteModule extends ModuleBase.Toggleable {
+public class MuteModule extends ModuleBase {
 
 
-    public MuteModule(SolsticeIdentifier id) {
-        super(id);
+    public MuteModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

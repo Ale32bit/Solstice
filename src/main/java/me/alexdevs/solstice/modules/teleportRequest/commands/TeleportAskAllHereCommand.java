@@ -5,7 +5,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.module.ModCommand;
-import me.alexdevs.solstice.modules.ModuleProvider;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import me.alexdevs.solstice.modules.teleportRequest.TeleportRequestModule;
 import net.minecraft.commands.CommandSourceStack;
 
@@ -37,7 +37,7 @@ public class TeleportAskAllHereCommand extends ModCommand<TeleportRequestModule>
 
         var targets = context.getSource().getServer().getPlayerList().getPlayers();
         for (var target : targets) {
-            if (ModuleProvider.IGNORE.isIgnoring(target, player) || target.equals(player)) {
+            if (ModModuleProvider.IGNORE.isIgnoring(target, player) || target.equals(player)) {
                 continue;
             }
 

@@ -2,6 +2,7 @@ package me.alexdevs.solstice.modules.warp;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.modules.warp.commands.DeleteWarpCommand;
 import me.alexdevs.solstice.modules.warp.commands.SetWarpCommand;
 import me.alexdevs.solstice.modules.warp.commands.WarpCommand;
@@ -12,11 +13,11 @@ import me.lucko.fabric.api.permissions.v0.Permissions;
 import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 
-public class WarpModule extends ModuleBase.Toggleable {
+public class WarpModule extends ModuleBase {
     
 
-    public WarpModule(SolsticeIdentifier id) {
-        super(id);
+    public WarpModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

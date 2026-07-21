@@ -4,7 +4,8 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.modules.mail.data.PlayerMail;
 import me.alexdevs.solstice.api.module.ModuleBase;
-import me.alexdevs.solstice.modules.ModuleProvider;
+import me.alexdevs.solstice.api.module.ModuleProperties;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import me.alexdevs.solstice.modules.mail.commands.MailCommand;
 import me.alexdevs.solstice.modules.mail.data.MailLocale;
 import me.alexdevs.solstice.modules.mail.data.MailPlayerData;
@@ -14,11 +15,11 @@ import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-public class MailModule extends ModuleBase.Toggleable {
+public class MailModule extends ModuleBase {
     
 
-    public MailModule(SolsticeIdentifier id) {
-        super(id);
+    public MailModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class MailModule extends ModuleBase.Toggleable {
     }
 
     public boolean sendMail(UUID playerUuid, PlayerMail mail) {
-        var playerData = ModuleProvider.IGNORE.getPlayerData(playerUuid);
+        var playerData = ModModuleProvider.IGNORE.getPlayerData(playerUuid);
         if (playerData.ignoredPlayers.contains(mail.sender)) {
             return false;
         }

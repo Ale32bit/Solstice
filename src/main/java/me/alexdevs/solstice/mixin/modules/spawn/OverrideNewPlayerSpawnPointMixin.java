@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.mixin.modules.spawn;
 
-import me.alexdevs.solstice.modules.ModuleProvider;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -21,7 +21,7 @@ public abstract class OverrideNewPlayerSpawnPointMixin {
     //? if >= 1.21.1 && < 1.21.11 {
     public ServerLevel solstice$overrideWorld(MinecraftServer server, ResourceKey<Level> dimension, @Local Optional<CompoundTag> optional) {
         if (optional.isEmpty()) {
-            var spawn = ModuleProvider.SPAWN;
+            var spawn = ModModuleProvider.SPAWN;
             var firstSpawn = spawn.getFirstSpawn();
             if (firstSpawn != null) {
                 return firstSpawn.getWorld(server);

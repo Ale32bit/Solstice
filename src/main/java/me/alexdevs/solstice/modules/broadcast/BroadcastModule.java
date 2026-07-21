@@ -1,16 +1,16 @@
 package me.alexdevs.solstice.modules.broadcast;
 
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.modules.broadcast.commands.BroadcastCommand;
 import me.alexdevs.solstice.modules.broadcast.commands.PlainBroadcastCommand;
 import me.alexdevs.solstice.modules.broadcast.data.BroadcastConfig;
-import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
-public class BroadcastModule extends ModuleBase.Toggleable {
-    
 
-    public BroadcastModule(SolsticeIdentifier id) {
-        super(id);
+public class BroadcastModule extends ModuleBase {
+
+
+    public BroadcastModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules.note;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.text.Components;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.note.commands.NotesCommand;
@@ -18,11 +19,11 @@ import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-public class NoteModule extends ModuleBase.Toggleable {
+public class NoteModule extends ModuleBase {
     
 
-    public NoteModule(SolsticeIdentifier id) {
-        super(id);
+    public NoteModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

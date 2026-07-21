@@ -10,13 +10,15 @@ import java.util.function.Supplier;
 
 public abstract class ModuleBase implements Comparable<ModuleBase> {
     protected final SolsticeIdentifier id;
+    protected final ModuleProperties properties;
     protected final List<ModCommand<?>> commands = new ArrayList<>();
     protected Class<?> configClass = null;
     protected Class<?> playerDataClass = null;
     protected Class<?> serverDataClass = null;
 
-    public ModuleBase(SolsticeIdentifier id) {
-        this.id = id;
+    public ModuleBase(ModuleProperties properties) {
+        this.properties = properties;
+        this.id = properties.id();
     }
 
     /**
@@ -86,15 +88,5 @@ public abstract class ModuleBase implements Comparable<ModuleBase> {
     @Override
     public int compareTo(ModuleBase o) {
         return id.compareTo(o.id);
-    }
-
-    public static abstract class Toggleable extends ModuleBase {
-        public Toggleable(SolsticeIdentifier id) {
-            super(id);
-        }
-
-        public boolean isEnabled() {
-            return ToggleableConfig.get().isEnabled(this.id.toString());
-        }
     }
 }

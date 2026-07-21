@@ -3,7 +3,7 @@ package me.alexdevs.solstice.modules.styling.formatters;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.text.Components;
 import me.alexdevs.solstice.api.text.Format;
-import me.alexdevs.solstice.modules.ModuleProvider;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.PlayerChatMessage;
@@ -22,7 +22,7 @@ public class ChatFormatter {
     public static Component getFormattedMessage(PlayerChatMessage message, ServerPlayer player) {
         Component messageText = Components.chat(message, player);
 
-        var chatFormat = ModuleProvider.STYLING.getChatFormat(player);
+        var chatFormat = ModModuleProvider.STYLING.getChatFormat(player);
 
         var playerContext = PlaceholderContext.of(player);
         return Format.parse(

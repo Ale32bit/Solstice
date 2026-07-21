@@ -2,7 +2,7 @@ package me.alexdevs.solstice.modules.ignore;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
-import me.alexdevs.solstice.modules.ModuleProvider;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.modules.ignore.commands.IgnoreCommand;
 import me.alexdevs.solstice.modules.ignore.commands.IgnoreListCommand;
 import me.alexdevs.solstice.modules.ignore.data.IgnoreLocale;
@@ -12,11 +12,11 @@ import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
-public class IgnoreModule extends ModuleBase.Toggleable {
+public class IgnoreModule extends ModuleBase {
 
 
-    public IgnoreModule(SolsticeIdentifier id) {
-        super(id);
+    public IgnoreModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

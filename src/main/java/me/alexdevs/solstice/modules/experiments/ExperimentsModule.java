@@ -2,6 +2,7 @@ package me.alexdevs.solstice.modules.experiments;
 
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.modules.experiments.commands.FlagsCommand;
 import me.alexdevs.solstice.modules.experiments.commands.SafeTeleportCommand;
 import me.alexdevs.solstice.modules.experiments.commands.TimeSpanCommand;
@@ -13,8 +14,8 @@ public class ExperimentsModule extends ModuleBase {
     public static final boolean ENABLED = false;
     
 
-    public ExperimentsModule(SolsticeIdentifier id) {
-        super(id);
+    public ExperimentsModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

@@ -2,7 +2,7 @@ package me.alexdevs.solstice.modules.styling.formatters;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.text.Format;
-import me.alexdevs.solstice.modules.ModuleProvider;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -17,7 +17,7 @@ public class AdvancementFormatter {
         var title = entry.value().display().get().getTitle();
         var description = entry.value().display().get().getDescription();
 
-        var config = ModuleProvider.STYLING.getConfig();
+        var config = ModModuleProvider.STYLING.getConfig();
 
         String advancementFormat = switch (frame) {
             case GOAL -> config.advancementGoal;

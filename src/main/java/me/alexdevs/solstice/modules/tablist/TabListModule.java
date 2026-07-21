@@ -5,6 +5,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.api.text.RawPlaceholder;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
@@ -19,12 +20,12 @@ import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class TabListModule extends ModuleBase.Toggleable {
+public class TabListModule extends ModuleBase {
     private MinecraftServer server;
     private ScheduledFuture<?> scheduledFuture = null;
 
-    public TabListModule(SolsticeIdentifier id) {
-        super(id);
+    public TabListModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

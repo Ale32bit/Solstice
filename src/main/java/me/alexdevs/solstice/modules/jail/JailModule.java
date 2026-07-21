@@ -5,7 +5,8 @@ import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.events.CommandEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
-import me.alexdevs.solstice.modules.ModuleProvider;
+import me.alexdevs.solstice.api.module.ModuleProperties;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import me.alexdevs.solstice.modules.jail.commands.CheckJailCommand;
 import me.alexdevs.solstice.modules.jail.commands.JailCommand;
 import me.alexdevs.solstice.modules.jail.commands.JailsCommand;
@@ -32,11 +33,11 @@ import java.util.concurrent.TimeUnit;
 //? < 1.21.4
 import net.minecraft.world.InteractionResultHolder;
 
-public class JailModule extends ModuleBase.Toggleable {
+public class JailModule extends ModuleBase {
     
 
-    public JailModule(SolsticeIdentifier id) {
-        super(id);
+    public JailModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override
@@ -242,7 +243,7 @@ public class JailModule extends ModuleBase.Toggleable {
             if (data.previousLocation != null) {
                 data.previousLocation.teleport(player);
             } else {
-                ModuleProvider.SPAWN.getGlobalSpawnPosition().teleport(player);
+                ModModuleProvider.SPAWN.getGlobalSpawnPosition().teleport(player);
             }
         }
     }

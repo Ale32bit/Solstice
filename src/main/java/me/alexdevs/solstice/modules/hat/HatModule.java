@@ -2,6 +2,7 @@ package me.alexdevs.solstice.modules.hat;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.modules.hat.commands.HatCommand;
 import me.alexdevs.solstice.modules.hat.data.HatConfig;
 import me.alexdevs.solstice.modules.hat.data.HatLocale;
@@ -11,11 +12,11 @@ import net.minecraft.world.item.Item;
 
 import java.util.List;
 import java.util.stream.Stream;
-public class HatModule extends ModuleBase.Toggleable {
+public class HatModule extends ModuleBase {
     
 
-    public HatModule(SolsticeIdentifier id) {
-        super(id);
+    public HatModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

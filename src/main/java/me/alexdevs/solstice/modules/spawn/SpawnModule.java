@@ -4,6 +4,7 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.modules.spawn.commands.FirstSpawnCommand;
 import me.alexdevs.solstice.modules.spawn.commands.SetFirstSpawnCommand;
 import me.alexdevs.solstice.modules.spawn.commands.SetSpawnCommand;
@@ -23,11 +24,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.LevelData;
 import org.jetbrains.annotations.Nullable;
 
-public class SpawnModule extends ModuleBase.Toggleable {
+public class SpawnModule extends ModuleBase {
 
 
-    public SpawnModule(SolsticeIdentifier id) {
-        super(id);
+    public SpawnModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @SuppressWarnings("deprecation")

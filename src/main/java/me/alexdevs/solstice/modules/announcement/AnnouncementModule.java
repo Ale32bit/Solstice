@@ -4,6 +4,8 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.announcement.data.AnnouncementConfig;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -13,14 +15,14 @@ import java.util.Random;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class AnnouncementModule extends ModuleBase.Toggleable {
+public class AnnouncementModule extends ModuleBase {
     
 
     private ScheduledFuture<?> scheduledFuture = null;
     private int currentLine = 0;
 
-    public AnnouncementModule(SolsticeIdentifier id) {
-        super(id);
+    public AnnouncementModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

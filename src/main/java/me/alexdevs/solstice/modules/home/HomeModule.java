@@ -2,6 +2,7 @@ package me.alexdevs.solstice.modules.home;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.modules.home.commands.*;
 import me.alexdevs.solstice.modules.home.data.HomeConfig;
 import me.alexdevs.solstice.modules.home.data.HomeLocale;
@@ -9,11 +10,11 @@ import me.alexdevs.solstice.modules.home.data.HomePlayerData;
 import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 import java.util.UUID;
-public class HomeModule extends ModuleBase.Toggleable {
+public class HomeModule extends ModuleBase {
     
 
-    public HomeModule(SolsticeIdentifier id) {
-        super(id);
+    public HomeModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

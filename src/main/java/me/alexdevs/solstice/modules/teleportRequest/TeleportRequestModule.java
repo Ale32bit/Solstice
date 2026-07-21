@@ -4,6 +4,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.text.Components;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
@@ -21,13 +22,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
-public class TeleportRequestModule extends ModuleBase.Toggleable {
+public class TeleportRequestModule extends ModuleBase {
 
 
     private final Map<UUID, ConcurrentLinkedDeque<Request>> requests = new ConcurrentHashMap<>();
 
-    public TeleportRequestModule(SolsticeIdentifier id) {
-        super(id);
+    public TeleportRequestModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

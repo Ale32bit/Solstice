@@ -3,14 +3,15 @@ package me.alexdevs.solstice.modules.placeholders;
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
-public class PlaceholdersModule extends ModuleBase.Toggleable {
+public class PlaceholdersModule extends ModuleBase {
 
     public static final String ENTITY = "entity";
 
-    public PlaceholdersModule(SolsticeIdentifier id) {
-        super(id);
+    public PlaceholdersModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

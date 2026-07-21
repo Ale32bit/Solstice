@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.mixin.modules.back;
 import me.alexdevs.solstice.api.ServerLocation;
-import me.alexdevs.solstice.modules.ModuleProvider;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,6 +25,6 @@ public abstract class PreTeleportMixin {
     public void solstice$getPreTeleportLocation(ServerLevel world, double destX, double destY, double destZ, Set<RelativeMovement> flags, float yaw, float pitch, CallbackInfoReturnable<Boolean> cir) {
     //? }
         var player = (ServerPlayer) (Object) this;
-        ModuleProvider.BACK.setPlayerLastLocation(player.getUUID(), new ServerLocation(player));
+        ModModuleProvider.BACK.setPlayerLastLocation(player.getUUID(), new ServerLocation(player));
     }
 }

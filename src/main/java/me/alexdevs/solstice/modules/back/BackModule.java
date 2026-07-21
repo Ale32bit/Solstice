@@ -4,6 +4,7 @@ import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
 import me.alexdevs.solstice.api.events.PlayerTeleportCallback;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import me.alexdevs.solstice.modules.back.commands.BackCommand;
 import me.alexdevs.solstice.modules.back.data.BackConfig;
@@ -18,11 +19,11 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class BackModule extends ModuleBase.Toggleable {
+public class BackModule extends ModuleBase {
 
 
-    public BackModule(SolsticeIdentifier id) {
-        super(id);
+    public BackModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

@@ -2,6 +2,7 @@ package me.alexdevs.solstice.modules.rtp;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.rtp.commands.RTPCommand;
 import me.alexdevs.solstice.modules.rtp.core.Locator;
@@ -14,13 +15,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.biome.Biome;
 
 import java.util.ArrayList;
-public class RTPModule extends ModuleBase.Toggleable {
+public class RTPModule extends ModuleBase {
     
 
     private final ArrayList<Locator> locators = new ArrayList<>();
 
-    public RTPModule(SolsticeIdentifier id) {
-        super(id);
+    public RTPModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

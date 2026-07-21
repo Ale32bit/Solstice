@@ -1,6 +1,6 @@
 package me.alexdevs.solstice.mixin.modules.customname;
 
-import me.alexdevs.solstice.modules.ModuleProvider;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -19,7 +19,7 @@ public abstract class CustomDisplayNameMixin {
 
     @Inject(method = "getDisplayName", at = @At("HEAD"), cancellable = true)
     public void solstice$getDisplayName(CallbackInfoReturnable<MutableComponent> cir) {
-        var name = ModuleProvider.CUSTOMNAME.getNameForPlayer((ServerPlayer) (Object) this);
+        var name = ModModuleProvider.CUSTOMNAME.getNameForPlayer((ServerPlayer) (Object) this);
         cir.setReturnValue(decorateDisplayNameComponent(name));
     }
 }

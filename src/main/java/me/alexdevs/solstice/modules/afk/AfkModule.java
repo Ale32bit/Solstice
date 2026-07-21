@@ -9,6 +9,8 @@ import me.alexdevs.solstice.api.events.CommandEvents;
 import me.alexdevs.solstice.api.events.PlayerActivityEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.afk.commands.ActiveTimeCommand;
@@ -34,15 +36,15 @@ import net.minecraft.world.InteractionResultHolder;
 //? }
 
 
-public class AfkModule extends ModuleBase.Toggleable {
+public class AfkModule extends ModuleBase {
     public static final double sprintSpeed = 0.280617;
     public static final double walkSpeed = 0.215859;
     public static final double sneakSpeed = 0.0841;
 
     public static final int LEADERBOARD_SIZE = 10;
 
-    public AfkModule(SolsticeIdentifier id) {
-        super(id);
+    public AfkModule(ModuleProperties properties) {
+        super(properties);
     }
 
     public enum AfkTriggerReason {

@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules.commandSpy;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.CommandEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.commandSpy.data.CommandSpyConfig;
 import me.alexdevs.solstice.modules.commandSpy.data.CommandSpyLocale;
@@ -12,11 +13,11 @@ import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 import java.util.Map;
 
-public class CommandSpyModule extends ModuleBase.Toggleable {
+public class CommandSpyModule extends ModuleBase {
     
 
-    public CommandSpyModule(SolsticeIdentifier id) {
-        super(id);
+    public CommandSpyModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

@@ -1,10 +1,8 @@
 package me.alexdevs.solstice.modules.styling.formatters;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.text.Format;
-import me.alexdevs.solstice.modules.ModuleProvider;
-import me.alexdevs.solstice.modules.styling.StylingModule;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -12,7 +10,7 @@ import java.util.Map;
 
 public class ConnectionActivityFormatter {
     public static Component onJoin(ServerPlayer player) {
-        var config = ModuleProvider.STYLING.getConfig();
+        var config = ModModuleProvider.STYLING.getConfig();
         var playerContext = PlaceholderContext.of(player);
         return Format.parse(
                 config.joinFormat,
@@ -21,7 +19,7 @@ public class ConnectionActivityFormatter {
     }
 
     public static Component onJoinRenamed(ServerPlayer player, String previousName) {
-        var config = ModuleProvider.STYLING.getConfig();
+        var config = ModModuleProvider.STYLING.getConfig();
         var playerContext = PlaceholderContext.of(player);
         return Format.parse(
                 config.joinRenamedFormat,
@@ -31,7 +29,7 @@ public class ConnectionActivityFormatter {
     }
 
     public static Component onLeave(ServerPlayer player) {
-        var config = ModuleProvider.STYLING.getConfig();
+        var config = ModModuleProvider.STYLING.getConfig();
         var playerContext = PlaceholderContext.of(player);
         return Format.parse(
                 config.leaveFormat,

@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules.timeBar;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.modules.timeBar.commands.TimeBarCommand;
 import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,12 +14,12 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
-public class TimeBarModule extends ModuleBase.Toggleable {
+public class TimeBarModule extends ModuleBase {
     
     private static final ConcurrentLinkedDeque<TimeBar> timeBars = new ConcurrentLinkedDeque<>();
 
-    public TimeBarModule(SolsticeIdentifier id) {
-        super(id);
+    public TimeBarModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

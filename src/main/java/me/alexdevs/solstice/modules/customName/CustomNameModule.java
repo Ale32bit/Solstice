@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules.customName;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.api.text.RawPlaceholder;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
@@ -21,9 +22,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-public class CustomNameModule extends ModuleBase.Toggleable {
-    public CustomNameModule(SolsticeIdentifier id) {
-        super(id);
+public class CustomNameModule extends ModuleBase {
+    public CustomNameModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

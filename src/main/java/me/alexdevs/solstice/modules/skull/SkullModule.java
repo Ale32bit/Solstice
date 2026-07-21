@@ -1,17 +1,18 @@
 package me.alexdevs.solstice.modules.skull;
 
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.utils.ItemUtils;
 import me.alexdevs.solstice.modules.skull.commands.SkullCommand;
 import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class SkullModule extends ModuleBase.Toggleable {
+public class SkullModule extends ModuleBase {
 
 
-    public SkullModule(SolsticeIdentifier id) {
-        super(id);
+    public SkullModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

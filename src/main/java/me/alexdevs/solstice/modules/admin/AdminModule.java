@@ -3,13 +3,13 @@ package me.alexdevs.solstice.modules.admin;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.events.PlayerConnectionEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 
 public class AdminModule extends ModuleBase {
-    public AdminModule(SolsticeIdentifier id) {
-        super(id);
+    public AdminModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

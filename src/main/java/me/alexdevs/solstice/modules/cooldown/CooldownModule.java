@@ -5,6 +5,7 @@ import me.alexdevs.solstice.api.command.TimeSpan;
 import me.alexdevs.solstice.api.events.ModuleCommandEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.modules.cooldown.commands.CooldownCommand;
 import me.alexdevs.solstice.modules.cooldown.data.CooldownConfig;
 import me.alexdevs.solstice.modules.cooldown.data.CooldownLocale;
@@ -18,7 +19,7 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-public class CooldownModule extends ModuleBase.Toggleable {
+public class CooldownModule extends ModuleBase {
     
     public static final String PERMISSION_BASE = "solstice.cooldown";
 
@@ -28,8 +29,8 @@ public class CooldownModule extends ModuleBase.Toggleable {
     // This map is replaced every reload and at start.
     private Map<String, String> nodesMap = Map.of();
 
-    public CooldownModule(SolsticeIdentifier id) {
-        super(id);
+    public CooldownModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

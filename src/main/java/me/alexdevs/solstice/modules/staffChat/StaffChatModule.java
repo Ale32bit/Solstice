@@ -3,6 +3,7 @@ package me.alexdevs.solstice.modules.staffChat;
 import eu.pb4.placeholders.api.node.TextNode;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.text.parser.MarkdownParser;
 import me.alexdevs.solstice.modules.staffChat.commands.StaffChatCommand;
 import me.alexdevs.solstice.modules.staffChat.data.StaffChatLocale;
@@ -15,12 +16,12 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-public class StaffChatModule extends ModuleBase.Toggleable {
+public class StaffChatModule extends ModuleBase {
     
     private final ConcurrentHashMap<UUID, Boolean> stickyStaffChat = new ConcurrentHashMap<>();
 
-    public StaffChatModule(SolsticeIdentifier id) {
-        super(id);
+    public StaffChatModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

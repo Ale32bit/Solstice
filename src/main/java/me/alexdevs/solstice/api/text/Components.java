@@ -6,7 +6,7 @@ import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.parsers.NodeParser;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.text.parser.MarkdownParser;
-import me.alexdevs.solstice.modules.ModuleProvider;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import me.alexdevs.solstice.modules.styling.StylingModule;
 import me.alexdevs.solstice.modules.styling.data.StylingConfig;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -66,7 +66,7 @@ public class Components {
             set.add(TextCapabilities.LEGACY);
         }
 
-        if (ModuleProvider.STYLING.isEnabled()) {
+        if (ModModuleProvider.STYLING.isEnabled()) {
             var config = Solstice.configManager.getData(StylingConfig.class);
             if (config.enableMarkdown) {
                 set.add(TextCapabilities.MARKDOWN);
@@ -89,7 +89,7 @@ public class Components {
             set.add(TextCapabilities.LEGACY);
         }
 
-        if (ModuleProvider.STYLING.isEnabled()) {
+        if (ModModuleProvider.STYLING.isEnabled()) {
             var config = Solstice.configManager.getData(StylingConfig.class);
             if (config.enableMarkdown) {
                 set.add(TextCapabilities.MARKDOWN);
@@ -106,7 +106,7 @@ public class Components {
 
         var placeholders = new HashMap<String, Component>();
         var context = PlaceholderContext.of(source);
-        if (ModuleProvider.STYLING.isEnabled()) {
+        if (ModModuleProvider.STYLING.isEnabled()) {
             var config = Solstice.configManager.getData(StylingConfig.class);
             for (var repl : config.replacements.entrySet()) {
                 if (message.contains(repl.getKey())) {

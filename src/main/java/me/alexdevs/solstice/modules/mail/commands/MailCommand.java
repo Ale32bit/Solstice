@@ -7,13 +7,13 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import me.alexdevs.solstice.modules.mail.data.PlayerMail;
 import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.text.Components;
 import me.alexdevs.solstice.api.text.parser.MarkdownParser;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
-import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.mail.MailModule;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
@@ -177,7 +177,7 @@ public class MailCommand extends ModCommand<MailModule> {
                 return 1;
             }
 
-            if (ModuleProvider.IGNORE.isIgnoring(recPlayer, sender))
+            if (ModModuleProvider.IGNORE.isIgnoring(recPlayer, sender))
                 return 0;
 
             var recContext = PlaceholderContext.of(recPlayer);

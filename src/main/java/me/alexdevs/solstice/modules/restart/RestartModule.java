@@ -5,9 +5,10 @@ import me.alexdevs.solstice.api.events.RestartEvents;
 import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.events.TimeBarEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.integrations.ConnectorIntegration;
-import me.alexdevs.solstice.modules.ModuleProvider;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import me.alexdevs.solstice.modules.restart.commands.RestartCommand;
 import me.alexdevs.solstice.modules.restart.data.RestartConfig;
 import me.alexdevs.solstice.modules.restart.data.RestartLocale;
@@ -17,7 +18,6 @@ import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.BossEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,8 +26,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-public class RestartModule extends ModuleBase.Toggleable {
-    
+
+public class RestartModule extends ModuleBase {
+
 
     private static final BossEvent.BossBarColor fallbackBarColor = BossEvent.BossBarColor.RED;
     private static final BossEvent.BossBarOverlay fallbackBarStyle = BossEvent.BossBarOverlay.NOTCHED_10;
@@ -36,8 +37,8 @@ public class RestartModule extends ModuleBase.Toggleable {
     private SoundEvent sound;
     private ScheduledFuture<?> currentSchedule = null;
 
-    public RestartModule(SolsticeIdentifier id) {
-        super(id);
+    public RestartModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override
@@ -78,11 +79,10 @@ public class RestartModule extends ModuleBase.Toggleable {
         SolsticeEvents.RELOAD.register(instance -> setup());
     }
 
-    @Override
     public boolean isEnabled() {
-        if(!ModuleProvider.TIMEBAR.isEnabled())
+        if (!ModModuleProvider.TIMEBAR.get().isEnabled())
             return false;
-        
+
         return super.isEnabled();
     }
 
@@ -144,8 +144,7 @@ public class RestartModule extends ModuleBase.Toggleable {
             return;
         }
 
-        var timeBar = Solstice.modules.getModule(TimeBarModule.class);
-        restartBar = ModuleProvider.TIMEBAR.startTimeBar(
+        restartBar = ModModuleProvider.TIMEBAR.get().startTimeBar(
                 message,
                 seconds,
                 getBarColor(),
@@ -165,9 +164,8 @@ public class RestartModule extends ModuleBase.Toggleable {
     }
 
     public void cancel() {
-        var timeBar = Solstice.modules.getModule(TimeBarModule.class);
         if (restartBar != null) {
-            ModuleProvider.TIMEBAR.cancelTimeBar(restartBar);
+            ModModuleProvider.TIMEBAR.get().cancelTimeBar(restartBar);
             RestartEvents.CANCELED.invoker().onCancel(restartBar);
             restartBar = null;
         }
@@ -184,7 +182,7 @@ public class RestartModule extends ModuleBase.Toggleable {
         solstice.broadcast(text);
 
         var pitch = getConfig().restartSoundPitch;
-        server.getPlayerList().getPlayers().forEach(player -> PlayerUtils.playSound(player,sound, 1f, pitch));
+        server.getPlayerList().getPlayers().forEach(player -> PlayerUtils.playSound(player, sound, 1f, pitch));
     }
 
     @Nullable

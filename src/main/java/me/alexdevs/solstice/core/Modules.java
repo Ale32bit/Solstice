@@ -3,7 +3,9 @@ package me.alexdevs.solstice.core;
 import com.mojang.brigadier.CommandDispatcher;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleContainer;
 import me.alexdevs.solstice.api.module.ModuleEntrypoint;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
@@ -17,14 +19,14 @@ import java.util.Optional;
 
 public class Modules {
 
-    private final HashSet<ModuleBase> modules = new HashSet<>();
+    private final HashSet<ModuleContainer<?>> modules = new HashSet<>();
 
     public Modules() {
         CommandRegistrationCallback.EVENT.register(this::registerCommands);
     }
 
     public void register() {
-        modules.add(new CoreModule(Solstice.ID.withPath("core")));
+        modules.add(new ModuleContainer<>(Solstice.ID.withPath("core"), CoreModule::new, new ModuleProperties().toggleable(false)));
 
         var fabric = FabricLoader.getInstance();
         var moduleContainers = fabric.getEntrypointContainers("solstice", ModuleEntrypoint.class);
@@ -36,9 +38,9 @@ public class Modules {
                 var provider = container.getEntrypoint();
                 var providerModules = provider.register();
                 for (var entry : providerModules) {
-                    var moduleId = entry.getId();
-                    if (modules.stream().anyMatch(m -> m.getId().equals(moduleId))) {
-                        Solstice.LOGGER.warn("Module ID conflict: {}", entry.getId());
+                    var moduleId = entry.id();
+                    if (modules.stream().anyMatch(m -> m.id().equals(moduleId))) {
+                        Solstice.LOGGER.warn("Module ID conflict: {}", entry.id());
                         continue;
                     }
 
@@ -50,7 +52,7 @@ public class Modules {
         }
     }
 
-    public Collection<? extends ModuleBase> getModules() {
+    public Collection<ModuleContainer<? extends ModuleBase>> getModules() {
         return Collections.unmodifiableSet(modules);
     }
 

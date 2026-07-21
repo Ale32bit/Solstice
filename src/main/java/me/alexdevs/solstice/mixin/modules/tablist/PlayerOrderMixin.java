@@ -1,16 +1,9 @@
 package me.alexdevs.solstice.mixin.modules.tablist;
 
-import me.alexdevs.solstice.integrations.LuckPermsIntegration;
-import me.alexdevs.solstice.modules.ModuleProvider;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Stream;
 
 @Mixin(ClientboundPlayerInfoUpdatePacket.class)
 public abstract class PlayerOrderMixin {

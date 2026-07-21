@@ -26,7 +26,7 @@
       "me.alexdevs.solstice.Solstice"
     ],
     "solstice": [
-      "me.alexdevs.solstice.modules.ModuleProvider"
+      "me.alexdevs.solstice.modules.ModModuleProvider"
     ]
   },
   "mixins": [

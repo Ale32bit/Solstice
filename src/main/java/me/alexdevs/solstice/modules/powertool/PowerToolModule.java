@@ -6,6 +6,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.utils.ResourceUtils;
 import me.alexdevs.solstice.modules.powertool.commands.PowerToolCommand;
 import me.alexdevs.solstice.modules.powertool.data.PowerToolLocale;
@@ -28,13 +29,13 @@ import java.util.UUID;
 import net.minecraft.world.InteractionResultHolder;
 
 
-public class PowerToolModule extends ModuleBase.Toggleable {
+public class PowerToolModule extends ModuleBase {
     
 
     private CommandDispatcher<CommandSourceStack> dispatcher;
 
-    public PowerToolModule(SolsticeIdentifier id) {
-        super(id);
+    public PowerToolModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

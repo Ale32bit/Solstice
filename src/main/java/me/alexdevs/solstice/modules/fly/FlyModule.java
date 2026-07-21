@@ -2,16 +2,17 @@ package me.alexdevs.solstice.modules.fly;
 
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.modules.fly.commands.FlyCommand;
 import me.alexdevs.solstice.modules.fly.data.FlyLocale;
 import me.alexdevs.solstice.modules.fly.data.FlyPlayerData;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
-public class FlyModule extends ModuleBase.Toggleable {
+public class FlyModule extends ModuleBase {
     
 
-    public FlyModule(SolsticeIdentifier id) {
-        super(id);
+    public FlyModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.modules.miscellaneous;
 
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.miscellaneous.commands.*;
 import me.alexdevs.solstice.modules.miscellaneous.data.MiscellaneousLocale;
@@ -14,13 +15,13 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-public class MiscellaneousModule extends ModuleBase.Toggleable {
+public class MiscellaneousModule extends ModuleBase {
     public static final float DEFAULT_FLY_SPEED = 0.05F;
 
     private final Map<UUID, Boolean> commandSleeping = new ConcurrentHashMap<>();
 
-    public MiscellaneousModule(SolsticeIdentifier id) {
-        super(id);
+    public MiscellaneousModule(ModuleProperties properties) {
+        super(properties);
     }
 
     @Override

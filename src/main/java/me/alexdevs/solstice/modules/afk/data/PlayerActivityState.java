@@ -1,9 +1,7 @@
 package me.alexdevs.solstice.modules.afk.data;
 
-import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.ServerLocation;
-import me.alexdevs.solstice.modules.ModuleProvider;
-import me.alexdevs.solstice.modules.afk.AfkModule;
+import me.alexdevs.solstice.modules.ModModuleProvider;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -15,7 +13,7 @@ public class PlayerActivityState {
     public boolean activeTimeEnabled;
 
     public PlayerActivityState(ServerPlayer player, int lastUpdate) {
-        var module = ModuleProvider.AFK;
+        var module = ModModuleProvider.AFK.get();
         this.location = new ServerLocation(player);
         this.lastUpdate = lastUpdate;
         this.isAfk = false;

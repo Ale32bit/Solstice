@@ -4,6 +4,7 @@ import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.Paths;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
+import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.info.commands.InfoCommand;
 import me.alexdevs.solstice.modules.info.commands.MotdCommand;
@@ -23,7 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
-public class InfoModule extends ModuleBase.Toggleable {
+public class InfoModule extends ModuleBase {
     private static final String[] startingPages = new String[]{
             "motd.txt",
             "rules.txt",
@@ -32,8 +33,8 @@ public class InfoModule extends ModuleBase.Toggleable {
     public final String nameFilterRegex = "[^a-z0-9-]";
     private final Path infoDir;
 
-    public InfoModule(SolsticeIdentifier id) {
-        super(id);
+    public InfoModule(ModuleProperties properties) {
+        super(properties);
         infoDir = Paths.configDirectory.resolve("info");
     }
 
