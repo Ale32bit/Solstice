@@ -13,9 +13,15 @@ import net.minecraft.world.entity.MobSpawnType;
 
 
 public class EntityUtils {
+    //? if >= 26.1 {
+    /*public static <T extends Entity> @Nullable T createWithCommand(
+            EntityType<T> type, ServerLevel world, @Nullable net.minecraft.world.entity.PostSpawnProcessor<T> consumer,
+            BlockPos pos, boolean particleEffects, boolean limitedLifespan) {
+    *///? } elif >= 1.21.1 {
     public static <T extends Entity> @Nullable T createWithCommand(
             EntityType<T> type, ServerLevel world, @Nullable Consumer<T> consumer,
             BlockPos pos, boolean particleEffects, boolean limitedLifespan) {
+    //? }
 
         final var spawnReason =
         //? >= 1.21.4

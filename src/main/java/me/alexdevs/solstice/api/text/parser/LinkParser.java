@@ -1,6 +1,5 @@
 package me.alexdevs.solstice.api.text.parser;
 
-import eu.pb4.placeholders.api.node.DirectTextNode;
 import eu.pb4.placeholders.api.node.LiteralNode;
 import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.node.parent.ParentNode;
@@ -69,7 +68,7 @@ public class LinkParser implements NodeParser {
                                 .withClickEvent(ComponentUtils.openUrlClickEvent(link))
                         );
 
-                list.add(new DirectTextNode(text));
+                list.add(TextNode.convert(text));
 
                 pos = matcher.end();
             }

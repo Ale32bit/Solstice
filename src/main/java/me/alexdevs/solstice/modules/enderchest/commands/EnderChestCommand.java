@@ -100,6 +100,9 @@ public class EnderChestCommand extends ModCommand<EnderChestModule> {
     private void open(ServerPlayer player, PlayerEnderChestContainer inventory, Component title, boolean canEdit, Runnable onClose) {
         var container = new SimpleGui(MenuType.GENERIC_9x3, player, false) {
             @Override
+            //? if >= 1.21.11
+            //public void onPlayerClose(boolean wasManual) {
+            //? if < 1.21.11
             public void onClose() {
                 onClose.run();
             }
@@ -112,6 +115,9 @@ public class EnderChestCommand extends ModCommand<EnderChestModule> {
             } else {
                 slot = new ImmutableSlot(inventory, i, 0, 0);
             }
+            //? if >= 26.1
+            //container.setSlot(i, slot);
+            //? if < 26.1
             container.setSlotRedirect(i, slot);
         }
 

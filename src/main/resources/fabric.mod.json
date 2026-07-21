@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "solstice",
+  "id": "${id}",
   "version": "${version}",
-  "name": "Solstice Essentials",
+  "name": "${name}",
   "description": "Server commands, custom chat formats and more",
   "authors": [
     {
@@ -34,12 +34,14 @@
   ],
   "depends": {
     "fabricloader": ">=0.16.0",
-    "minecraft": "${minecraft_constraint}",
-    "java": ">=${java_version}",
+    "minecraft": "${minecraft}",
     "fabric-api": "*"
   },
   "recommends": {
     "luckperms": "*"
   },
-  "accessWidener": "solstice.accesswidener"
+  "suggests" : {
+    "vanish": "*"
+  },
+  "accessWidener": "solstice.ct"
 }

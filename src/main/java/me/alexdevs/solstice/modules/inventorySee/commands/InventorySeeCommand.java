@@ -51,6 +51,9 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
     }
 
     private static ItemStack createBarrierItem() {
+        //? if >= 26.1
+        //var barrier = new ItemStack(Items.STAINED_GLASS_PANE.black());
+        //?  if < 26.1
         var barrier = new ItemStack(Items.BLACK_STAINED_GLASS_PANE);
         ItemUtils.setCustomName(barrier, Component.literal(""));
         return barrier;
@@ -94,6 +97,9 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
 
                             var container = new SimpleGui(MenuType.GENERIC_9x5, player, false) {
                                 @Override
+                                //? if >= 1.21.11
+                                //public void onPlayerClose(boolean wasManual) {
+                                //? if < 1.21.11
                                 public void onClose() {
                                     if (!targetOnline) {
                                         PlayerUtils.saveOfflinePlayer(target);
@@ -108,6 +114,9 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                                 } else {
                                     slot = new ImmutableSlot(targetInventory, i, 0, 0);
                                 }
+                                //? if >= 26.1
+                                //container.setSlot(i, slot);
+                                //? if < 26.1
                                 container.setSlotRedirect(i, slot);
                             }
 
@@ -161,8 +170,11 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
 
                                     var canEdit = Permissions.check(player, getPermissionNode("edit"), 3);
 
-                                    var trinkets = TrinketsApi.getTrinketComponent(target).orElse(null);
                                     var slots = new ArrayList<Slot>();
+                                    //? if >= 26.1
+                                    //var trinkets = TrinketsApi.getAttachment(target);
+                                    //? if < 26.1
+                                    var trinkets = TrinketsApi.getTrinketComponent(target).orElse(null);
                                     for (var group : trinkets.getInventory().values()) {
                                         for (var inventory : group.values()) {
                                             for (var i = 0; i < inventory.getContainerSize(); i++) {
@@ -177,6 +189,7 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
                                         }
                                     }
 
+
                                     var size = slots.size();
                                     MenuType<ChestMenu> handlerType = null;
                                     for (var entry : invSizes.entrySet()) {
@@ -188,6 +201,9 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
 
                                     var container = new SimpleGui(handlerType, player, false) {
                                         @Override
+                                        //? if >= 1.21.11
+                                        //public void onPlayerClose(boolean wasManual) {
+                                        //? if < 1.21.11
                                         public void onClose() {
                                             if (!targetOnline) {
                                                 PlayerUtils.saveOfflinePlayer(target);
@@ -197,6 +213,9 @@ public class InventorySeeCommand extends ModCommand<InventorySeeModule> {
 
                                     for (var i = 0; i < slots.size(); i++) {
                                         var slot = slots.get(i);
+                                        //? if >= 26.1
+                                        //container.setSlot(i, slot);
+                                        //? if < 26.1
                                         container.setSlotRedirect(i, slot);
                                     }
 

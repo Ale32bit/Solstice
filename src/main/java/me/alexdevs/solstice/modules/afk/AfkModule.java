@@ -12,6 +12,7 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.text.Format;
+import me.alexdevs.solstice.api.utils.PlaceholderUtils;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.modules.afk.commands.ActiveTimeCommand;
 import me.alexdevs.solstice.modules.afk.commands.AfkCommand;
@@ -77,10 +78,14 @@ public class AfkModule extends ModuleBase {
             if (!context.hasPlayer())
                 return PlaceholderResult.invalid("No player!");
 
+            //? if >= 26.1 {
+            /*var player = (net.minecraft.server.level.ServerPlayer) context.player();
+            *///? } elif >= 1.21.1 {
             var player = context.player();
+            //? }
 
             if (isPlayerAfk(player))
-                return PlaceholderResult.value(Format.parse(getConfig().tag));
+                return PlaceholderResult.value(Format.parse(getConfig().tag, PlaceholderUtils.of(player)));
             else
                 return PlaceholderResult.value("");
         });

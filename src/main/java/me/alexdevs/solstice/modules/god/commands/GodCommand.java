@@ -3,7 +3,7 @@ package me.alexdevs.solstice.modules.god.commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.api.utils.PlaceholderUtils;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.god.GodModule;
@@ -55,7 +55,7 @@ public class GodCommand extends ModCommand<GodModule> {
         data.invulnerabilityEnabled = abilities.invulnerable;
 
         Component text;
-        var sourceContext = PlaceholderContext.of(context.getSource());
+        var sourceContext = PlaceholderUtils.of(context.getSource());
         if (forOther) {
             var placeholders = Map.of(
                     "player", player.getDisplayName()

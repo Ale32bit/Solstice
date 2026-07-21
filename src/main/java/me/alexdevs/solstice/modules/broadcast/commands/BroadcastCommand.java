@@ -2,7 +2,7 @@ package me.alexdevs.solstice.modules.broadcast.commands;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.api.utils.PlaceholderUtils;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.text.Format;
@@ -36,7 +36,7 @@ public class BroadcastCommand extends ModCommand<BroadcastModule> {
                             var config = Solstice.configManager.getData(BroadcastConfig.class);
 
                             var message = StringArgumentType.getString(context, "message");
-                            var serverContext = PlaceholderContext.of(context.getSource().getServer());
+                            var serverContext = PlaceholderUtils.of(context.getSource());
 
                             var placeholders = Map.of(
                                     "message", Format.parse(message, serverContext)

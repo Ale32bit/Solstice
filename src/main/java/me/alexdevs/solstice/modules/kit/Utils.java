@@ -57,6 +57,9 @@ public class Utils {
 
     public static void redirect(SimpleGui container, KitInventory inventory) {
         for (var i = 0; i < container.getSize(); i++) {
+            //? if >= 26.1
+            //container.setSlot(i, new Slot(inventory, i, 0, 0));
+            //? if < 26.1
             container.setSlotRedirect(i, new Slot(inventory, i, 0, 0));
         }
     }

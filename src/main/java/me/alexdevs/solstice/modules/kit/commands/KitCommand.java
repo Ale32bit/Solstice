@@ -189,6 +189,9 @@ public class KitCommand extends ModCommand<KitModule> {
         var kitInventory = new KitInventory();
         var container = new SimpleGui(MenuType.GENERIC_9x3, player, false) {
             @Override
+            //? if >= 1.21.11
+            //public void onPlayerClose(boolean wasManual) {
+            //? if < 1.21.11
             public void onClose() {
                 if (module.createKit(name, Utils.getItemStacks(kitInventory))) {
                     source.sendSuccess(() -> module.locale().get("created", Map.of("kit", Component.nullToEmpty(name))), true);
@@ -232,6 +235,9 @@ public class KitCommand extends ModCommand<KitModule> {
 
         var container = new SimpleGui(MenuType.GENERIC_9x3, player, false) {
             @Override
+            //? if >= 1.21.11
+            //public void onPlayerClose(boolean wasManual) {
+            //? if < 1.21.11
             public void onClose() {
                 var items = Utils.getItemStacks(kitInventory);
                 kit.itemStacks = items.stream().map(Utils::serializeItemStack).toList();

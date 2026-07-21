@@ -59,19 +59,17 @@ public class PowerToolModule extends ModuleBase {
                         var source = getSource(player);
                         execute(source, powertool.get(Action.USE), PlaceholderContext.of(player));
 
-                        //? if >= 1.21.4 {
-                        /*return InteractionResult.CONSUME;
-                        *///? } else {
+                        //? if >= 1.21.4
+                        //return InteractionResult.CONSUME;
+                        //? if < 1.21.4
                         return InteractionResultHolder.consume(stack);
-                        //? }
                     }
                 }
             }
-            //? if >= 1.21.4 {
-            /*return InteractionResult.PASS;
-            *///? } else {
+            //? if >= 1.21.4
+            //return InteractionResult.PASS;
+            //? if < 1.21.4
             return InteractionResultHolder.pass(stack);
-            //? }
         });
 
         // ATTACK_BLOCK
@@ -167,11 +165,20 @@ public class PowerToolModule extends ModuleBase {
     }
 
     private String resolveCommand(String command, PlaceholderContext context) {
+        //? if >= 26.1 {
+        /*return Placeholders.COMMON_PLACEHOLDER_PARSER.parseNode(eu.pb4.placeholders.api.node.TextNode.convert(Component.nullToEmpty(command)))
+                .toComponent(eu.pb4.placeholders.api.ParserContext.of(PlaceholderContext.COMMON_KEY, context)).getString();
+        *///? } else {
         return Placeholders.parseText(Component.nullToEmpty(command), context).getString();
+        //? }
     }
 
     public String getStackId(ItemStack stack) {
+        //? if >= 26.1 {
+        /*return ResourceUtils.identifier(stack.typeHolder().unwrapKey().get()).toString();
+        *///? } elif >= 1.21.1 {
         return ResourceUtils.identifier(stack.getItemHolder().unwrapKey().get()).toString();
+        //? }
     }
 
     public PowerToolPlayerData getData(UUID uuid) {

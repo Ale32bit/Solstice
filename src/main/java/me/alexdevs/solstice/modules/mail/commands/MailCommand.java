@@ -130,10 +130,14 @@ public class MailCommand extends ModCommand<MailModule> {
         var senderName = CoreModule.getUsername(mail.sender);
         var dateFormatter = new SimpleDateFormat(CoreModule.getConfig().dateTimeFormat);
         var message = MarkdownParser.defaultParser.parseNode(mail.message);
+        //? if >= 26.1
+        //var messageComponent = message.toComponent();
+        //? if < 26.1
+        var messageComponent = message.toText();
         var placeholders = Map.of(
                 "sender", Component.nullToEmpty(senderName),
                 "date", Component.nullToEmpty(dateFormatter.format(mail.date)),
-                "message", message.toText(),
+                "message", messageComponent,
                 "replyButton", replyButton,
                 "deleteButton", deleteButton
         );

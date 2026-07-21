@@ -22,6 +22,9 @@ import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 public class SmiteCommand extends ModCommand<SmiteModule> {
+    //? if >= 26.1
+    //public static final EntityType<?> entityType = net.minecraft.world.entity.EntityTypes.LIGHTNING_BOLT;
+    //? if < 26.1
     public static final EntityType<?> entityType = EntityType.LIGHTNING_BOLT;
     public static final int maxTimes = 1024;
     public static final int maxDistance = 512;

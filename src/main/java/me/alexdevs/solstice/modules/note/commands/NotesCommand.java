@@ -9,6 +9,7 @@ import me.alexdevs.solstice.api.command.LocalGameProfile;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.text.Components;
 import me.alexdevs.solstice.api.text.Format;
+import me.alexdevs.solstice.api.utils.PlaceholderUtils;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
 import me.alexdevs.solstice.core.coreModule.CoreModule;
 import me.alexdevs.solstice.modules.note.NoteModule;
@@ -94,7 +95,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
                     "index", Component.nullToEmpty(String.valueOf(i)),
                     "operator", Component.nullToEmpty(senderName),
                     "date", Component.nullToEmpty(dateFormatter.format(note.creationDate)),
-                    "message", Format.parse(note.note),
+                    "message", Format.parse(note.note,PlaceholderUtils.of(context.getSource())),
                     "checkButton", checkButton
             );
             output = output.append(module.locale().get("noteListEntry", placeholders));
@@ -130,7 +131,7 @@ public class NotesCommand extends ModCommand<NoteModule> {
         var placeholders = Map.of(
                 "operator", Component.nullToEmpty(operator),
                 "date", Component.nullToEmpty(dateFormatter.format(note.creationDate)),
-                "message", Format.parse(note.note),
+                "message", Format.parse(note.note, PlaceholderUtils.of(context.getSource())),
                 "deleteButton", deleteButton
         );
 

@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.modules.tell;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.api.utils.PlaceholderUtils;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.module.ModuleProperties;
 import me.alexdevs.solstice.api.text.Components;
@@ -46,7 +47,7 @@ public class TellModule extends ModuleBase {
                 var placeholders = Map.of(
                         "targetPlayer", Component.nullToEmpty(targetName)
                 );
-                var sourceContext = PlaceholderContext.of(source);
+                var sourceContext = PlaceholderUtils.of(source);
 
                 source.sendSuccess(() -> locale().get(
                         "playerNotFound",
@@ -60,11 +61,10 @@ public class TellModule extends ModuleBase {
 
         var parsedMessage = Components.chat(message, source);
 
-        var serverContext = PlaceholderContext.of(source.getServer());
-        var sourceContext = PlaceholderContext.of(source);
+        var sourceContext = PlaceholderUtils.of(source);
         PlaceholderContext targetContext;
         if (targetPlayer == null) {
-            targetContext = serverContext;
+            targetContext = sourceContext;
         } else {
             targetContext = PlaceholderContext.of(targetPlayer);
         }
@@ -101,12 +101,12 @@ public class TellModule extends ModuleBase {
         );
         var genericText = locale().get(
                 "message",
-                serverContext,
+                sourceContext,
                 placeholders
         );
         var spyText = locale().get(
                 "messageSpy",
-                serverContext,
+                sourceContext,
                 placeholders
         );
 

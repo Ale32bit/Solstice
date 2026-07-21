@@ -1,7 +1,7 @@
 package me.alexdevs.solstice.modules.warp.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.api.utils.PlaceholderUtils;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.warp.WarpModule;
@@ -32,7 +32,7 @@ public class WarpsCommand extends ModCommand<WarpModule> {
                     var source = context.getSource();
                     var serverDate = Solstice.serverData.getData(WarpServerData.class);
                     var warpList = serverDate.warps.keySet().stream().sorted().toList();
-                    var sourceContext = PlaceholderContext.of(source);
+                    var sourceContext = PlaceholderUtils.of(source);
 
                     if(source.isPlayer()) {
                         var player = source.getPlayer();

@@ -92,7 +92,10 @@ public class SpawnModule extends ModuleBase {
 
     public ServerLocation getWorldSpawn(ServerLevel world) {
 
-        //? if >= 1.21.11 {
+        //? if >= 26.1 {
+        /*var worldSpawnPosition = net.minecraft.world.phys.Vec3.atCenterOf(world.getRespawnData().pos());
+        var worldSpawnYaw = world.getRespawnData().yaw();
+        *///? } elif >= 1.21.11 {
         /*var worldSpawnPosition = world.getRespawnData().pos().getCenter();
         var worldSpawnYaw = world.getRespawnData().yaw();
         *///? } else {
