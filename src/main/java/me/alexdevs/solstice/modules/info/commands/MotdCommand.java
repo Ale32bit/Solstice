@@ -2,6 +2,7 @@ package me.alexdevs.solstice.modules.info.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.api.utils.PlaceholderUtils;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.modules.info.InfoModule;
 import net.minecraft.commands.CommandSourceStack;
@@ -25,7 +26,7 @@ public class MotdCommand extends ModCommand<InfoModule> {
         return literal(name)
                 .requires(require("motd", true))
                 .executes(context -> {
-                    var sourceContext = PlaceholderContext.of(context.getSource());
+                    var sourceContext = PlaceholderUtils.of(context.getSource());
 
                     context.getSource().sendSystemMessage(module.buildMotd(sourceContext));
 

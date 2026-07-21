@@ -98,6 +98,9 @@ public class KitsCommand extends ModCommand<KitModule> {
             }
             ItemUtils.setCustomName(icon, kitNameComponent);
             ItemUtils.setLore(icon, List.of(kitLoreComponent));
+            //? if >= 26.1
+            //gui.setSlot(i, new eu.pb4.sgui.api.elements.GuiElementBuilder(icon).setCallback((syncId, clickType, input, slotGui) -> {
+            //? if < 26.1
             gui.setSlot(i, new GuiElement(icon, (syncId, clickType, slotActionType) -> {
                 try {
                     dispatcher.execute("kit claim " + kitName, context.getSource());
@@ -105,7 +108,10 @@ public class KitsCommand extends ModCommand<KitModule> {
                 } catch (CommandSyntaxException e) {
                     context.getSource().sendFailure(Component.nullToEmpty(e.getLocalizedMessage()));
                 }
-            }));
+            })
+            //? if >= 26.1
+            //.build()
+            );
         }
     }
 }

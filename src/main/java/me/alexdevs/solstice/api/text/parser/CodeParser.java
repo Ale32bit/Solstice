@@ -1,6 +1,5 @@
 package me.alexdevs.solstice.api.text.parser;
 
-import eu.pb4.placeholders.api.node.DirectTextNode;
 import eu.pb4.placeholders.api.node.LiteralNode;
 import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.parsers.NodeParser;
@@ -50,7 +49,7 @@ public class CodeParser implements NodeParser {
                                 .withClickEvent(ComponentUtils.clickCopyToClipboardEvent(content))
                         );
 
-                list.add(new DirectTextNode(text));
+                list.add(TextNode.convert(text));
 
                 pos = matcher.end();
             }

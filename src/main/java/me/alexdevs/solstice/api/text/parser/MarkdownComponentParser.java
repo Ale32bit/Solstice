@@ -13,9 +13,14 @@ import java.util.Map;
 public class MarkdownComponentParser {
     public static TextNode spoilerFormatting(TextNode[] textNodes) {
         var text = TextNode.asSingle(textNodes);
+        //? if >= 26.1 {
+        /*var textLength = text.toComponent().getString().length();
+        *///? } elif >= 1.21.1 {
+        var textLength = text.toText().getString().length();
+        //? }
         return new HoverNode<>(
                 TextNode.array(
-                        new FormattingNode(TextNode.array(TextNode.of("\u258C".repeat(text.toText().getString().length()))), ChatFormatting.DARK_GRAY)
+                        new FormattingNode(TextNode.array(TextNode.of("\u258C".repeat(textLength))), ChatFormatting.DARK_GRAY)
                 ),
                 //? >= 1.21.11
                 //HoverNode.Action.TEXT_NODE,
@@ -41,9 +46,16 @@ public class MarkdownComponentParser {
 
     public static TextNode urlFormatting(TextNode[] textNodes, TextNode url) {
         var config = CoreModule.getConfig();
+        //? if >= 26.1 {
+        /*var labelComponent = TextNode.wrap(textNodes).toComponent();
+        var urlComponent = url.toComponent();
+        *///? } elif >= 1.21.1 {
+        var labelComponent = TextNode.wrap(textNodes).toText();
+        var urlComponent = url.toText();
+        //? }
         var placeholders = Map.of(
-                "label", TextNode.wrap(textNodes).toText(),
-                "url", url.toText()
+                "label", labelComponent,
+                "url", urlComponent
         );
         var text = Format.parse(config.link, placeholders);
         var hover = Format.parse(config.linkHover, placeholders);

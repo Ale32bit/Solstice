@@ -160,7 +160,11 @@ public class ServerLocation {
                 // Integer zigzag pattern: 0, 1, -1, 2, -2, 3, -3, ...
                 var y = (j % 2 == 0) ? -j / 2 : j / 2 + 1;
 
+                //? if >= 26.1 {
+                /*var safePos = DismountHelper.findSafeDismountLocation(net.minecraft.world.entity.EntityTypes.PLAYER, world, attemptPos.offset(0, y, 0), true);
+                *///? } elif >= 1.21.1 {
                 var safePos = DismountHelper.findSafeDismountLocation(EntityType.PLAYER, world, attemptPos.offset(0, y, 0), true);
+                //? }
                 if (safePos != null) {
                     var safeLocation = new ServerLocation(safePos.x, safePos.y, safePos.z, this.getYaw(), this.getPitch(), this.getWorld());
                     safeLocation.teleport(player, setBackPosition);

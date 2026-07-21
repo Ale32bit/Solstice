@@ -47,6 +47,9 @@ public class CommandSpyModule extends ModuleBase.Toggleable {
                 var commandSpyEnabled = Permissions.check(pl, this.getPermissionNode("base"));
 
                 if (commandSpyEnabled && !pl.getUUID().equals(player.getUUID())) {
+                    //? if >= 26.1
+                    //pl.sendSystemMessage(message, false);
+                    //? if < 26.1
                     pl.displayClientMessage(message, false);
                 }
             }

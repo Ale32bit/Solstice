@@ -39,8 +39,15 @@ public class HatCommand extends ModCommand<HatModule> {
 
                     var config = module.getConfig();
 
+                    //? if >= 26.1 {
+                    /*var itemId = ResourceUtils.identifier(handStack.typeHolder().unwrapKey().get()).toString();
+                    var tags = handStack.typeHolder().tags();
+                    *///? } else {
                     var itemId = ResourceUtils.identifier(handStack.getItemHolder().unwrapKey().get()).toString();
                     var tags = handStack.getTags();
+                    //? }
+
+
                     if (config.whitelistFilter) {
                         if(!module.isInFilter(itemId) && !module.isInFilter(tags)) {
                             context.getSource().sendSuccess(() -> module.locale().get("notAllowed"), false);

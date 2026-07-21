@@ -3,7 +3,7 @@ package me.alexdevs.solstice.modules.info.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.api.utils.PlaceholderUtils;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.module.Utils;
 import me.alexdevs.solstice.modules.info.InfoModule;
@@ -44,7 +44,7 @@ public class InfoCommand extends ModCommand<InfoModule> {
 
                     var source = context.getSource();
                     var pageList = module.enumerate();
-                    var sourceContext = PlaceholderContext.of(source);
+                    var sourceContext = PlaceholderUtils.of(source);
 
                     if (pageList.isEmpty()) {
                         context.getSource().sendSuccess(() -> module.locale().get(
@@ -86,7 +86,7 @@ public class InfoCommand extends ModCommand<InfoModule> {
                 .then(argument("page", StringArgumentType.word())
                         .suggests((context, builder) -> SharedSuggestionProvider.suggest(module.enumerate(), builder))
                         .executes(context -> {
-                            var sourceContext = PlaceholderContext.of(context.getSource());
+                            var sourceContext = PlaceholderUtils.of(context.getSource());
                             var page = module.getPage(StringArgumentType.getString(context, "page"), sourceContext);
                             context.getSource().sendSuccess(() -> page, false);
                             return 1;

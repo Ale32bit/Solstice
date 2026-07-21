@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.api.text;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
+import me.alexdevs.solstice.api.utils.PlaceholderUtils;
 import eu.pb4.placeholders.api.Placeholders;
 import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.parsers.NodeParser;
@@ -105,7 +106,7 @@ public class Components {
         var enableLegacy = capabilities.contains(TextCapabilities.LEGACY);
 
         var placeholders = new HashMap<String, Component>();
-        var context = PlaceholderContext.of(source);
+        var context = PlaceholderUtils.of(source);
         if (ModuleProvider.STYLING.isEnabled()) {
             var config = Solstice.configManager.getData(StylingConfig.class);
             for (var repl : config.replacements.entrySet()) {
@@ -120,6 +121,9 @@ public class Components {
 
 
         if (capabilities.isEmpty()) {
+            //? if >= 26.1
+            //return new MapPlaceholderParser(Format.PLACEHOLDER_PATTERN, placeholders).parseNode(TextNode.of(message)).toComponent();
+            //? if < 26.1
             return Placeholders.parseText(TextNode.of(message), Format.PLACEHOLDER_PATTERN, placeholders);
         }
 
@@ -139,6 +143,9 @@ public class Components {
         var parser = NodeParser.merge(parsers.toArray(NodeParser[]::new));
 
         var node = parser.parseNode(message);
+        //? if >= 26.1
+        //return new MapPlaceholderParser(Format.PLACEHOLDER_PATTERN, placeholders).parseNode(node).toComponent();
+        //? if < 26.1
         return Placeholders.parseText(node, Format.PLACEHOLDER_PATTERN, placeholders);
     }
 

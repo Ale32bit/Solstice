@@ -46,6 +46,9 @@ public class StaffChatModule extends ModuleBase.Toggleable {
     }
 
     public void sendStaffChatMessage(Component sourceName, final Component message) {
+        //? if >= 26.1
+        //var formattedMessage = MarkdownParser.defaultParser.parseNode(TextNode.convert(message)).toComponent();
+        //? if < 26.1
         var formattedMessage = MarkdownParser.defaultParser.parseNode(TextNode.convert(message)).toText();
 
 
@@ -57,6 +60,9 @@ public class StaffChatModule extends ModuleBase.Toggleable {
         Solstice.server.sendSystemMessage(text);
         Solstice.server.getPlayerList().getPlayers().forEach(player -> {
             if (canUseStaffChat(player)) {
+                //? if >= 26.1
+                //player.sendSystemMessage(text, false);
+                //? if < 26.1
                 player.displayClientMessage(text, false);
             }
         });
