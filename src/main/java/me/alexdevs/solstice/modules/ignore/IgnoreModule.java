@@ -1,6 +1,7 @@
 package me.alexdevs.solstice.modules.ignore;
 
 import me.alexdevs.solstice.Solstice;
+import me.alexdevs.solstice.api.events.AllowP2PMessageCallback;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.ignore.commands.IgnoreCommand;
@@ -26,6 +27,8 @@ public class IgnoreModule extends ModuleBase.Toggleable {
 
         commands.add(new IgnoreCommand(this));
         commands.add(new IgnoreListCommand(this));
+
+        AllowP2PMessageCallback.ALLOW_MESSAGE.register((player, receiver, message) -> !isIgnoring(receiver, player));
     }
 
     public IgnorePlayerData getPlayerData(UUID playerUuid) {

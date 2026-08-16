@@ -1,5 +1,6 @@
 package me.alexdevs.solstice.modules.styling;
 
+import me.alexdevs.solstice.api.events.AllowP2PMessageCallback;
 import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.styling.formatters.ChatFormatter;
 import me.alexdevs.solstice.modules.styling.formatters.EmoteFormatter;
@@ -55,8 +56,8 @@ public interface CustomSentMessage extends OutgoingChatMessage {
 
         @Override
         public void sendToPlayer(ServerPlayer receiver, boolean filterMaskEnabled, ChatType.Bound params) {
-            var ignoreModule = ModuleProvider.IGNORE;
-            if (ignoreModule.isEnabled() && ignoreModule.isIgnoring(receiver, sender)) {
+            var allowed = AllowP2PMessageCallback.ALLOW_MESSAGE.invoker().allowMessage(sender, receiver, this.message);
+            if (!allowed) {
                 return;
             }
 
