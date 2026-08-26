@@ -42,7 +42,7 @@ public class Format {
     }
 
     public static Component parse(TextNode textNode, PlaceholderContext context, Map<String, Component> placeholders) {
-        return PARSER.parseNode(new MapPlaceholderParser(PLACEHOLDER_PATTERN, placeholders).parseNode(textNode))
+        return new MapPlaceholderParser(PLACEHOLDER_PATTERN, placeholders).parseNode(textNode)
                 //? if < 26.1
                 .toText(context);
                 //? if >= 26.1
