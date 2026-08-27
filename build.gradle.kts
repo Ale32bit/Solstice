@@ -178,7 +178,7 @@ tasks.register<TaskPublishCurseForge>("curseforge") {
     mainFile.addModLoader("Fabric")
     mainFile.addEnvironment("Server")
     mainFile.addRequirement("fabric-api")
-    mainFile.gameVersions = compatibleVersions
+    mainFile.addGameVersion(compatibleVersions)
 }
 
 publishing {
