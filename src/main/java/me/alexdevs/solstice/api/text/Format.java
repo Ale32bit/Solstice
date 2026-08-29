@@ -20,8 +20,7 @@ public class Format {
     public static final NodeParser PARSER;
 
     static {
-        var gradientParser = eu.pb4.placeholders.api.parsers.TagParser.DEFAULT.copy();
-        gradientParser.register(PhaseGradientTag.createTag());
+        eu.pb4.placeholders.api.parsers.tag.TagRegistry.registerDefault(PhaseGradientTag.createTag());
         PARSER = NodeParser.builder()
                 .simplifiedTextFormat()
                 //? if >= 26.1
@@ -29,7 +28,6 @@ public class Format {
                 //? if < 26.1
                 .globalPlaceholders()
                 .quickText()
-                .add(gradientParser)
                 .build();
     }
 

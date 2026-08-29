@@ -13,6 +13,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.list-versions.outputs.versions }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -40,8 +42,36 @@ jobs:
       - name: Build
         run: ./gradlew build
 
-      - name: Capture build artifacts
+      - name: List built versions
+        id: list-versions
+        run: |
+          versions=$(ls versions | jq -R -s -c 'split("\n")[:-1]')
+          echo "versions=$versions" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Jar zip
         uses: actions/upload-artifact@v7
         with:
-          name: Artifacts
-          path: versions/**/build/libs/
+          name: solstice-jars
+          path: |
+            versions/**/build/libs/*.jar
+            !versions/**/build/libs/*-sources.jar
+
+  upload-artifacts:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ${{ fromJSON(needs.build.outputs.versions) }}
+    steps:
+      - name: Download jars
+        uses: actions/download-artifact@v6
+        with:
+          name: solstice-jars
+          path: jars
+
+      - name: Upload (${{ matrix.version }})
+        uses: actions/upload-artifact@v7
+        with:
+          name: solstice-${{ matrix.version }}
+          path: jars/**/*${{ matrix.version }}.jar
+          archive: 'false'
