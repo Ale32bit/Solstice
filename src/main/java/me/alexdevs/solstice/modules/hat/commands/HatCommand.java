@@ -65,11 +65,15 @@ public class HatCommand extends ModCommand<HatModule> {
                     var inventory = player.getInventory();
 
                     //? if < 1.21.11 {
-                    var oldHeadStack = inventory.armor.get(3); // head slot
-                    inventory.setItem(inventory.selected, oldHeadStack.copyAndClear());
+                    var oldHeadStack = inventory.armor.get(3).copyAndClear(); // head slot
+                    var newHeadStack = handStack.copyAndClear();
+                    inventory.setItem(inventory.selected, oldHeadStack);
+                    inventory.armor.set(3, newHeadStack);
                     //? } else {
                     /*var oldHeadStack = player.getItemBySlot(EquipmentSlot.HEAD);
+                    var newHeadStack = handStack.copyAndClear();
                     inventory.setItem(inventory.getSelectedSlot(), oldHeadStack.copyAndClear());
+                    player.setItemSlot(EquipmentSlot.HEAD, newHeadStack);
                     *///? }
 
                     context.getSource().sendSuccess(() -> module.locale().get("success"), false);
