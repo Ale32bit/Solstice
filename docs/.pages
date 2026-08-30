@@ -4,4 +4,5 @@ nav:
   - textformatting.md
   - placeholders.md
   - commands.md
+  - incompatibilities.md
   - developers.md
