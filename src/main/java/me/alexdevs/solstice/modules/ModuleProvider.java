@@ -3,7 +3,7 @@ package me.alexdevs.solstice.modules;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.module.ModuleEntrypoint;
-import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
+import me.alexdevs.solstice.api.module.ModuleRegistry;
 import me.alexdevs.solstice.modules.admin.AdminModule;
 import me.alexdevs.solstice.modules.afk.AfkModule;
 import me.alexdevs.solstice.modules.announcement.AnnouncementModule;
@@ -62,79 +62,69 @@ import me.alexdevs.solstice.modules.utilities.UtilitiesModule;
 import me.alexdevs.solstice.modules.warp.WarpModule;
 
 import java.util.HashSet;
-import java.util.Set;
 
 public class ModuleProvider implements ModuleEntrypoint {
-    private static final Set<ModuleBase> MODULES = new HashSet<>();
+    private static final ModuleRegistry MODULES = new ModuleRegistry(Solstice.MOD_ID);
 
-    public static final AdminModule ADMIN = add(new AdminModule(path("admin")));
-    public static final AfkModule AFK = add(new AfkModule(path("afk")));
-    public static final AnnouncementModule ANNOUNCEMENT = add(new AnnouncementModule(path("autoannouncement")));
-    public static final RestartModule RESTART = add(new RestartModule(path("restart")));
-    public static final BackModule BACK = add(new BackModule(path("back")));
-    public static final BanModule BAN = add(new BanModule(path("ban")));
-    public static final BroadcastModule BROADCAST = add(new BroadcastModule(path("broadcast")));
-    public static final CommandSpyModule COMMANDSPY = add(new CommandSpyModule(path("commandspy")));
-    public static final CooldownModule COOLDOWN = add(new CooldownModule(path("cooldown")));
-    public static final CustomNameModule CUSTOMNAME = add(new CustomNameModule(path("customname")));
-    public static final EnderChestModule ENDERCHEST = add(new EnderChestModule(path("enderchest")));
-    public static final ExperimentsModule EXPERIMENTS = add(new ExperimentsModule(path("experiments")));
-    public static final ExtinguishModule EXTINGUISH = add(new ExtinguishModule(path("extinguish")));
-    public static final FeedModule FEED = add(new FeedModule(path("feed")));
-    public static final FlyModule FLY = add(new FlyModule(path("fly")));
-    public static final SignModule SIGN = add(new SignModule(path("sign")));
-    public static final GodModule GOD = add(new GodModule(path("god")));
-    public static final HatModule HAT = add(new HatModule(path("hat")));
-    public static final HealModule HEAL = add(new HealModule(path("heal")));
-    public static final HelpOpModule HELPOP = add(new HelpOpModule(path("helpop")));
-    public static final HomeModule HOME = add(new HomeModule(path("home")));
-    public static final IgniteModule IGNITE = add(new IgniteModule(path("ignite")));
-    public static final IgnoreModule IGNORE = add(new IgnoreModule(path("ignore")));
-    public static final InfoModule INFO = add(new InfoModule(path("info")));
-    public static final InventorySeeModule INVENTORYSEE = add(new InventorySeeModule(path("inventorysee")));
-    public static final ItemModule ITEM = add(new ItemModule(path("item")));
-    public static final JailModule JAIL = add(new JailModule(path("jail")));
-    public static final KickModule KICK = add(new KickModule(path("kick")));
-    public static final KitModule KIT = add(new KitModule(path("kit")));
-    public static final MailModule MAIL = add(new MailModule(path("mail")));
-    public static final MiscellaneousModule MISCELLANEOUS = add(new MiscellaneousModule(path("miscellaneous")));
-    public static final MuteModule MUTE = add(new MuteModule(path("mute")));
-    public static final NearModule NEAR = add(new NearModule(path("near")));
-    public static final NoteModule NOTE = add(new NoteModule(path("note")));
-    public static final NotificationsModule NOTIFICATIONS = add(new NotificationsModule(path("notifications")));
-    public static final PlaceholdersModule PLACEHOLDERS = add(new PlaceholdersModule(path("placeholders")));
-    public static final PowerToolModule POWERTOOL = add(new PowerToolModule(path("powertool")));
-    public static final RTPModule RTP = add(new RTPModule(path("rtp")));
-    public static final SeenModule SEEN = add(new SeenModule(path("seen")));
-    public static final SkullModule SKULL = add(new SkullModule(path("skull")));
-    public static final SmiteModule SMITE = add(new SmiteModule(path("smite")));
-    public static final SpawnModule SPAWN = add(new SpawnModule(path("spawn")));
-    public static final StaffChatModule STAFFCHAT = add(new StaffChatModule(path("staffchat")));
-    public static final StylingModule STYLING = add(new StylingModule(path("styling")));
-    public static final SudoModule SUDO = add(new SudoModule(path("sudo")));
-    public static final SuicideModule SUICIDE = add(new SuicideModule(path("suicide")));
-    public static final TabListModule TABLIST = add(new TabListModule(path("tablist")));
-    public static final TeleportHereModule TELEPORTHERE = add(new TeleportHereModule(path("teleporthere")));
-    public static final TeleportOfflineModule TELEPORTOFFLINE = add(new TeleportOfflineModule(path("teleportoffline")));
-    public static final TeleportPositionModule TELEPORTPOSITION = add(new TeleportPositionModule(path("teleportposition")));
-    public static final TeleportRequestModule TELEPORTREQUEST = add(new TeleportRequestModule(path("teleportrequest")));
-    public static final TellModule TELL = add(new TellModule(path("tell")));
-    public static final TimeBarModule TIMEBAR = add(new TimeBarModule(path("timebar")));
-    public static final TrashModule TRASH = add(new TrashModule(path("trash")));
-    public static final UtilitiesModule UTILITIES = add(new UtilitiesModule(path("utilities")));
-    public static final WarpModule WARP = add(new WarpModule(path("warp")));
-
-    private static SolsticeIdentifier path(String path) {
-        return Solstice.ID.withPath(path);
-    }
-
-    private static <T extends ModuleBase> T add(T module) {
-        MODULES.add(module);
-        return module;
-    }
+    public static final AdminModule ADMIN = MODULES.register(AdminModule::new, "admin");
+    public static final AfkModule AFK = MODULES.register(AfkModule::new, "afk");
+    public static final AnnouncementModule ANNOUNCEMENT = MODULES.register(AnnouncementModule::new, "autoannouncement");
+    public static final RestartModule RESTART = MODULES.register(RestartModule::new, "restart");
+    public static final BackModule BACK = MODULES.register(BackModule::new, "back");
+    public static final BanModule BAN = MODULES.register(BanModule::new, "ban");
+    public static final BroadcastModule BROADCAST = MODULES.register(BroadcastModule::new, "broadcast");
+    public static final CommandSpyModule COMMANDSPY = MODULES.register(CommandSpyModule::new, "commandspy");
+    public static final CooldownModule COOLDOWN = MODULES.register(CooldownModule::new, "cooldown");
+    public static final CustomNameModule CUSTOMNAME = MODULES.register(CustomNameModule::new, "customname");
+    public static final EnderChestModule ENDERCHEST = MODULES.register(EnderChestModule::new, "enderchest");
+    public static final ExperimentsModule EXPERIMENTS = MODULES.register(ExperimentsModule::new, "experiments");
+    public static final ExtinguishModule EXTINGUISH = MODULES.register(ExtinguishModule::new, "extinguish");
+    public static final FeedModule FEED = MODULES.register(FeedModule::new, "feed");
+    public static final FlyModule FLY = MODULES.register(FlyModule::new, "fly");
+    public static final SignModule SIGN = MODULES.register(SignModule::new, "sign");
+    public static final GodModule GOD = MODULES.register(GodModule::new, "god");
+    public static final HatModule HAT = MODULES.register(HatModule::new, "hat");
+    public static final HealModule HEAL = MODULES.register(HealModule::new, "heal");
+    public static final HelpOpModule HELPOP = MODULES.register(HelpOpModule::new, "helpop");
+    public static final HomeModule HOME = MODULES.register(HomeModule::new, "home");
+    public static final IgniteModule IGNITE = MODULES.register(IgniteModule::new, "ignite");
+    public static final IgnoreModule IGNORE = MODULES.register(IgnoreModule::new, "ignore");
+    public static final InfoModule INFO = MODULES.register(InfoModule::new, "info");
+    public static final InventorySeeModule INVENTORYSEE = MODULES.register(InventorySeeModule::new, "inventorysee");
+    public static final ItemModule ITEM = MODULES.register(ItemModule::new, "item");
+    public static final JailModule JAIL = MODULES.register(JailModule::new, "jail");
+    public static final KickModule KICK = MODULES.register(KickModule::new, "kick");
+    public static final KitModule KIT = MODULES.register(KitModule::new, "kit");
+    public static final MailModule MAIL = MODULES.register(MailModule::new, "mail");
+    public static final MiscellaneousModule MISCELLANEOUS = MODULES.register(MiscellaneousModule::new, "miscellaneous");
+    public static final MuteModule MUTE = MODULES.register(MuteModule::new, "mute");
+    public static final NearModule NEAR = MODULES.register(NearModule::new, "near");
+    public static final NoteModule NOTE = MODULES.register(NoteModule::new, "note");
+    public static final NotificationsModule NOTIFICATIONS = MODULES.register(NotificationsModule::new, "notifications");
+    public static final PlaceholdersModule PLACEHOLDERS = MODULES.register(PlaceholdersModule::new, "placeholders");
+    public static final PowerToolModule POWERTOOL = MODULES.register(PowerToolModule::new, "powertool");
+    public static final RTPModule RTP = MODULES.register(RTPModule::new, "rtp");
+    public static final SeenModule SEEN = MODULES.register(SeenModule::new, "seen");
+    public static final SkullModule SKULL = MODULES.register(SkullModule::new, "skull");
+    public static final SmiteModule SMITE = MODULES.register(SmiteModule::new, "smite");
+    public static final SpawnModule SPAWN = MODULES.register(SpawnModule::new, "spawn");
+    public static final StaffChatModule STAFFCHAT = MODULES.register(StaffChatModule::new, "staffchat");
+    public static final StylingModule STYLING = MODULES.register(StylingModule::new, "styling");
+    public static final SudoModule SUDO = MODULES.register(SudoModule::new, "sudo");
+    public static final SuicideModule SUICIDE = MODULES.register(SuicideModule::new, "suicide");
+    public static final TabListModule TABLIST = MODULES.register(TabListModule::new, "tablist");
+    public static final TeleportHereModule TELEPORTHERE = MODULES.register(TeleportHereModule::new, "teleporthere");
+    public static final TeleportOfflineModule TELEPORTOFFLINE = MODULES.register(TeleportOfflineModule::new, "teleportoffline");
+    public static final TeleportPositionModule TELEPORTPOSITION = MODULES.register(TeleportPositionModule::new, "teleportposition");
+    public static final TeleportRequestModule TELEPORTREQUEST = MODULES.register(TeleportRequestModule::new, "teleportrequest");
+    public static final TellModule TELL = MODULES.register(TellModule::new, "tell");
+    public static final TimeBarModule TIMEBAR = MODULES.register(TimeBarModule::new, "timebar");
+    public static final TrashModule TRASH = MODULES.register(TrashModule::new, "trash");
+    public static final UtilitiesModule UTILITIES = MODULES.register(UtilitiesModule::new, "utilities");
+    public static final WarpModule WARP = MODULES.register(WarpModule::new, "warp");
 
     @Override
     public HashSet<ModuleBase> register() {
-        return new HashSet<>(MODULES);
+        return MODULES.getModules();
     }
 }

@@ -18,7 +18,7 @@ maven {
 modImplementation "me.alexdevs:solstice:VERSION"
 ```
 
-Replace `VERSION` with the preferred version. E.g. `1.5.0+1.21.1` (without `v`).
+Replace `VERSION` with the preferred version. E.g. `1.9.6+1.21.1` (without `v`).
 
 ## Adding modules
 
@@ -33,23 +33,24 @@ package com.example.modules;
 
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.module.ModuleEntrypoint;
+import me.alexdevs.solstice.api.module.ModuleRegistry;
 
 import java.util.HashSet;
 import java.util.List;
 
 public class ModuleProvider implements ModuleEntrypoint {
+    // Create a ModuleRegistry instance
+    private static final ModuleRegistry MODULES = new ModuleRegistry("my_addon");
+    
+    // Register modules
+    public static MyModule MY_MODULE = MODULES.register(MyModule::new, "my_module");
+    public static MyCoolModule MY_COOL_MODULE = MODULES.register(MyCoolModule::new, "my_cool_module");
 
-    // Add module instances here
-    private static final List<? extends ModuleBase> modules = List.of(
-            new MyModule(),
-            new MyCoolModule()
-    );
-
-    // Return a HashSet of the list of modules.
+    // Return the registered modules.
     // This method is only called once!
     @Override
     public HashSet<ModuleBase> register() {
-        return new HashSet<>(modules);
+        return MODULES.getModules();
     }
 }
 ```
@@ -74,7 +75,7 @@ To make the class discoverable by Solstice, add the `"solstice"` entry point to 
 
 All Solstice modules extend the abstract class `me.alexdevs.solstice.api.module.ModuleBase`.
 
-Modules need to provide a String ID to the super constructor, ideally all lowercase, this ID is used to differentiate between modules and is also used to make permission nodes.
+Modules need to provide a SolsticeIdentifier to the super constructor, ideally all lowercase, this ID is used to differentiate between modules and is also used to make permission nodes.
 
 ```java
 package com.example.modules.mymodule;
@@ -84,25 +85,23 @@ import me.alexdevs.solstice.api.module.ModuleBase;
 
 // Use ModuleBase.Toggleable to make it toggleable from modules.conf.
 public class MyModule extends ModuleBase {
-    public static final String ID = "mymodule";
-
-    public MyModule() {
-        super(ID);
+    public MyModule(SolsticeIdenifier id) {
+        super(id);
     }
 
     @Override
     public void init() {
         // Register the configuration section
-        Solstice.configManager.registerData(ID, MyModuleConfig.class, MyModuleConfig::new);
+        Solstice.configManager.registerData(id, MyModuleConfig.class, MyModuleConfig::new);
 
         // Register the locale
-        Solstice.localeManager.registerModule(ID, MyModuleLocale.MODULE);
+        Solstice.localeManager.registerModule(id, MyModuleLocale.MODULE);
 
         // Register the player data
-        Solstice.playerData.registerData(ID, MyModulePlayerData.class, MyModulePlayerData::new);
+        Solstice.playerData.registerData(id, MyModulePlayerData.class, MyModulePlayerData::new);
 
         // Register the server data
-        Solstice.serverData.registerData(ID, MyModuleServerData.class, MyModuleServerData::new);
+        Solstice.serverData.registerData(id, MyModuleServerData.class, MyModuleServerData::new);
 
         // Add a command to your module
         commands.add(new MyCommand(this));
@@ -110,4 +109,8 @@ public class MyModule extends ModuleBase {
 }
 ```
 
-See the source code of Solstice modules as practical examples.
+See the source code of Solstice modules for practical examples.
+
+### Solstice Identifier
+
+The `SolsticeIdentifier` class is a wrapper around Minecraft's ResourceLocation/Identifier to facilitate multiversion compatibility.
