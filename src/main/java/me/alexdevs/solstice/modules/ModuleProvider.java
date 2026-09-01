@@ -21,6 +21,7 @@ import me.alexdevs.solstice.modules.fly.FlyModule;
 import me.alexdevs.solstice.modules.god.GodModule;
 import me.alexdevs.solstice.modules.hat.HatModule;
 import me.alexdevs.solstice.modules.heal.HealModule;
+import me.alexdevs.solstice.modules.help.HelpModule;
 import me.alexdevs.solstice.modules.helpOp.HelpOpModule;
 import me.alexdevs.solstice.modules.home.HomeModule;
 import me.alexdevs.solstice.modules.ignite.IgniteModule;
@@ -85,6 +86,7 @@ public class ModuleProvider implements ModuleEntrypoint {
     public static final GodModule GOD = MODULES.register(GodModule::new, "god");
     public static final HatModule HAT = MODULES.register(HatModule::new, "hat");
     public static final HealModule HEAL = MODULES.register(HealModule::new, "heal");
+    public static final HelpModule HELP = MODULES.register(HelpModule::new, "help");
     public static final HelpOpModule HELPOP = MODULES.register(HelpOpModule::new, "helpop");
     public static final HomeModule HOME = MODULES.register(HomeModule::new, "home");
     public static final IgniteModule IGNITE = MODULES.register(IgniteModule::new, "ignite");
