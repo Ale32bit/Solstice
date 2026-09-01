@@ -1,5 +1,6 @@
 package me.alexdevs.solstice.modules.help;
 
+import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import me.alexdevs.solstice.modules.help.commands.HelpCommand;
@@ -17,5 +18,9 @@ public class HelpModule extends ModuleBase.Toggleable {
         registerLocale(HelpLocale.MODULE);
 
         commands.add(new HelpCommand(this));
+    }
+
+    public HelpConfig getConfig() {
+        return Solstice.configManager.getData(HelpConfig.class);
     }
 }

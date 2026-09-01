@@ -22,8 +22,6 @@ import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 public class HelpCommand extends ModCommand<HelpModule> {
-    private static final int PAGE_SIZE = 10;
-
     public HelpCommand(HelpModule module) {
         super(module);
     }
@@ -124,11 +122,12 @@ public class HelpCommand extends ModCommand<HelpModule> {
     }
 
     private List<CommandEntry> getCommandsPage(CommandNode<CommandSourceStack> root, CommandSourceStack source, int page) {
+         var pageSize = module.getConfig().pageSize;
         return dispatcher.getSmartUsage(root, source)
                 .entrySet().stream()
                 .sorted(Map.Entry.comparingByValue())
-                .skip((long) page * PAGE_SIZE)
-                .limit(PAGE_SIZE)
+                .skip((long) page * pageSize)
+                .limit(pageSize)
                 .map(o -> new CommandEntry(o.getKey(), o.getValue()))
                 .toList();
     }
@@ -142,7 +141,8 @@ public class HelpCommand extends ModCommand<HelpModule> {
     }
 
     private int getPageCount(CommandNode<CommandSourceStack> root, CommandSourceStack source) {
-        return (int) Math.ceil((double) dispatcher.getSmartUsage(root, source).size() / PAGE_SIZE);
+        var pageSize = module.getConfig().pageSize;
+        return (int) Math.ceil((double) dispatcher.getSmartUsage(root, source).size() / pageSize);
     }
 
     private Component buildFooter(int page, int maxPages) {
