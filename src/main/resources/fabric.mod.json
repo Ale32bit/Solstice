@@ -22,7 +22,7 @@
   "license": "MIT",
   "environment": "*",
   "entrypoints": {
-    "main": [
+    "server": [
       "me.alexdevs.solstice.Solstice"
     ],
     "solstice": [

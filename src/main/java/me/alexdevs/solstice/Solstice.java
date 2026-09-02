@@ -11,7 +11,7 @@ import me.alexdevs.solstice.integrations.ConnectorIntegration;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.locale.LocaleManager;
 import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
-import net.fabricmc.api.ModInitializer;
+import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -25,7 +25,7 @@ import org.spongepowered.configurate.ConfigurateException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
-public class Solstice implements ModInitializer {
+public class Solstice implements DedicatedServerModInitializer {
     public static final String MOD_ID = "solstice";
     public static final Logger LOGGER = LoggerFactory.getLogger(Solstice.class);
     public static final SolsticeIdentifier ID = SolsticeIdentifier.of(MOD_ID, "");
@@ -59,7 +59,7 @@ public class Solstice implements ModInitializer {
     }
 
     @Override
-    public void onInitialize() {
+    public void onInitializeServer() {
         var modMeta = FabricLoader.getInstance().getModContainer(MOD_ID).get().getMetadata();
         LOGGER.info("Initializing Solstice v{}...", modMeta.getVersion());
 
