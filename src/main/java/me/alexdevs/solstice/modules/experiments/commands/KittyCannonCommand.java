@@ -1,10 +1,11 @@
-package me.alexdevs.solstice.modules.miscellaneous.commands;
+package me.alexdevs.solstice.modules.experiments.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.alexdevs.solstice.Solstice;
 import me.alexdevs.solstice.api.module.ModCommand;
 import me.alexdevs.solstice.api.utils.EntityUtils;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
+import me.alexdevs.solstice.modules.experiments.ExperimentsModule;
 import me.alexdevs.solstice.modules.miscellaneous.DummyExplosion;
 import me.alexdevs.solstice.modules.miscellaneous.MiscellaneousModule;
 import net.minecraft.commands.CommandSourceStack;
@@ -15,8 +16,8 @@ import net.minecraft.world.entity.EntityType;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class KittyCannonCommand extends ModCommand<MiscellaneousModule> {
-    public KittyCannonCommand(MiscellaneousModule module) {
+public class KittyCannonCommand extends ModCommand<ExperimentsModule> {
+    public KittyCannonCommand(ExperimentsModule module) {
         super(module);
     }
 

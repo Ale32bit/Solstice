@@ -1,4 +1,4 @@
-package me.alexdevs.solstice.modules.miscellaneous.commands;
+package me.alexdevs.solstice.modules.experiments.commands;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -8,6 +8,7 @@ import me.alexdevs.solstice.api.command.Flags;
 import me.alexdevs.solstice.api.command.flags.Flag;
 import me.alexdevs.solstice.api.command.flags.FloatFlag;
 import me.alexdevs.solstice.api.module.ModCommand;
+import me.alexdevs.solstice.modules.experiments.ExperimentsModule;
 import me.alexdevs.solstice.modules.miscellaneous.DummyExplosion;
 import me.alexdevs.solstice.modules.miscellaneous.MiscellaneousModule;
 import net.minecraft.commands.CommandSourceStack;
@@ -19,8 +20,8 @@ import net.minecraft.sounds.SoundSource;
 
 import java.util.List;
 
-public class RocketCommand extends ModCommand<MiscellaneousModule> {
-    public RocketCommand(MiscellaneousModule module) {
+public class RocketCommand extends ModCommand<ExperimentsModule> {
+    public RocketCommand(ExperimentsModule module) {
         super(module);
     }
 

@@ -32,8 +32,6 @@ public class MiscellaneousModule extends ModuleBase.Toggleable {
         commands.add(new NudgeCommand(this));
         commands.add(new TopCommand(this));
         commands.add(new SpeedCommand(this));
-        //commands.add(new KittyCannonCommand(this));
-        //commands.add(new RocketCommand(this));
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> commandSleeping.remove(handler.getPlayer().getUUID()));
         EntitySleepEvents.STOP_SLEEPING.register((entity, pos) -> commandSleeping.remove(entity.getUUID()));
