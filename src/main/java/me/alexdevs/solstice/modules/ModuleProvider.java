@@ -38,6 +38,7 @@ import me.alexdevs.solstice.modules.mute.MuteModule;
 import me.alexdevs.solstice.modules.near.NearModule;
 import me.alexdevs.solstice.modules.note.NoteModule;
 import me.alexdevs.solstice.modules.notifications.NotificationsModule;
+import me.alexdevs.solstice.modules.pagination.PaginationModule;
 import me.alexdevs.solstice.modules.placeholders.PlaceholdersModule;
 import me.alexdevs.solstice.modules.powertool.PowerToolModule;
 import me.alexdevs.solstice.modules.restart.RestartModule;
@@ -103,6 +104,7 @@ public class ModuleProvider implements ModuleEntrypoint {
     public static final NearModule NEAR = MODULES.register(NearModule::new, "near");
     public static final NoteModule NOTE = MODULES.register(NoteModule::new, "note");
     public static final NotificationsModule NOTIFICATIONS = MODULES.register(NotificationsModule::new, "notifications");
+    public static final PaginationModule PAGINATION = MODULES.register(PaginationModule::new, "pagination");
     public static final PlaceholdersModule PLACEHOLDERS = MODULES.register(PlaceholdersModule::new, "placeholders");
     public static final PowerToolModule POWERTOOL = MODULES.register(PowerToolModule::new, "powertool");
     public static final RTPModule RTP = MODULES.register(RTPModule::new, "rtp");
