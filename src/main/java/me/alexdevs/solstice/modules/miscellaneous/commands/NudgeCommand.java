@@ -13,7 +13,6 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
@@ -56,6 +55,9 @@ public class NudgeCommand extends ModCommand<MiscellaneousModule> {
                 var vec = new Vec3(x, 0, z).normalize().scale(power);
 
                 living.setDeltaMovement(vec);
+                //? >= 26.3
+                //living.syncVelocity = true;
+                //? < 26.3
                 living.hurtMarked = true;
                 if (!quiet) {
                     if (entity instanceof ServerPlayer player) {

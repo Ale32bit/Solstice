@@ -23,9 +23,11 @@ public class SignModule extends ModuleBase.Toggleable {
         for (var i = 0; i < messages.size(); i++) {
             var message = messages.get(i);
             var line = message.raw();
-            //? if >= 26.1
+            //? if >= 26.3
+            //text.asMutable().setLine(i,LegacyFormattingParser.ALL.parseNode(line).toComponent());
+            //? if = 26.2
             //text = text.setMessage(i, LegacyFormattingParser.ALL.parseNode(line).toComponent());
-            //? if < 26.1
+            //? if < 26.2
             text = text.setMessage(i, LegacyFormattingParser.ALL.parseNode(line).toText());
         }
         return text;
