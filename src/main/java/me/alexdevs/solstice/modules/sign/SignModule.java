@@ -20,14 +20,22 @@ public class SignModule extends ModuleBase.Toggleable {
     }
 
     public static SignText formatSign(List<FilteredText> messages, SignText text) {
+        //? if >= 26.3
+        //SignText.Mutable mutableText = text.asMutable();
+
         for (var i = 0; i < messages.size(); i++) {
             var message = messages.get(i);
             var line = message.raw();
-            //? if >= 26.1
+            //? if >= 26.3
+            //mutableText.setLine(i,LegacyFormattingParser.ALL.parseNode(line).toComponent());
+            //? if = 26.2
             //text = text.setMessage(i, LegacyFormattingParser.ALL.parseNode(line).toComponent());
-            //? if < 26.1
+            //? if < 26.2
             text = text.setMessage(i, LegacyFormattingParser.ALL.parseNode(line).toText());
         }
+        //? if >= 26.3
+        //return mutableText.asImmutable();
+        //? if < 26.3
         return text;
     }
 
