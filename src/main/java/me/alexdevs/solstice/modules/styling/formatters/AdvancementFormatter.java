@@ -3,19 +3,27 @@ package me.alexdevs.solstice.modules.styling.formatters;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.modules.ModuleProvider;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Map;
 
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.advancements.AdvancementType;
-
 
 public class AdvancementFormatter {
     public static Component getText(ServerPlayer player, AdvancementHolder entry, AdvancementType frame) {
-        var title = entry.value().display().get().getTitle();
-        var description = entry.value().display().get().getDescription();
+        var title = entry.value().display().get()
+            //? >= 26.3
+            //.title();
+            //? < 26.3
+            .getTitle();
+        var description = entry.value().display().get()
+            //? >= 26.3
+            //.description();
+            //? < 26.3
+            .getDescription();
+
 
         var config = ModuleProvider.STYLING.getConfig();
 
