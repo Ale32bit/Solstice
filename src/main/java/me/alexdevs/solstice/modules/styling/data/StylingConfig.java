@@ -29,14 +29,13 @@ public class StylingConfig {
     @Comment("Goal advancement format.")
     public String advancementGoal = "<aqua>\uD83C\uDF96</aqua> %player:displayname% <gray>completed the goal</gray> <hover:'${description}'><aqua>${title}</aqua></hover>";
 
-    @Comment("!! This setting is deprecated. Use chat-formats instead. !!")
-    @Deprecated
-    public @Nullable String chatFormat = null;
-
     @Comment("Chat format per group. group = format")
     public Map<String, String> chatFormats = Map.of(
             "default", "%player:displayname%<gray>:</gray> ${message}"
     );
+
+    @Comment("Enable nameplate customizations.")
+    public boolean enableNameplateFormatting = true;
 
     @Comment("Nameplate formatting per group. group = format.\nPlaceholders here are not refreshed often.")
     public Map<String, NameplateFormat> nameplateFormats = Map.of(

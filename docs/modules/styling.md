@@ -105,9 +105,17 @@ These options can be configured in the `styling` section of the config file.
 
     ![Chat message](../assets/text_formatting/chat.webp)
 
+!!! config "enable-nameplate-formatting"
+
+    Enable nameplate formatting. Default: `true`.
+
+    Clients need to reconnect to apply changes.
+
 !!! config "nameplate-formats"
 
     Scoreboard nameplate format per LuckPerms group. Controls the prefix and suffix displayed above players' heads.
+
+    Clients need to reconnect to apply changes.
 
     ```hocon
     nameplate-formats {
@@ -120,11 +128,7 @@ These options can be configured in the `styling` section of the config file.
 
     !!! warning
 
-        Nameplate placeholders are not refreshed frequently. Avoid placeholders that change often.
-
-!!! config "do-color-nameplate"
-
-    Whether to color the username part in the scoreboard nameplate. Default: `true`.
+        Nameplate placeholders are calculated on player login. Avoid placeholders that change often.
 
 !!! config "emote-format"
 

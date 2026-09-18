@@ -6,20 +6,20 @@ import me.alexdevs.solstice.api.events.SolsticeEvents;
 import me.alexdevs.solstice.api.module.ModuleBase;
 import me.alexdevs.solstice.api.text.Format;
 import me.alexdevs.solstice.api.utils.PlayerUtils;
+import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import me.alexdevs.solstice.integrations.LuckPermsIntegration;
 import me.alexdevs.solstice.modules.styling.data.StylingConfig;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import me.alexdevs.solstice.api.utils.SolsticeIdentifier;
 import net.minecraft.server.ServerScoreboard;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.scores.PlayerTeam;
 
 import java.util.Locale;
+import java.util.Optional;
 
 public class StylingModule extends ModuleBase.Toggleable {
     public static final String ADVANCED_CHAT_FORMATTING_PERMISSION = "solstice.chat.advanced";
@@ -48,13 +48,6 @@ public class StylingModule extends ModuleBase.Toggleable {
         });
 
         SolsticeEvents.READY.register((instance, server) -> {
-            var config = getConfig();
-            if (config.chatFormat != null) {
-                config.chatFormats.put("default", config.chatFormat);
-                config.chatFormat = null;
-                Solstice.configManager.save();
-            }
-
             // Cleanup
             var scoreboard = server.getScoreboard();
             for (var team : scoreboard.getPlayerTeams()) {
@@ -66,14 +59,15 @@ public class StylingModule extends ModuleBase.Toggleable {
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             var player = handler.getPlayer();
-            if (player.getTeam() == null) {
+            var config = getConfig();
+            if (player.getTeam() == null && config.enableNameplateFormatting) {
                 ServerScoreboard scoreboard = server.getScoreboard();
                 var username = PlayerUtils.getName(player.getGameProfile());
                 PlayerTeam team = scoreboard.addPlayerTeam("sol_" + username);
                 team.setDisplayName(player.getDisplayName());
-                //? if >= 26.1
+                //? if >=26.1
                 //team.setColor(java.util.Optional.ofNullable(this.getNameplateColor(player)).map(c -> net.minecraft.world.scores.TeamColor.valueOf(c.name())));
-                //? if < 26.1
+                //? if <26.1
                 team.setColor(this.getNameplateColor(player));
                 team.setPlayerPrefix(this.getNameplatePrefix(player));
                 team.setPlayerSuffix(this.getNameplateSuffix(player));
@@ -126,6 +120,11 @@ public class StylingModule extends ModuleBase.Toggleable {
 
     public ChatFormatting getNameplateColor(ServerPlayer player) {
         var config = this.getConfig();
+
+        if (!config.enableNameplateFormatting) {
+            return ChatFormatting.WHITE;
+        }
+
         var primaryGroup = LuckPermsIntegration.getPrimaryGroup(player);
         var color = "WHITE";
         if (config.nameplateFormats.containsKey(primaryGroup)) {
@@ -134,14 +133,33 @@ public class StylingModule extends ModuleBase.Toggleable {
             color = config.nameplateFormats.getOrDefault("default", DEFAULT_NAMEPLATE).color();
         }
 
-        //? if >= 26.1
-        //return ChatFormatting.valueOf(color.toUpperCase(Locale.ROOT));
-        //? if < 26.1
-        return ChatFormatting.getByName(color);
+        var parsedColor = parseFormattingColor(color);
+
+        if (parsedColor.isEmpty()) {
+            Solstice.LOGGER.error("Invalid nameplate color: {}", color);
+        }
+
+        return parsedColor.orElse(ChatFormatting.WHITE);
+    }
+
+    private static Optional<ChatFormatting> parseFormattingColor(String color) {
+        try {
+            //? if >=26.1
+            //return Optional.of(ChatFormatting.valueOf(color.toUpperCase(Locale.ROOT)));
+            //? if <26.1
+            return Optional.ofNullable(ChatFormatting.getByName(color));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
     }
 
     public Component getNameplatePrefix(ServerPlayer player) {
         var config = getConfig();
+
+        if (!config.enableNameplateFormatting) {
+            return Component.empty();
+        }
+
         var primaryGroup = LuckPermsIntegration.getPrimaryGroup(player);
         var format = "";
         if (config.nameplateFormats.containsKey(primaryGroup)) {
@@ -155,6 +173,11 @@ public class StylingModule extends ModuleBase.Toggleable {
 
     public Component getNameplateSuffix(ServerPlayer player) {
         var config = getConfig();
+
+        if (!config.enableNameplateFormatting) {
+            return Component.empty();
+        }
+
         var primaryGroup = LuckPermsIntegration.getPrimaryGroup(player);
         var format = "";
         if (config.nameplateFormats.containsKey(primaryGroup)) {
