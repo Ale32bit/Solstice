@@ -69,6 +69,9 @@ public class RocketCommand extends ModCommand<ExperimentsModule> {
             }
 
             player.push(0, power, 0);
+            //? >= 26.3
+            //player.syncVelocity = true;
+            //? < 26.3
             player.hurtMarked = true;
         }
 

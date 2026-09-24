@@ -64,8 +64,10 @@ public class DoAsCommand extends ModCommand<SudoModule> {
                 player.getRotationVector(),
                 PlayerUtils.getLevel(player),
                 opLevel,
+                //? if < 26.3 {
                 player.getScoreboardName(),
                 player.getDisplayName(),
+                //? }
                 server,
                 player
         );
