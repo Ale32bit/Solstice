@@ -1,2 +1,2 @@
-- Added /tpaall command
-- Bugfix nameplate logic
+- Bug fix /hat voiding items
+- Upgrade for 26.3 (alpha)
