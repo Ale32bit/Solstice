@@ -32,7 +32,6 @@ public class StylingModule extends ModuleBase.Toggleable {
         super(id);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void init() {
         Solstice.configManager.registerData(getId(), StylingConfig.class, StylingConfig::new);
@@ -49,12 +48,10 @@ public class StylingModule extends ModuleBase.Toggleable {
 
         SolsticeEvents.READY.register((instance, server) -> {
             // Cleanup
-            var scoreboard = server.getScoreboard();
-            for (var team : scoreboard.getPlayerTeams()) {
-                if (team.getName().startsWith("sol_")) {
-                    scoreboard.removePlayerTeam(team);
-                }
-            }
+            server.getScoreboard().getPlayerTeams()
+                    .stream()
+                    .filter(team -> team.getName().startsWith("sol_"))
+                    .forEach(team -> server.getScoreboard().removePlayerTeam(team));
         });
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
