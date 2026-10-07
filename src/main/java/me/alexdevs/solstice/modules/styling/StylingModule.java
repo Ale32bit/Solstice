@@ -51,6 +51,7 @@ public class StylingModule extends ModuleBase.Toggleable {
             server.getScoreboard().getPlayerTeams()
                     .stream()
                     .filter(team -> team.getName().startsWith("sol_"))
+                    .toList()
                     .forEach(team -> server.getScoreboard().removePlayerTeam(team));
         });
 
