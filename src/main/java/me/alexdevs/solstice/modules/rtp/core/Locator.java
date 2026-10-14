@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 
 public class Locator {
     //? >= 1.21.11
-    //public static final TicketType RTP_TICKET = Registry.register(BuiltInRegistries.TICKET_TYPE, "RTP", new TicketType(300, TicketType.FLAG_LOADING));
+    //public static final TicketType RTP_TICKET = Registry.register(BuiltInRegistries.TICKET_TYPE, "rtp", new TicketType(300, TicketType.FLAG_LOADING));
     //? < 1.21.11
     public static final TicketType<BlockPos> RTP_TICKET = TicketType.create("rtp", Comparator.comparingLong(ChunkPos::asLong), 300);
 
