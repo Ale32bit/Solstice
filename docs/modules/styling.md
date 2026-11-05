@@ -134,6 +134,34 @@ These options can be configured in the `styling` section of the config file.
 
     Emote format (`/me`).
 
+!!! config "team-format"
+
+    Format for incoming team messages sent with `/teammsg` or `/tm`.
+
+    Leave empty to keep the vanilla format, which is translated by the client.
+
+    **Placeholders**
+
+    * `${team}` - Team display name, including the vanilla hover and click style.
+    * `${sender}` - Sender display name.
+    * `${message}` - Message after formatting.
+
+    ```hocon
+    team-format="${team} <${sender}> <gray>:</gray> ${message}"
+    ```
+
+!!! config "team-sent-format"
+
+    Format for the sender's own copy of a team message.
+
+    Leave empty to keep the vanilla format, which is translated by the client.
+
+    Placeholders are the same as `team-format`.
+
+    ```hocon
+    team-sent-format="<gray>-></gray> ${team} <${sender}> <gray>:</gray> ${message}"
+    ```
+
 !!! config "join-format"
 
     Player join message format.

@@ -34,6 +34,12 @@ public class StylingConfig {
             "default", "%player:displayname%<gray>:</gray> ${message}"
     );
 
+    @Comment("Team message format. Placeholders: ${team}, ${sender}, ${message}. Leave empty to use vanilla formatting.")
+    public String teamFormat = "";
+
+    @Comment("Team message format as seen by the sender. Placeholders: ${team}, ${sender}, ${message}. Leave empty to use vanilla formatting.")
+    public String teamSentFormat = "";
+
     @Comment("Enable nameplate customizations.")
     public boolean enableNameplateFormatting = true;
 

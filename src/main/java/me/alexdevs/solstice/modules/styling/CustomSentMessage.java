@@ -4,6 +4,7 @@ import me.alexdevs.solstice.api.events.AllowP2PMessageCallback;
 import me.alexdevs.solstice.modules.ModuleProvider;
 import me.alexdevs.solstice.modules.styling.formatters.ChatFormatter;
 import me.alexdevs.solstice.modules.styling.formatters.EmoteFormatter;
+import me.alexdevs.solstice.modules.styling.formatters.TeamFormatter;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.OutgoingChatMessage;
@@ -66,13 +67,19 @@ public interface CustomSentMessage extends OutgoingChatMessage {
                 return;
             }
 
-            //? >= 1.21.1
             switch (params.chatType().value().chat().translationKey()) {
                 case "chat.type.text":
                     receiver.sendSystemMessage(this.formattedChatMessage);
                     break;
                 case "chat.type.emote":
                     EmoteFormatter.sendEmoteMessage(receiver, message, params, sender);
+                    break;
+                case "chat.type.team.text":
+                case "chat.type.team.sent":
+                    if (TeamFormatter.sendTeamMessage(receiver, signedMessage, params, sender)) {
+                        break;
+                    }
+                    receiver.connection.sendDisguisedChatMessage(this.message.decoratedContent(), params);
                     break;
                 default:
                     receiver.connection.sendDisguisedChatMessage(this.message.decoratedContent(), params);
