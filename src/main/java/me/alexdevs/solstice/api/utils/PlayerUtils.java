@@ -2,14 +2,27 @@ package me.alexdevs.solstice.api.utils;
 
 import com.mojang.authlib.GameProfile;
 import me.alexdevs.solstice.Solstice;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.datafix.DataFixTypes;
+import net.minecraft.world.level.storage.LevelResource;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
+import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public class PlayerUtils {
@@ -49,14 +62,87 @@ public class PlayerUtils {
         return player;
     }
 
+    private static final java.util.Set<String> SAVE_KEYS = java.util.Set.of("Inventory", "equipment","EnderItems",
+            //? if >= 1.21.11
+            //"trinkets"
+            //? if < 1.21.11
+            "cardinal_components"
+    );
+
     public static void saveOfflinePlayer(ServerPlayer player) {
         if (isOnline(player.getUUID())) {
             Solstice.LOGGER.warn("Tried to save offline player data for a player that is online.");
             return;
         }
-        var saveHandler = Solstice.server.playerDataStorage;
-        saveHandler.save(player);
-        Solstice.server.getPlayerList().remove(player);
+
+        var server = Solstice.server;
+        var storage = server.playerDataStorage;
+        var uuid = player.getUUID();
+
+        CompoundTag original;
+        CompoundTag fresh;
+
+        //? if >=1.21.11 {
+        /*original = storage.load(new net.minecraft.server.players.NameAndId(uuid, player.getGameProfile().name())).orElse(null);
+        if (original == null) {
+            storage.save(player);
+            return;
+        }
+        var out = net.minecraft.world.level.storage.TagValueOutput.createWithContext(net.minecraft.util.ProblemReporter.DISCARDING, server.registryAccess());
+        player.saveWithoutId(out);
+        fresh = out.buildResult();
+        *///?} else {
+        var datFile = server.getWorldPath(LevelResource.PLAYER_DATA_DIR).resolve(uuid + ".dat");
+        if (!Files.exists(datFile)) {
+            storage.save(player);
+            return;
+        }
+        try {
+            var raw = NbtIo.readCompressed(datFile, NbtAccounter.unlimitedHeap());
+            original = DataFixTypes.PLAYER.updateToCurrentVersion(server.getFixerUpper(), raw, NbtUtils.getDataVersion(raw, -1));
+        }
+        catch (Exception e) {
+            Solstice.LOGGER.warn("Failed to read offline player {}", uuid, e);
+            return;
+        }
+        fresh = new CompoundTag();
+        player.saveWithoutId(fresh);
+        //?}
+
+        for (var key : SAVE_KEYS) {
+            var tag = fresh.get(key);
+            if (tag != null) {
+                original.put(key, tag);
+            }
+            else {
+                original.remove(key);
+            }
+        }
+
+        try {
+            NbtUtils.addCurrentDataVersion(original);
+            var dir = server.getWorldPath(LevelResource.PLAYER_DATA_DIR);
+            var dat = dir.resolve(uuid + ".dat");
+            var old = dir.resolve(uuid + ".dat_old");
+            var tmp = Files.createTempFile(dir, uuid + "-", ".dat");
+            NbtIo.writeCompressed(original, tmp);
+            replaceFile(dat, tmp, old);
+        }
+        catch (Exception e) {
+            Solstice.LOGGER.warn("Failed to save offline player {}", uuid, e);
+        }
+    }
+
+    private static void replaceFile(Path dat, Path tmp, Path old) throws java.io.IOException {
+        if (Files.exists(dat)) {
+            Files.copy(dat, old, StandardCopyOption.REPLACE_EXISTING);
+        }
+        try {
+            Files.move(tmp, dat, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+        }
+        catch (AtomicMoveNotSupportedException e) {
+            Files.move(tmp, dat, StandardCopyOption.REPLACE_EXISTING);
+        }
     }
 
     public static void playSound(@UnknownNullability ServerPlayer player, SoundEvent sound, float volume, float pitch) {
